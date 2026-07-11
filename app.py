@@ -1,0 +1,369 @@
+"""
+app.py — local web dashboard.
+Run:  python app.py   →  open http://127.0.0.1:5000 in your browser.
+
+Endpoints:
+  GET  /                  -> dashboard UI
+  GET  /api/settings      -> current config (webhook set?, price source, country, rate)
+  POST /api/scrape        -> run a one-off scrape {queries, below_pct, steal_pct, push}
+  GET  /api/scrape/status -> poll progress + results of the running/last scrape
+  GET/POST/DELETE /api/watchlist -> manage saved cards
+  POST /api/watchlist/run -> scrape every watchlist item with its own threshold
+"""
+import json
+import os
+import threading
+
+from flask import Flask, request, jsonify, Response
+
+import config
+import engine
+
+app = Flask(__name__)
+
+WATCHLIST_PATH = os.path.join(os.path.dirname(__file__), "watchlist.json")
+
+# ── shared state for the async scrape (single job at a time) ──────────
+_job = {"running": False, "log": [], "deals": [], "label": ""}
+_lock = threading.Lock()
+
+def _progress(msg):
+    with _lock:
+        _job["log"].append(msg)
+
+def _run_job(queries, below, steal, push, label):
+    with _lock:
+        _job.update(running=True, log=[], deals=[], label=label)
+    try:
+        deals = engine.run_scan(
+            queries,
+            below_fraction=below,
+            steal_fraction=steal,
+            push_discord=push,
+            respect_seen=push,   # if just previewing, show everything; if pushing, dedup
+            progress=_progress,
+        )
+        with _lock:
+            _job["deals"] = deals
+    finally:
+        with _lock:
+            _job["running"] = False
+
+
+# ── watchlist storage ─────────────────────────────────────────────────
+def load_watchlist():
+    if not os.path.exists(WATCHLIST_PATH):
+        return []
+    try:
+        with open(WATCHLIST_PATH) as f:
+            return json.load(f)
+    except Exception:
+        return []
+
+def save_watchlist(items):
+    with open(WATCHLIST_PATH, "w") as f:
+        json.dump(items, f, indent=2)
+
+
+# ── routes ────────────────────────────────────────────────────────────
+@app.route("/")
+def index():
+    return Response(HTML, mimetype="text/html")
+
+@app.route("/api/settings")
+def settings():
+    return jsonify({
+        "webhook_set": bool(config.DISCORD_WEBHOOK_URL) and "PASTE" not in config.DISCORD_WEBHOOK_URL,
+        "price_source": config.PRICE_SOURCE,
+        "country": config.CAROUSELL_COUNTRY,
+        "usd_to_local": config.USD_TO_LOCAL_RATE,
+        "default_below_pct": round((1 - config.ALERT_AT_OR_BELOW_FRACTION) * 100),
+    })
+
+@app.route("/api/scrape", methods=["POST"])
+def scrape():
+    if _job["running"]:
+        return jsonify({"error": "a scan is already running"}), 409
+    data = request.get_json(force=True)
+    queries = [q.strip() for q in data.get("queries", []) if q.strip()]
+    categories = getattr(config, "CAROUSELL_CATEGORY_URLS", [])
+    queries.extend(categories)
+    if not queries:
+        queries = list(config.SEARCH_QUERIES)
+    if not queries:
+        return jsonify({"error": "no queries provided"}), 400
+    # dedupe while preserving order
+    queries = list(dict.fromkeys(queries))
+    below_pct = float(data.get("below_pct", 20))    # "20% under market"
+    push = bool(data.get("push", False))
+    below = 1 - below_pct / 100.0
+    steal = 0.0
+    t = threading.Thread(target=_run_job,
+                         args=(queries, below, steal, push, "category scan"),
+                         daemon=True)
+    t.start()
+    return jsonify({"started": True})
+
+@app.route("/api/scrape/status")
+def scrape_status():
+    with _lock:
+        return jsonify({
+            "running": _job["running"],
+            "log": _job["log"][-50:],
+            "deals": _job["deals"],
+            "label": _job["label"],
+        })
+
+@app.route("/api/watchlist", methods=["GET", "POST", "DELETE"])
+def watchlist():
+    items = load_watchlist()
+    if request.method == "GET":
+        return jsonify(items)
+    if request.method == "POST":
+        data = request.get_json(force=True)
+        items.append({
+            "query": data["query"].strip(),
+            "below_pct": float(data.get("below_pct", 20)),
+        })
+        save_watchlist(items)
+        return jsonify(items)
+    if request.method == "DELETE":
+        idx = int(request.args.get("index", -1))
+        if 0 <= idx < len(items):
+            items.pop(idx)
+            save_watchlist(items)
+        return jsonify(items)
+
+@app.route("/api/watchlist/run", methods=["POST"])
+def watchlist_run():
+    if _job["running"]:
+        return jsonify({"error": "a scan is already running"}), 409
+    items = load_watchlist()
+    if not items:
+        return jsonify({"error": "watchlist is empty"}), 400
+    push = bool(request.get_json(force=True).get("push", True))
+
+    # Each item can have its own threshold, so run them as a small batch job.
+    def run_all():
+        with _lock:
+            _job.update(running=True, log=[], deals=[], label="watchlist")
+        all_deals = []
+        try:
+            for it in items:
+                below = 1 - float(it.get("below_pct", 20)) / 100.0
+                d = engine.run_scan([it["query"]], below_fraction=below,
+                                    push_discord=push, respect_seen=push,
+                                    progress=_progress)
+                all_deals.extend(d)
+            all_deals.sort(key=lambda x: x["fraction"])
+            with _lock:
+                _job["deals"] = all_deals
+        finally:
+            with _lock:
+                _job["running"] = False
+
+    threading.Thread(target=run_all, daemon=True).start()
+    return jsonify({"started": True})
+
+
+# ── the single-page UI (kept in one string so it's one file to run) ───
+HTML = r"""<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Carousell Pokémon Sniper</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
+    --ink:#e8eaed; --muted:#9aa3b2; --accent:#ffcb05; --accent2:#3b6cff;
+    --green:#2ecc71; --red:#e74c3c; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  header{padding:22px 28px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:14px}
+  header h1{font-size:18px;margin:0;font-weight:650;letter-spacing:.2px}
+  .badge{font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+  .badge.ok{color:var(--green);border-color:#1f5132}
+  .badge.no{color:var(--red);border-color:#5a2520}
+  main{max-width:980px;margin:0 auto;padding:24px;display:grid;gap:20px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  .card h2{margin:0 0 14px;font-size:14px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+  label{display:block;font-size:13px;color:var(--muted);margin:0 0 5px}
+  input[type=text],input[type=number],textarea{
+    width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+    border-radius:10px;padding:10px 12px;font:inherit;outline:none}
+  input:focus,textarea:focus{border-color:var(--accent2)}
+  textarea{resize:vertical;min-height:70px}
+  .row{display:flex;gap:14px;flex-wrap:wrap}
+  .row>div{flex:1;min-width:130px}
+  .slider-val{color:var(--accent);font-weight:700}
+  button{cursor:pointer;border:none;border-radius:10px;padding:11px 18px;font:inherit;font-weight:600}
+  .btn-primary{background:var(--accent);color:#1a1a00}
+  .btn-primary:hover{filter:brightness(1.08)}
+  .btn-ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--accent2)}
+  .btn-row{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+  .check{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}
+  .check input{width:auto}
+  .deal{border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:10px;
+    display:flex;justify-content:space-between;gap:14px;align-items:flex-start;background:var(--panel2)}
+  .deal.steal{border-color:#7a3128;box-shadow:0 0 0 1px #7a312855 inset}
+  .deal a{color:var(--ink);text-decoration:none;font-weight:600}
+  .deal a:hover{color:var(--accent)}
+  .deal .meta{font-size:13px;color:var(--muted);margin-top:4px}
+  .pct{font-size:20px;font-weight:800;white-space:nowrap}
+  .pct.steal{color:var(--red)} .pct.deal{color:var(--green)}
+  .tag{font-size:11px;padding:2px 8px;border-radius:999px;background:#0c0e12;border:1px solid var(--line);color:var(--muted);margin-left:6px}
+  #log{font:12px/1.45 ui-monospace,Menlo,monospace;background:#0b0d11;border:1px solid var(--line);
+    border-radius:10px;padding:12px;max-height:180px;overflow:auto;color:#8fa1bd;white-space:pre-wrap}
+  .wl-item{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+  .wl-item:last-child{border-bottom:none}
+  .wl-item .q{flex:1}
+  .muted{color:var(--muted);font-size:13px}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--muted);
+    border-top-color:var(--accent);border-radius:50%;animation:s .7s linear infinite;vertical-align:-2px}
+  @keyframes s{to{transform:rotate(360deg)}}
+  .hidden{display:none}
+</style></head>
+<body>
+<header>
+  <h1>⚡ Carousell Pokémon Sniper</h1>
+  <span id="webhookBadge" class="badge">checking…</span>
+  <span id="srcBadge" class="badge"></span>
+  <span id="ctryBadge" class="badge"></span>
+</header>
+<main>
+
+  <section class="card">
+    <h2>Scan categories</h2>
+    <div class="row" style="margin-top:14px">
+      <div>
+        <label>Alert when listing is <span id="belowLbl" class="slider-val">20%</span> under market</label>
+        <input type="range" id="below" min="1" max="95" value="20" style="width:100%">
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" id="scrapeBtn">Scan categories</button>
+      <label class="check"><input type="checkbox" id="push"> Send results to Discord</label>
+      <span id="status" class="muted"></span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Watchlist</h2>
+    <div class="row">
+      <div style="flex:2"><label>Card</label><input type="text" id="wlQuery" placeholder="moonbreon umbreon vmax alt art"></div>
+      <div><label>% under market</label><input type="number" id="wlPct" value="20" min="1" max="95"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-ghost" id="wlAdd">+ Add to watchlist</button>
+      <button class="btn-primary" id="wlRun">Scrape watchlist</button>
+      <label class="check"><input type="checkbox" id="wlPush" checked> Send to Discord</label>
+    </div>
+    <div id="wlList" style="margin-top:12px"></div>
+  </section>
+
+  <section class="card">
+    <h2>Results <span id="resLabel" class="muted"></span></h2>
+    <div id="results"><p class="muted">No scan run yet.</p></div>
+  </section>
+
+  <section class="card">
+    <h2>Activity log</h2>
+    <div id="log">idle.</div>
+  </section>
+
+</main>
+<script>
+const $ = s => document.querySelector(s);
+let poll = null;
+
+async function loadSettings(){
+  const s = await (await fetch('/api/settings')).json();
+  const wb = $('#webhookBadge');
+  wb.textContent = s.webhook_set ? 'Discord ✓' : 'Discord not set';
+  wb.className = 'badge ' + (s.webhook_set ? 'ok' : 'no');
+  $('#srcBadge').textContent = 'price: ' + s.price_source;
+  $('#ctryBadge').textContent = 'carousell.' + s.country;
+  $('#below').value = s.default_below_pct; $('#belowLbl').textContent = s.default_below_pct + '%';
+}
+$('#below').oninput = e => $('#belowLbl').textContent = e.target.value + '%';
+
+function renderDeals(deals, label){
+  $('#resLabel').textContent = label ? '· ' + label : '';
+  const box = $('#results');
+  if(!deals.length){ box.innerHTML = '<p class="muted">No listings under your threshold this run.</p>'; return; }
+  box.innerHTML = deals.map(d => `
+    <div class="deal ${d.steal?'steal':''}">
+      <div style="flex:1">
+        <a href="${d.url}" target="_blank" rel="noopener">${escapeHtml(d.title)}</a>
+        ${d.pushed?'<span class="tag">sent ✓</span>':''}
+        <div class="meta">Listed <b>${fmt(d.price)}</b> · market ~${fmt(d.market)} · <span class="muted">${escapeHtml(d.label)}</span></div>
+      </div>
+      <div class="pct ${d.steal?'steal':'deal'}">${Math.round(d.pct_off)}%<div style="font-size:11px;font-weight:500;color:var(--muted)">off</div></div>
+    </div>`).join('');
+}
+function fmt(n){ return Number(n).toLocaleString(undefined,{maximumFractionDigits:0}); }
+function escapeHtml(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function startPolling(){
+  if(poll) clearInterval(poll);
+  poll = setInterval(async ()=>{
+    const s = await (await fetch('/api/scrape/status')).json();
+    $('#log').textContent = (s.log||[]).join('\n') || 'idle.';
+    $('#log').scrollTop = $('#log').scrollHeight;
+    if(s.running){
+      $('#status').innerHTML = '<span class="spin"></span> scanning…';
+    } else {
+      $('#status').textContent = '';
+      renderDeals(s.deals||[], s.label);
+      $('#scrapeBtn').disabled = false; $('#wlRun').disabled = false;
+      clearInterval(poll); poll = null;
+    }
+  }, 1200);
+}
+
+$('#scrapeBtn').onclick = async ()=>{
+  $('#scrapeBtn').disabled = true;
+  const r = await fetch('/api/scrape',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({queries: [], below_pct:+$('#below').value, push:$('#push').checked})});
+  if(!r.ok){ alert((await r.json()).error||'error'); $('#scrapeBtn').disabled=false; return; }
+  startPolling();
+};
+
+async function loadWatchlist(){
+  const items = await (await fetch('/api/watchlist')).json();
+  const box = $('#wlList');
+  if(!items.length){ box.innerHTML='<p class="muted">Watchlist empty.</p>'; return; }
+  box.innerHTML = items.map((it,i)=>`
+    <div class="wl-item">
+      <div class="q">${escapeHtml(it.query)}</div>
+      <div class="muted">${it.below_pct}% under</div>
+      <button class="btn-ghost" data-i="${i}" style="padding:6px 12px">Remove</button>
+    </div>`).join('');
+  box.querySelectorAll('button[data-i]').forEach(b=>b.onclick=async()=>{
+    await fetch('/api/watchlist?index='+b.dataset.i,{method:'DELETE'}); loadWatchlist();
+  });
+}
+$('#wlAdd').onclick = async ()=>{
+  const query = $('#wlQuery').value.trim(); if(!query){ alert('Enter a card.'); return; }
+  await fetch('/api/watchlist',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({query, below_pct:+$('#wlPct').value})});
+  $('#wlQuery').value=''; loadWatchlist();
+};
+$('#wlRun').onclick = async ()=>{
+  $('#wlRun').disabled = true;
+  const r = await fetch('/api/watchlist/run',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({push:$('#wlPush').checked})});
+  if(!r.ok){ alert((await r.json()).error||'error'); $('#wlRun').disabled=false; return; }
+  startPolling();
+};
+
+loadSettings(); loadWatchlist();
+</script>
+</body></html>"""
+
+if __name__ == "__main__":
+    print("Dashboard running at  http://127.0.0.1:5000")
+    app.run(host="127.0.0.1", port=5000, debug=False)
