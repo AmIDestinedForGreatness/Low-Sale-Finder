@@ -44,7 +44,9 @@ def discord_post(deal):
         ],
     }
     if deal.get("posted"):
-        embed["fields"].append({"name": "Posted", "value": ("bumped · " if deal.get("bumped") else "") + deal["posted"], "inline": False})
+        ep = scraper.posted_epoch(deal["posted"])
+        val = f"<t:{ep}:R>" if ep else deal["posted"]
+        embed["fields"].append({"name": "Posted", "value": ("bumped · " if deal.get("bumped") else "") + val, "inline": False})
     if deal.get("image"):
         embed["image"] = {"url": deal["image"]}
     try:
@@ -92,6 +94,8 @@ def run_scan(queries, *, below_fraction=None, steal_fraction=None,
                 continue
             if p in getattr(config, "PLACEHOLDER_PRICES", set()):
                 continue
+            if L.get("status") in ("sold", "reserved"):
+                continue  # nothing to snipe
             if respect_seen and _seen(conn, L["url"]):
                 continue
 

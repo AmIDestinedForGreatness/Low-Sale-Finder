@@ -30,6 +30,25 @@ def _price_to_float(text: str):
         return None
 
 
+def posted_epoch(posted: str):
+    """Convert Carousell's '5 hours ago' / 'just now' / 'yesterday' into a unix
+    epoch, so Discord can render its native auto-updating timestamp (<t:..:R>)."""
+    if not posted:
+        return None
+    p = posted.lower().strip()
+    now = int(time.time())
+    if "just now" in p:
+        return now
+    if "yesterday" in p:
+        return now - 86400
+    m = re.match(r"(\d+)\s*(second|minute|hour|day|week|month|year)", p)
+    if not m:
+        return None
+    mult = {"second": 1, "minute": 60, "hour": 3600, "day": 86400,
+            "week": 604800, "month": 2592000, "year": 31536000}[m.group(2)]
+    return now - int(m.group(1)) * mult
+
+
 def build_url(query: str) -> str:
     query = query.strip()
     if query.lower().startswith("http://") or query.lower().startswith("https://"):
@@ -89,6 +108,8 @@ def extract_listings(page):
         // plus a bump marker when the seller re-upped the listing
         const timeMatch = text.match(/\b(just now|yesterday|\d+\s*(?:second|minute|hour|day|week|month|year)s?\s+ago)\b/i);
         const bumped = /\bbump/i.test(text);
+        // listing state badge (Reserved / Sold) when Carousell still shows it
+        const statusMatch = text.match(/\b(reserved|sold)\b/i);
         out.push({
           url: url.split('?')[0],
           title: title.slice(0, 200),
@@ -96,6 +117,7 @@ def extract_listings(page):
           image: image,
           posted: timeMatch ? timeMatch[0] : '',
           bumped: bumped,
+          status: statusMatch ? statusMatch[0].toLowerCase() : '',
           raw: text.slice(0, 300)
         });
       }
@@ -147,5 +169,6 @@ def search(query: str):
             "image": item.get("image", ""),
             "posted": item.get("posted", ""),
             "bumped": item.get("bumped", False),
+            "status": item.get("status", ""),
         })
     return results
