@@ -12,7 +12,10 @@ Endpoints:
 """
 import json
 import os
+import re
 import threading
+
+import requests
 
 from flask import Flask, request, jsonify, Response
 
@@ -79,6 +82,31 @@ def settings():
         "usd_to_local": config.USD_TO_LOCAL_RATE,
         "default_below_pct": round((1 - config.ALERT_AT_OR_BELOW_FRACTION) * 100),
     })
+
+@app.route("/api/webhook", methods=["POST"])
+def set_webhook():
+    """Link a Discord webhook from the UI: validate, send a test ping,
+    persist into config.py (gitignored) and the running process."""
+    url = (request.get_json(force=True).get("url") or "").strip()
+    if not re.match(r"^https://(discord\.com|discordapp\.com|ptb\.discord\.com|canary\.discord\.com)/api/webhooks/\d+/", url):
+        return jsonify({"error": "That doesn't look like a Discord webhook URL. It should start with https://discord.com/api/webhooks/…"}), 400
+    try:
+        r = requests.post(url, json={"content": "✅ Carousell Sniper linked — deal alerts will arrive in this channel."}, timeout=10)
+        if r.status_code not in (200, 204):
+            return jsonify({"error": f"Discord rejected it (status {r.status_code}) — copy the URL again."}), 400
+    except Exception as e:
+        return jsonify({"error": f"Couldn't reach Discord: {e}"}), 400
+    cfg_path = os.path.join(os.path.dirname(__file__), "config.py")
+    with open(cfg_path, encoding="utf-8") as f:
+        src = f.read()
+    new_src, n = re.subn(r'^DISCORD_WEBHOOK_URL\s*=.*$',
+                         f'DISCORD_WEBHOOK_URL = "{url}"', src, count=1, flags=re.M)
+    if n == 0:
+        new_src = f'DISCORD_WEBHOOK_URL = "{url}"\n' + src
+    with open(cfg_path, "w", encoding="utf-8") as f:
+        f.write(new_src)
+    config.DISCORD_WEBHOOK_URL = url
+    return jsonify({"ok": True})
 
 @app.route("/api/scrape", methods=["POST"])
 def scrape():
@@ -236,6 +264,18 @@ HTML = r"""<!doctype html>
 <main>
 
   <section class="card">
+    <h2>Discord alerts</h2>
+    <p class="muted" style="margin:0 0 12px">
+      In Discord: your server → <b>⚙ Server Settings → Integrations → Webhooks → New Webhook → Copy Webhook URL</b> — then paste it here.
+    </p>
+    <div class="row">
+      <div style="flex:3"><input type="text" id="whUrl" placeholder="https://discord.com/api/webhooks/…"></div>
+      <div style="flex:0;min-width:auto"><button class="btn-primary" id="whSave">Link + test ping</button></div>
+    </div>
+    <div id="whMsg" class="muted" style="margin-top:8px"></div>
+  </section>
+
+  <section class="card">
     <h2>Scan categories</h2>
     <div class="row" style="margin-top:14px">
       <div>
@@ -286,9 +326,30 @@ async function loadSettings(){
   wb.className = 'badge ' + (s.webhook_set ? 'ok' : 'no');
   $('#srcBadge').textContent = 'price: ' + s.price_source;
   $('#ctryBadge').textContent = 'carousell.' + s.country;
+  if(s.webhook_set && !$('#whMsg').textContent)
+    $('#whMsg').textContent = 'Already linked ✓ — paste a new URL only if you want to replace it.';
   $('#below').value = s.default_below_pct; $('#belowLbl').textContent = s.default_below_pct + '%';
 }
 $('#below').oninput = e => $('#belowLbl').textContent = e.target.value + '%';
+
+$('#whSave').onclick = async ()=>{
+  const url = $('#whUrl').value.trim();
+  if(!url){ alert('Paste your webhook URL first.'); return; }
+  $('#whSave').disabled = true; $('#whMsg').textContent = 'testing…';
+  try{
+    const r = await fetch('/api/webhook',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({url})});
+    const d = await r.json();
+    if(r.ok){
+      $('#whMsg').textContent = '✅ Linked and saved — check your Discord channel for the test ping.';
+      $('#whUrl').value = '';
+      loadSettings();
+    } else {
+      $('#whMsg').textContent = '❌ ' + (d.error || 'failed');
+    }
+  } catch(e){ $('#whMsg').textContent = '❌ ' + e; }
+  $('#whSave').disabled = false;
+};
 
 function renderDeals(deals, label){
   $('#resLabel').textContent = label ? '· ' + label : '';
