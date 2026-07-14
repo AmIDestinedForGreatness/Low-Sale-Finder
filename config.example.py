@@ -68,6 +68,19 @@ USD_TO_LOCAL_RATE = 58.0
 # If PRICE_SOURCE == "manual", prices are read from manual_prices.csv (see that file).
 
 # ─────────────────────────────────────────────────────────────────────
+# FACEBOOK (BURNER ACCOUNT ONLY — never the main account)
+# The burner WILL eventually get checkpointed/banned; it is disposable.
+# Login: run `python fb_login.py` once (manual login, session saved locally).
+# ─────────────────────────────────────────────────────────────────────
+FB_PROFILE_DIR = "fb_profile"   # saved browser session (gitignored)
+FB_MARKETPLACE_URL = "https://www.facebook.com/marketplace/?sortBy=creation_time_descend"
+FB_GROUP_URLS = [
+    # "https://www.facebook.com/groups/1234567890",
+]
+FB_POLL_MINUTES = 45            # deliberately slower than Carousell; jitter added
+FB_HEADLESS = False             # FB flags headless browsers hard; keep a visible window
+
+# ─────────────────────────────────────────────────────────────────────
 # RUNTIME
 # ─────────────────────────────────────────────────────────────────────
 POLL_INTERVAL_MINUTES = 20      # how often to re-scan

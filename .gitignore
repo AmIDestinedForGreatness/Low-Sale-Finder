@@ -3,3 +3,6 @@ __pycache__/
 seen.sqlite
 config.py
 .env
+
+fb_profile/
+watchlist.json
