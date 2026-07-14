@@ -43,6 +43,10 @@ def discord_post(deal):
             {"name": "Match source", "value": deal["label"], "inline": False},
         ],
     }
+    if deal.get("posted"):
+        embed["fields"].append({"name": "Posted", "value": ("bumped · " if deal.get("bumped") else "") + deal["posted"], "inline": False})
+    if deal.get("image"):
+        embed["image"] = {"url": deal["image"]}
     try:
         r = requests.post(wh, json={"embeds": [embed]}, timeout=15)
         return (r.status_code in (200, 204)), f"status {r.status_code}"
@@ -110,6 +114,9 @@ def run_scan(queries, *, below_fraction=None, steal_fraction=None,
                 "pct_off": (1 - fraction) * 100,
                 "steal": fraction <= steal_f,
                 "label": label,
+                "image": L.get("image", ""),
+                "posted": L.get("posted", ""),
+                "bumped": L.get("bumped", False),
             }
             deals.append(deal)
 

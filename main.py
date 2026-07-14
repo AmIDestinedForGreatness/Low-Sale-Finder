@@ -1,7 +1,9 @@
 """
 main.py — ties it together: scrape → price-match → filter → Discord alert.
-Run with:  python main.py            (continuous loop)
-           python main.py --once     (single pass, good for testing)
+Run with:  python main.py                 (continuous deal-alert loop)
+           python main.py --once          (single deal pass, good for testing)
+           python main.py --feed          (continuous feed: EVERY new listing → Discord, photo + price + link)
+           python main.py --feed --once   (single feed pass)
 """
 import sys
 import time
@@ -17,13 +19,15 @@ import prices
 def db():
     conn = sqlite3.connect(config.SEEN_DB_PATH)
     conn.execute("CREATE TABLE IF NOT EXISTS seen (url TEXT PRIMARY KEY, ts REAL)")
+    # feed mode tracks separately so a feed pass doesn't suppress future deal alerts
+    conn.execute("CREATE TABLE IF NOT EXISTS seen_feed (url TEXT PRIMARY KEY, ts REAL)")
     return conn
 
-def already_seen(conn, url):
-    return conn.execute("SELECT 1 FROM seen WHERE url=?", (url,)).fetchone() is not None
+def already_seen(conn, url, table="seen"):
+    return conn.execute(f"SELECT 1 FROM {table} WHERE url=?", (url,)).fetchone() is not None
 
-def mark_seen(conn, url):
-    conn.execute("INSERT OR IGNORE INTO seen (url, ts) VALUES (?, ?)", (url, time.time()))
+def mark_seen(conn, url, table="seen"):
+    conn.execute(f"INSERT OR IGNORE INTO {table} (url, ts) VALUES (?, ?)", (url, time.time()))
     conn.commit()
 
 
@@ -49,6 +53,10 @@ def notify(listing, market, fraction, label, steal):
             {"name": "Match source", "value": label, "inline": False},
         ],
     }
+    if listing.get("posted"):
+        embed["fields"].append({"name": "Posted", "value": ("bumped · " if listing.get("bumped") else "") + listing["posted"], "inline": False})
+    if listing.get("image"):
+        embed["image"] = {"url": listing["image"]}
     try:
         r = requests.post(wh, json={"embeds": [embed]}, timeout=15)
         if r.status_code not in (200, 204):
@@ -87,6 +95,58 @@ def evaluate(listing, conn):
         mark_seen(conn, listing["url"])
 
 
+# ── feed mode: EVERY new listing → Discord (photo + price + link) ─────
+def feed_once(conn):
+    targets = list(config.SEARCH_QUERIES) + getattr(config, "CAROUSELL_CATEGORY_URLS", [])
+    wh = config.DISCORD_WEBHOOK_URL
+    for q in targets:
+        print(f"[feed] {q}")
+        try:
+            listings = scraper.search(q)
+        except Exception as e:
+            print(f"  [scrape failed] {e}")
+            continue
+        new = [L for L in listings if not already_seen(conn, L["url"], "seen_feed")]
+        print(f"  {len(new)} new listing(s)")
+        if not wh or "PASTE" in wh:
+            for L in new:
+                print(f"    P{L['price']:,.0f} | {L['title'][:60]} | {L['url']}")
+                mark_seen(conn, L["url"], "seen_feed")
+            continue
+        # Discord allows up to 10 embeds per message; batch + pause for rate limits
+        for i in range(0, len(new), 10):
+            batch = new[i:i + 10]
+            embeds = []
+            for L in batch:
+                when = L.get("posted") or "time unknown"
+                if L.get("bumped"):
+                    when = f"bumped · {when}"
+                e = {
+                    "title": L["title"][:230],
+                    "url": L["url"],
+                    "description": f"₱{L['price']:,.0f} · {when}\n{L['url']}",
+                    "color": 0x3B6CFF,
+                }
+                if L.get("image"):
+                    e["image"] = {"url": L["image"]}
+                embeds.append(e)
+            try:
+                r = requests.post(wh, json={"embeds": embeds}, timeout=15)
+                if r.status_code == 429:
+                    wait = float(r.json().get("retry_after", 5))
+                    print(f"  [discord rate-limited, waiting {wait}s]")
+                    time.sleep(wait)
+                    r = requests.post(wh, json={"embeds": embeds}, timeout=15)
+                if r.status_code not in (200, 204):
+                    print(f"  [discord {r.status_code}] {r.text[:150]}")
+            except Exception as e:
+                print(f"  [discord error] {e}")
+            for L in batch:
+                mark_seen(conn, L["url"], "seen_feed")
+            time.sleep(2)
+        time.sleep(config.REQUEST_DELAY_SECONDS)
+
+
 def run_once(conn):
     targets = list(config.SEARCH_QUERIES) + getattr(config, "CAROUSELL_CATEGORY_URLS", [])
     for q in targets:
@@ -105,13 +165,16 @@ def run_once(conn):
 def main():
     conn = db()
     once = "--once" in sys.argv
+    feed = "--feed" in sys.argv
+    step = feed_once if feed else run_once
+    label = "feed (all new listings)" if feed else "deal alerts"
     if once:
-        run_once(conn)
+        step(conn)
         print("Done (single pass).")
         return
-    print(f"Starting loop — scanning every {config.POLL_INTERVAL_MINUTES} min. Ctrl+C to stop.")
+    print(f"Starting {label} loop — scanning every {config.POLL_INTERVAL_MINUTES} min. Ctrl+C to stop.")
     while True:
-        run_once(conn)
+        step(conn)
         print(f"[sleep] {config.POLL_INTERVAL_MINUTES} min…")
         time.sleep(config.POLL_INTERVAL_MINUTES * 60)
 

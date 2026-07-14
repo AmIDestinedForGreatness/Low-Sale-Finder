@@ -360,7 +360,7 @@ function renderDeals(deals, label){
       <div style="flex:1">
         <a href="${d.url}" target="_blank" rel="noopener">${escapeHtml(d.title)}</a>
         ${d.pushed?'<span class="tag">sent ✓</span>':''}
-        <div class="meta">Listed <b>${fmt(d.price)}</b> · market ~${fmt(d.market)} · <span class="muted">${escapeHtml(d.label)}</span></div>
+        <div class="meta">Listed <b>${fmt(d.price)}</b> · market ~${fmt(d.market)}${d.posted?' · '+(d.bumped?'bumped · ':'')+escapeHtml(d.posted):''} · <span class="muted">${escapeHtml(d.label)}</span></div>
       </div>
       <div class="pct ${d.steal?'steal':'deal'}">${Math.round(d.pct_off)}%<div style="font-size:11px;font-weight:500;color:var(--muted)">off</div></div>
     </div>`).join('');

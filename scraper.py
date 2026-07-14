@@ -52,12 +52,17 @@ def extract_listings(page):
       for (const a of anchors) {
         const href = a.getAttribute('href') || '';
         if (!href.includes('/p/')) continue;
-        // climb to a reasonable card container
+        // climb to the listing card: highest ancestor that still contains ONLY
+        // this product link. A fixed climb merged neighboring cards, so every
+        // listing inherited the grid's first price.
         let card = a;
-        for (let i = 0; i < 4 && card.parentElement; i++) card = card.parentElement;
+        while (card.parentElement &&
+               card.parentElement.querySelectorAll('a[href*="/p/"]').length === 1) {
+          card = card.parentElement;
+        }
         const text = (card.innerText || '').trim();
         if (!text) continue;
-        // find a price token ($ or P or RM or numbers near currency)
+        // find a price token ($ or ₱ or RM or numbers near currency)
         const priceMatch = text.match(/(?:[$₱]|RM|S\$|PHP)\s?[\d.,]+/i);
         const url = href.startsWith('http') ? href : ('https://www.carousell.' + location.hostname.split('.').pop() + href);
         const key = href.split('?')[0];
@@ -69,10 +74,28 @@ def extract_listings(page):
           const lines = text.split('\n').map(s=>s.trim()).filter(Boolean);
           title = lines.find(l => l.length > 8) || lines[0] || '';
         }
+        // listing photo (for Discord embeds): prefer the product photo —
+        // cards also contain the seller's avatar (/photos/profiles/)
+        let image = '';
+        let fallback = '';
+        for (const im of card.querySelectorAll('img')) {
+          const src = im.currentSrc || im.src || im.getAttribute('data-src') || '';
+          if (!src.startsWith('http')) continue;
+          if (src.includes('/photos/products/')) { image = src; break; }
+          if (!fallback && !src.includes('/photos/profiles/')) fallback = src;
+        }
+        if (!image) image = fallback;
+        // freshness: Carousell shows "5 hours ago" / "Just now" on each card,
+        // plus a bump marker when the seller re-upped the listing
+        const timeMatch = text.match(/\b(just now|yesterday|\d+\s*(?:second|minute|hour|day|week|month|year)s?\s+ago)\b/i);
+        const bumped = /\bbump/i.test(text);
         out.push({
           url: url.split('?')[0],
           title: title.slice(0, 200),
           price_text: priceMatch ? priceMatch[0] : '',
+          image: image,
+          posted: timeMatch ? timeMatch[0] : '',
+          bumped: bumped,
           raw: text.slice(0, 300)
         });
       }
@@ -121,5 +144,8 @@ def search(query: str):
             "title": item["title"],
             "price": price,
             "price_text": item.get("price_text", ""),
+            "image": item.get("image", ""),
+            "posted": item.get("posted", ""),
+            "bumped": item.get("bumped", False),
         })
     return results
