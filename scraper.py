@@ -110,7 +110,10 @@ def search(query: str):
             browser.close()
 
     for item in raw:
-        price = _price_to_float(item.get("price_text") or item.get("raw"))
+        # only trust prices that came with a currency marker; falling back to
+        # "first number in the card text" was picking up card numbers (163/132)
+        # and set counts as prices
+        price = _price_to_float(item.get("price_text"))
         if price is None:
             continue
         results.append({

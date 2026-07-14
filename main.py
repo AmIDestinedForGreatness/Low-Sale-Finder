@@ -66,6 +66,8 @@ def evaluate(listing, conn):
         return
     if config.MAX_LISTING_PRICE and p > config.MAX_LISTING_PRICE:
         return
+    if p in getattr(config, "PLACEHOLDER_PRICES", set()):
+        return
 
     market, label = prices.market_value(listing["title"])
     if not market or market <= 0:

@@ -86,6 +86,8 @@ def run_scan(queries, *, below_fraction=None, steal_fraction=None,
                 continue
             if maxp and p > maxp:
                 continue
+            if p in getattr(config, "PLACEHOLDER_PRICES", set()):
+                continue
             if respect_seen and _seen(conn, L["url"]):
                 continue
 

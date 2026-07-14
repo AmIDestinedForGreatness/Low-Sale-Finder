@@ -9,7 +9,7 @@ import os
 import re
 import requests
 from functools import lru_cache
-from rapidfuzz import fuzz, process
+from rapidfuzz import fuzz
 
 import config
 
@@ -44,16 +44,34 @@ def _load_manual():
     return rows
 
 def _manual_lookup(title: str):
+    """Match a listing title to a manual_prices.csv row.
+    A row only matches when (a) its grade matches the title's grade exactly
+    (raw keyword ↔ raw listing, PSA 10 keyword ↔ PSA 10 listing) and
+    (b) every non-grade word of the keyword appears in the title. Fuzzy score
+    is only used to rank multiple surviving rows — never to admit a loose one.
+    token_set_ratio alone was matching 'PSA 10 Gardevoir ... Base Set' to the
+    'charizard base set psa 10' row (shared tokens score high)."""
     rows = _load_manual()
     if not rows:
         return None, None
-    keywords = [k for k, _ in rows]
-    match = process.extractOne(title.lower(), keywords, scorer=fuzz.token_set_ratio)
-    if match and match[1] >= 75:        # 75% fuzzy confidence
-        kw = match[0]
-        for k, price in rows:
-            if k == kw:
-                return price, f"manual:{kw} ({match[1]}%)"
+    t = title.lower()
+    t_grade = (detect_grade(title) or "").upper()
+    best = None  # (score, keyword, price)
+    for kw, price in rows:
+        k_grade = (detect_grade(kw) or "").upper()
+        if k_grade != t_grade:
+            continue  # graded and raw are different markets; so are PSA 9 vs 10
+        kw_clean = GRADE_RE.sub(" ", kw)
+        tokens = [w for w in re.split(r"[^a-z0-9]+", kw_clean) if len(w) > 1]
+        if not tokens:
+            continue
+        if not all(re.search(rf"\b{re.escape(w)}\b", t) for w in tokens):
+            continue
+        score = fuzz.token_set_ratio(t, kw)
+        if best is None or score > best[0]:
+            best = (score, kw, price)
+    if best:
+        return best[2], f"manual:{best[1]} ({best[0]}%)"
     return None, None
 
 

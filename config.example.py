@@ -34,6 +34,8 @@ CAROUSELL_COUNTRY = "ph"
 MAX_LISTING_PRICE = None
 # Ignore listings below this price (filters junk/bulk lots priced at 1). Set None to disable.
 MIN_LISTING_PRICE = 5
+# Fake "message me" prices sellers use instead of a real number — never alert on these.
+PLACEHOLDER_PRICES = {123, 1234, 12345, 123456, 1234567, 111111, 999999}
 
 # ─────────────────────────────────────────────────────────────────────
 # THE DEAL RULE — when do you get pinged?
