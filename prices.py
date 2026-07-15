@@ -260,6 +260,15 @@ def market_value(title: str):
     src = config.PRICE_SOURCE
     if src == "manual":
         return _manual_lookup(title)
+    if src == "tcgplayer":
+        # manual CSV overrides (real PH prices); else TCGplayer direct (covers
+        # JP/Korean/current sets, strict number match). NOTE: TCGplayer is the
+        # US/global market — see the PH-gap caveat; treat as a reference anchor.
+        price, label = _manual_lookup(title)
+        if price:
+            return price, label
+        import tcg_price
+        return tcg_price.market_value(title)
     if src == "pokemontcgio":
         # manual CSV is the override (real PH prices); API is the wide net
         price, label = _manual_lookup(title)

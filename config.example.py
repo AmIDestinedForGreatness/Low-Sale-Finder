@@ -56,7 +56,7 @@ MIN_ABSOLUTE_SAVINGS = 3.0  # in local currency
 #   pokemontcg.io card database (TCGplayer market prices, EN sets only,
 #   needs a collector number like 163/132 in the title to match).
 # ─────────────────────────────────────────────────────────────────────
-PRICE_SOURCE = "pokemontcgio"
+PRICE_SOURCE = "tcgplayer"
 
 # Optional free API key from https://dev.pokemontcg.io — raises the rate
 # limit a lot; without one you get ~1000 requests/day (cache softens this).
