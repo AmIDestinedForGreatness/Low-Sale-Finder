@@ -132,3 +132,13 @@ ad-hoc scratchpad script, discarded after passing. The repo had ZERO
 permanent tests — the system had no memory of its own mistakes.
 **Rule:** a fix isn't done until its regression case lives in `tests.py`
 and its lesson lives here. This file and that suite ARE the compounding.
+
+### L18 — verify the rendered page, not just the API (2026-07-15)
+**Mistake:** shipped the photo lightbox with `class="hidden"` PLUS inline
+`display:flex` — inline styles beat classes, so the "hidden" overlay
+covered the whole dashboard and ate every click on reload. I had verified
+the API endpoint after the change but never reloaded the PAGE itself.
+**Rule:** after any UI change, load the actual page and look at it (or
+assert on the served HTML) — an endpoint returning 200 says nothing about
+what the user sees. Element visibility that JS toggles should have ONE
+source of truth (JS sets style.display), never a class fighting an inline style.
