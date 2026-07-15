@@ -30,6 +30,23 @@ def _price_to_float(text: str):
         return None
 
 
+# listing categories for the Discord feed: (name, embed color, icon, title pattern)
+# order matters — first match wins (graded beats sealed beats bulk...)
+CATEGORY_RULES = [
+    ("graded",     0xF1C40F, "💎", re.compile(r"\b(psa|bgs|cgc|ace\s*\d|slab|graded)\b", re.I)),
+    ("sealed",     0x2ECC71, "📦", re.compile(r"\b(sealed|boosters?|etb|elite trainer|tins?|packs?|upc|display|bundles?|premium collection|booster box)\b", re.I)),
+    ("bulk",       0xE67E22, "🗃️", re.compile(r"\b(bulk|lots?|take ?all|assorted|wholesale|mixed|randoms?)\b", re.I)),
+    ("collection", 0x1ABC9C, "📚", re.compile(r"\b(binders?|collections?|albums?|dibs?)\b", re.I)),
+]
+
+def classify(title: str):
+    """Returns (category_name, embed_color, icon) for a listing title."""
+    for name, color, icon, pat in CATEGORY_RULES:
+        if pat.search(title or ""):
+            return name, color, icon
+    return "single", 0x3B6CFF, "🃏"
+
+
 def posted_epoch(posted: str):
     """Convert Carousell's '5 hours ago' / 'just now' / 'yesterday' into a unix
     epoch, so Discord can render its native auto-updating timestamp (<t:..:R>)."""

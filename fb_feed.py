@@ -22,6 +22,7 @@ import requests
 from playwright.sync_api import sync_playwright
 
 import config
+import scraper  # classify() + posted_epoch() are shared with the Carousell feed
 
 
 def db():
@@ -133,12 +134,13 @@ def collect(page, url, js, label):
 
 def notify(item, source):
     wh = config.DISCORD_WEBHOOK_URL
-    desc = f"{item['price_text'] or 'no price shown'}\n{item['url']}"
+    cat, cat_color, icon = scraper.classify(item.get("title", ""))
     embed = {
-        "title": f"[{source}] {item['title'][:200]}",
+        # title is the clickable link — no raw URL in the body
+        "title": f"[{source}] {icon} {item['title'][:190]}",
         "url": item["url"],
-        "description": desc,
-        "color": 0x9B59B6,  # purple = Facebook, blue = Carousell
+        "description": f"{item['price_text'] or 'no price shown'} · {cat.upper()}",
+        "color": cat_color,
     }
     if item.get("image"):
         embed["image"] = {"url": item["image"]}

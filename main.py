@@ -108,20 +108,19 @@ STATUS_STYLE = {
 }
 
 def feed_embed(L):
-    prefix, color = STATUS_STYLE.get(L.get("status", ""), ("", 0x3B6CFF))
+    cat, cat_color, icon = scraper.classify(L.get("title", ""))
+    prefix, status_color = STATUS_STYLE.get(L.get("status", ""), ("", None))
     epoch = scraper.posted_epoch(L.get("posted", ""))
     # <t:..:R> renders as Discord's native "5 hours ago" (auto-updating,
     # hover shows the full date); fall back to raw text if unparseable
     when = f"<t:{epoch}:R>" if epoch else (L.get("posted") or "time unknown")
-    if L.get("bumped"):
-        when = f"bumped {when}"
-    else:
-        when = f"posted {when}"
+    when = ("bumped " if L.get("bumped") else "posted ") + when
     e = {
-        "title": (prefix + L["title"])[:230],
+        # title is already the clickable link — no raw URL in the body
+        "title": (prefix + icon + " " + L["title"])[:230],
         "url": L["url"],
-        "description": f"₱{L['price']:,.0f} · {when}\n{L['url']}",
-        "color": color,
+        "description": f"₱{L['price']:,.0f} · {cat.upper()} · {when}",
+        "color": status_color if status_color else cat_color,
     }
     if L.get("image"):
         e["image"] = {"url": L["image"]}
