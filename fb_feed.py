@@ -143,37 +143,73 @@ GROUP_JS = r"""
 """
 
 
+_MONTHS = {m: i for i, m in enumerate(
+    ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct",
+     "nov", "dec"], 1)}
+
 def parse_end_time(text, now=None):
-    """Best-effort auction end time -> unix epoch. Handles the common PH
-    phrasings; returns None when it can't be confident (most freeform posts).
-    Relative forms ('24h', 'ends in 3 hours') are measured from `now`."""
+    """Best-effort auction end time -> unix epoch. Handles absolute dates
+    ('End: July 17, 2026 6:30:59PM'), clock-only ('ends 9pm'), and relative
+    ('24h'). Returns None when not confident."""
     import datetime
     if not text:
         return None
     now = now or time.time()
     t = text.lower()
 
-    # relative: "24 hours", "ends in 3 hrs", "12h", "48hours"
+    # absolute date: "end: july 17, 2026 6:30:59pm" / "end july 17 9pm"
+    m = re.search(r"end[a-z: ]*?(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)"
+                  r"[a-z]*\s+(\d{1,2})(?:,?\s*(\d{4}))?\s*(?:@|at)?\s*"
+                  r"(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*([ap])\.?m", t)
+    if m:
+        mon = _MONTHS[m.group(1)]
+        day = int(m.group(2))
+        year = int(m.group(3)) if m.group(3) else datetime.datetime.fromtimestamp(now).year
+        hr = int(m.group(4)) % 12 + (12 if m.group(6) == "p" else 0)
+        minute = int(m.group(5) or 0)
+        try:
+            return datetime.datetime(year, mon, day, hr, minute).timestamp()
+        except ValueError:
+            return None
+
+    # relative: "24 hours", "ends in 3 hrs", "12h"
     m = re.search(r"(?:ends?\s*(?:in|after)?\s*)?(\d{1,3})\s*(?:hours?|hrs?|h)\b", t)
     if m and ("end" in t or "auction" in t or "hour" in t or "hr" in t):
         hrs = int(m.group(1))
         if 1 <= hrs <= 168:
             return now + hrs * 3600
 
-    # absolute clock: "ends 9pm", "end time 9:30 pm", " closes at 8 pm"
+    # clock only: "ends 9pm", "end time 9:30 pm"
     m = re.search(r"(?:ends?|end ?time|closes?|closing)\s*(?:at|by|:)?\s*"
                   r"(\d{1,2})(?::(\d{2}))?\s*([ap])\.?m", t)
     if m:
-        hr = int(m.group(1)) % 12
-        if m.group(3) == "p":
-            hr += 12
+        hr = int(m.group(1)) % 12 + (12 if m.group(3) == "p" else 0)
         minute = int(m.group(2) or 0)
         dt = datetime.datetime.fromtimestamp(now)
         end = dt.replace(hour=hr, minute=minute, second=0, microsecond=0)
-        if end.timestamp() <= now:            # already past today -> tomorrow
+        if end.timestamp() <= now:
             end += datetime.timedelta(days=1)
         return end.timestamp()
     return None
+
+
+def parse_auction(text):
+    """Pull an auction's starting bid, buyout and increment from the body."""
+    t = text or ""
+    def num(pat):
+        m = re.search(pat, t, re.I)
+        if m:
+            try:
+                return float(m.group(1).replace(",", ""))
+            except ValueError:
+                return None
+        return None
+    sb = num(r"(?:starting bid|start(?:ing)? ?price|\bsb)\s*[:=]?\s*(?:₱|php|p)?\s*([\d,]+)")
+    bo = num(r"(?:buy ?out|buyout|\bbo\b|yours na)\s*[:=]?\s*(?:₱|php|p)?\s*([\d,]+)")
+    inc = re.search(r"(?:increment|inc(?:rements?)?)\s*[:=of]*\s*"
+                    r"([\d]+(?:\s*[,/]\s*\d+)*)", t, re.I)
+    return {"start_bid": sb, "buyout": bo,
+            "increment": inc.group(1).strip() if inc else None}
 
 
 def parse_price(text):
@@ -270,13 +306,21 @@ def analyze(item):
     location, and an undervalued verdict. Returns the item or None if it's
     a deadend (no committed price) that should be skipped."""
     body = item.get("body", "") or item.get("title", "")
-    price = parse_price(body)
-    # skip: WTB/looking-for/rules/announcement, no price, or PM-to-offer
-    if scraper.is_meta(body) or price is None or scraper.is_deadend(body):
+    if scraper.is_meta(body):        # WTB/looking-for/rules — never a listing
+        return None
+    item["auction"] = scraper.is_auction(body)
+    if item["auction"]:
+        item["auc"] = parse_auction(body)
+        item["end_ts"] = parse_end_time(body)
+        # auction "price" = starting bid (fall back to buyout, then scan)
+        price = item["auc"]["start_bid"] or item["auc"]["buyout"] or parse_price(body)
+    else:
+        item["end_ts"] = None
+        price = parse_price(body)
+    # skip deadends: no committed price, or PM-to-offer
+    if price is None or scraper.is_deadend(body):
         return None
     item["price"] = price
-    item["auction"] = scraper.is_auction(body)
-    item["end_ts"] = parse_end_time(body) if item["auction"] else None
     item["category"] = scraper.classify(body)[0]
     item["distress"] = scraper.distress_terms(body)
     item["loc"], item["near"] = scraper.location_hint(body)
@@ -346,14 +390,30 @@ def notify(item, source, conn=None):
     if item.get("near"):
         flags.append("\U0001F4CD near you")
 
-    # single link (the embed title = "View post"), then post title, then desc
+    # single link (the embed title = "View post"), then post title, then body
     post_title = (item.get("title", "") or "Listing").strip()[:180]
-    desc_body = "\n".join(body.split("\n")[1:4]).strip()[:300]  # skip line 1 (=title)
     parts = [f"**{post_title}**", head]
     if flags:
         parts.append("**" + " · ".join(flags) + "**")
-    if desc_body:
-        parts.append(desc_body)
+    if is_auction:
+        # auctions: show the auction facts, NOT the rules-spam body
+        a = item.get("auc", {})
+        det = []
+        if item.get("end_ts"):
+            det.append(f"⏰ Ends <t:{int(item['end_ts'])}:F> (<t:{int(item['end_ts'])}:R>)")
+        else:
+            det.append("⏰ End time: see post")
+        if a.get("start_bid"):
+            det.append(f"🏁 Start ₱{a['start_bid']:,.0f}")
+        if a.get("buyout"):
+            det.append(f"💰 Buyout ₱{a['buyout']:,.0f}")
+        if a.get("increment"):
+            det.append(f"➕ Increment {a['increment']}")
+        parts.append("\n".join(det))
+    else:
+        desc_body = "\n".join(body.split("\n")[1:4]).strip()[:300]  # skip title line
+        if desc_body:
+            parts.append(desc_body)
     if len(imgs) > 1:
         parts.append(f"+{len(imgs)-1} more photos")
     embeds = [{"title": f"{kind_icon} View post", "url": item["url"],
