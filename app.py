@@ -609,6 +609,8 @@ async function valFind(){
   const d = await (await fetch('/api/valuator/search?q=' + encodeURIComponent(q))).json();
   const c = d.candidates || [];
   $('#valMsg').textContent = c.length ? 'tap YOUR exact card:' : 'nothing found — try fewer words';
+  window._cands = {};
+  c.forEach(x=>window._cands[x.pid]=x);
   $('#valCands').innerHTML = c.map(x=>`
     <div class="cand" data-pid="${x.pid}" style="cursor:pointer;text-align:center;border:1px solid var(--line);border-radius:8px;padding:8px">
       <img src="${x.img}" style="width:100%;border-radius:6px" loading="lazy"
@@ -626,8 +628,17 @@ async function valPick(pid){
   const v = await (await fetch('/api/valuator/value?pid=' + pid)).json();
   const CONF_C = {HIGH:'var(--green)', MED:'var(--accent)', LOW:'var(--red)'};
   const conds = Object.entries(v.by_condition||{});
+  const cd = (window._cands||{})[pid] || {};
   $('#valResult').innerHTML = `
     <div style="border:1px solid var(--line);border-radius:10px;padding:14px">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">
+        ${cd.img?`<img src="${cd.img}" style="height:86px;border-radius:6px">`:''}
+        <div>
+          <div style="font-weight:700">${escapeHtml(cd.name||'')}</div>
+          <div class="muted" style="font-size:12px">${escapeHtml(cd.set||'')} · #${escapeHtml(cd.number||'')}
+            ${cd.url?` · <a href="${cd.url}" target="_blank" rel="noopener" style="color:var(--accent)">TCGplayer ↗</a>`:''}</div>
+        </div>
+      </div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <b>Market ${v.market_php?('₱'+fmt(v.market_php)+' ($'+v.market_usd+')'):'—'}</b>
         <span class="badge" style="color:${CONF_C[v.confidence]||''}">confidence: ${v.confidence}</span>
