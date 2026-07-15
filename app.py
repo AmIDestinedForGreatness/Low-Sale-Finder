@@ -14,13 +14,17 @@ import json
 import os
 import re
 import threading
+import time
 
 import requests
 
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, send_file
 
 import config
 import engine
+from version import VERSION
+
+STATUS_PATH = os.path.join(os.path.dirname(__file__), "feed_status.json")
 
 app = Flask(__name__)
 
@@ -71,7 +75,42 @@ def save_watchlist(items):
 # ── routes ────────────────────────────────────────────────────────────
 @app.route("/")
 def index():
-    return Response(HTML, mimetype="text/html")
+    return Response(HTML.replace("__VERSION__", VERSION), mimetype="text/html")
+
+@app.route("/logo")
+def logo():
+    for ext in ("png", "jpg", "jpeg", "webp", "gif"):
+        p = os.path.join(os.path.dirname(__file__), f"logo.{ext}")
+        if os.path.exists(p):
+            return send_file(p)
+    return ("", 404)
+
+@app.route("/api/feedstatus")
+def feedstatus():
+    """The feed loop (main.py --feed) writes feed_status.json every pass.
+    ONLINE = currently scanning, or the promised next scan hasn't been
+    missed by more than 3 minutes. A killed feed process goes OFFLINE
+    automatically once its next_scan_at deadline passes."""
+    try:
+        with open(STATUS_PATH, encoding="utf-8") as f:
+            s = json.load(f)
+    except Exception:
+        s = {}
+    now = time.time()
+    nxt = s.get("next_scan_at") or 0
+    scanning = s.get("state") == "scanning" and now - (s.get("heartbeat") or 0) < 30 * 60
+    online = scanning or (nxt and now < nxt + 180)
+    return jsonify({
+        "online": bool(online),
+        "state": s.get("state", "unknown"),
+        "next_scan_at": nxt,
+        "last_scan_end": s.get("last_scan_end"),
+        "last_new": s.get("last_new"),
+        "recent": (s.get("recent") or [])[:8],
+        "poll_minutes": config.POLL_INTERVAL_MINUTES,
+        "version": VERSION,
+        "server_now": now,
+    })
 
 @app.route("/api/settings")
 def settings():
@@ -198,11 +237,11 @@ def watchlist_run():
 HTML = r"""<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Carousell Pokémon Sniper</title>
+<title>Yujin's Pokestop</title>
 <style>
   :root{
-    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
-    --ink:#e8eaed; --muted:#9aa3b2; --accent:#ffcb05; --accent2:#3b6cff;
+    --bg:#0a0e1e; --panel:#121730; --panel2:#1a2140; --line:#252d52;
+    --ink:#e8eaed; --muted:#8f9ab8; --accent:#2ab8f6; --accent2:#3b6cff;
     --green:#2ecc71; --red:#e74c3c; --radius:14px;
   }
   *{box-sizing:border-box}
@@ -256,12 +295,28 @@ HTML = r"""<!doctype html>
 </style></head>
 <body>
 <header>
-  <h1>⚡ Carousell Pokémon Sniper</h1>
+  <img src="/logo" alt="" style="height:38px;border-radius:10px;display:none"
+       onload="this.style.display='inline-block'">
+  <h1>Yujin's Pokestop</h1>
+  <span class="badge" style="color:var(--accent);border-color:var(--accent)">V__VERSION__</span>
   <span id="webhookBadge" class="badge">checking…</span>
   <span id="srcBadge" class="badge"></span>
   <span id="ctryBadge" class="badge"></span>
 </header>
 <main>
+
+  <section class="card">
+    <h2>Live status</h2>
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <div style="display:flex;gap:9px;align-items:center">
+        <div id="feedDot" style="width:13px;height:13px;border-radius:50%;background:var(--muted)"></div>
+        <div id="feedState" style="font-weight:700">checking…</div>
+      </div>
+      <div class="muted">next scan in <span id="countdown" class="slider-val" style="font-variant-numeric:tabular-nums">--:--</span></div>
+      <div class="muted" id="lastScan"></div>
+    </div>
+    <div id="recentBox" style="margin-top:12px"><p class="muted">loading…</p></div>
+  </section>
 
   <section class="card">
     <h2>Discord alerts</h2>
@@ -420,6 +475,37 @@ $('#wlRun').onclick = async ()=>{
   if(!r.ok){ alert((await r.json()).error||'error'); $('#wlRun').disabled=false; return; }
   startPolling();
 };
+
+// ── live status: feed heartbeat + ticking countdown ──
+let nextScanAt = 0, clockSkew = 0;
+const CAT_ICON = {graded:'💎', sealed:'📦', bulk:'🗃️', collection:'📚', single:'🃏'};
+async function loadFeedStatus(){
+  try{
+    const s = await (await fetch('/api/feedstatus')).json();
+    clockSkew = Date.now()/1000 - s.server_now;
+    nextScanAt = s.next_scan_at || 0;
+    const on = s.online;
+    $('#feedDot').style.background = on ? 'var(--green)' : 'var(--red)';
+    $('#feedDot').style.boxShadow = on ? '0 0 8px var(--green)' : '0 0 8px var(--red)';
+    $('#feedState').textContent = on ? (s.state === 'scanning' ? 'ONLINE — scanning now' : 'ONLINE') : 'OFFLINE — feed not running';
+    $('#lastScan').textContent = s.last_scan_end
+      ? 'last scan ' + new Date(s.last_scan_end*1000).toLocaleTimeString() + ' · ' + (s.last_new ?? 0) + ' new sent'
+      : '';
+    const box = $('#recentBox');
+    box.innerHTML = (s.recent && s.recent.length) ? s.recent.map(r=>`
+      <div class="wl-item">
+        <div class="q">${CAT_ICON[r.category]||'🃏'} <a href="${r.url}" target="_blank" rel="noopener">${escapeHtml(r.title)}</a></div>
+        <div class="muted" style="white-space:nowrap">₱${fmt(r.price)} · ${escapeHtml(r.category)}</div>
+      </div>`).join('') : '<p class="muted">no listings sent yet — updates after the next scan.</p>';
+  }catch(e){}
+}
+setInterval(loadFeedStatus, 5000); loadFeedStatus();
+setInterval(()=>{
+  const el = $('#countdown');
+  if(!nextScanAt){ el.textContent = '--:--'; return; }
+  const left = Math.max(0, Math.round(nextScanAt - (Date.now()/1000 - clockSkew)));
+  el.textContent = String(Math.floor(left/60)).padStart(2,'0') + ':' + String(left%60).padStart(2,'0');
+}, 1000);
 
 loadSettings(); loadWatchlist();
 </script>

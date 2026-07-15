@@ -90,7 +90,7 @@ FB_HEADLESS = False             # FB flags headless browsers hard; keep a visibl
 # ─────────────────────────────────────────────────────────────────────
 # RUNTIME
 # ─────────────────────────────────────────────────────────────────────
-POLL_INTERVAL_MINUTES = 20      # how often to re-scan
+POLL_INTERVAL_MINUTES = 10      # how often to re-scan
 HEADLESS = True                 # set False to watch the browser (useful first run / debugging)
 SEEN_DB_PATH = "seen.sqlite"    # tracks already-alerted listings so you aren't spammed
 REQUEST_DELAY_SECONDS = 4       # polite pause between searches

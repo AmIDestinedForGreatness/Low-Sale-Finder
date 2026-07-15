@@ -115,7 +115,9 @@ def extract_listings(page):
         let image = '';
         let fallback = '';
         for (const im of card.querySelectorAll('img')) {
-          const src = im.currentSrc || im.src || im.getAttribute('data-src') || '';
+          // lazy-loaded cards sometimes only carry srcset/data-src
+          const srcset = (im.getAttribute('srcset') || im.getAttribute('data-srcset') || '').split(/[\s,]+/)[0] || '';
+          const src = im.currentSrc || im.src || im.getAttribute('data-src') || srcset;
           if (!src.startsWith('http')) continue;
           if (src.includes('/photos/products/')) { image = src; break; }
           if (!fallback && !src.includes('/photos/profiles/')) fallback = src;

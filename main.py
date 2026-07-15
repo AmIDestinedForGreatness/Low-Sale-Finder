@@ -5,6 +5,8 @@ Run with:  python main.py                 (continuous deal-alert loop)
            python main.py --feed          (continuous feed: EVERY new listing → Discord, photo + price + link)
            python main.py --feed --once   (single feed pass)
 """
+import json
+import os
 import sys
 import time
 import sqlite3
@@ -13,6 +15,25 @@ import requests
 import config
 import scraper
 import prices
+from version import VERSION
+
+# heartbeat/status file the dashboard reads to show ONLINE/OFFLINE + countdown
+STATUS_PATH = os.path.join(os.path.dirname(__file__), "feed_status.json")
+
+def _read_status():
+    try:
+        with open(STATUS_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+def write_status(**kw):
+    s = _read_status()
+    s.update(kw, heartbeat=time.time(), version=VERSION)
+    tmp = STATUS_PATH + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(s, f)
+    os.replace(tmp, STATUS_PATH)
 
 
 # ── seen DB so we don't re-alert the same listing ─────────────────────
@@ -134,6 +155,7 @@ def feed_once(conn):
     targets = list(config.SEARCH_QUERIES) + getattr(config, "CAROUSELL_CATEGORY_URLS", [])
     wh = config.DISCORD_WEBHOOK_URL
     have_wh = wh and "PASTE" not in wh
+    sent = []
     for q in targets:
         print(f"[feed] {q}")
         try:
@@ -188,8 +210,15 @@ def feed_once(conn):
             except Exception as e:
                 print(f"  [discord error] {e}")
             mark_seen(conn, L["url"], "seen_feed")
+            sent.append({
+                "title": L["title"], "price": L["price"], "url": L["url"],
+                "category": scraper.classify((L.get("title", "") + " " + L.get("raw", "")).strip())[0],
+                "ts": time.time(),
+            })
             time.sleep(1.3)  # ~30 messages/min webhook budget
         time.sleep(config.REQUEST_DELAY_SECONDS)
+    recent = (sent[::-1] + (_read_status().get("recent") or []))[:20]  # newest first
+    write_status(state="idle", last_scan_end=time.time(), last_new=len(sent), recent=recent)
 
 
 def run_once(conn):
@@ -219,7 +248,12 @@ def main():
         return
     print(f"Starting {label} loop — scanning every {config.POLL_INTERVAL_MINUTES} min. Ctrl+C to stop.")
     while True:
+        if feed:
+            write_status(state="scanning", scan_started=time.time())
         step(conn)
+        if feed:
+            write_status(state="idle",
+                         next_scan_at=time.time() + config.POLL_INTERVAL_MINUTES * 60)
         print(f"[sleep] {config.POLL_INTERVAL_MINUTES} min…")
         time.sleep(config.POLL_INTERVAL_MINUTES * 60)
 
