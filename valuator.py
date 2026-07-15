@@ -37,7 +37,8 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 _NOISE = re.compile(
     r"^(stage|basic|evolves|ability|weakness|resistance|retreat|hp\s*\d*|"
     r"illus|item|trainer|supporter|energy|put\b|discard|draw|search|once|"
-    r"when|attach|flip|this|the|your?|d?amage)\b", re.I)
+    r"when|attach|flip|this|the|your?|d?amage|"
+    r"pok[e�]mon\b|nintendo|creatures|game\s*freak)\b", re.I)
 _NUM_RE = re.compile(r"\b(\d{1,3})\s*/\s*(\d{1,3})\b|"
                      r"\b((?:XY|SM|SWSH|BW|HGSS|SVP?)\d{1,3}[A-Za-z]?)\b", re.I)
 
@@ -54,19 +55,40 @@ def ocr_lines(image_path):
         return []
 
 
+# JP set codes are printed in LATIN on the card (sm12a, s4a, xy10…) and,
+# with the collector number, uniquely identify the card on TCGplayer —
+# the searchable ID for Japanese cards whose names our OCR can't read
+_SET_RE = re.compile(r"\b(?:sm|sv|swsh|xy|bw|dp|pcg|cp)\d{1,2}[a-z]?\b", re.I)
+# lines that are card MECHANIC labels, never a name ("TAG TEAM" -> "TEAM")
+_MECH = re.compile(r"^(tag\s*)?(team|gx|ex|v(max|star)?|hp\s*\d*)$", re.I)
+
+
 def guess_query(lines):
     """Best-guess card name + collector number from OCR lines.
     The name is printed big near the top; body text is filtered by _NOISE."""
-    number = None
+    number, setcode = None, None
     for ln in lines:
-        m = _NUM_RE.search(ln)
-        if m and not number:
-            number = m.group(0).replace(" ", "")
+        if not number:  # prefer the slash form (016/173) over promo tokens
+            m = re.search(r"\b\d{1,3}\s*/\s*\d{1,3}\b", ln)
+            if m:
+                number = m.group(0).replace(" ", "")
+        if not setcode:
+            m = _SET_RE.search(ln)
+            if m:
+                setcode = m.group(0).lower()
+    if not number:
+        for ln in lines:
+            m = _NUM_RE.search(ln)
+            if m:
+                number = m.group(0).replace(" ", "")
+                break
     name = ""
     for ln in lines[:6]:                      # name sits in the top lines
+        if _SET_RE.search(ln) or re.search(r"\b\d{1,3}\s*/\s*\d{1,3}\b", ln):
+            continue  # footer line (set code / collector number), never the name
         cand = re.sub(r"[^A-Za-z' .&-]", " ", ln)
         cand = " ".join(cand.split()).strip()
-        if len(cand) < 3 or _NOISE.match(cand):
+        if len(cand) < 3 or _NOISE.match(cand) or _MECH.match(cand):
             continue
         # OCR often drops the stylized GX/EX/V suffix — keep what it read
         name = cand
@@ -75,10 +97,16 @@ def guess_query(lines):
         # fallback: ITEM cards are legitimately NAMED with "noise" words
         # ("Weakness Policy") — accept a multi-word top line after all
         for ln in lines[:6]:
+            if _SET_RE.search(ln) or re.search(r"\b\d{1,3}\s*/\s*\d{1,3}\b", ln):
+                continue  # footer line here too — "sm12a c 016/173 RR" is not a name
             cand = " ".join(re.sub(r"[^A-Za-z' .&-]", " ", ln).split()).strip()
-            if len(cand) >= 3 and len(cand.split()) >= 2:
+            if len(cand) >= 3 and len(cand.split()) >= 2 and not _MECH.match(cand):
                 name = cand
                 break
+    if not name and setcode:
+        # Japanese card: no readable Latin name, but setcode+number IS the
+        # unique ID (verified: "sm12a 016/173" -> exactly Reshiram&Charizard)
+        name = setcode
     return name, number
 
 
@@ -86,9 +114,14 @@ def search_candidates(query, size=12):
     """TCGplayer candidates for the picker grid (image = user's eyes).
     TCGplayer's search returns nothing when the collector number is in the
     query text — so search by NAME only, then rank number-matches first."""
-    m = _NUM_RE.search(query)
+    m = (re.search(r"\b\d{1,3}\s*/\s*\d{1,3}\b", query) or _NUM_RE.search(query))
     number = (m.group(0).replace(" ", "") if m else "").lower()
-    name_q = " ".join(_NUM_RE.sub(" ", query).split()) or query
+    if _SET_RE.search(query) and number:
+        # JP set-code query: TCGplayer resolves "sm12a 016/173" directly —
+        # send it whole, don't strip the number
+        name_q = query
+    else:
+        name_q = " ".join(_NUM_RE.sub(" ", query).split()) or query
 
     def _hit(q):
         try:

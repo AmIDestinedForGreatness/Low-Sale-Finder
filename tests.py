@@ -188,6 +188,21 @@ class TestValuator(unittest.TestCase):
         self.assertEqual(name, "Weakness Policy")
         self.assertEqual(number, "164/160")
 
+    def test_japanese_card_via_setcode(self):
+        # live catch (Reshiram & Charizard GX JP): OCR can't read Japanese
+        # names — but the Latin footer "sm12a … 016/173" uniquely IDs the
+        # card on TCGplayer. Footer/mechanic/copyright lines must never
+        # become the name; setcode+number is the query.
+        name, number = valuator.guess_query(
+            ["TAG TEAM", "HP270", "sm12a c 016/173 RR", "2019 Pokemon"])
+        self.assertEqual(name, "sm12a")
+        self.assertEqual(number, "016/173")
+
+    def test_mechanic_labels_never_the_name(self):
+        # "TAG TEAM" alone must not become the search ("TEAM" -> Rocket tins)
+        name, _ = valuator.guess_query(["TAG TEAM", "GX"])
+        self.assertEqual(name, "")
+
     def test_confidence_thresholds(self):
         # L16: a price with almost no sales is a rumor, not a market
         self.assertEqual(valuator._confidence(2, 30)[0], "LOW")     # <3 sales
