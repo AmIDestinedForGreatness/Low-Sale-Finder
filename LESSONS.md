@@ -105,6 +105,25 @@ Code-side guard: `claim()` atomic INSERT-OR-IGNORE dedup.
 randomized DELAYS, slower cadence do. Scope expensive reads (comments) to
 the smallest honest set (e.g. only claim-sale posts / reacted auctions).
 
+### L16 — a market price without sales VELOCITY is unstable (2026-07-15, Yujin)
+**Lesson (his grading of the Magcargo test, worth 7.5/10):** "$12.42 market"
+means little by itself. A $10 card that sells 2-3×/YEAR has an unstable,
+barely-real valuation; one that sells 20-100×/day has an earned one.
+**Rule:** valuation = price × confidence, where confidence comes from sales
+volume/recency. Check "how many sold" alongside "for how much." Build target:
+pull TCGplayer latest-sales / PriceCharting volume and tag every price
+HIGH/MED/LOW confidence.
+
+### L17 — condition: whitening first, NM is earned, not the default (2026-07-15, Yujin)
+**Mistake:** called his Magcargo GX back "corners sharp, no visible whitening
+→ consistent with NM." He circled visible whitening at multiple corners and
+edges in the SAME photos. I read the photos optimistically — treating
+"I can't clearly see damage" as "there is no damage."
+**Rule:** absence of evidence ≠ evidence of absence, and the bias must run
+the OTHER way: scan corners/edges for white flecks FIRST, assume LP until
+the card proves NM. This inverts the burden of proof — exactly what a real
+grader does. (His NM price ₱1.2k; whitening knocks it down a tier.)
+
 ## Meta
 
 ### L15 — Scratchpad tests are not tests (2026-07-15, Yujin's compound-interest rule)

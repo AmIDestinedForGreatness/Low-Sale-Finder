@@ -53,6 +53,12 @@ def db():
     # every sent listing, for the daily digest + stats history
     conn.execute("CREATE TABLE IF NOT EXISTS feed_log "
                  "(url TEXT, title TEXT, price REAL, category TEXT, ts REAL)")
+    for mig in ("ALTER TABLE feed_log ADD COLUMN source TEXT",
+                "ALTER TABLE feed_log ADD COLUMN posted_ts REAL"):
+        try:  # v0.4: dashboard recent-list shows source + real upload time
+            conn.execute(mig)
+        except sqlite3.OperationalError:
+            pass
     return conn
 
 
@@ -259,8 +265,12 @@ def feed_once(conn):
             except Exception as e:
                 print(f"  [discord error] {e}")
             cat = scraper.classify((L.get("title", "") + " " + L.get("raw", "")).strip())[0]
-            conn.execute("INSERT INTO feed_log (url, title, price, category, ts) VALUES (?,?,?,?,?)",
-                         (L["url"], L["title"], L["price"], cat, time.time()))
+            # real upload time (Carousell's "5 hours ago" → epoch), for the dashboard
+            posted_ts = scraper.posted_epoch(L.get("posted", "")) or None
+            conn.execute("INSERT INTO feed_log (url, title, price, category, ts, source, posted_ts)"
+                         " VALUES (?,?,?,?,?,?,?)",
+                         (L["url"], L["title"], L["price"], cat, time.time(),
+                          "carousell", posted_ts))
             conn.commit()
             sent.append({
                 "title": L["title"], "price": L["price"], "url": L["url"],

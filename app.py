@@ -128,13 +128,28 @@ def feedstatus():
     missed by more than 3 minutes. A killed feed process goes OFFLINE
     automatically once its next_scan_at deadline passes."""
     online, s = _feed_online()
+    # recent = last sends from BOTH feeds (Carousell + FB groups) via feed_log
+    recent = (s.get("recent") or [])[:8]  # fallback: old status-file list
+    conn = sqlite3.connect(config.SEEN_DB_PATH)
+    try:
+        rows = conn.execute(
+            "SELECT url,title,price,category,ts,source,posted_ts FROM feed_log "
+            "ORDER BY ts DESC LIMIT 10").fetchall()
+        if rows:
+            recent = [{"url": u, "title": t, "price": p, "category": c, "ts": ts,
+                       "source": src or "carousell", "posted_ts": pts}
+                      for u, t, p, c, ts, src, pts in rows]
+    except sqlite3.Error:
+        pass  # pre-migration db — fallback stays
+    finally:
+        conn.close()
     return jsonify({
         "online": online,
         "state": s.get("state", "unknown"),
         "next_scan_at": s.get("next_scan_at") or 0,
         "last_scan_end": s.get("last_scan_end"),
         "last_new": s.get("last_new"),
-        "recent": (s.get("recent") or [])[:8],
+        "recent": recent,
         "poll_minutes": config.POLL_INTERVAL_MINUTES,
         "version": VERSION,
         "server_now": time.time(),
@@ -383,12 +398,6 @@ HTML = r"""<!doctype html>
   </section>
 
   <section class="card">
-    <h2>Last 7 days</h2>
-    <div id="statDays" style="display:flex;gap:8px;align-items:flex-end;height:90px;margin-top:6px"></div>
-    <div id="statCats" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"></div>
-  </section>
-
-  <section class="card">
     <h2>Discord alerts</h2>
     <p class="muted" style="margin:0 0 12px">
       In Discord: your server → <b>⚙ Server Settings → Integrations → Webhooks → New Webhook → Copy Webhook URL</b> — then paste it here.
@@ -399,31 +408,6 @@ HTML = r"""<!doctype html>
       <button class="btn-ghost" id="whTest">Send test ping</button>
       <span id="whMsg" class="muted"></span>
     </div>
-  </section>
-
-  <section class="card">
-    <h2>Scan categories</h2>
-    <div class="row" style="margin-top:14px">
-      <div>
-        <label>Alert when listing is <span id="belowLbl" class="slider-val">20%</span> under market</label>
-        <input type="range" id="below" min="1" max="95" value="20" style="width:100%">
-      </div>
-    </div>
-    <div class="btn-row">
-      <button class="btn-primary" id="scrapeBtn">Scan categories</button>
-      <label class="check"><input type="checkbox" id="push"> Send results to Discord</label>
-      <span id="status" class="muted"></span>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>Results <span id="resLabel" class="muted"></span></h2>
-    <div id="results"><p class="muted">No scan run yet.</p></div>
-  </section>
-
-  <section class="card">
-    <h2>Activity log</h2>
-    <div id="log">idle.</div>
   </section>
 
 </main>
@@ -440,9 +424,7 @@ async function loadSettings(){
   $('#ctryBadge').textContent = 'carousell.' + s.country;
   if(s.webhook_set && !$('#whMsg').textContent)
     $('#whMsg').textContent = 'Already linked ✓ — paste a new URL only if you want to replace it.';
-  $('#below').value = s.default_below_pct; $('#belowLbl').textContent = s.default_below_pct + '%';
 }
-$('#below').oninput = e => $('#belowLbl').textContent = e.target.value + '%';
 
 $('#whSave').onclick = async ()=>{
   const url = $('#whUrl').value.trim();
@@ -467,47 +449,8 @@ $('#whTest').onclick = async ()=>{
   $('#whTest').disabled = false;
 };
 
-function renderDeals(deals, label){
-  $('#resLabel').textContent = label ? '· ' + label : '';
-  const box = $('#results');
-  if(!deals.length){ box.innerHTML = '<p class="muted">No listings under your threshold this run.</p>'; return; }
-  box.innerHTML = deals.map(d => `
-    <div class="deal ${d.steal?'steal':''}">
-      <div style="flex:1">
-        <a href="${d.url}" target="_blank" rel="noopener">${escapeHtml(d.title)}</a>
-        ${d.pushed?'<span class="tag">sent ✓</span>':''}
-        <div class="meta">Listed <b>${fmt(d.price)}</b> · market ~${fmt(d.market)}${d.posted?' · '+(d.bumped?'bumped · ':'')+escapeHtml(d.posted):''} · <span class="muted">${escapeHtml(d.label)}</span></div>
-      </div>
-      <div class="pct ${d.steal?'steal':'deal'}">${Math.round(d.pct_off)}%<div style="font-size:11px;font-weight:500;color:var(--muted)">off</div></div>
-    </div>`).join('');
-}
 function fmt(n){ return Number(n).toLocaleString(undefined,{maximumFractionDigits:0}); }
 function escapeHtml(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-
-function startPolling(){
-  if(poll) clearInterval(poll);
-  poll = setInterval(async ()=>{
-    const s = await (await fetch('/api/scrape/status')).json();
-    $('#log').textContent = (s.log||[]).join('\n') || 'idle.';
-    $('#log').scrollTop = $('#log').scrollHeight;
-    if(s.running){
-      $('#status').innerHTML = '<span class="spin"></span> scanning…';
-    } else {
-      $('#status').textContent = '';
-      renderDeals(s.deals||[], s.label);
-      $('#scrapeBtn').disabled = false;
-      clearInterval(poll); poll = null;
-    }
-  }, 1200);
-}
-
-$('#scrapeBtn').onclick = async ()=>{
-  $('#scrapeBtn').disabled = true;
-  const r = await fetch('/api/scrape',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({queries: [], below_pct:+$('#below').value, push:$('#push').checked})});
-  if(!r.ok){ alert((await r.json()).error||'error'); $('#scrapeBtn').disabled=false; return; }
-  startPolling();
-};
 
 // ── live status: feed heartbeat + ticking countdown ──
 let nextScanAt = 0, clockSkew = 0;
@@ -526,11 +469,23 @@ async function loadFeedStatus(){
       : '';
     $('#lanUrl').textContent = s.lan_url ? '📱 phone (same WiFi): ' + s.lan_url : '';
     const box = $('#recentBox');
-    box.innerHTML = (s.recent && s.recent.length) ? s.recent.map(r=>`
-      <div class="wl-item">
-        <div class="q">${CAT_ICON[r.category]||'🃏'} <a href="${r.url}" target="_blank" rel="noopener">${escapeHtml(r.title)}</a></div>
-        <div class="muted" style="white-space:nowrap">₱${fmt(r.price)} · ${escapeHtml(r.category)}</div>
-      </div>`).join('') : '<p class="muted">no listings sent yet — updates after the next scan.</p>';
+    // re-render ONLY when the list actually changed — replacing innerHTML on
+    // every poll destroyed the <a> mid-click, which made links "not work"
+    const sig = JSON.stringify((s.recent||[]).map(r=>r.url + (r.ts||0)));
+    if(sig !== box.dataset.sig){
+      box.dataset.sig = sig;
+      // times shown in GMT+8 (Asia/Manila) regardless of viewing device
+      const fmtPH = t => new Date(t*1000).toLocaleString('en-PH',
+        {timeZone:'Asia/Manila',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
+      const srcTag = s => (s||'').startsWith('fb:')
+        ? '📘 ' + escapeHtml(s.slice(3)) : '🛒 Carousell';
+      box.innerHTML = (s.recent && s.recent.length) ? s.recent.map(r=>`
+        <div class="wl-item">
+          <div class="q">${CAT_ICON[r.category]||'🃏'} <a href="${r.url}" target="_blank" rel="noopener">${escapeHtml(r.title)}</a>
+            <div class="muted" style="font-size:11px;margin-top:2px">${srcTag(r.source)}</div></div>
+          <div class="muted" style="white-space:nowrap;text-align:right">${r.posted_ts ? '↑ posted ' + fmtPH(r.posted_ts) : 'seen ' + fmtPH(r.ts)}</div>
+        </div>`).join('') : '<p class="muted">no listings sent yet — updates after the next scan.</p>';
+    }
   }catch(e){}
 }
 setInterval(loadFeedStatus, 5000); loadFeedStatus();
@@ -547,24 +502,6 @@ async function restartTarget(target){
 $('#restartFeed').onclick = ()=>restartTarget('feed');
 $('#restartDash').onclick = ()=>restartTarget('dashboard');
 
-// ── stats ──
-async function loadStats(){
-  try{
-    const s = await (await fetch('/api/stats')).json();
-    const max = Math.max(1, ...s.days.map(d=>d.count));
-    $('#statDays').innerHTML = s.days.map(d=>`
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
-        <div class="muted" style="font-size:11px">${d.count}</div>
-        <div style="width:100%;background:linear-gradient(180deg,var(--accent),rgba(42,184,246,.15));border-radius:4px 4px 0 0;height:${Math.max(3, d.count/max*60)}px;box-shadow:0 0 10px rgba(42,184,246,.25)"></div>
-        <div class="muted" style="font-size:11px">${d.day}</div>
-      </div>`).join('');
-    const IC = {graded:'💎', sealed:'📦', bulk:'🗃️', collection:'📚', single:'🃏'};
-    $('#statCats').innerHTML = s.cats.length ? s.cats.map(c=>
-      `<span class="badge">${IC[c.category]||'🃏'} ${escapeHtml(c.category)}: ${c.count} · avg ₱${fmt(c.avg)}</span>`).join('')
-      : '<span class="muted">no data yet — fills as the feed runs.</span>';
-  }catch(e){}
-}
-loadStats(); setInterval(loadStats, 60000);
 setInterval(()=>{
   const el = $('#countdown');
   if(!nextScanAt){ el.textContent = '--:--'; return; }

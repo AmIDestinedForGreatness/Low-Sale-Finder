@@ -40,6 +40,15 @@ def db():
             conn.execute(f"ALTER TABLE fb_auctions ADD COLUMN {col} {decl}")
         except sqlite3.OperationalError:
             pass
+    # shared with the Carousell feed: every sent item, feeds the dashboard list
+    conn.execute("CREATE TABLE IF NOT EXISTS feed_log "
+                 "(url TEXT, title TEXT, price REAL, category TEXT, ts REAL)")
+    for mig in ("ALTER TABLE feed_log ADD COLUMN source TEXT",
+                "ALTER TABLE feed_log ADD COLUMN posted_ts REAL"):
+        try:
+            conn.execute(mig)
+        except sqlite3.OperationalError:
+            pass
     return conn
 
 def seen(conn, url):
@@ -462,6 +471,17 @@ def notify(item, source, conn=None):
                  int(bool(item.get("undervalued"))), item["url"], time.time(),
                  msg_id, item["url"], chan_id))
             conn.commit()
+        # dashboard recent-list: FB sends show up next to Carousell's
+        if conn is not None and r.status_code in (200, 204):
+            try:
+                conn.execute(
+                    "INSERT INTO feed_log (url,title,price,category,ts,source,posted_ts)"
+                    " VALUES (?,?,?,?,?,?,?)",
+                    (item["url"], (item.get("title") or "FB post")[:200], price,
+                     cat, time.time(), "fb:" + str(source), None))
+                conn.commit()
+            except sqlite3.OperationalError:
+                pass
     except Exception as e:
         print(f"  [discord error] {e}")
 
