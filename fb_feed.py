@@ -163,9 +163,11 @@ def parse_end_time(text, now=None):
     now = now or time.time()
     t = text.lower()
 
-    # absolute date: "end: july 17, 2026 6:30:59pm" / "end july 17 9pm"
+    # absolute date: "end: july 17, 2026 6:30:59pm",
+    # "end: july 15, 2026 (wednesday 9:00 pm)", "end july 17 9pm".
+    # [^\d]{0,25}? skips filler like " (wednesday " between date and time.
     m = re.search(r"end[a-z: ]*?(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)"
-                  r"[a-z]*\s+(\d{1,2})(?:,?\s*(\d{4}))?\s*(?:@|at)?\s*"
+                  r"[a-z]*\s+(\d{1,2})(?:,?\s*(\d{4}))?[^\d]{0,25}?"
                   r"(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*([ap])\.?m", t)
     if m:
         mon = _MONTHS[m.group(1)]
@@ -337,7 +339,11 @@ def analyze(item):
             market, label = prices.market_value(item.get("title", "") + " " + body)
         except Exception:
             market = None
-    if True:
+    # value ONLY fixed-price sales. Auctions/claim sales open below market by
+    # design (starting bid / dib price), so an "under market" flag there is a
+    # false snipe every time — a real auction snipe is only known at the end.
+    market = None
+    if not item["auction"]:
         try:
             market, label = prices.market_value(item.get("title", "") + " " + body)
         except Exception:
