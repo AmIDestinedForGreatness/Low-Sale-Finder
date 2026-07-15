@@ -133,6 +133,19 @@ def is_deadend(text: str) -> bool:
     """No committed price to work with — PM-to-offer / make-offer posts."""
     return bool(_DEADEND_RE.search(text or ""))
 
+# Not-a-sale posts: want-to-buy threads, "looking for", group rules /
+# admin announcements, megathreads. These are never listings.
+_META_RE = re.compile(
+    r"\blooking for\b|\blf\b\s|\bwtb\b|\biso\b|\bin search of\b|want to buy|"
+    r"looking for (?:thread|buyer|seller)|\bmegathread\b|please read|"
+    r"group rules|\brules\b thread|violat(?:or|ion)|banned permanently|"
+    r"admin (?:post|announcement)|for approval|\bwts thread\b|feedback thread|"
+    r"\brant\b|\bhelp\b\s|is this legit|legit check", re.I)
+
+def is_meta(text: str) -> bool:
+    """True for WTB/looking-for/rules/announcement posts (not a sale)."""
+    return bool(_META_RE.search(text or ""))
+
 def distress_terms(text: str):
     return sorted(set(m.group(0).lower() for m in _DISTRESS_RE.finditer(text or "")))
 

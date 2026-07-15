@@ -8,3 +8,4 @@ fb_profile/
 watchlist.json
 feed_status.json
 grails.json
+card_index.sqlite

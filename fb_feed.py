@@ -190,8 +190,12 @@ def parse_price(text):
     if m:
         return float(m.group(1).replace(",", ""))
     # bare peso number (FB posts often omit ₱): not part of a x/y set number,
-    # reasonable price range. Take the first plausible one.
+    # reasonable price range, and NOT a quantity/age ("60 days", "550 pcs").
     for m in re.finditer(r"(?<![\d/])(\d{2,3}(?:,\d{3})+|\d{2,6})(?![\d/])", text):
+        tail = text[m.end():m.end() + 14].lower()
+        if re.match(r"\s*(day|days|month|mos|year|yr|yrs|pc|pcs|piece|cards?|"
+                    r"sets?|hrs?|hours?|mins?|% ?off|percent)\b", tail):
+            continue
         val = float(m.group(1).replace(",", ""))
         if 30 <= val <= 500000:
             return val
@@ -265,8 +269,8 @@ def analyze(item):
     a deadend (no committed price) that should be skipped."""
     body = item.get("body", "") or item.get("title", "")
     price = parse_price(body)
-    # deadends: no price, or 'PM to offer' — skip entirely
-    if price is None or scraper.is_deadend(body):
+    # skip: WTB/looking-for/rules/announcement, no price, or PM-to-offer
+    if scraper.is_meta(body) or price is None or scraper.is_deadend(body):
         return None
     item["price"] = price
     item["auction"] = scraper.is_auction(body)
