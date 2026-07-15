@@ -235,7 +235,9 @@ def parse_price(text):
         return float(m.group(1).replace(",", ""))
     # bare peso number (FB posts often omit ₱): not part of a x/y set number,
     # reasonable price range, and NOT a quantity/age ("60 days", "550 pcs").
-    for m in re.finditer(r"(?<![\d/])(\d{2,3}(?:,\d{3})+|\d{2,6})(?![\d/])", text):
+    # NB: comma form allows 1-3 lead digits — '1,500' with a single lead digit
+    # once parsed as 500 (LESSONS.md L9, caught by tests.py on first run)
+    for m in re.finditer(r"(?<![\d/,])(\d{1,3}(?:,\d{3})+|\d{2,6})(?![\d/])", text):
         tail = text[m.end():m.end() + 14].lower()
         if tail[:1] == "%":                      # "70%-90%" is not a price
             continue
