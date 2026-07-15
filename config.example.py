@@ -14,7 +14,7 @@ DISCORD_WEBHOOK_URL = "PASTE_YOUR_DISCORD_WEBHOOK_URL_HERE"
 # Each string is one Carousell search. Add/remove freely.
 # Broad terms catch more but need good price-matching; specific terms are cleaner.
 SEARCH_QUERIES = [
-    "pokemon",
+    "pokemon tcg",
     "pokemon card",
     "pokemon psa",
     "pokemon booster",

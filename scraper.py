@@ -39,23 +39,36 @@ CATEGORY_RULES = [
     ("collection", 0x1ABC9C, "📚", re.compile(r"\b(binders?|collections?|albums?|dibs?)\b", re.I)),
 ]
 
-# merch filter: Pokémon *products* (plush, hats, figures...) are not cards.
-# A listing is dropped when it matches merch terms and shows NO card signal.
+# TCG-cards-only filter. Two ways a listing gets dropped:
+#  (1) it's physical merch (plush, hats, figures...), or
+#  (2) it's a Pokémon *video game / GO* item (accounts, digital goods),
+# UNLESS it carries a clear trading-card signal.
 _MERCH_RE = re.compile(
     r"\b(plush(?:ie)?s?|stuffed|hats?|caps?|beanies?|shirts?|t-?shirts?|hoodies?|"
-    r"jackets?|keychains?|key ?chains?|figures?|figurines?|funko|nendoroid|mugs?|"
+    r"jackets?|figures?|figurines?|funko|nendoroid|mugs?|"
     r"tumblers?|stickers?|decals?|toys?|lego|squishmallows?|backpacks?|bags?|"
     r"wallets?|lanyards?|costumes?|cosplay|onesies?|pajamas?|slippers?|crocs|"
     r"phone ?cases?|posters?|tarps?|clocks?|lamps?|pillows?|blankets?|towels?|"
-    r"umbrellas?|plates?|bowls?|bottles?|jewelry|necklaces?|earrings?|charms?)\b", re.I)
+    r"umbrellas?|plates?|bowls?|bottles?|jewelry|necklaces?|earrings?|charms?|"
+    r"keychains?|key ?chains?)\b", re.I)
+# Pokémon GO / video-game / digital-account terms — never TCG cards.
+_GAME_RE = re.compile(
+    r"pok[eé]mon ?go\b|\bpogo\b|\bpoke ?go\b|\bpc fukouka\b|\baccount\b|\bacct\b|"
+    r"\blvl\b|\blevel \d|\bnintendo\b|\bswitch\b|\b3ds\b|\brom\b|\bemulator\b|"
+    r"\bcfw\b|\bpksm\b|genned|\bshiny 6iv\b|\bgame ?card\b|\bcartridge\b|\bgba\b|"
+    r"\bvideo ?game\b|\bplaystation\b|\bdigital\b|\btrainer club\b", re.I)
 _CARDY_RE = re.compile(
-    r"\bcards?\b|\btcg\b|\bpsa\b|\bbgs\b|\bcgc\b|slab|booster|\betb\b|elite trainer|"
-    r"vmax|vstar|\bex\b|\bgx\b|holo|binder|\bpromo\b|\d{1,3}\s*/\s*\d{1,3}", re.I)
+    r"\bcards?\b|\btcg\b|\bpsa\b|\bbgs\b|\bcgc\b|\bslab\b|booster|\betb\b|"
+    r"elite trainer|\bvmax\b|\bvstar\b|\bgx\b|\bholo\b|\bfoil\b|binder|"
+    r"\bpromo\b|\bsealed\b|\bpack\b|\d{1,3}\s*/\s*\d{1,3}", re.I)
 
 def is_merch(text: str) -> bool:
-    """True when the listing is Pokémon merchandise rather than cards."""
+    """True when the listing is NOT a Pokémon trading card (merch or a
+    video-game/GO item) — used to keep the feed TCG-only."""
     t = text or ""
-    return bool(_MERCH_RE.search(t)) and not _CARDY_RE.search(t)
+    if _CARDY_RE.search(t):
+        return False  # clear trading-card signal wins
+    return bool(_MERCH_RE.search(t) or _GAME_RE.search(t))
 
 
 def classify(title: str):

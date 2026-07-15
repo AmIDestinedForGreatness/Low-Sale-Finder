@@ -14,6 +14,7 @@ live logged-in session, so expect to tune the selectors below on the first
 real run. Bring the console output back to Claude.
 """
 import random
+import re
 import sqlite3
 import sys
 import time
@@ -74,41 +75,66 @@ MARKETPLACE_JS = r"""
 }
 """
 
+# FB scrambles group post BODY text (hidden decoy chars) to defeat scrapers,
+# so we extract what stays reliable: poster name, the post permalink, and the
+# listing photos. It's a visual feed — browse the pictures, click through.
 GROUP_JS = r"""
 () => {
   const out = [];
-  const seenKeys = new Set();
-  for (const art of document.querySelectorAll('div[role="article"]')) {
-    // permalink of the post
+  const seen = new Set();
+  for (const kid of document.querySelectorAll('div[role="feed"] > div')) {
+    // permalink (hover pass hydrates these); strip comment_id/tracking to base
     let link = '';
-    for (const a of art.querySelectorAll('a[href]')) {
-      const h = a.getAttribute('href') || '';
-      if (/\/groups\/[^/]+\/(posts|permalink)\//.test(h)) { link = h.split('?')[0]; break; }
+    for (const a of kid.querySelectorAll('a[href]')) {
+      const m = (a.getAttribute('href') || '').match(/\/groups\/\d+\/(?:posts|permalink)\/(\d+)/);
+      if (m) { link = `https://www.facebook.com/groups/${location.pathname.split('/')[2]}/posts/${m[1]}/`; break; }
     }
-    if (!link || seenKeys.has(link)) continue;
-    seenKeys.add(link);
-    const text = (art.innerText || '').trim();
-    if (!text) continue;
-    const priceMatch = text.match(/(?:₱|PHP|P)\s?[\d.,]+/i);
-    let image = '';
-    for (const im of art.querySelectorAll('img')) {
+    if (!link || seen.has(link)) continue;
+
+    // poster name: first /groups/<id>/user/<uid>/ anchor with visible text
+    let poster = '';
+    for (const a of kid.querySelectorAll('a[href*="/user/"]')) {
+      const t = (a.innerText || '').trim();
+      if (t && t.length > 1 && !/^online status/i.test(t)) { poster = t; break; }
+    }
+
+    // photos: real listing images live at scontent, large, not avatars
+    const imgs = [];
+    for (const im of kid.querySelectorAll('img')) {
       const src = im.currentSrc || im.src || '';
-      // skip tiny avatars; post photos are served from scontent
-      if (src.startsWith('http') && src.includes('scontent') && (im.width || 100) > 80) {
-        image = src; break;
+      if (src.includes('scontent') && (im.naturalHeight || im.height || 0) > 130
+          && !/\/s\d{2,3}x\d{2,3}\//.test(src) && !imgs.includes(src)) {
+        imgs.push(src);
       }
     }
-    out.push({
-      url: link.startsWith('http') ? link : ('https://www.facebook.com' + link),
-      title: text.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 4).join(' · ').slice(0, 200),
-      price_text: priceMatch ? priceMatch[0] : '',
-      image: image,
-      raw: text.slice(0, 400),
-    });
+    if (!imgs.length) continue;  // no photo = not a sale listing worth showing
+
+    seen.add(link);
+    out.push({url: link, poster: poster || "Facebook seller",
+              images: imgs.slice(0, 4), image: imgs[0]});
   }
   return out;
 }
 """
+
+
+def hydrate_permalinks(page, max_hovers=40):
+    """FB withholds post permalinks until the post is hovered. Hovering the
+    anchors in each feed child surfaces the real /posts/<id>/ links."""
+    try:
+        links = page.query_selector_all('div[role="feed"] > div a')
+    except Exception:
+        return
+    hovers = 0
+    for a in links:
+        if hovers >= max_hovers:
+            break
+        try:
+            a.hover()
+            page.wait_for_timeout(random.randint(60, 140))
+            hovers += 1
+        except Exception:
+            continue
 
 
 def human_scroll(page, rounds=4):
@@ -124,7 +150,9 @@ def collect(page, url, js, label):
     if "login" in page.url:
         print("  [!] Redirected to login — session expired or checkpointed. Run fb_login.py again.")
         return []
-    human_scroll(page)
+    human_scroll(page, rounds=6)
+    if "/groups/" in url:
+        hydrate_permalinks(page)
     try:
         items = page.evaluate(js)
     except Exception as e:
@@ -136,25 +164,27 @@ def collect(page, url, js, label):
 
 def notify(item, source):
     wh = config.DISCORD_WEBHOOK_URL
-    cat, cat_color, icon = scraper.classify(
-        (item.get("title", "") + " " + item.get("raw", "")).strip())
-    embed = {
-        # title is the clickable link — no raw URL in the body
-        "title": f"[{source}] {icon} {item['title'][:190]}",
+    imgs = item.get("images") or ([item["image"]] if item.get("image") else [])
+    # Discord renders a photo gallery when several embeds share one url
+    embeds = [{
+        "title": f"[{source}] \U0001F4E6 {item.get('poster', 'Facebook seller')}",
         "url": item["url"],
-        "description": f"{item['price_text'] or 'no price shown'} · {cat.upper()}",
-        "color": cat_color,
-    }
-    if item.get("image"):
-        embed["image"] = {"url": item["image"]}
+        "description": f"New listing · [open post]({item['url']})"
+                       + (f" · +{len(imgs)-1} more photos" if len(imgs) > 1 else ""),
+        "color": 0x9B59B6,
+    }]
+    if imgs:
+        embeds[0]["image"] = {"url": imgs[0]}
+        for extra in imgs[1:4]:
+            embeds.append({"url": item["url"], "image": {"url": extra}})
     if not wh or "PASTE" in wh:
-        print(f"    {item['title'][:60]} | {item['price_text']} | {item['url']}")
+        print(f"    {item.get('poster','?')} | {len(imgs)} photo(s) | {item['url']}")
         return
     try:
-        r = requests.post(wh, json={"embeds": [embed]}, timeout=15)
+        r = requests.post(wh, json={"embeds": embeds}, timeout=15)
         if r.status_code == 429:
             time.sleep(float(r.json().get("retry_after", 5)))
-            requests.post(wh, json={"embeds": [embed]}, timeout=15)
+            requests.post(wh, json={"embeds": embeds}, timeout=15)
         elif r.status_code not in (200, 204):
             print(f"  [discord {r.status_code}] {r.text[:120]}")
     except Exception as e:
