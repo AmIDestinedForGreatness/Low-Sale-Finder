@@ -23,7 +23,8 @@ import requests
 from playwright.sync_api import sync_playwright
 
 import config
-import scraper  # classify() + posted_epoch() are shared with the Carousell feed
+import scraper  # classify()/is_merch()/auction/deadend/distress — shared logic
+import prices   # best-effort card valuation
 
 
 def db():
@@ -131,15 +132,24 @@ GROUP_JS = r"""
 
 
 def parse_price(text):
-    """PH listings use k-notation ('26.5k', '₱75k') and plain numbers."""
+    """PH listings price in peso: '₱75k', '26.5k', '₱1,200', or a bare '400'.
+    Skip collector numbers (199/165) and tiny quantity-like numbers."""
     if not text:
         return None
+    # k-notation: 26.5k, ₱75k
     m = re.search(r"(?:₱|php|p)?\s*([\d]{1,3}(?:[.,]\d{1,3})?)\s*k\b", text, re.I)
     if m:
         return float(m.group(1).replace(",", "")) * 1000
+    # explicit currency marker
     m = re.search(r"(?:₱|php)\s*([\d][\d,]*(?:\.\d+)?)", text, re.I)
     if m:
         return float(m.group(1).replace(",", ""))
+    # bare peso number (FB posts often omit ₱): not part of a x/y set number,
+    # reasonable price range. Take the first plausible one.
+    for m in re.finditer(r"(?<![\d/])(\d{2,3}(?:,\d{3})+|\d{2,6})(?![\d/])", text):
+        val = float(m.group(1).replace(",", ""))
+        if 30 <= val <= 500000:
+            return val
     return None
 
 
@@ -168,54 +178,120 @@ def human_scroll(page, rounds=4):
         page.wait_for_timeout(random.randint(1200, 3200))
 
 
-def collect(page, url, js, label):
+def collect(page, url, js, label, want=None):
+    """FB virtual-scrolls (off-screen posts are removed from the DOM), so we
+    extract incrementally while scrolling and accumulate by URL until we have
+    `want` posts or run out of new ones."""
+    if want is None:
+        want = getattr(config, "FB_MAX_POSTS_PER_GROUP", 20)
     print(f"[fb] {label}: {url}")
     page.goto(url, timeout=60000, wait_until="domcontentloaded")
     page.wait_for_timeout(random.randint(3500, 6000))
     if "login" in page.url:
         print("  [!] Redirected to login — session expired or checkpointed. Run fb_login.py again.")
         return []
-    human_scroll(page, rounds=6)
-    if "/groups/" in url:
-        hydrate_permalinks(page)
-    try:
-        items = page.evaluate(js)
-    except Exception as e:
-        print(f"  [extract error] {e}")
-        return []
-    print(f"  {len(items)} item(s) on page")
+    is_group = "/groups/" in url
+    acc = {}
+    stale = 0
+    for step in range(16):
+        if is_group:
+            hydrate_permalinks(page, max_hovers=15)
+        try:
+            batch = page.evaluate(js)
+        except Exception as e:
+            print(f"  [extract error] {e}")
+            batch = []
+        before = len(acc)
+        for it in batch:
+            acc.setdefault(it["url"], it)
+        stale = stale + 1 if len(acc) == before else 0
+        if len(acc) >= want or stale >= 3:
+            break
+        page.mouse.wheel(0, random.randint(2200, 3600))
+        page.wait_for_timeout(random.randint(1400, 2600))
+    items = list(acc.values())[:want]
+    print(f"  {len(items)} item(s) collected")
     return items
+
+
+def analyze(item):
+    """Enrich a raw FB post: price, category, auction/sale, distress,
+    location, and an undervalued verdict. Returns the item or None if it's
+    a deadend (no committed price) that should be skipped."""
+    body = item.get("body", "") or item.get("title", "")
+    price = parse_price(body)
+    # deadends: no price, or 'PM to offer' — skip entirely
+    if price is None or scraper.is_deadend(body):
+        return None
+    item["price"] = price
+    item["auction"] = scraper.is_auction(body)
+    item["category"] = scraper.classify(body)[0]
+    item["distress"] = scraper.distress_terms(body)
+    item["loc"], item["near"] = scraper.location_hint(body)
+    # best-effort valuation: only fires for raw, identifiable cards
+    market, label = (None, None)
+    if not item["auction"]:
+        try:
+            market, label = prices.market_value(item.get("title", "") + " " + body)
+        except Exception:
+            market = None
+    item["market"] = market
+    item["undervalued"] = bool(market and price <= market * config.FB_DEAL_FRACTION)
+    return item
 
 
 def notify(item, source):
     wh = config.DISCORD_WEBHOOK_URL
     imgs = item.get("images") or ([item["image"]] if item.get("image") else [])
     body = item.get("body", "")
-    cat, cat_color, icon = scraper.classify(body or item.get("title", ""))
-    price = parse_price(body)
-    price_s = f"₱{price:,.0f}" if price else "price in post/photos"
-    head = f"{price_s} · {cat.upper()} · {item.get('poster', 'seller')}"
-    # first ~3 lines of the body as context (purple = Facebook)
+    price = item.get("price")
+    _, cat_color, icon = scraper.classify(body or item.get("title", ""))
+    kind = "AUCTION" if item.get("auction") else "SALE"
+    kind_icon = "\U0001F528" if item.get("auction") else icon  # 🔨 for auctions
+    cat = item.get("category", "single")
+
+    tags = [f"₱{price:,.0f}", kind, cat.upper()]
+    if item.get("loc"):
+        tags.append(("\U0001F4CD " if item.get("near") else "") + item["loc"])
+    if item.get("market"):
+        tags.append(f"mkt ~₱{item['market']:,.0f}")
+    head = " · ".join(tags)
+
+    # loud signals get a mention + colour
+    flags = []
+    color = 0xF39C12 if item.get("auction") else cat_color
+    ping = ""
+    if item.get("undervalued"):
+        flags.append(f"\U0001F6A8 UNDER MARKET ({price/item['market']*100:.0f}% of ~₱{item['market']:,.0f})")
+        color = 0xE91E63; ping = "@everyone"
+    if item.get("distress"):
+        flags.append("\U0001F525 " + ", ".join(item["distress"][:3]))
+        color = 0xE91E63; ping = "@everyone"
+    if item.get("near"):
+        flags.append("\U0001F4CD near you")
+
     snippet = "\n".join(body.split("\n")[:3])[:300]
-    embeds = [{
-        "title": f"[{source}] {icon} {item.get('title', 'Listing')[:180]}",
-        "url": item["url"],
-        "description": f"{head}\n{snippet}\n[open post]({item['url']})"
-                       + (f" · +{len(imgs)-1} photos" if len(imgs) > 1 else ""),
-        "color": cat_color,
-    }]
+    desc = head + "\n" + ("**" + " · ".join(flags) + "**\n" if flags else "") \
+        + snippet + f"\n[open post]({item['url']})" \
+        + (f" · +{len(imgs)-1} photos" if len(imgs) > 1 else "")
+    embeds = [{"title": f"[{kind_icon}] {item.get('title', 'Listing')[:180]}",
+               "url": item["url"], "description": desc, "color": color}]
     if imgs:
         embeds[0]["image"] = {"url": imgs[0]}
         for extra in imgs[1:4]:
             embeds.append({"url": item["url"], "image": {"url": extra}})
+
     if not wh or "PASTE" in wh:
-        print(f"    {price_s} | {cat} | {item.get('title','')[:50]} | {len(imgs)} photo(s)")
+        print(f"    P{price:,.0f} | {kind} {cat} | {'/'.join(flags)[:40]} | {item.get('title','')[:40]}")
         return
+    payload = {"embeds": embeds}
+    if ping:
+        payload["content"] = ping + (f" {flags[0]}" if flags else "")
     try:
-        r = requests.post(wh, json={"embeds": embeds}, timeout=15)
+        r = requests.post(wh, json=payload, timeout=15)
         if r.status_code == 429:
             time.sleep(float(r.json().get("retry_after", 5)))
-            requests.post(wh, json={"embeds": embeds}, timeout=15)
+            requests.post(wh, json=payload, timeout=15)
         elif r.status_code not in (200, 204):
             print(f"  [discord {r.status_code}] {r.text[:120]}")
     except Exception as e:
@@ -250,15 +326,15 @@ def run_once(conn):
                 print(f"  [fb error] {e}")
                 continue
             new = [i for i in items if not seen(conn, i["url"])]
-            # TCG cards only — drop merch / Pokémon GO / video-game posts
-            kept = []
+            kept, dropped = [], 0
             for i in new:
-                if scraper.is_merch(i.get("body", "") or i.get("title", "")):
-                    mark(conn, i["url"])  # remember so we don't re-check it
+                text = i.get("body", "") or i.get("title", "")
+                # drop merch / Pokémon GO / video-game, then deadends/no-price
+                if scraper.is_merch(text) or analyze(i) is None:
+                    mark(conn, i["url"]); dropped += 1
                 else:
                     kept.append(i)
-            print(f"  {len(kept)} new"
-                  + (f" ({len(new)-len(kept)} non-TCG filtered)" if len(new) != len(kept) else ""))
+            print(f"  {len(kept)} new" + (f" ({dropped} filtered: merch/no-price/PM-offer)" if dropped else ""))
             for i in kept:
                 notify(i, label)
                 mark(conn, i["url"])

@@ -79,6 +79,55 @@ def classify(title: str):
     return "single", 0x3B6CFF, "🃏"
 
 
+# ── FB post analysis: auction vs sale, deadends, distress, location ────
+# PH TCG auction lingo: SB=starting bid, MI=min increment, EB=early bird,
+# BIN=buy it now, OB=overbid, "ends"/"bid"/"auction".
+_AUCTION_RE = re.compile(
+    r"\bauction\b|\bbidding\b|\bbid(?:s|ding)?\b|\bsb\s*[:=]?\s*\d|\bstarting bid\b|"
+    r"\bmi\s*[:=]?\s*\d|\bmin(?:imum)? increment\b|\beb\s*[:=]?\s*\d|\bearly bird\b|"
+    r"\bbin\s*[:=]?\s*\d|\bbuy ?it ?now\b|\boverbid\b|\bends?\s*(?:in|at|on)\b|"
+    r"\bend ?time\b|\bhighest bid", re.I)
+# Deadends: no committed price — the seller wants you to negotiate in DMs.
+_DEADEND_RE = re.compile(
+    r"\bpm\b(?:[^.\n]{0,15})?(?:price|offer|na|me|to offer|for price)|"
+    r"\bpm ?(?:for|to|na|me)\b|\bmake ?(?:an )?offer\b|\bbest offer\b|\bobo\b|"
+    r"\bor best offer\b|price\?\s*$|\bhmu\b|\bdm\b(?:[^.\n]{0,10})?(?:price|offer)", re.I)
+# Distress / urgency = likely underpriced. This is the primary deal signal.
+_DISTRESS_RE = re.compile(
+    r"\brush\b|\basap\b|\burgent\b|quitting|\bquit\b|leaving the hobby|"
+    r"need(?:s)? (?:to go|gone|cash)|must go|letting go|let go|fire ?sale|"
+    r"cutting loss|below (?:srp|market|cost)|sulit|mura na|dirt cheap|"
+    r"giveaway price|clearance|downsiz|moving out|\bsteal\b|priced to sell", re.I)
+# PH locations near Sikatuna Village (Quezon City) rank highest.
+_NEAR = re.compile(r"\b(quezon city|\bqc\b|cubao|katipunan|sikatuna|diliman|"
+                   r"kamuning|new manila|project \d|fairview|commonwealth)\b", re.I)
+# Only trust an explicit "loc: <place>" tag, and reject obvious non-places.
+_LOC_RE = re.compile(r"\b(?:loc|location|meet ?up|mu)\s*[:\-]\s*"
+                     r"([A-Za-z][A-Za-z .]{2,24})", re.I)
+_NOT_PLACE = re.compile(r"collectr|japanese|english|only|pm|price|market|comps?", re.I)
+
+def is_auction(text: str) -> bool:
+    return bool(_AUCTION_RE.search(text or ""))
+
+def is_deadend(text: str) -> bool:
+    """No committed price to work with — PM-to-offer / make-offer posts."""
+    return bool(_DEADEND_RE.search(text or ""))
+
+def distress_terms(text: str):
+    return sorted(set(m.group(0).lower() for m in _DISTRESS_RE.finditer(text or "")))
+
+def location_hint(text: str):
+    """Returns (location_string_or_'', is_near_bool). Prefers a QC/near match;
+    otherwise an explicit 'loc: <place>' tag that isn't an obvious non-place."""
+    near_m = _NEAR.search(text or "")
+    if near_m:
+        return near_m.group(0), True
+    m = _LOC_RE.search(text or "")
+    if m and not _NOT_PLACE.search(m.group(1)):
+        return m.group(1).strip(), False
+    return "", False
+
+
 def posted_epoch(posted: str):
     """Convert Carousell's '5 hours ago' / 'just now' / 'yesterday' into a unix
     epoch, so Discord can render its native auto-updating timestamp (<t:..:R>)."""

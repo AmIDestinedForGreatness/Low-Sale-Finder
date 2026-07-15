@@ -80,12 +80,28 @@ USD_TO_LOCAL_RATE = 58.0
 # Login: run `python fb_login.py` once (manual login, session saved locally).
 # ─────────────────────────────────────────────────────────────────────
 FB_PROFILE_DIR = "fb_profile"   # saved browser session (gitignored)
-FB_MARKETPLACE_URL = "https://www.facebook.com/marketplace/?sortBy=creation_time_descend"
+FB_MARKETPLACE_URL = ""         # marketplace off for now; groups are the target
 FB_GROUP_URLS = [
-    # "https://www.facebook.com/groups/1234567890",
+    "https://www.facebook.com/groups/712817202659840",       # PH Pokemon Collectibles Buy And Sell (100k+) — main
+    "https://www.facebook.com/groups/1220161206001059",      # PH Pokemon TCG Buy And Sell
+    "https://www.facebook.com/groups/pokemoncardsph",        # Pokemon Cards and Collectibles PH
+    "https://www.facebook.com/groups/757662856831328",       # PH Pokémon Trading Card Buy And Sell
+    "https://www.facebook.com/groups/255062901835978",       # TCG Pokemon PH - Buy, Sell, Trade
+    "https://www.facebook.com/groups/1428808095151910",      # Pokemon TCG Buy and Sell
+    "https://www.facebook.com/groups/856851463654793",       # PH Pokemon TCG Buy & Sell
+    "https://www.facebook.com/groups/2147623355529187",      # Pokemon Cards Buy and Sell PH
+    "https://www.facebook.com/groups/1231187172158802",      # Pokémon TCG Community Philippines
+    "https://www.facebook.com/groups/707983542163899",       # PH Pokemon Collectibles (BackUp)
+    "https://www.facebook.com/groups/573677660024569",       # POKEMON MARKET PH
+    "https://www.facebook.com/groups/1503039711219183",      # Pokemon's Collectors Club PH
+    "https://www.facebook.com/groups/635711927366699",       # Pokemon TCG PH Buy And Sell
+    "https://www.facebook.com/groups/1279723869863691",      # The Pokemon Center PH
+    "https://www.facebook.com/groups/1635366023985175",      # POKEMON TCG PH
 ]
-FB_POLL_MINUTES = 45            # deliberately slower than Carousell; jitter added
-FB_HEADLESS = False             # FB flags headless browsers hard; keep a visible window
+FB_POLL_MINUTES = 30            # cycle through all groups; jitter added
+FB_HEADLESS = True              # background operation (aged logged-in account)
+FB_DEAL_FRACTION = 0.78         # mass-ping when price <= 78% of TCGplayer market x rate
+FB_MAX_POSTS_PER_GROUP = 20     # recent posts to inspect per group per pass
 
 # ─────────────────────────────────────────────────────────────────────
 # RUNTIME
