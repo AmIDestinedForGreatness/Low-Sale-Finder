@@ -7,3 +7,4 @@ config.py
 fb_profile/
 watchlist.json
 feed_status.json
+grails.json

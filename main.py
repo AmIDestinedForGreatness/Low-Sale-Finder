@@ -5,12 +5,14 @@ Run with:  python main.py                 (continuous deal-alert loop)
            python main.py --feed          (continuous feed: EVERY new listing → Discord, photo + price + link)
            python main.py --feed --once   (single feed pass)
 """
+import datetime
 import json
 import os
 import sys
 import time
 import sqlite3
 import requests
+from collections import Counter
 
 import config
 import scraper
@@ -44,7 +46,25 @@ def db():
     conn.execute("CREATE TABLE IF NOT EXISTS seen_feed (url TEXT PRIMARY KEY, ts REAL)")
     # feed message ids, so sold/reserved changes can edit the original Discord message
     conn.execute("CREATE TABLE IF NOT EXISTS feed_msgs (url TEXT PRIMARY KEY, msg_id TEXT, status TEXT, ts REAL)")
+    try:  # v0.2 migration: track prices for drop detection
+        conn.execute("ALTER TABLE feed_msgs ADD COLUMN price REAL")
+    except sqlite3.OperationalError:
+        pass
+    # every sent listing, for the daily digest + stats history
+    conn.execute("CREATE TABLE IF NOT EXISTS feed_log "
+                 "(url TEXT, title TEXT, price REAL, category TEXT, ts REAL)")
     return conn
+
+
+# ── grail watchlist: keywords that ping @everyone no matter the price ──
+GRAILS_PATH = os.path.join(os.path.dirname(__file__), "grails.json")
+
+def load_grails():
+    try:
+        with open(GRAILS_PATH, encoding="utf-8") as f:
+            return [str(g).lower().strip() for g in json.load(f) if str(g).strip()]
+    except Exception:
+        return []
 
 def already_seen(conn, url, table="seen"):
     return conn.execute(f"SELECT 1 FROM {table} WHERE url=?", (url,)).fetchone() is not None
@@ -164,29 +184,47 @@ def feed_once(conn):
             print(f"  [scrape failed] {e}")
             continue
 
-        # 1) edit previously-sent messages whose sold/reserved state changed
+        # 1) previously-sent listings: sold/reserved edits + price-drop alerts
         if have_wh:
             for L in listings:
-                row = conn.execute("SELECT msg_id, status FROM feed_msgs WHERE url=?",
+                row = conn.execute("SELECT msg_id, status, price FROM feed_msgs WHERE url=?",
                                    (L["url"],)).fetchone()
                 if not row or not row[0]:
                     continue
-                if (L.get("status") or "") == (row[1] or ""):
-                    continue
-                try:
-                    r = requests.patch(f"{wh}/messages/{row[0]}",
-                                       json={"embeds": [feed_embed(L)]}, timeout=15)
-                    if r.status_code == 200:
-                        conn.execute("UPDATE feed_msgs SET status=? WHERE url=?",
-                                     (L.get("status") or "", L["url"]))
-                        conn.commit()
-                        print(f"  STATUS -> {(L.get('status') or 'active').upper()}: {L['title'][:50]}".encode("ascii", "replace").decode())
-                    else:
-                        print(f"  [discord edit {r.status_code}] {r.text[:120]}")
-                except Exception as e:
-                    print(f"  [discord edit error] {e}")
+                msg_id, old_status, old_price = row
+                if (L.get("status") or "") != (old_status or ""):
+                    try:
+                        r = requests.patch(f"{wh}/messages/{msg_id}",
+                                           json={"embeds": [feed_embed(L)]}, timeout=15)
+                        if r.status_code == 200:
+                            conn.execute("UPDATE feed_msgs SET status=? WHERE url=?",
+                                         (L.get("status") or "", L["url"]))
+                            conn.commit()
+                            print(f"  STATUS -> {(L.get('status') or 'active').upper()}: {L['title'][:50]}".encode("ascii", "replace").decode())
+                        else:
+                            print(f"  [discord edit {r.status_code}] {r.text[:120]}")
+                    except Exception as e:
+                        print(f"  [discord edit error] {e}")
+                # price drop: seller lowered the price since we posted it
+                if old_price and L["price"] < old_price - 0.5 and not L.get("status"):
+                    e = feed_embed(L)
+                    cut = (1 - L["price"] / old_price) * 100
+                    e["title"] = ("\U0001F4B8 PRICE DROP — " + e["title"])[:230]
+                    e["description"] = (f"~~₱{old_price:,.0f}~~ → **₱{L['price']:,.0f}** "
+                                        f"({cut:.0f}% cut)\n" + e["description"])
+                    e["color"] = 0xE91E63
+                    try:
+                        requests.post(wh, json={"embeds": [e]}, timeout=15)
+                        print(f"  PRICE DROP: {L['title'][:45]} {old_price:.0f} -> {L['price']:.0f}".encode("ascii", "replace").decode())
+                    except Exception as ex:
+                        print(f"  [discord error] {ex}")
+                if L["price"] != old_price:
+                    conn.execute("UPDATE feed_msgs SET price=? WHERE url=?",
+                                 (L["price"], L["url"]))
+                    conn.commit()
 
         # 2) send new listings (one message each so we can edit them later)
+        grails = load_grails()
         new = [L for L in listings if not already_seen(conn, L["url"], "seen_feed")]
         print(f"  {len(new)} new listing(s)")
         for L in new:
@@ -204,21 +242,70 @@ def feed_once(conn):
                 msg_id = r.json().get("id") if r.status_code == 200 else None
                 if r.status_code not in (200, 204):
                     print(f"  [discord {r.status_code}] {r.text[:150]}")
-                conn.execute("INSERT OR REPLACE INTO feed_msgs (url, msg_id, status, ts) VALUES (?,?,?,?)",
-                             (L["url"], msg_id, L.get("status") or "", time.time()))
+                conn.execute("INSERT OR REPLACE INTO feed_msgs (url, msg_id, status, ts, price) VALUES (?,?,?,?,?)",
+                             (L["url"], msg_id, L.get("status") or "", time.time(), L["price"]))
                 conn.commit()
+                # grail hit: separate loud ping, regardless of price
+                text = (L.get("title", "") + " " + L.get("raw", "")).lower()
+                hits = [g for g in grails if g in text]
+                if hits:
+                    ge = feed_embed(L)
+                    ge["title"] = ("\U0001F6A8 GRAIL — " + ge["title"])[:230]
+                    ge["color"] = 0xFFD700
+                    try:
+                        requests.post(wh, json={"content": f"@everyone GRAIL match: **{hits[0]}**",
+                                                "embeds": [ge]}, timeout=15)
+                        print(f"  GRAIL HIT ({hits[0]}): {L['title'][:45]}".encode("ascii", "replace").decode())
+                    except Exception as ex:
+                        print(f"  [discord error] {ex}")
             except Exception as e:
                 print(f"  [discord error] {e}")
             mark_seen(conn, L["url"], "seen_feed")
+            cat = scraper.classify((L.get("title", "") + " " + L.get("raw", "")).strip())[0]
+            conn.execute("INSERT INTO feed_log (url, title, price, category, ts) VALUES (?,?,?,?,?)",
+                         (L["url"], L["title"], L["price"], cat, time.time()))
+            conn.commit()
             sent.append({
                 "title": L["title"], "price": L["price"], "url": L["url"],
-                "category": scraper.classify((L.get("title", "") + " " + L.get("raw", "")).strip())[0],
-                "ts": time.time(),
+                "category": cat, "ts": time.time(),
             })
             time.sleep(1.3)  # ~30 messages/min webhook budget
         time.sleep(config.REQUEST_DELAY_SECONDS)
     recent = (sent[::-1] + (_read_status().get("recent") or []))[:20]  # newest first
     write_status(state="idle", last_scan_end=time.time(), last_new=len(sent), recent=recent)
+
+
+# ── daily digest: one summary embed at/after 8PM local time ───────────
+def maybe_digest(conn):
+    now = datetime.datetime.now()
+    if now.hour < 20:
+        return
+    today = now.strftime("%Y-%m-%d")
+    if _read_status().get("last_digest") == today:
+        return
+    midnight = time.mktime(datetime.datetime(now.year, now.month, now.day).timetuple())
+    rows = conn.execute("SELECT title, price, category FROM feed_log WHERE ts>=?",
+                        (midnight,)).fetchall()
+    if not rows:
+        write_status(last_digest=today)
+        return
+    cats = Counter(r[2] for r in rows)
+    cat_line = " · ".join(f"{k} {v}" for k, v in cats.most_common())
+    desc = f"**{len(rows)}** new listings today\n{cat_line}"
+    singles = sorted((r for r in rows if r[2] == "single"), key=lambda r: r[1])[:5]
+    if singles:
+        desc += "\n\n**Cheapest singles today:**\n" + "\n".join(
+            f"₱{p:,.0f} — {t[:60]}" for t, p, _ in singles)
+    embed = {"title": f"\U0001F4CA Daily Digest — Yujin's Pokestop ({today})",
+             "description": desc, "color": 0x2AB8F6}
+    wh = config.DISCORD_WEBHOOK_URL
+    if wh and "PASTE" not in wh:
+        try:
+            requests.post(wh, json={"embeds": [embed]}, timeout=15)
+            print(f"  [digest sent: {len(rows)} listings]")
+        except Exception as e:
+            print(f"  [digest error] {e}")
+    write_status(last_digest=today)
 
 
 def run_once(conn):
@@ -254,6 +341,7 @@ def main():
         if feed:
             write_status(state="idle",
                          next_scan_at=time.time() + config.POLL_INTERVAL_MINUTES * 60)
+            maybe_digest(conn)
         print(f"[sleep] {config.POLL_INTERVAL_MINUTES} min…")
         time.sleep(config.POLL_INTERVAL_MINUTES * 60)
 

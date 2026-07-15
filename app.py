@@ -10,9 +10,12 @@ Endpoints:
   GET/POST/DELETE /api/watchlist -> manage saved cards
   POST /api/watchlist/run -> scrape every watchlist item with its own threshold
 """
+import datetime
 import json
 import os
 import re
+import socket
+import sqlite3
 import threading
 import time
 
@@ -25,6 +28,57 @@ import engine
 from version import VERSION
 
 STATUS_PATH = os.path.join(os.path.dirname(__file__), "feed_status.json")
+GRAILS_PATH = os.path.join(os.path.dirname(__file__), "grails.json")
+
+
+def _feed_online():
+    try:
+        with open(STATUS_PATH, encoding="utf-8") as f:
+            s = json.load(f)
+    except Exception:
+        return False, {}
+    now = time.time()
+    nxt = s.get("next_scan_at") or 0
+    scanning = s.get("state") == "scanning" and now - (s.get("heartbeat") or 0) < 30 * 60
+    return bool(scanning or (nxt and now < nxt + 180)), s
+
+
+def _lan_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8", 80))
+        return s.getsockname()[0]
+    except Exception:
+        return "127.0.0.1"
+    finally:
+        s.close()
+
+
+def _watchdog():
+    """Dead-man switch: if the feed goes offline, ping Discord once; ping
+    again when it recovers. (Can't help if the whole PC is off — then this
+    thread is dead too.)"""
+    wh = config.DISCORD_WEBHOOK_URL
+    if not wh or "PASTE" in wh:
+        return
+    last = None
+    while True:
+        try:
+            online, _ = _feed_online()
+            if last is True and not online:
+                requests.post(wh, json={"embeds": [{
+                    "title": "⚠️ Yujin's Pokestop — feed OFFLINE",
+                    "description": "The scan loop missed its scheduled pass. "
+                                   "Check the 'Sniper Feed' window on the PC.",
+                    "color": 0xE74C3C}]}, timeout=15)
+            if last is False and online:
+                requests.post(wh, json={"embeds": [{
+                    "title": "✅ Yujin's Pokestop — feed back ONLINE",
+                    "color": 0x2ECC71}]}, timeout=15)
+            last = online
+        except Exception:
+            pass
+        time.sleep(60)
 
 app = Flask(__name__)
 
@@ -91,26 +145,65 @@ def feedstatus():
     ONLINE = currently scanning, or the promised next scan hasn't been
     missed by more than 3 minutes. A killed feed process goes OFFLINE
     automatically once its next_scan_at deadline passes."""
-    try:
-        with open(STATUS_PATH, encoding="utf-8") as f:
-            s = json.load(f)
-    except Exception:
-        s = {}
-    now = time.time()
-    nxt = s.get("next_scan_at") or 0
-    scanning = s.get("state") == "scanning" and now - (s.get("heartbeat") or 0) < 30 * 60
-    online = scanning or (nxt and now < nxt + 180)
+    online, s = _feed_online()
     return jsonify({
-        "online": bool(online),
+        "online": online,
         "state": s.get("state", "unknown"),
-        "next_scan_at": nxt,
+        "next_scan_at": s.get("next_scan_at") or 0,
         "last_scan_end": s.get("last_scan_end"),
         "last_new": s.get("last_new"),
         "recent": (s.get("recent") or [])[:8],
         "poll_minutes": config.POLL_INTERVAL_MINUTES,
         "version": VERSION,
-        "server_now": now,
+        "server_now": time.time(),
+        "lan_url": f"http://{_lan_ip()}:5000",
     })
+
+
+@app.route("/api/grails", methods=["GET", "POST", "DELETE"])
+def grails():
+    try:
+        with open(GRAILS_PATH, encoding="utf-8") as f:
+            items = json.load(f)
+    except Exception:
+        items = []
+    if request.method == "POST":
+        kw = (request.get_json(force=True).get("keyword") or "").strip()
+        if kw and kw.lower() not in [i.lower() for i in items]:
+            items.append(kw)
+    if request.method == "DELETE":
+        idx = int(request.args.get("index", -1))
+        if 0 <= idx < len(items):
+            items.pop(idx)
+    if request.method in ("POST", "DELETE"):
+        with open(GRAILS_PATH, "w", encoding="utf-8") as f:
+            json.dump(items, f, indent=2)
+    return jsonify(items)
+
+
+@app.route("/api/stats")
+def stats():
+    conn = sqlite3.connect(config.SEEN_DB_PATH)
+    try:
+        conn.execute("CREATE TABLE IF NOT EXISTS feed_log "
+                     "(url TEXT, title TEXT, price REAL, category TEXT, ts REAL)")
+        days = []
+        today = datetime.date.today()
+        for i in range(6, -1, -1):
+            d = today - datetime.timedelta(days=i)
+            start = time.mktime(d.timetuple())
+            n = conn.execute("SELECT COUNT(*) FROM feed_log WHERE ts>=? AND ts<?",
+                             (start, start + 86400)).fetchone()[0]
+            days.append({"day": d.strftime("%a"), "count": n})
+        cats = conn.execute(
+            "SELECT category, COUNT(*), AVG(price) FROM feed_log "
+            "WHERE ts>=? GROUP BY category ORDER BY 2 DESC",
+            (time.time() - 7 * 86400,)).fetchall()
+        return jsonify({"days": days,
+                        "cats": [{"category": c, "count": n, "avg": a or 0}
+                                 for c, n, a in cats]})
+    finally:
+        conn.close()
 
 @app.route("/api/settings")
 def settings():
@@ -314,8 +407,24 @@ HTML = r"""<!doctype html>
       </div>
       <div class="muted">next scan in <span id="countdown" class="slider-val" style="font-variant-numeric:tabular-nums">--:--</span></div>
       <div class="muted" id="lastScan"></div>
+      <div class="muted" id="lanUrl" style="margin-left:auto"></div>
     </div>
     <div id="recentBox" style="margin-top:12px"><p class="muted">loading…</p></div>
+  </section>
+
+  <section class="card">
+    <h2>🚨 Grail alerts <span class="muted" style="text-transform:none;letter-spacing:0">— pings @everyone the moment a keyword appears, any price</span></h2>
+    <div class="row">
+      <div style="flex:2"><input type="text" id="grailKw" placeholder="moonbreon / umbreon vmax alt / charizard upc"></div>
+      <div style="flex:0;min-width:auto"><button class="btn-primary" id="grailAdd">+ Add grail</button></div>
+    </div>
+    <div id="grailList" style="margin-top:12px"></div>
+  </section>
+
+  <section class="card">
+    <h2>📈 Last 7 days</h2>
+    <div id="statDays" style="display:flex;gap:8px;align-items:flex-end;height:90px;margin-top:6px"></div>
+    <div id="statCats" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"></div>
   </section>
 
   <section class="card">
@@ -491,6 +600,7 @@ async function loadFeedStatus(){
     $('#lastScan').textContent = s.last_scan_end
       ? 'last scan ' + new Date(s.last_scan_end*1000).toLocaleTimeString() + ' · ' + (s.last_new ?? 0) + ' new sent'
       : '';
+    $('#lanUrl').textContent = s.lan_url ? '📱 phone (same WiFi): ' + s.lan_url : '';
     const box = $('#recentBox');
     box.innerHTML = (s.recent && s.recent.length) ? s.recent.map(r=>`
       <div class="wl-item">
@@ -500,6 +610,45 @@ async function loadFeedStatus(){
   }catch(e){}
 }
 setInterval(loadFeedStatus, 5000); loadFeedStatus();
+
+// ── grails ──
+async function loadGrails(){
+  const items = await (await fetch('/api/grails')).json();
+  const box = $('#grailList');
+  box.innerHTML = items.length ? items.map((g,i)=>`
+    <div class="wl-item"><div class="q">🚨 ${escapeHtml(g)}</div>
+    <button class="btn-ghost" data-g="${i}" style="padding:6px 12px">Remove</button></div>`).join('')
+    : '<p class="muted">No grails yet — add the cards you\'d drop everything for.</p>';
+  box.querySelectorAll('button[data-g]').forEach(b=>b.onclick=async()=>{
+    await fetch('/api/grails?index='+b.dataset.g,{method:'DELETE'}); loadGrails();
+  });
+}
+$('#grailAdd').onclick = async ()=>{
+  const keyword = $('#grailKw').value.trim(); if(!keyword) return;
+  await fetch('/api/grails',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({keyword})});
+  $('#grailKw').value=''; loadGrails();
+};
+loadGrails();
+
+// ── stats ──
+async function loadStats(){
+  try{
+    const s = await (await fetch('/api/stats')).json();
+    const max = Math.max(1, ...s.days.map(d=>d.count));
+    $('#statDays').innerHTML = s.days.map(d=>`
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+        <div class="muted" style="font-size:11px">${d.count}</div>
+        <div style="width:100%;background:var(--accent);opacity:.85;border-radius:4px 4px 0 0;height:${Math.max(3, d.count/max*60)}px"></div>
+        <div class="muted" style="font-size:11px">${d.day}</div>
+      </div>`).join('');
+    const IC = {graded:'💎', sealed:'📦', bulk:'🗃️', collection:'📚', single:'🃏'};
+    $('#statCats').innerHTML = s.cats.length ? s.cats.map(c=>
+      `<span class="badge">${IC[c.category]||'🃏'} ${escapeHtml(c.category)}: ${c.count} · avg ₱${fmt(c.avg)}</span>`).join('')
+      : '<span class="muted">no data yet — fills as the feed runs.</span>';
+  }catch(e){}
+}
+loadStats(); setInterval(loadStats, 60000);
 setInterval(()=>{
   const el = $('#countdown');
   if(!nextScanAt){ el.textContent = '--:--'; return; }
@@ -512,5 +661,8 @@ loadSettings(); loadWatchlist();
 </body></html>"""
 
 if __name__ == "__main__":
+    threading.Thread(target=_watchdog, daemon=True).start()
     print("Dashboard running at  http://127.0.0.1:5000")
-    app.run(host="127.0.0.1", port=5000, debug=False)
+    print(f"Phone (same WiFi):    http://{_lan_ip()}:5000")
+    # 0.0.0.0 exposes the dashboard on the local network (phone access).
+    app.run(host="0.0.0.0", port=5000, debug=False)
