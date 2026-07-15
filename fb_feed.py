@@ -67,6 +67,7 @@ MARKETPLACE_JS = r"""
       title: title.slice(0, 200),
       price_text: priceMatch ? priceMatch[0] : '',
       image: image,
+      raw: text.slice(0, 400),
     });
   }
   return out;
@@ -102,6 +103,7 @@ GROUP_JS = r"""
       title: text.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 4).join(' · ').slice(0, 200),
       price_text: priceMatch ? priceMatch[0] : '',
       image: image,
+      raw: text.slice(0, 400),
     });
   }
   return out;
@@ -134,7 +136,8 @@ def collect(page, url, js, label):
 
 def notify(item, source):
     wh = config.DISCORD_WEBHOOK_URL
-    cat, cat_color, icon = scraper.classify(item.get("title", ""))
+    cat, cat_color, icon = scraper.classify(
+        (item.get("title", "") + " " + item.get("raw", "")).strip())
     embed = {
         # title is the clickable link — no raw URL in the body
         "title": f"[{source}] {icon} {item['title'][:190]}",

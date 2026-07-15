@@ -34,8 +34,8 @@ def _price_to_float(text: str):
 # order matters — first match wins (graded beats sealed beats bulk...)
 CATEGORY_RULES = [
     ("graded",     0xF1C40F, "💎", re.compile(r"\b(psa|bgs|cgc|ace\s*\d|slab|graded)\b", re.I)),
-    ("sealed",     0x2ECC71, "📦", re.compile(r"\b(sealed|boosters?|etb|elite trainer|tins?|packs?|upc|display|bundles?|premium collection|booster box)\b", re.I)),
-    ("bulk",       0xE67E22, "🗃️", re.compile(r"\b(bulk|lots?|take ?all|assorted|wholesale|mixed|randoms?)\b", re.I)),
+    ("sealed",     0x2ECC71, "📦", re.compile(r"\b(sealed|boosters?|etb|elite trainer|tins?|packs?|upc|display|booster bundle|premium collection|booster box)\b", re.I)),
+    ("bulk",       0xE67E22, "🗃️", re.compile(r"\b(bulk|lots?|take ?all|assorted|wholesale|mixed|randoms?|bundles?)\b", re.I)),
     ("collection", 0x1ABC9C, "📚", re.compile(r"\b(binders?|collections?|albums?|dibs?)\b", re.I)),
 ]
 
@@ -187,5 +187,8 @@ def search(query: str):
             "posted": item.get("posted", ""),
             "bumped": item.get("bumped", False),
             "status": item.get("status", ""),
+            # card text beyond the title (condition line, snippet) — used by
+            # classify(); full descriptions would need opening each listing
+            "raw": item.get("raw", ""),
         })
     return results

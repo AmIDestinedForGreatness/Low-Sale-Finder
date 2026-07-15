@@ -108,7 +108,10 @@ STATUS_STYLE = {
 }
 
 def feed_embed(L):
-    cat, cat_color, icon = scraper.classify(L.get("title", ""))
+    # classify on title + the rest of the card text (condition/snippet) —
+    # sellers often only say "bulk"/"take all"/"binder" outside the title
+    cat, cat_color, icon = scraper.classify(
+        (L.get("title", "") + " " + L.get("raw", "")).strip())
     prefix, status_color = STATUS_STYLE.get(L.get("status", ""), ("", None))
     epoch = scraper.posted_epoch(L.get("posted", ""))
     # <t:..:R> renders as Discord's native "5 hours ago" (auto-updating,
