@@ -50,7 +50,9 @@ _MERCH_RE = re.compile(
     r"wallets?|lanyards?|costumes?|cosplay|onesies?|pajamas?|slippers?|crocs|"
     r"phone ?cases?|posters?|tarps?|clocks?|lamps?|pillows?|blankets?|towels?|"
     r"umbrellas?|plates?|bowls?|bottles?|jewelry|necklaces?|earrings?|charms?|"
-    r"keychains?|key ?chains?)\b", re.I)
+    r"keychains?|key ?chains?|paintings?|artworks?|commissions?|handmade|"
+    r"hand ?painted|hand ?drawn|acrylic|canvas|fan ?art|sketch(?:es)?|"
+    r"crochet|clay|resin|button ?pins?|standees?)\b", re.I)
 # Pokémon GO / video-game / digital-account terms — never TCG cards.
 _GAME_RE = re.compile(
     r"pok[eé]mon ?go\b|\bpogo\b|\bpoke ?go\b|\bpc fukouka\b|\baccount\b|\bacct\b|"
@@ -97,13 +99,16 @@ _DEADEND_RE = re.compile(
     r"\bpm ?(?:for|to|na|me)\b|\bmake ?(?:an )?offer\b|\bbest offer\b|\bobo\b|"
     r"\bor best offer\b|price\?\s*$|\bhmu\b|\bdm\b(?:[^.\n]{0,10})?(?:price|offer)", re.I)
 # Distress / urgency = likely underpriced. This is the primary deal signal.
-# NOTE: 'steal' deliberately EXCLUDED — in PH TCG it's a claim-sale buy-out
-# mechanic ("DIBS/Steal/Buy Out"), not a distress/underpriced signal.
+# Genuine seller-SITUATION signals only (circumstances force a real low price).
+# Deliberately EXCLUDED as clickbait marketing claims, NOT snipes:
+#   'steal' (PH claim-sale buy-out mechanic), 'below market/srp/cost',
+#   'mura na', 'dirt cheap', 'giveaway price', 'priced to sell', 'sulit' —
+#   sellers slap these on 90-95%-of-market listings. A real snipe is the
+#   PRICE being <=78%, judged by valuation, not the seller's adjectives.
 _DISTRESS_RE = re.compile(
     r"\brush\b|\basap\b|\burgent\b|quitting|\bquit\b|leaving the hobby|"
     r"need(?:s)? (?:to go|gone|cash)|must go|letting go|let go|fire ?sale|"
-    r"cutting loss|below (?:srp|market|cost)|mura na|dirt cheap|"
-    r"giveaway price|clearance|downsiz|moving out|priced to sell", re.I)
+    r"cutting loss|downsiz|moving out|closing shop", re.I)
 # PH locations near Sikatuna Village (Quezon City) rank highest.
 _NEAR = re.compile(r"\b(quezon city|\bqc\b|cubao|katipunan|sikatuna|diliman|"
                    r"kamuning|new manila|project \d|fairview|commonwealth)\b", re.I)

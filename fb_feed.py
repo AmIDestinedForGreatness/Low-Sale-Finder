@@ -193,8 +193,10 @@ def parse_price(text):
     # reasonable price range, and NOT a quantity/age ("60 days", "550 pcs").
     for m in re.finditer(r"(?<![\d/])(\d{2,3}(?:,\d{3})+|\d{2,6})(?![\d/])", text):
         tail = text[m.end():m.end() + 14].lower()
+        if tail[:1] == "%":                      # "70%-90%" is not a price
+            continue
         if re.match(r"\s*(day|days|month|mos|year|yr|yrs|pc|pcs|piece|cards?|"
-                    r"sets?|hrs?|hours?|mins?|% ?off|percent)\b", tail):
+                    r"sets?|hrs?|hours?|mins?|percent)\b", tail):
             continue
         val = float(m.group(1).replace(",", ""))
         if 30 <= val <= 500000:
@@ -344,12 +346,18 @@ def notify(item, source, conn=None):
     if item.get("near"):
         flags.append("\U0001F4CD near you")
 
-    snippet = "\n".join(body.split("\n")[:3])[:300]
-    desc = head + "\n" + ("**" + " · ".join(flags) + "**\n" if flags else "") \
-        + snippet + f"\n[open post]({item['url']})" \
-        + (f" · +{len(imgs)-1} photos" if len(imgs) > 1 else "")
-    embeds = [{"title": f"[{kind_icon}] {item.get('title', 'Listing')[:180]}",
-               "url": item["url"], "description": desc, "color": color}]
+    # single link (the embed title = "View post"), then post title, then desc
+    post_title = (item.get("title", "") or "Listing").strip()[:180]
+    desc_body = "\n".join(body.split("\n")[1:4]).strip()[:300]  # skip line 1 (=title)
+    parts = [f"**{post_title}**", head]
+    if flags:
+        parts.append("**" + " · ".join(flags) + "**")
+    if desc_body:
+        parts.append(desc_body)
+    if len(imgs) > 1:
+        parts.append(f"+{len(imgs)-1} more photos")
+    embeds = [{"title": f"{kind_icon} View post", "url": item["url"],
+               "description": "\n".join(parts)[:1000], "color": color}]
     if imgs:
         embeds[0]["image"] = {"url": imgs[0]}
         for extra in imgs[1:4]:
