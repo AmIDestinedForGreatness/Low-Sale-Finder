@@ -1,12 +1,14 @@
 """
 prices.py — looks up market value for a card given its listing title.
-Supports three backends, chosen in config.PRICE_SOURCE.
+Supports four backends, chosen in config.PRICE_SOURCE.
 
 Returns market value already converted to LOCAL currency, or None if unknown.
 """
 import csv
 import os
 import re
+import sqlite3
+import time
 import requests
 from functools import lru_cache
 from rapidfuzz import fuzz
@@ -143,12 +145,127 @@ def _pc_lookup(title: str):
         return None, None
 
 
+# ══════════════════════════════════════════════════════════════════════
+# BACKEND 4: pokemontcg.io — free card database with TCGplayer market prices
+# ══════════════════════════════════════════════════════════════════════
+# Identification strategy: a card is only priced when the title contains a
+# collector number like "163/132" — name + number + printed-total pins the
+# exact card, which keeps false matches (and false "deals") near zero.
+# Titles without a number (binders, bulk, vague posts) return None.
+# Graded (PSA/BGS) listings return None: TCGplayer market = RAW price.
+# Limitation: the database covers international (EN) sets — JP-exclusive
+# sets won't match; keep those in manual_prices.csv.
+
+_PTCGIO_URL = "https://api.pokemontcg.io/v2/cards"
+_NUM_RE = re.compile(r"\b(\d{1,3})\s*/\s*(\d{1,3})\b")
+_NOISE = {
+    "pokemon", "pokémon", "card", "cards", "tcg", "trading", "japanese", "japan",
+    "korean", "english", "authentic", "legit", "mint", "nm", "near", "condition",
+    "holo", "holofoil", "reverse", "full", "art", "rare", "promo", "sale", "dib",
+    "dibs", "steal", "cheap", "rush", "onhand", "hand", "original", "vintage",
+    "edition", "1st", "first", "set", "base", "illustration", "special", "secret",
+    "alt", "sealed", "slab", "graded", "gem",
+}
+_CACHE_OK_TTL = 3 * 86400   # found prices: refresh every 3 days
+_CACHE_MISS_TTL = 86400     # misses: retry daily (protects the rate limit)
+
+
+def _ptcgio_cache():
+    conn = sqlite3.connect(config.SEEN_DB_PATH)
+    conn.execute("CREATE TABLE IF NOT EXISTS price_cache "
+                 "(key TEXT PRIMARY KEY, price REAL, label TEXT, ts REAL)")
+    return conn
+
+
+def _ptcgio_lookup(title: str):
+    if detect_grade(title):
+        return None, None
+    m = _NUM_RE.search(title)
+    if not m:
+        return None, None
+    number = str(int(m.group(1)))
+    printed_total = str(int(m.group(2)))
+
+    key = f"{number}/{printed_total}|" + " ".join(sorted(
+        w for w in re.findall(r"[a-z']{4,}", title.lower()) if w not in _NOISE))
+    conn = _ptcgio_cache()
+    try:
+        row = conn.execute("SELECT price, label, ts FROM price_cache WHERE key=?",
+                           (key,)).fetchone()
+        if row:
+            price, label, ts = row
+            ttl = _CACHE_OK_TTL if price else _CACHE_MISS_TTL
+            if time.time() - ts < ttl:
+                return (price, label) if price else (None, None)
+
+        headers = {}
+        api_key = getattr(config, "POKEMONTCGIO_API_KEY", "")
+        if api_key and "PASTE" not in api_key:
+            headers["X-Api-Key"] = api_key
+
+        candidates = [w for w in re.findall(r"[a-z']{4,}", title.lower())
+                      if w not in _NOISE][:4]
+        result = (None, None)
+        for word in candidates:
+            # printed-total first (pins the exact set), then number-only
+            for q in (f'name:"{word}" number:{number} set.printedTotal:{printed_total}',
+                      f'name:"{word}" number:{number}'):
+                r = None
+                for attempt in (1, 2):  # the API is slow when cold; retry once
+                    try:
+                        r = requests.get(_PTCGIO_URL, headers=headers, timeout=30,
+                                         params={"q": q, "pageSize": 3,
+                                                 "orderBy": "-set.releaseDate"})
+                        break
+                    except Exception as e:
+                        if attempt == 2:
+                            print(f"  [ptcgio error] {e}")
+                            return None, None
+                if r.status_code == 429:
+                    print("  [ptcgio rate-limited — get a free key at dev.pokemontcg.io]")
+                    return None, None
+                if r.status_code != 200:
+                    continue
+                data = r.json().get("data", [])
+                if not data:
+                    continue
+                card = data[0]
+                tp = (card.get("tcgplayer") or {}).get("prices") or {}
+                for variant in ("holofoil", "normal", "reverseHolofoil",
+                                "1stEditionHolofoil", "unlimitedHolofoil"):
+                    usd = (tp.get(variant) or {}).get("market")
+                    if usd:
+                        set_name = (card.get("set") or {}).get("name", "?")
+                        label = (f"ptcgio:{card.get('name','?')} "
+                                 f"{card.get('number','?')}/{printed_total} "
+                                 f"{set_name} [{variant}]")
+                        result = (float(usd) * config.USD_TO_LOCAL_RATE, label)
+                        break
+                if result[0]:
+                    break
+            if result[0]:
+                break
+
+        conn.execute("INSERT OR REPLACE INTO price_cache (key, price, label, ts) "
+                     "VALUES (?,?,?,?)", (key, result[0], result[1], time.time()))
+        conn.commit()
+        return result
+    finally:
+        conn.close()
+
+
 # ── dispatcher ────────────────────────────────────────────────────────
 def market_value(title: str):
     """Returns (market_value_local, source_label) or (None, None)."""
     src = config.PRICE_SOURCE
     if src == "manual":
         return _manual_lookup(title)
+    if src == "pokemontcgio":
+        # manual CSV is the override (real PH prices); API is the wide net
+        price, label = _manual_lookup(title)
+        if price:
+            return price, label
+        return _ptcgio_lookup(title)
     if src == "pokemonpricetracker":
         return _ppt_lookup(title)
     if src == "pricecharting":

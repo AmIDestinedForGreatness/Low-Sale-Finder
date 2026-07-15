@@ -51,9 +51,16 @@ ALERT_STEAL_FRACTION       = 0.25   # i.e. >=75% off  (separate louder alert)
 MIN_ABSOLUTE_SAVINGS = 3.0  # in local currency
 
 # ─────────────────────────────────────────────────────────────────────
-# PRICE SOURCE — pick one: "pokemonpricetracker", "pricecharting", or "manual"
+# PRICE SOURCE — "manual", "pokemontcgio", "pokemonpricetracker", "pricecharting"
+#   "pokemontcgio" = manual CSV first (your PH prices win), then the free
+#   pokemontcg.io card database (TCGplayer market prices, EN sets only,
+#   needs a collector number like 163/132 in the title to match).
 # ─────────────────────────────────────────────────────────────────────
-PRICE_SOURCE = "manual"
+PRICE_SOURCE = "pokemontcgio"
+
+# Optional free API key from https://dev.pokemontcg.io — raises the rate
+# limit a lot; without one you get ~1000 requests/day (cache softens this).
+POKEMONTCGIO_API_KEY = ""
 
 # For PokemonPriceTracker (free tier available at pokemonpricetracker.com)
 POKEMONPRICETRACKER_API_KEY = "PASTE_KEY_HERE"
