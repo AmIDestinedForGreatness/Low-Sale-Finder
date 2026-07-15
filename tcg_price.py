@@ -24,13 +24,16 @@ PRICE = "https://mpapi.tcgplayer.com/v2/product/{}/pricepoints"
 _H = {"User-Agent": UA, "Content-Type": "application/json", "Accept": "application/json",
       "Origin": "https://www.tcgplayer.com", "Referer": "https://www.tcgplayer.com/"}
 
-# card number token: "077/063", "034/XY-P", "065/PCG-P", "197/SV-P", "XY158"
+# card number token: "077/063", "034/XY-P", "065/PCG-P", "197/SV-P",
+# "XY158", "XY198a" (promo numbers may carry a trailing letter)
 _NUM = re.compile(r"\b(\d{1,3})\s*/\s*(?:\d{1,3}|[A-Za-z]{1,4}-?[A-Za-z]?)|"
-                  r"\b(?:XY|SM|SWSH|BW|HGSS)\d{1,3}\b", re.I)
+                  r"\b(?:XY|SM|SWSH|BW|HGSS)\d{1,3}[A-Za-z]?\b", re.I)
 _GRADE = re.compile(r"\b(psa|bgs|cgc)\s*\d", re.I)
-_NAME_STOP = re.compile(r"\b(pokemon|card|tcg|japanese|japan|korean|english|"
-                        r"vintage|promo|holo|full ?art|secret ?rare|rare|"
-                        r"fullart|rainbow|meiji|mcdonald'?s?|choco(?:late)?)\b", re.I)
+# 'pokemom' etc: tolerate the common misspelling of 'pokemon' in listings
+_NAME_STOP = re.compile(r"\b(pokemon|pokemom|pokémon|card|tcg|japanese|japan|"
+                        r"korean|english|vintage|promo|holo|full ?art|"
+                        r"secret ?rare|rare|fullart|rainbow|meiji|mcdonald'?s?|"
+                        r"choco(?:late)?)\b", re.I)
 
 
 def _lead(number_token: str):
