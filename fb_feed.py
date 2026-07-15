@@ -34,6 +34,12 @@ def db():
     conn.execute("CREATE TABLE IF NOT EXISTS fb_auctions "
                  "(url TEXT PRIMARY KEY, title TEXT, end_ts REAL, "
                  " under_market INTEGER, warned INTEGER, ts REAL)")
+    for col, decl in (("msg_id", "TEXT"), ("tracked", "INTEGER DEFAULT 0"),
+                      ("channel_id", "TEXT")):
+        try:
+            conn.execute(f"ALTER TABLE fb_auctions ADD COLUMN {col} {decl}")
+        except sqlite3.OperationalError:
+            pass
     return conn
 
 def seen(conn, url):
@@ -367,14 +373,6 @@ def notify(item, source, conn=None):
     # live countdown timer for auctions with a parsed end time
     if is_auction and item.get("end_ts"):
         tags.append(f"ends <t:{int(item['end_ts'])}:R>")
-        # register/refresh in the tracker for the 10-min-before ping
-        if conn is not None:
-            conn.execute("INSERT OR REPLACE INTO fb_auctions "
-                         "(url,title,end_ts,under_market,warned,ts) VALUES (?,?,?,?,"
-                         "COALESCE((SELECT warned FROM fb_auctions WHERE url=?),0),?)",
-                         (item["url"], item.get("title", "")[:120], item["end_ts"],
-                          int(bool(item.get("undervalued"))), item["url"], time.time()))
-            conn.commit()
     head = " · ".join(tags)
 
     # loud signals get a mention + colour
@@ -430,12 +428,32 @@ def notify(item, source, conn=None):
     if ping:
         payload["content"] = ping + (f" {flags[0]}" if flags else "")
     try:
-        r = requests.post(wh, json=payload, timeout=15)
+        # ?wait=true returns the created message so we can capture its id and
+        # let the bot map your reaction back to this auction
+        post_url = wh + ("&wait=true" if "?" in wh else "?wait=true")
+        r = requests.post(post_url, json=payload, timeout=15)
         if r.status_code == 429:
             time.sleep(float(r.json().get("retry_after", 5)))
-            requests.post(wh, json=payload, timeout=15)
+            r = requests.post(post_url, json=payload, timeout=15)
         elif r.status_code not in (200, 204):
             print(f"  [discord {r.status_code}] {r.text[:120]}")
+        # register auctions with a parsed end time for react-to-track
+        if is_auction and item.get("end_ts") and conn is not None:
+            try:
+                msg = r.json()
+                msg_id = str(msg.get("id")) if isinstance(msg, dict) else None
+                chan_id = str(msg.get("channel_id")) if isinstance(msg, dict) else None
+            except Exception:
+                msg_id = chan_id = None
+            conn.execute(
+                "INSERT OR REPLACE INTO fb_auctions "
+                "(url,title,end_ts,under_market,warned,ts,msg_id,tracked,channel_id) "
+                "VALUES (?,?,?,?,COALESCE((SELECT warned FROM fb_auctions WHERE url=?),0),"
+                "?,?,COALESCE((SELECT tracked FROM fb_auctions WHERE url=?),0),?)",
+                (item["url"], item.get("title", "")[:120], item["end_ts"],
+                 int(bool(item.get("undervalued"))), item["url"], time.time(),
+                 msg_id, item["url"], chan_id))
+            conn.commit()
     except Exception as e:
         print(f"  [discord error] {e}")
 
@@ -503,8 +521,9 @@ def check_auction_warnings(conn):
         return
     now = time.time()
     window = getattr(config, "FB_AUCTION_WARN_MINUTES", 10) * 60
+    # only auctions you reacted to on Discord (tracked=1) get the reminder
     rows = conn.execute("SELECT url,title,end_ts,under_market FROM fb_auctions "
-                        "WHERE warned=0 AND end_ts BETWEEN ? AND ?",
+                        "WHERE warned=0 AND tracked=1 AND end_ts BETWEEN ? AND ?",
                         (now, now + window)).fetchall()
     for url, title, end_ts, under in rows:
         tag = " \U0001F6A8 UNDER MARKET" if under else ""

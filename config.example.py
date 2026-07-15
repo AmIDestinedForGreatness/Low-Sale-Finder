@@ -114,3 +114,16 @@ POLL_INTERVAL_MINUTES = 10      # how often to re-scan
 HEADLESS = True                 # set False to watch the browser (useful first run / debugging)
 SEEN_DB_PATH = "seen.sqlite"    # tracks already-alerted listings so you aren't spammed
 REQUEST_DELAY_SECONDS = 4       # polite pause between searches
+
+# Discord bot token for react-to-track — loaded from local-secrets (never in repo)
+def _load_bot_token():
+    import os
+    p = os.path.expanduser(r"~/.claude/local-secrets/low-sale-finder.env.local")
+    try:
+        for line in open(p, encoding="utf-8"):
+            if line.startswith("DISCORD_BOT_TOKEN="):
+                return line.split("=", 1)[1].strip()
+    except Exception:
+        pass
+    return ""
+DISCORD_BOT_TOKEN = _load_bot_token()
