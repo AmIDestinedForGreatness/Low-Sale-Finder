@@ -467,7 +467,9 @@ HTML = r"""<!doctype html>
     <div id="valResult" style="margin-top:12px"></div>
   </section>
 
-  <div id="lightbox" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:99;display:flex;align-items:center;justify-content:center;cursor:zoom-out">
+  <!-- display toggled by JS only: inline display:flex here overrode the
+       .hidden class (inline > class) and blacked out the whole page -->
+  <div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:99;align-items:center;justify-content:center;cursor:zoom-out">
     <img id="lightboxImg" style="max-width:92vw;max-height:92vh;border-radius:8px" alt="">
   </div>
 
@@ -579,9 +581,9 @@ $('#valThumb').title = 'click to enlarge (right-click the big view to copy)';
 $('#valThumb').onclick = ()=>{
   if(!$('#valThumb').src) return;
   $('#lightboxImg').src = $('#valThumb').dataset.full || $('#valThumb').src;
-  $('#lightbox').classList.remove('hidden');
+  $('#lightbox').style.display = 'flex';
 };
-$('#lightbox').onclick = ()=>$('#lightbox').classList.add('hidden');
+$('#lightbox').onclick = ()=>{ $('#lightbox').style.display = 'none'; };
 
 async function valUpload(file){
   $('#valQueryRow').classList.remove('hidden');
