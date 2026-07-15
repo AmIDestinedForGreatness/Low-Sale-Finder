@@ -75,15 +75,16 @@ MARKETPLACE_JS = r"""
 }
 """
 
-# FB scrambles group post BODY text (hidden decoy chars) to defeat scrapers,
-# so we extract what stays reliable: poster name, the post permalink, and the
-# listing photos. It's a visual feed — browse the pictures, click through.
+# Group post extraction. The post BODY reads cleanly from dir="auto" blocks
+# (earlier "scramble" was a wrong-selector mistake). We pull body text +
+# price + photos + poster + permalink.
 GROUP_JS = r"""
 () => {
   const out = [];
   const seen = new Set();
+  const BOILER = /^(welcome to|feel free to post|group rules|members|admin|see more$)/i;
   for (const kid of document.querySelectorAll('div[role="feed"] > div')) {
-    // permalink (hover pass hydrates these); strip comment_id/tracking to base
+    // permalink (hover pass hydrates these); normalise to base post url
     let link = '';
     for (const a of kid.querySelectorAll('a[href]')) {
       const m = (a.getAttribute('href') || '').match(/\/groups\/\d+\/(?:posts|permalink)\/(\d+)/);
@@ -91,14 +92,23 @@ GROUP_JS = r"""
     }
     if (!link || seen.has(link)) continue;
 
-    // poster name: first /groups/<id>/user/<uid>/ anchor with visible text
+    // poster name
     let poster = '';
     for (const a of kid.querySelectorAll('a[href*="/user/"]')) {
       const t = (a.innerText || '').trim();
       if (t && t.length > 1 && !/^online status/i.test(t)) { poster = t; break; }
     }
 
-    // photos: real listing images live at scontent, large, not avatars
+    // body text: the meatiest dir=auto block that isn't group boilerplate
+    let body = '';
+    for (const el of kid.querySelectorAll('div[dir="auto"]')) {
+      let t = (el.innerText || '').trim();
+      if (t.length < 4 || BOILER.test(t)) continue;
+      t = t.replace(/\s*See more\s*$/i, '').trim();
+      if (t.length > body.length) body = t;
+    }
+
+    // photos: real listing images (scontent, sizeable, not avatars)
     const imgs = [];
     for (const im of kid.querySelectorAll('img')) {
       const src = im.currentSrc || im.src || '';
@@ -107,15 +117,30 @@ GROUP_JS = r"""
         imgs.push(src);
       }
     }
-    if (!imgs.length) continue;  // no photo = not a sale listing worth showing
 
+    if (!body && !imgs.length) continue;  // empty/UI card
     seen.add(link);
     out.push({url: link, poster: poster || "Facebook seller",
-              images: imgs.slice(0, 4), image: imgs[0]});
+              body: body.slice(0, 500),
+              title: (body.split('\n')[0] || poster || 'Listing').slice(0, 180),
+              images: imgs.slice(0, 4), image: imgs[0] || ''});
   }
   return out;
 }
 """
+
+
+def parse_price(text):
+    """PH listings use k-notation ('26.5k', '₱75k') and plain numbers."""
+    if not text:
+        return None
+    m = re.search(r"(?:₱|php|p)?\s*([\d]{1,3}(?:[.,]\d{1,3})?)\s*k\b", text, re.I)
+    if m:
+        return float(m.group(1).replace(",", "")) * 1000
+    m = re.search(r"(?:₱|php)\s*([\d][\d,]*(?:\.\d+)?)", text, re.I)
+    if m:
+        return float(m.group(1).replace(",", ""))
+    return None
 
 
 def hydrate_permalinks(page, max_hovers=40):
@@ -165,20 +190,26 @@ def collect(page, url, js, label):
 def notify(item, source):
     wh = config.DISCORD_WEBHOOK_URL
     imgs = item.get("images") or ([item["image"]] if item.get("image") else [])
-    # Discord renders a photo gallery when several embeds share one url
+    body = item.get("body", "")
+    cat, cat_color, icon = scraper.classify(body or item.get("title", ""))
+    price = parse_price(body)
+    price_s = f"₱{price:,.0f}" if price else "price in post/photos"
+    head = f"{price_s} · {cat.upper()} · {item.get('poster', 'seller')}"
+    # first ~3 lines of the body as context (purple = Facebook)
+    snippet = "\n".join(body.split("\n")[:3])[:300]
     embeds = [{
-        "title": f"[{source}] \U0001F4E6 {item.get('poster', 'Facebook seller')}",
+        "title": f"[{source}] {icon} {item.get('title', 'Listing')[:180]}",
         "url": item["url"],
-        "description": f"New listing · [open post]({item['url']})"
-                       + (f" · +{len(imgs)-1} more photos" if len(imgs) > 1 else ""),
-        "color": 0x9B59B6,
+        "description": f"{head}\n{snippet}\n[open post]({item['url']})"
+                       + (f" · +{len(imgs)-1} photos" if len(imgs) > 1 else ""),
+        "color": cat_color,
     }]
     if imgs:
         embeds[0]["image"] = {"url": imgs[0]}
         for extra in imgs[1:4]:
             embeds.append({"url": item["url"], "image": {"url": extra}})
     if not wh or "PASTE" in wh:
-        print(f"    {item.get('poster','?')} | {len(imgs)} photo(s) | {item['url']}")
+        print(f"    {price_s} | {cat} | {item.get('title','')[:50]} | {len(imgs)} photo(s)")
         return
     try:
         r = requests.post(wh, json={"embeds": embeds}, timeout=15)
@@ -219,8 +250,16 @@ def run_once(conn):
                 print(f"  [fb error] {e}")
                 continue
             new = [i for i in items if not seen(conn, i["url"])]
-            print(f"  {len(new)} new")
+            # TCG cards only — drop merch / Pokémon GO / video-game posts
+            kept = []
             for i in new:
+                if scraper.is_merch(i.get("body", "") or i.get("title", "")):
+                    mark(conn, i["url"])  # remember so we don't re-check it
+                else:
+                    kept.append(i)
+            print(f"  {len(kept)} new"
+                  + (f" ({len(new)-len(kept)} non-TCG filtered)" if len(new) != len(kept) else ""))
+            for i in kept:
                 notify(i, label)
                 mark(conn, i["url"])
                 time.sleep(1.3)
