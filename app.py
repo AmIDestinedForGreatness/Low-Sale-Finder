@@ -263,53 +263,78 @@ HTML = r"""<!doctype html>
 <title>Yujin's Pokestop</title>
 <style>
   :root{
-    --bg:#0a0e1e; --panel:#121730; --panel2:#1a2140; --line:#252d52;
-    --ink:#e8eaed; --muted:#8f9ab8; --accent:#2ab8f6; --accent2:#3b6cff;
-    --green:#2ecc71; --red:#e74c3c; --radius:14px;
+    --bg:#05070f; --panel:rgba(15,21,40,.78); --panel2:#0c1224; --line:rgba(42,184,246,.13);
+    --line2:rgba(42,184,246,.38); --ink:#d9e6f5; --muted:#66779c; --accent:#2ab8f6; --accent2:#3b6cff;
+    --green:#2ee6a8; --red:#ff5470; --radius:14px;
+    --mono:'Cascadia Code','Consolas',ui-monospace,Menlo,monospace;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);
-    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-  header{padding:22px 28px;border-bottom:1px solid var(--line);
-    display:flex;align-items:center;gap:14px}
-  header h1{font-size:18px;margin:0;font-weight:650;letter-spacing:.2px}
-  .badge{font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
-  .badge.ok{color:var(--green);border-color:#1f5132}
-  .badge.no{color:var(--red);border-color:#5a2520}
-  main{max-width:980px;margin:0 auto;padding:24px;display:grid;gap:20px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
-  .card h2{margin:0 0 14px;font-size:14px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+  body{margin:0;color:var(--ink);
+    font:15px/1.55 'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:
+      radial-gradient(1000px 460px at 50% -120px, rgba(42,184,246,.13), transparent 62%),
+      linear-gradient(rgba(42,184,246,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(42,184,246,.03) 1px, transparent 1px),
+      var(--bg);
+    background-size:auto, 34px 34px, 34px 34px, auto;
+    -webkit-font-smoothing:antialiased}
+  .hero{text-align:center;padding:44px 16px 6px}
+  .hero img{height:112px;filter:drop-shadow(0 0 26px rgba(42,184,246,.5))}
+  .wordmark{font-size:27px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin-top:14px}
+  .wordmark b{color:var(--accent);text-shadow:0 0 18px rgba(42,184,246,.55)}
+  .hero .sub{color:var(--muted);font-family:var(--mono);font-size:11px;
+    letter-spacing:.3em;text-transform:uppercase;margin-top:6px}
+  .badges{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .badge{font-family:var(--mono);font-size:11px;letter-spacing:.06em;padding:4px 11px;
+    border-radius:6px;border:1px solid var(--line);color:var(--muted);background:rgba(12,18,36,.6)}
+  .badge.ok{color:var(--green);border-color:rgba(46,230,168,.35)}
+  .badge.no{color:var(--red);border-color:rgba(255,84,112,.35)}
+  main{max-width:1020px;margin:0 auto;padding:22px;display:grid;gap:18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px;position:relative;overflow:hidden;backdrop-filter:blur(8px)}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,var(--line2),transparent)}
+  .card h2{margin:0 0 16px;font-family:var(--mono);font-size:11.5px;
+    text-transform:uppercase;letter-spacing:.24em;color:var(--accent)}
+  .card h2::before{content:"// ";color:var(--muted)}
   label{display:block;font-size:13px;color:var(--muted);margin:0 0 5px}
   input[type=text],input[type=number],textarea{
     width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink);
-    border-radius:10px;padding:10px 12px;font:inherit;outline:none}
-  input:focus,textarea:focus{border-color:var(--accent2)}
-  textarea{resize:vertical;min-height:70px}
+    border-radius:9px;padding:10px 12px;font:inherit;outline:none;transition:border .15s, box-shadow .15s}
+  input:focus,textarea:focus{border-color:var(--line2);box-shadow:0 0 0 3px rgba(42,184,246,.08)}
   .row{display:flex;gap:14px;flex-wrap:wrap}
   .row>div{flex:1;min-width:130px}
-  .slider-val{color:var(--accent);font-weight:700}
-  button{cursor:pointer;border:none;border-radius:10px;padding:11px 18px;font:inherit;font-weight:600}
-  .btn-primary{background:var(--accent);color:#1a1a00}
-  .btn-primary:hover{filter:brightness(1.08)}
-  .btn-ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
-  .btn-ghost:hover{border-color:var(--accent2)}
-  .btn-row{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+  .slider-val{color:var(--accent);font-weight:700;font-family:var(--mono)}
+  button{cursor:pointer;border:none;border-radius:9px;padding:11px 18px;font:inherit;font-weight:600;
+    transition:filter .15s, box-shadow .15s, border-color .15s}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#03101d;
+    box-shadow:0 0 18px rgba(42,184,246,.25)}
+  .btn-primary:hover{filter:brightness(1.12);box-shadow:0 0 26px rgba(42,184,246,.4)}
+  .btn-ghost{background:rgba(12,18,36,.7);color:var(--ink);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--line2);box-shadow:0 0 14px rgba(42,184,246,.15)}
+  .btn-row{display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap}
   .check{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}
   .check input{width:auto}
-  .deal{border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:10px;
+  #feedState{font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+  #countdown{font-size:17px}
+  #feedDot{animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:.45}}
+  .deal{border:1px solid var(--line);border-radius:11px;padding:14px;margin-top:10px;
     display:flex;justify-content:space-between;gap:14px;align-items:flex-start;background:var(--panel2)}
-  .deal.steal{border-color:#7a3128;box-shadow:0 0 0 1px #7a312855 inset}
+  .deal.steal{border-color:rgba(255,84,112,.4);box-shadow:0 0 0 1px rgba(255,84,112,.15) inset}
   .deal a{color:var(--ink);text-decoration:none;font-weight:600}
   .deal a:hover{color:var(--accent)}
   .deal .meta{font-size:13px;color:var(--muted);margin-top:4px}
-  .pct{font-size:20px;font-weight:800;white-space:nowrap}
+  .pct{font-size:20px;font-weight:800;white-space:nowrap;font-family:var(--mono)}
   .pct.steal{color:var(--red)} .pct.deal{color:var(--green)}
-  .tag{font-size:11px;padding:2px 8px;border-radius:999px;background:#0c0e12;border:1px solid var(--line);color:var(--muted);margin-left:6px}
-  #log{font:12px/1.45 ui-monospace,Menlo,monospace;background:#0b0d11;border:1px solid var(--line);
-    border-radius:10px;padding:12px;max-height:180px;overflow:auto;color:#8fa1bd;white-space:pre-wrap}
+  .tag{font-size:11px;padding:2px 8px;border-radius:999px;background:#0a0f1e;border:1px solid var(--line);color:var(--muted);margin-left:6px}
+  #log{font:12px/1.5 var(--mono);background:#04060d;border:1px solid var(--line);
+    border-radius:9px;padding:12px;max-height:180px;overflow:auto;color:#5d7ba6;white-space:pre-wrap}
   .wl-item{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
   .wl-item:last-child{border-bottom:none}
   .wl-item .q{flex:1}
+  .wl-item a{color:var(--ink);text-decoration:none}
+  .wl-item a:hover{color:var(--accent)}
   .muted{color:var(--muted);font-size:13px}
   .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--muted);
     border-top-color:var(--accent);border-radius:50%;animation:s .7s linear infinite;vertical-align:-2px}
@@ -319,11 +344,12 @@ HTML = r"""<!doctype html>
 <body>
 <main>
 
-  <div style="text-align:center;padding:10px 0 4px">
-    <img src="/logo" alt="Yujin's Pokestop" style="height:190px;max-width:90%;display:none"
-         onload="this.style.display='inline-block'">
-    <div style="display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap">
-      <span class="badge" style="color:var(--accent);border-color:var(--accent)">V__VERSION__</span>
+  <div class="hero">
+    <img src="/logo" alt="" style="display:none" onload="this.style.display='inline-block'">
+    <div class="wordmark">Yujin's <b>Pokestop</b></div>
+    <div class="sub">Carousell card sniper · live feed</div>
+    <div class="badges">
+      <span class="badge" style="color:var(--accent);border-color:var(--line2)">V__VERSION__</span>
       <span id="webhookBadge" class="badge">checking…</span>
       <span id="srcBadge" class="badge"></span>
       <span id="ctryBadge" class="badge"></span>
@@ -350,7 +376,7 @@ HTML = r"""<!doctype html>
   </section>
 
   <section class="card">
-    <h2>📈 Last 7 days</h2>
+    <h2>Last 7 days</h2>
     <div id="statDays" style="display:flex;gap:8px;align-items:flex-end;height:90px;margin-top:6px"></div>
     <div id="statCats" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"></div>
   </section>
@@ -517,7 +543,7 @@ async function loadStats(){
     $('#statDays').innerHTML = s.days.map(d=>`
       <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
         <div class="muted" style="font-size:11px">${d.count}</div>
-        <div style="width:100%;background:var(--accent);opacity:.85;border-radius:4px 4px 0 0;height:${Math.max(3, d.count/max*60)}px"></div>
+        <div style="width:100%;background:linear-gradient(180deg,var(--accent),rgba(42,184,246,.15));border-radius:4px 4px 0 0;height:${Math.max(3, d.count/max*60)}px;box-shadow:0 0 10px rgba(42,184,246,.25)"></div>
         <div class="muted" style="font-size:11px">${d.day}</div>
       </div>`).join('');
     const IC = {graded:'💎', sealed:'📦', bulk:'🗃️', collection:'📚', single:'🃏'};
