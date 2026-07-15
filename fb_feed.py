@@ -446,10 +446,12 @@ def run_once(conn):
     if mp:
         targets.append((mp, MARKETPLACE_JS, "FB-MP"))
     for g in getattr(config, "FB_GROUP_URLS", []):
-        # RECENT_ACTIVITY surfaces both new listings and live auctions (posts
-        # with active bidding bubble up); better for the auction channel than
-        # pure-chronological, and new posts still appear (creation = activity).
-        u = g.rstrip("/") + "/?sorting_setting=RECENT_ACTIVITY"
+        # CHRONOLOGICAL (newest posts) — reliable ~20-item yield and clean
+        # post structure. RECENT_ACTIVITY bumped comments into the feed which
+        # tanked yield (~1 item) and fragmented multi-card gallery posts.
+        # Fresh auctions still appear here when posted (when bidding early
+        # matters most); the react-to-track flow handles live bid updates.
+        u = g.rstrip("/") + "/?sorting_setting=CHRONOLOGICAL"
         targets.append((u, GROUP_JS, "FB-GROUP"))
     if not targets:
         print("Nothing to scan — set FB_MARKETPLACE_URL / FB_GROUP_URLS in config.py")
