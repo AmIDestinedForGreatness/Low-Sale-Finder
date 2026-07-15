@@ -82,22 +82,28 @@ def classify(title: str):
 # ── FB post analysis: auction vs sale, deadends, distress, location ────
 # PH TCG auction lingo: SB=starting bid, MI=min increment, EB=early bird,
 # BIN=buy it now, OB=overbid, "ends"/"bid"/"auction".
+# Auctions AND claim/dib sales — in PH TCG these use the same channel:
+# people comment "dib"/"key"/"steal"/"BO" to claim/buy-out. "steal" and
+# "buy out" here are claim MECHANICS (end-the-claim price), not deal quality.
 _AUCTION_RE = re.compile(
     r"\bauction\b|\bbidding\b|\bbid(?:s|ding)?\b|\bsb\s*[:=]?\s*\d|\bstarting bid\b|"
     r"\bmi\s*[:=]?\s*\d|\bmin(?:imum)? increment\b|\beb\s*[:=]?\s*\d|\bearly bird\b|"
     r"\bbin\s*[:=]?\s*\d|\bbuy ?it ?now\b|\boverbid\b|\bends?\s*(?:in|at|on)\b|"
-    r"\bend ?time\b|\bhighest bid", re.I)
+    r"\bend ?time\b|\bhighest bid|\bdibs?\b|\bkey\b|\bsteal\b|\bbuy ?out\b|\bb\.?o\.?\b|"
+    r"\bclaim\b|leave a dot|drop a dot", re.I)
 # Deadends: no committed price — the seller wants you to negotiate in DMs.
 _DEADEND_RE = re.compile(
     r"\bpm\b(?:[^.\n]{0,15})?(?:price|offer|na|me|to offer|for price)|"
     r"\bpm ?(?:for|to|na|me)\b|\bmake ?(?:an )?offer\b|\bbest offer\b|\bobo\b|"
     r"\bor best offer\b|price\?\s*$|\bhmu\b|\bdm\b(?:[^.\n]{0,10})?(?:price|offer)", re.I)
 # Distress / urgency = likely underpriced. This is the primary deal signal.
+# NOTE: 'steal' deliberately EXCLUDED — in PH TCG it's a claim-sale buy-out
+# mechanic ("DIBS/Steal/Buy Out"), not a distress/underpriced signal.
 _DISTRESS_RE = re.compile(
     r"\brush\b|\basap\b|\burgent\b|quitting|\bquit\b|leaving the hobby|"
     r"need(?:s)? (?:to go|gone|cash)|must go|letting go|let go|fire ?sale|"
-    r"cutting loss|below (?:srp|market|cost)|sulit|mura na|dirt cheap|"
-    r"giveaway price|clearance|downsiz|moving out|\bsteal\b|priced to sell", re.I)
+    r"cutting loss|below (?:srp|market|cost)|mura na|dirt cheap|"
+    r"giveaway price|clearance|downsiz|moving out|priced to sell", re.I)
 # PH locations near Sikatuna Village (Quezon City) rank highest.
 _NEAR = re.compile(r"\b(quezon city|\bqc\b|cubao|katipunan|sikatuna|diliman|"
                    r"kamuning|new manila|project \d|fairview|commonwealth)\b", re.I)
@@ -108,6 +114,20 @@ _NOT_PLACE = re.compile(r"collectr|japanese|english|only|pm|price|market|comps?"
 
 def is_auction(text: str) -> bool:
     return bool(_AUCTION_RE.search(text or ""))
+
+# Claim-sale announcements: the post itself says the real listings will drop
+# in the comment thread ("leave a dot", "claim below", "mine na"...). These are
+# the ONLY posts worth reading comments on.
+_CLAIM_RE = re.compile(
+    r"leave a dot|drop a dot|\bdot\b(?:[^.\n]{0,15})?(?:for|below|updates|claim|notif)|"
+    r"claim sale|claim(?:ing)? below|claim(?:ing)? in the comment|for claiming|"
+    r"mine na\b|\bmine\b\s*\+|comment mine|claim(?:ing)? (?:will|drops?|starts?)|"
+    r"cards?(?:[^.\n]{0,20})?(?:below|in the comment)|listings?(?:[^.\n]{0,15})?"
+    r"(?:below|in the comment)|sabay claim|massive claim|posting below", re.I)
+
+def is_claim_sale(text: str) -> bool:
+    """Post announces a claim sale where listings drop in the comments."""
+    return bool(_CLAIM_RE.search(text or ""))
 
 def is_deadend(text: str) -> bool:
     """No committed price to work with — PM-to-offer / make-offer posts."""

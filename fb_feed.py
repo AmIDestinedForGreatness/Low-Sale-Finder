@@ -300,8 +300,13 @@ def notify(item, source, conn=None):
     body = item.get("body", "")
     price = item.get("price")
     _, cat_color, icon = scraper.classify(body or item.get("title", ""))
-    kind = "AUCTION" if is_auction else "SALE"
-    kind_icon = "\U0001F528" if is_auction else icon  # 🔨 for auctions
+    timed = bool(is_auction and item.get("end_ts"))
+    if timed:
+        kind, kind_icon = "TIMED AUCTION", "⏰"       # ⏰ ends at a set time
+    elif is_auction:
+        kind, kind_icon = "BIDDING/CLAIM", "\U0001F528"   # 🔨 dib/open bid, no end
+    else:
+        kind, kind_icon = "SALE", icon
     cat = item.get("category", "single")
 
     tags = [f"₱{price:,.0f}", kind, cat.upper()]
@@ -324,7 +329,7 @@ def notify(item, source, conn=None):
 
     # loud signals get a mention + colour
     flags = []
-    color = 0xF39C12 if item.get("auction") else cat_color
+    color = 0xF39C12 if timed else (0x9B59B6 if is_auction else cat_color)  # orange / purple / category
     ping = ""
     if item.get("undervalued"):
         flags.append(f"\U0001F6A8 UNDER MARKET ({price/item['market']*100:.0f}% of ~₱{item['market']:,.0f})")
