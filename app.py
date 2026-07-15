@@ -202,12 +202,6 @@ def set_webhook():
     url = (request.get_json(force=True).get("url") or "").strip()
     if not re.match(r"^https://(discord\.com|discordapp\.com|ptb\.discord\.com|canary\.discord\.com)/api/webhooks/\d+/", url):
         return jsonify({"error": "That doesn't look like a Discord webhook URL. It should start with https://discord.com/api/webhooks/…"}), 400
-    try:
-        r = requests.post(url, json={"content": "✅ Carousell Sniper linked — deal alerts will arrive in this channel."}, timeout=10)
-        if r.status_code not in (200, 204):
-            return jsonify({"error": f"Discord rejected it (status {r.status_code}) — copy the URL again."}), 400
-    except Exception as e:
-        return jsonify({"error": f"Couldn't reach Discord: {e}"}), 400
     cfg_path = os.path.join(os.path.dirname(__file__), "config.py")
     with open(cfg_path, encoding="utf-8") as f:
         src = f.read()
@@ -219,6 +213,19 @@ def set_webhook():
         f.write(new_src)
     config.DISCORD_WEBHOOK_URL = url
     return jsonify({"ok": True})
+
+@app.route("/api/webhook/test", methods=["POST"])
+def webhook_test():
+    wh = config.DISCORD_WEBHOOK_URL
+    if not wh or "PASTE" in wh:
+        return jsonify({"error": "no webhook linked yet"}), 400
+    try:
+        r = requests.post(wh, json={"content": "✅ Test ping from Yujin's Pokestop."}, timeout=10)
+        if r.status_code in (200, 204):
+            return jsonify({"ok": True})
+        return jsonify({"error": f"Discord returned {r.status_code}"}), 400
+    except Exception as e:
+        return jsonify({"error": f"Couldn't reach Discord: {e}"}), 400
 
 @app.route("/api/scrape", methods=["POST"])
 def scrape():
@@ -386,11 +393,12 @@ HTML = r"""<!doctype html>
     <p class="muted" style="margin:0 0 12px">
       In Discord: your server → <b>⚙ Server Settings → Integrations → Webhooks → New Webhook → Copy Webhook URL</b> — then paste it here.
     </p>
-    <div class="row">
-      <div style="flex:3"><input type="text" id="whUrl" placeholder="https://discord.com/api/webhooks/…"></div>
-      <div style="flex:0;min-width:auto"><button class="btn-primary" id="whSave">Link + test ping</button></div>
+    <input type="text" id="whUrl" placeholder="https://discord.com/api/webhooks/…">
+    <div class="btn-row">
+      <button class="btn-primary" id="whSave">Link webhook</button>
+      <button class="btn-ghost" id="whTest">Send test ping</button>
+      <span id="whMsg" class="muted"></span>
     </div>
-    <div id="whMsg" class="muted" style="margin-top:8px"></div>
   </section>
 
   <section class="card">
@@ -439,20 +447,24 @@ $('#below').oninput = e => $('#belowLbl').textContent = e.target.value + '%';
 $('#whSave').onclick = async ()=>{
   const url = $('#whUrl').value.trim();
   if(!url){ alert('Paste your webhook URL first.'); return; }
-  $('#whSave').disabled = true; $('#whMsg').textContent = 'testing…';
+  $('#whSave').disabled = true; $('#whMsg').textContent = 'saving…';
   try{
     const r = await fetch('/api/webhook',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({url})});
     const d = await r.json();
-    if(r.ok){
-      $('#whMsg').textContent = '✅ Linked and saved — check your Discord channel for the test ping.';
-      $('#whUrl').value = '';
-      loadSettings();
-    } else {
-      $('#whMsg').textContent = '❌ ' + (d.error || 'failed');
-    }
+    $('#whMsg').textContent = r.ok ? '✅ Linked and saved.' : '❌ ' + (d.error || 'failed');
+    if(r.ok){ $('#whUrl').value=''; loadSettings(); }
   } catch(e){ $('#whMsg').textContent = '❌ ' + e; }
   $('#whSave').disabled = false;
+};
+$('#whTest').onclick = async ()=>{
+  $('#whTest').disabled = true; $('#whMsg').textContent = 'pinging…';
+  try{
+    const r = await fetch('/api/webhook/test',{method:'POST'});
+    const d = await r.json();
+    $('#whMsg').textContent = r.ok ? '✅ Test sent — check your Discord channel.' : '❌ ' + (d.error || 'failed');
+  } catch(e){ $('#whMsg').textContent = '❌ ' + e; }
+  $('#whTest').disabled = false;
 };
 
 function renderDeals(deals, label){
