@@ -181,6 +181,13 @@ class TestValuator(unittest.TestCase):
             ["Evolves from Slugma", "Discard the top card", "Pikachu"])
         self.assertEqual(name, "Pikachu")
 
+    def test_item_card_named_with_noise_word(self):
+        # live catch (Yujin's screenshot): "Weakness Policy" is a real ITEM
+        # card name, but "weakness" was on the body-noise list -> rejected
+        name, number = valuator.guess_query(["Weakness Policy", "164/160"])
+        self.assertEqual(name, "Weakness Policy")
+        self.assertEqual(number, "164/160")
+
     def test_confidence_thresholds(self):
         # L16: a price with almost no sales is a rumor, not a market
         self.assertEqual(valuator._confidence(2, 30)[0], "LOW")     # <3 sales

@@ -193,7 +193,18 @@ def valuator_ocr():
     lines = valuator.ocr_lines(path)
     name, number = valuator.guess_query(lines)
     return jsonify({"query": (name + " " + (number or "")).strip(),
-                    "name": name, "number": number, "lines": lines[:12]})
+                    "name": name, "number": number, "lines": lines[:12],
+                    "file": "/uploads/" + os.path.basename(path)})
+
+
+@app.route("/uploads/<name>")
+def valuator_upload_file(name):
+    # serve back uploaded card photos (click-to-enlarge on the dashboard)
+    safe = os.path.basename(name)
+    p = os.path.join(UPLOAD_DIR, safe)
+    if os.path.exists(p):
+        return send_file(p)
+    return ("", 404)
 
 
 @app.route("/api/valuator/search")
@@ -456,6 +467,10 @@ HTML = r"""<!doctype html>
     <div id="valResult" style="margin-top:12px"></div>
   </section>
 
+  <div id="lightbox" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:99;display:flex;align-items:center;justify-content:center;cursor:zoom-out">
+    <img id="lightboxImg" style="max-width:92vw;max-height:92vh;border-radius:8px" alt="">
+  </div>
+
   <section class="card">
     <h2>Discord alerts</h2>
     <p class="muted" style="margin:0 0 12px">
@@ -558,6 +573,16 @@ dz.ondrop = e=>{ e.preventDefault(); dz.style.borderColor='var(--line)';
   if(e.dataTransfer.files.length) valUpload(e.dataTransfer.files[0]); };
 cf.onchange = ()=>{ if(cf.files.length) valUpload(cf.files[0]); };
 
+// click the thumbnail -> full-size overlay (right-click to copy the photo)
+$('#valThumb').style.cursor = 'zoom-in';
+$('#valThumb').title = 'click to enlarge (right-click the big view to copy)';
+$('#valThumb').onclick = ()=>{
+  if(!$('#valThumb').src) return;
+  $('#lightboxImg').src = $('#valThumb').dataset.full || $('#valThumb').src;
+  $('#lightbox').classList.remove('hidden');
+};
+$('#lightbox').onclick = ()=>$('#lightbox').classList.add('hidden');
+
 async function valUpload(file){
   $('#valQueryRow').classList.remove('hidden');
   $('#valThumb').src = URL.createObjectURL(file);
@@ -566,6 +591,7 @@ async function valUpload(file){
   const fd = new FormData(); fd.append('photo', file);
   try{
     const d = await (await fetch('/api/valuator/ocr',{method:'POST',body:fd})).json();
+    if(d.file) $('#valThumb').dataset.full = d.file;   // server copy, survives refresh
     $('#valQuery').value = d.query || '';
     $('#valMsg').textContent = d.query ? 'read: "' + d.query + '" — fix it if wrong, then Find card'
                                        : 'could not read the photo — type name + number';

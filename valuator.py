@@ -71,6 +71,14 @@ def guess_query(lines):
         # OCR often drops the stylized GX/EX/V suffix — keep what it read
         name = cand
         break
+    if not name:
+        # fallback: ITEM cards are legitimately NAMED with "noise" words
+        # ("Weakness Policy") — accept a multi-word top line after all
+        for ln in lines[:6]:
+            cand = " ".join(re.sub(r"[^A-Za-z' .&-]", " ", ln).split()).strip()
+            if len(cand) >= 3 and len(cand.split()) >= 2:
+                name = cand
+                break
     return name, number
 
 
@@ -81,17 +89,27 @@ def search_candidates(query, size=12):
     m = _NUM_RE.search(query)
     number = (m.group(0).replace(" ", "") if m else "").lower()
     name_q = " ".join(_NUM_RE.sub(" ", query).split()) or query
-    try:
-        r = requests.post(
-            SEARCH + "?q=" + requests.utils.quote(name_q) + "&isList=false",
-            headers=_H, timeout=20, json={
-                "algorithm": "sales_synonym_v2", "from": 0, "size": size,
-                "filters": {"term": {"productLineName": ["pokemon", "pokemon-japan"]},
-                            "range": {}},
-                "context": {"shippingCountry": "US"}, "query": name_q})
-        results = (r.json().get("results") or [{}])[0].get("results", [])
-    except Exception:
-        return []
+
+    def _hit(q):
+        try:
+            r = requests.post(
+                SEARCH + "?q=" + requests.utils.quote(q) + "&isList=false",
+                headers=_H, timeout=20, json={
+                    "algorithm": "sales_synonym_v2", "from": 0, "size": size,
+                    "filters": {"term": {"productLineName": ["pokemon", "pokemon-japan"]},
+                                "range": {}},
+                    "context": {"shippingCountry": "US"}, "query": q})
+            return (r.json().get("results") or [{}])[0].get("results", [])
+        except Exception:
+            return []
+
+    # OCR chops leading letters ("eakness Policy") — when a query finds
+    # nothing, retry with the first word dropped, then the last
+    results, words = _hit(name_q), name_q.split()
+    if not results and len(words) >= 2:
+        results = _hit(" ".join(words[1:]))
+    if not results and len(words) >= 2:
+        results = _hit(" ".join(words[:-1]))
     out = []
     for it in results:
         pid = it.get("productId")
