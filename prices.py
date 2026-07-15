@@ -268,7 +268,12 @@ def market_value(title: str):
         if price:
             return price, label
         import tcg_price
-        return tcg_price.market_value(title)
+        price, label = tcg_price.market_value(title)
+        if price:
+            return price, label
+        # fallback: PriceCharting covers vintage/promo TCGplayer lacks
+        import pc_price
+        return pc_price.market_value(title)
     if src == "pokemontcgio":
         # manual CSV is the override (real PH prices); API is the wide net
         price, label = _manual_lookup(title)
