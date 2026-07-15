@@ -58,6 +58,39 @@ def _extract(title: str):
     return (name or None), number_token
 
 
+def _name_variants(name: str):
+    """Names to try on TCGplayer, widest-net-first. TCGplayer stores XY-era
+    Mega promos as 'M <Name> EX' (e.g. 'M Camerupt EX'), NOT 'Mega <Name>',
+    and its synonym search does NOT bridge the two — so a 'Mega Camerupt'
+    query silently never returns the XY198a promo. Emit both spellings; the
+    strict number match downstream is what keeps precision, so casting a wider
+    search net is safe."""
+    seen, out = set(), []
+    def add(v):
+        v = " ".join((v or "").split())
+        if v and v.lower() not in seen:
+            seen.add(v.lower()); out.append(v)
+    add(name)
+    low = name.lower()
+    if low.startswith("mega "):
+        rest = name[5:].strip()
+        add("M " + rest + " EX")   # 'M Camerupt EX' — the TCGplayer promo spelling
+        add("M " + rest)
+    return out
+
+
+def _num_ok(result_num, token, want_lead):
+    """True if a search result's number matches the listing's number.
+    Promo-form tokens (XY158, XY198a, SM…) must match in FULL — so XY198a
+    (Alt-Art Promo) is NOT confused with XY198 (Jumbo / XY Promos). Slash-form
+    numbers (077/063) keep leading-number matching."""
+    rn = (result_num or "").strip().lower()
+    tk = (token or "").strip().lower()
+    if re.match(r"(xy|sm|swsh|bw|hgss)\d", tk):
+        return rn == tk
+    return _lead(result_num or "") == want_lead
+
+
 def _cache():
     conn = sqlite3.connect(config.SEEN_DB_PATH)
     conn.execute("CREATE TABLE IF NOT EXISTS tcg_cache "
@@ -78,7 +111,7 @@ def _market(pid):
         return None
 
 
-def _search(name, want_lead, prefer_jp):
+def _search(name, number_token, want_lead, prefer_jp, want_jumbo):
     try:
         r = requests.post(
             SEARCH + "?q=" + requests.utils.quote(name) + "&isList=false",
@@ -90,14 +123,20 @@ def _search(name, want_lead, prefer_jp):
         results = (r.json().get("results") or [{}])[0].get("results", [])
     except Exception:
         return None
-    # keep only exact leading-number matches
+    # keep only exact number matches (full token for promos, lead for slash form)
     hits = []
     for it in results:
         num = str((it.get("customAttributes") or {}).get("number") or "")
-        if _lead(num) == want_lead:
+        if _num_ok(num, number_token, want_lead):
             hits.append(it)
     if not hits:
         return None
+    # Jumbo/oversized cards are a different collectible from the real card —
+    # drop them unless the listing itself says jumbo.
+    if not want_jumbo:
+        non_jumbo = [h for h in hits if "jumbo" not in (h.get("setName", "").lower())]
+        if non_jumbo:
+            hits = non_jumbo
     if prefer_jp:
         jp = [h for h in hits if h.get("productLineName") == "pokemon-japan"
               or "japan" in (h.get("setName", "").lower())]
@@ -115,6 +154,7 @@ def market_value(title: str):
         return None, None
     want = _lead(number_token)
     prefer_jp = bool(re.search(r"japan|jp\b|korean", title, re.I))
+    want_jumbo = bool(re.search(r"\bjumbo\b", title, re.I))
 
     key = f"{name.lower()}|{number_token.lower()}|{int(prefer_jp)}"
     conn = _cache()
@@ -123,7 +163,11 @@ def market_value(title: str):
                            (key,)).fetchone()
         if row and time.time() - row[2] < (3 * 86400 if row[0] else 86400):
             return (row[0], row[1]) if row[0] else (None, None)
-        it = _search(name, want, prefer_jp)
+        it = None
+        for variant in _name_variants(name):
+            it = _search(variant, number_token, want, prefer_jp, want_jumbo)
+            if it:
+                break
         price, label = None, None
         if it:
             usd = it.get("marketPrice") or _market(it.get("productId"))
