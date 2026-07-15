@@ -64,6 +64,15 @@ def mark_seen(conn, url, table="seen"):
     conn.execute(f"INSERT OR IGNORE INTO {table} (url, ts) VALUES (?, ?)", (url, time.time()))
     conn.commit()
 
+def claim(conn, url, table="seen"):
+    """Atomically claim a listing before sending it. Returns True only for the
+    caller that actually inserted the row — so a second process (or pass)
+    racing the same URL gets False and skips, preventing duplicate posts."""
+    cur = conn.execute(f"INSERT OR IGNORE INTO {table} (url, ts) VALUES (?, ?)",
+                       (url, time.time()))
+    conn.commit()
+    return cur.rowcount == 1
+
 
 # ── Discord ───────────────────────────────────────────────────────────
 def notify(listing, market, fraction, label, steal):
@@ -227,9 +236,12 @@ def feed_once(conn):
         print(f"  {len(new)} new listing(s)"
               + (f" ({len(merch)} merch filtered)" if merch else ""))
         for L in new:
+            # atomic claim: only the process that inserts the row sends it,
+            # so a duplicate/racing feed process can't double-post
+            if not claim(conn, L["url"], "seen_feed"):
+                continue
             if not have_wh:
                 print(f"    P{L['price']:,.0f} | {L['title'][:60]} | {L['url']}")
-                mark_seen(conn, L["url"], "seen_feed")
                 continue
             try:
                 r = requests.post(wh + "?wait=true", json={"embeds": [feed_embed(L)]}, timeout=15)
@@ -246,7 +258,6 @@ def feed_once(conn):
                 conn.commit()
             except Exception as e:
                 print(f"  [discord error] {e}")
-            mark_seen(conn, L["url"], "seen_feed")
             cat = scraper.classify((L.get("title", "") + " " + L.get("raw", "")).strip())[0]
             conn.execute("INSERT INTO feed_log (url, title, price, category, ts) VALUES (?,?,?,?,?)",
                          (L["url"], L["title"], L["price"], cat, time.time()))

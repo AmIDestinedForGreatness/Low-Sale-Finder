@@ -30,6 +30,10 @@ import prices   # best-effort card valuation
 def db():
     conn = sqlite3.connect(config.SEEN_DB_PATH)
     conn.execute("CREATE TABLE IF NOT EXISTS fb_seen (url TEXT PRIMARY KEY, ts REAL)")
+    # active auctions we're tracking for the 10-min-before-end ping
+    conn.execute("CREATE TABLE IF NOT EXISTS fb_auctions "
+                 "(url TEXT PRIMARY KEY, title TEXT, end_ts REAL, "
+                 " under_market INTEGER, warned INTEGER, ts REAL)")
     return conn
 
 def seen(conn, url):
@@ -38,6 +42,14 @@ def seen(conn, url):
 def mark(conn, url):
     conn.execute("INSERT OR IGNORE INTO fb_seen (url, ts) VALUES (?, ?)", (url, time.time()))
     conn.commit()
+
+def claim(conn, url):
+    """Atomic claim — True only for the inserter, so racing processes/passes
+    can't double-post the same listing."""
+    cur = conn.execute("INSERT OR IGNORE INTO fb_seen (url, ts) VALUES (?, ?)",
+                       (url, time.time()))
+    conn.commit()
+    return cur.rowcount == 1
 
 
 # ── extraction (first-pass selectors; FB churns markup, tune on first run) ──
@@ -129,6 +141,39 @@ GROUP_JS = r"""
   return out;
 }
 """
+
+
+def parse_end_time(text, now=None):
+    """Best-effort auction end time -> unix epoch. Handles the common PH
+    phrasings; returns None when it can't be confident (most freeform posts).
+    Relative forms ('24h', 'ends in 3 hours') are measured from `now`."""
+    import datetime
+    if not text:
+        return None
+    now = now or time.time()
+    t = text.lower()
+
+    # relative: "24 hours", "ends in 3 hrs", "12h", "48hours"
+    m = re.search(r"(?:ends?\s*(?:in|after)?\s*)?(\d{1,3})\s*(?:hours?|hrs?|h)\b", t)
+    if m and ("end" in t or "auction" in t or "hour" in t or "hr" in t):
+        hrs = int(m.group(1))
+        if 1 <= hrs <= 168:
+            return now + hrs * 3600
+
+    # absolute clock: "ends 9pm", "end time 9:30 pm", " closes at 8 pm"
+    m = re.search(r"(?:ends?|end ?time|closes?|closing)\s*(?:at|by|:)?\s*"
+                  r"(\d{1,2})(?::(\d{2}))?\s*([ap])\.?m", t)
+    if m:
+        hr = int(m.group(1)) % 12
+        if m.group(3) == "p":
+            hr += 12
+        minute = int(m.group(2) or 0)
+        dt = datetime.datetime.fromtimestamp(now)
+        end = dt.replace(hour=hr, minute=minute, second=0, microsecond=0)
+        if end.timestamp() <= now:            # already past today -> tomorrow
+            end += datetime.timedelta(days=1)
+        return end.timestamp()
+    return None
 
 
 def parse_price(text):
@@ -225,6 +270,7 @@ def analyze(item):
         return None
     item["price"] = price
     item["auction"] = scraper.is_auction(body)
+    item["end_ts"] = parse_end_time(body) if item["auction"] else None
     item["category"] = scraper.classify(body)[0]
     item["distress"] = scraper.distress_terms(body)
     item["loc"], item["near"] = scraper.location_hint(body)
@@ -235,19 +281,27 @@ def analyze(item):
             market, label = prices.market_value(item.get("title", "") + " " + body)
         except Exception:
             market = None
+    if True:
+        try:
+            market, label = prices.market_value(item.get("title", "") + " " + body)
+        except Exception:
+            market = None
     item["market"] = market
     item["undervalued"] = bool(market and price <= market * config.FB_DEAL_FRACTION)
     return item
 
 
-def notify(item, source):
-    wh = config.DISCORD_WEBHOOK_URL
+def notify(item, source, conn=None):
+    is_auction = item.get("auction")
+    # auctions go to their own channel when configured
+    wh = (getattr(config, "FB_AUCTION_WEBHOOK", "") or config.DISCORD_WEBHOOK_URL) \
+        if is_auction else config.DISCORD_WEBHOOK_URL
     imgs = item.get("images") or ([item["image"]] if item.get("image") else [])
     body = item.get("body", "")
     price = item.get("price")
     _, cat_color, icon = scraper.classify(body or item.get("title", ""))
-    kind = "AUCTION" if item.get("auction") else "SALE"
-    kind_icon = "\U0001F528" if item.get("auction") else icon  # 🔨 for auctions
+    kind = "AUCTION" if is_auction else "SALE"
+    kind_icon = "\U0001F528" if is_auction else icon  # 🔨 for auctions
     cat = item.get("category", "single")
 
     tags = [f"₱{price:,.0f}", kind, cat.upper()]
@@ -255,6 +309,17 @@ def notify(item, source):
         tags.append(("\U0001F4CD " if item.get("near") else "") + item["loc"])
     if item.get("market"):
         tags.append(f"mkt ~₱{item['market']:,.0f}")
+    # live countdown timer for auctions with a parsed end time
+    if is_auction and item.get("end_ts"):
+        tags.append(f"ends <t:{int(item['end_ts'])}:R>")
+        # register/refresh in the tracker for the 10-min-before ping
+        if conn is not None:
+            conn.execute("INSERT OR REPLACE INTO fb_auctions "
+                         "(url,title,end_ts,under_market,warned,ts) VALUES (?,?,?,?,"
+                         "COALESCE((SELECT warned FROM fb_auctions WHERE url=?),0),?)",
+                         (item["url"], item.get("title", "")[:120], item["end_ts"],
+                          int(bool(item.get("undervalued"))), item["url"], time.time()))
+            conn.commit()
     head = " · ".join(tags)
 
     # loud signals get a mention + colour
@@ -304,8 +369,10 @@ def run_once(conn):
     if mp:
         targets.append((mp, MARKETPLACE_JS, "FB-MP"))
     for g in getattr(config, "FB_GROUP_URLS", []):
-        # /?sorting_setting=CHRONOLOGICAL shows newest posts first
-        u = g.rstrip("/") + "/?sorting_setting=CHRONOLOGICAL"
+        # RECENT_ACTIVITY surfaces both new listings and live auctions (posts
+        # with active bidding bubble up); better for the auction channel than
+        # pure-chronological, and new posts still appear (creation = activity).
+        u = g.rstrip("/") + "/?sorting_setting=RECENT_ACTIVITY"
         targets.append((u, GROUP_JS, "FB-GROUP"))
     if not targets:
         print("Nothing to scan — set FB_MARKETPLACE_URL / FB_GROUP_URLS in config.py")
@@ -327,20 +394,56 @@ def run_once(conn):
                 continue
             new = [i for i in items if not seen(conn, i["url"])]
             kept, dropped = [], 0
+            now = time.time()
             for i in new:
                 text = i.get("body", "") or i.get("title", "")
                 # drop merch / Pokémon GO / video-game, then deadends/no-price
                 if scraper.is_merch(text) or analyze(i) is None:
                     mark(conn, i["url"]); dropped += 1
-                else:
-                    kept.append(i)
+                    continue
+                # auction channel: only still-available auctions (not ended)
+                if i.get("auction") and i.get("end_ts") and i["end_ts"] < now:
+                    mark(conn, i["url"]); dropped += 1
+                    continue
+                kept.append(i)
             print(f"  {len(kept)} new" + (f" ({dropped} filtered: merch/no-price/PM-offer)" if dropped else ""))
             for i in kept:
-                notify(i, label)
-                mark(conn, i["url"])
+                if not claim(conn, i["url"]):   # skip if another pass grabbed it
+                    continue
+                notify(i, label, conn)
                 time.sleep(1.3)
             time.sleep(random.randint(8, 20))  # human-ish pause between pages
         ctx.close()
+    check_auction_warnings(conn)
+
+
+def check_auction_warnings(conn):
+    """Ping the auction channel ~10 min before a tracked auction ends."""
+    warn_wh = getattr(config, "FB_AUCTION_WEBHOOK", "") or config.DISCORD_WEBHOOK_URL
+    if not warn_wh or "PASTE" in warn_wh:
+        return
+    now = time.time()
+    window = getattr(config, "FB_AUCTION_WARN_MINUTES", 10) * 60
+    rows = conn.execute("SELECT url,title,end_ts,under_market FROM fb_auctions "
+                        "WHERE warned=0 AND end_ts BETWEEN ? AND ?",
+                        (now, now + window)).fetchall()
+    for url, title, end_ts, under in rows:
+        tag = " \U0001F6A8 UNDER MARKET" if under else ""
+        embed = {"title": f"⏰ ENDING SOON: {title[:150]}",
+                 "url": url, "color": 0xE91E63,
+                 "description": f"Auction ends <t:{int(end_ts)}:R> — <t:{int(end_ts)}:t>\n"
+                                f"[open post]({url})"}
+        try:
+            requests.post(warn_wh, json={"content": f"@everyone auction ending soon{tag}",
+                                         "embeds": [embed]}, timeout=15)
+            conn.execute("UPDATE fb_auctions SET warned=1 WHERE url=?", (url,))
+            conn.commit()
+            print(f"  AUCTION WARN: {title[:45]}".encode("ascii", "replace").decode())
+        except Exception as e:
+            print(f"  [auction warn error] {e}")
+    # purge auctions that ended over an hour ago
+    conn.execute("DELETE FROM fb_auctions WHERE end_ts < ?", (now - 3600,))
+    conn.commit()
 
 
 def main():
@@ -350,12 +453,17 @@ def main():
         print("Done (single pass).")
         return
     base = getattr(config, "FB_POLL_MINUTES", 45)
-    print(f"Starting FB feed loop — ~every {base} min (jittered). Ctrl+C to stop.")
+    print(f"Starting FB feed loop — groups ~every {base} min, auction check every 2 min. Ctrl+C to stop.")
+    next_scan = 0
     while True:
-        run_once(conn)
-        wait = base * random.uniform(0.85, 1.35)
-        print(f"[sleep] {wait:.0f} min")
-        time.sleep(wait * 60)
+        now = time.time()
+        if now >= next_scan:
+            run_once(conn)                       # full group scan (also checks warnings)
+            next_scan = now + base * random.uniform(0.85, 1.35) * 60
+            print(f"[next group scan in {(next_scan-time.time())/60:.0f} min]")
+        else:
+            check_auction_warnings(conn)         # frequent, cheap, no scraping
+        time.sleep(120)
 
 
 if __name__ == "__main__":

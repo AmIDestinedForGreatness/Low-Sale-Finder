@@ -102,6 +102,10 @@ FB_POLL_MINUTES = 30            # cycle through all groups; jitter added
 FB_HEADLESS = True              # background operation (aged logged-in account)
 FB_DEAL_FRACTION = 0.78         # mass-ping when price <= 78% of TCGplayer market x rate
 FB_MAX_POSTS_PER_GROUP = 20     # recent posts to inspect per group per pass
+# Separate Discord webhook for AUCTIONS (own channel). Blank = use the main one.
+FB_AUCTION_WEBHOOK = ""
+# Ping this many minutes before an auction's parsed end time.
+FB_AUCTION_WARN_MINUTES = 10
 
 # ─────────────────────────────────────────────────────────────────────
 # RUNTIME
