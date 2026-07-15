@@ -28,7 +28,6 @@ import engine
 from version import VERSION
 
 STATUS_PATH = os.path.join(os.path.dirname(__file__), "feed_status.json")
-GRAILS_PATH = os.path.join(os.path.dirname(__file__), "grails.json")
 
 
 def _feed_online():
@@ -82,8 +81,6 @@ def _watchdog():
 
 app = Flask(__name__)
 
-WATCHLIST_PATH = os.path.join(os.path.dirname(__file__), "watchlist.json")
-
 # ── shared state for the async scrape (single job at a time) ──────────
 _job = {"running": False, "log": [], "deals": [], "label": ""}
 _lock = threading.Lock()
@@ -109,21 +106,6 @@ def _run_job(queries, below, steal, push, label):
     finally:
         with _lock:
             _job["running"] = False
-
-
-# ── watchlist storage ─────────────────────────────────────────────────
-def load_watchlist():
-    if not os.path.exists(WATCHLIST_PATH):
-        return []
-    try:
-        with open(WATCHLIST_PATH) as f:
-            return json.load(f)
-    except Exception:
-        return []
-
-def save_watchlist(items):
-    with open(WATCHLIST_PATH, "w") as f:
-        json.dump(items, f, indent=2)
 
 
 # ── routes ────────────────────────────────────────────────────────────
@@ -160,25 +142,23 @@ def feedstatus():
     })
 
 
-@app.route("/api/grails", methods=["GET", "POST", "DELETE"])
-def grails():
-    try:
-        with open(GRAILS_PATH, encoding="utf-8") as f:
-            items = json.load(f)
-    except Exception:
-        items = []
-    if request.method == "POST":
-        kw = (request.get_json(force=True).get("keyword") or "").strip()
-        if kw and kw.lower() not in [i.lower() for i in items]:
-            items.append(kw)
-    if request.method == "DELETE":
-        idx = int(request.args.get("index", -1))
-        if 0 <= idx < len(items):
-            items.pop(idx)
-    if request.method in ("POST", "DELETE"):
-        with open(GRAILS_PATH, "w", encoding="utf-8") as f:
-            json.dump(items, f, indent=2)
-    return jsonify(items)
+@app.route("/api/restart", methods=["POST"])
+def restart():
+    """Kill the chosen process; loop.bat relaunches it ~30s later."""
+    target = (request.get_json(force=True).get("target") or "feed").strip()
+    if target == "feed":
+        import subprocess
+        subprocess.run(
+            ["powershell", "-NoProfile", "-Command",
+             "Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | "
+             "Where-Object { $_.CommandLine -like '*--feed*' } | "
+             "ForEach-Object { Stop-Process -Id $_.ProcessId -Force }"],
+            capture_output=True, timeout=30)
+        return jsonify({"ok": True, "msg": "feed restarting (~30s)"})
+    if target == "dashboard":
+        threading.Timer(1.0, lambda: os._exit(0)).start()
+        return jsonify({"ok": True, "msg": "dashboard restarting (~30s)"})
+    return jsonify({"error": "unknown target"}), 400
 
 
 @app.route("/api/stats")
@@ -274,56 +254,6 @@ def scrape_status():
             "label": _job["label"],
         })
 
-@app.route("/api/watchlist", methods=["GET", "POST", "DELETE"])
-def watchlist():
-    items = load_watchlist()
-    if request.method == "GET":
-        return jsonify(items)
-    if request.method == "POST":
-        data = request.get_json(force=True)
-        items.append({
-            "query": data["query"].strip(),
-            "below_pct": float(data.get("below_pct", 20)),
-        })
-        save_watchlist(items)
-        return jsonify(items)
-    if request.method == "DELETE":
-        idx = int(request.args.get("index", -1))
-        if 0 <= idx < len(items):
-            items.pop(idx)
-            save_watchlist(items)
-        return jsonify(items)
-
-@app.route("/api/watchlist/run", methods=["POST"])
-def watchlist_run():
-    if _job["running"]:
-        return jsonify({"error": "a scan is already running"}), 409
-    items = load_watchlist()
-    if not items:
-        return jsonify({"error": "watchlist is empty"}), 400
-    push = bool(request.get_json(force=True).get("push", True))
-
-    # Each item can have its own threshold, so run them as a small batch job.
-    def run_all():
-        with _lock:
-            _job.update(running=True, log=[], deals=[], label="watchlist")
-        all_deals = []
-        try:
-            for it in items:
-                below = 1 - float(it.get("below_pct", 20)) / 100.0
-                d = engine.run_scan([it["query"]], below_fraction=below,
-                                    push_discord=push, respect_seen=push,
-                                    progress=_progress)
-                all_deals.extend(d)
-            all_deals.sort(key=lambda x: x["fraction"])
-            with _lock:
-                _job["deals"] = all_deals
-        finally:
-            with _lock:
-                _job["running"] = False
-
-    threading.Thread(target=run_all, daemon=True).start()
-    return jsonify({"started": True})
 
 
 # ── the single-page UI (kept in one string so it's one file to run) ───
@@ -387,16 +317,18 @@ HTML = r"""<!doctype html>
   .hidden{display:none}
 </style></head>
 <body>
-<header>
-  <img src="/logo" alt="" style="height:38px;border-radius:10px;display:none"
-       onload="this.style.display='inline-block'">
-  <h1>Yujin's Pokestop</h1>
-  <span class="badge" style="color:var(--accent);border-color:var(--accent)">V__VERSION__</span>
-  <span id="webhookBadge" class="badge">checking…</span>
-  <span id="srcBadge" class="badge"></span>
-  <span id="ctryBadge" class="badge"></span>
-</header>
 <main>
+
+  <div style="text-align:center;padding:10px 0 4px">
+    <img src="/logo" alt="Yujin's Pokestop" style="height:190px;max-width:90%;display:none"
+         onload="this.style.display='inline-block'">
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap">
+      <span class="badge" style="color:var(--accent);border-color:var(--accent)">V__VERSION__</span>
+      <span id="webhookBadge" class="badge">checking…</span>
+      <span id="srcBadge" class="badge"></span>
+      <span id="ctryBadge" class="badge"></span>
+    </div>
+  </div>
 
   <section class="card">
     <h2>Live status</h2>
@@ -409,16 +341,12 @@ HTML = r"""<!doctype html>
       <div class="muted" id="lastScan"></div>
       <div class="muted" id="lanUrl" style="margin-left:auto"></div>
     </div>
-    <div id="recentBox" style="margin-top:12px"><p class="muted">loading…</p></div>
-  </section>
-
-  <section class="card">
-    <h2>🚨 Grail alerts <span class="muted" style="text-transform:none;letter-spacing:0">— pings @everyone the moment a keyword appears, any price</span></h2>
-    <div class="row">
-      <div style="flex:2"><input type="text" id="grailKw" placeholder="moonbreon / umbreon vmax alt / charizard upc"></div>
-      <div style="flex:0;min-width:auto"><button class="btn-primary" id="grailAdd">+ Add grail</button></div>
+    <div class="btn-row">
+      <button class="btn-ghost" id="restartFeed">🔄 Restart feed</button>
+      <button class="btn-ghost" id="restartDash">🔄 Restart dashboard</button>
+      <span id="restartMsg" class="muted"></span>
     </div>
-    <div id="grailList" style="margin-top:12px"></div>
+    <div id="recentBox" style="margin-top:12px"><p class="muted">loading…</p></div>
   </section>
 
   <section class="card">
@@ -452,20 +380,6 @@ HTML = r"""<!doctype html>
       <label class="check"><input type="checkbox" id="push"> Send results to Discord</label>
       <span id="status" class="muted"></span>
     </div>
-  </section>
-
-  <section class="card">
-    <h2>Watchlist</h2>
-    <div class="row">
-      <div style="flex:2"><label>Card</label><input type="text" id="wlQuery" placeholder="moonbreon umbreon vmax alt art"></div>
-      <div><label>% under market</label><input type="number" id="wlPct" value="20" min="1" max="95"></div>
-    </div>
-    <div class="btn-row">
-      <button class="btn-ghost" id="wlAdd">+ Add to watchlist</button>
-      <button class="btn-primary" id="wlRun">Scrape watchlist</button>
-      <label class="check"><input type="checkbox" id="wlPush" checked> Send to Discord</label>
-    </div>
-    <div id="wlList" style="margin-top:12px"></div>
   </section>
 
   <section class="card">
@@ -543,7 +457,7 @@ function startPolling(){
     } else {
       $('#status').textContent = '';
       renderDeals(s.deals||[], s.label);
-      $('#scrapeBtn').disabled = false; $('#wlRun').disabled = false;
+      $('#scrapeBtn').disabled = false;
       clearInterval(poll); poll = null;
     }
   }, 1200);
@@ -554,34 +468,6 @@ $('#scrapeBtn').onclick = async ()=>{
   const r = await fetch('/api/scrape',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({queries: [], below_pct:+$('#below').value, push:$('#push').checked})});
   if(!r.ok){ alert((await r.json()).error||'error'); $('#scrapeBtn').disabled=false; return; }
-  startPolling();
-};
-
-async function loadWatchlist(){
-  const items = await (await fetch('/api/watchlist')).json();
-  const box = $('#wlList');
-  if(!items.length){ box.innerHTML='<p class="muted">Watchlist empty.</p>'; return; }
-  box.innerHTML = items.map((it,i)=>`
-    <div class="wl-item">
-      <div class="q">${escapeHtml(it.query)}</div>
-      <div class="muted">${it.below_pct}% under</div>
-      <button class="btn-ghost" data-i="${i}" style="padding:6px 12px">Remove</button>
-    </div>`).join('');
-  box.querySelectorAll('button[data-i]').forEach(b=>b.onclick=async()=>{
-    await fetch('/api/watchlist?index='+b.dataset.i,{method:'DELETE'}); loadWatchlist();
-  });
-}
-$('#wlAdd').onclick = async ()=>{
-  const query = $('#wlQuery').value.trim(); if(!query){ alert('Enter a card.'); return; }
-  await fetch('/api/watchlist',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({query, below_pct:+$('#wlPct').value})});
-  $('#wlQuery').value=''; loadWatchlist();
-};
-$('#wlRun').onclick = async ()=>{
-  $('#wlRun').disabled = true;
-  const r = await fetch('/api/watchlist/run',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({push:$('#wlPush').checked})});
-  if(!r.ok){ alert((await r.json()).error||'error'); $('#wlRun').disabled=false; return; }
   startPolling();
 };
 
@@ -611,25 +497,17 @@ async function loadFeedStatus(){
 }
 setInterval(loadFeedStatus, 5000); loadFeedStatus();
 
-// ── grails ──
-async function loadGrails(){
-  const items = await (await fetch('/api/grails')).json();
-  const box = $('#grailList');
-  box.innerHTML = items.length ? items.map((g,i)=>`
-    <div class="wl-item"><div class="q">🚨 ${escapeHtml(g)}</div>
-    <button class="btn-ghost" data-g="${i}" style="padding:6px 12px">Remove</button></div>`).join('')
-    : '<p class="muted">No grails yet — add the cards you\'d drop everything for.</p>';
-  box.querySelectorAll('button[data-g]').forEach(b=>b.onclick=async()=>{
-    await fetch('/api/grails?index='+b.dataset.g,{method:'DELETE'}); loadGrails();
-  });
+// ── restart buttons ──
+async function restartTarget(target){
+  if(!confirm('Restart the ' + target + '? It comes back automatically in ~30 seconds.')) return;
+  const r = await fetch('/api/restart',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({target})});
+  const d = await r.json().catch(()=>({}));
+  $('#restartMsg').textContent = d.msg || d.error || 'requested';
+  setTimeout(()=>{ $('#restartMsg').textContent=''; }, 40000);
 }
-$('#grailAdd').onclick = async ()=>{
-  const keyword = $('#grailKw').value.trim(); if(!keyword) return;
-  await fetch('/api/grails',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({keyword})});
-  $('#grailKw').value=''; loadGrails();
-};
-loadGrails();
+$('#restartFeed').onclick = ()=>restartTarget('feed');
+$('#restartDash').onclick = ()=>restartTarget('dashboard');
 
 // ── stats ──
 async function loadStats(){
@@ -656,7 +534,7 @@ setInterval(()=>{
   el.textContent = String(Math.floor(left/60)).padStart(2,'0') + ':' + String(left%60).padStart(2,'0');
 }, 1000);
 
-loadSettings(); loadWatchlist();
+loadSettings();
 </script>
 </body></html>"""
 

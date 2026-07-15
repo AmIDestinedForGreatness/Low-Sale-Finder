@@ -39,6 +39,25 @@ CATEGORY_RULES = [
     ("collection", 0x1ABC9C, "📚", re.compile(r"\b(binders?|collections?|albums?|dibs?)\b", re.I)),
 ]
 
+# merch filter: Pokémon *products* (plush, hats, figures...) are not cards.
+# A listing is dropped when it matches merch terms and shows NO card signal.
+_MERCH_RE = re.compile(
+    r"\b(plush(?:ie)?s?|stuffed|hats?|caps?|beanies?|shirts?|t-?shirts?|hoodies?|"
+    r"jackets?|keychains?|key ?chains?|figures?|figurines?|funko|nendoroid|mugs?|"
+    r"tumblers?|stickers?|decals?|toys?|lego|squishmallows?|backpacks?|bags?|"
+    r"wallets?|lanyards?|costumes?|cosplay|onesies?|pajamas?|slippers?|crocs|"
+    r"phone ?cases?|posters?|tarps?|clocks?|lamps?|pillows?|blankets?|towels?|"
+    r"umbrellas?|plates?|bowls?|bottles?|jewelry|necklaces?|earrings?|charms?)\b", re.I)
+_CARDY_RE = re.compile(
+    r"\bcards?\b|\btcg\b|\bpsa\b|\bbgs\b|\bcgc\b|slab|booster|\betb\b|elite trainer|"
+    r"vmax|vstar|\bex\b|\bgx\b|holo|binder|\bpromo\b|\d{1,3}\s*/\s*\d{1,3}", re.I)
+
+def is_merch(text: str) -> bool:
+    """True when the listing is Pokémon merchandise rather than cards."""
+    t = text or ""
+    return bool(_MERCH_RE.search(t)) and not _CARDY_RE.search(t)
+
+
 def classify(title: str):
     """Returns (category_name, embed_color, icon) for a listing title."""
     for name, color, icon, pat in CATEGORY_RULES:

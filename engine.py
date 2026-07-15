@@ -96,6 +96,8 @@ def run_scan(queries, *, below_fraction=None, steal_fraction=None,
                 continue
             if L.get("status") in ("sold", "reserved"):
                 continue  # nothing to snipe
+            if scraper.is_merch(L.get("title", "") + " " + L.get("raw", "")):
+                continue  # merch, not cards
             if respect_seen and _seen(conn, L["url"]):
                 continue
 

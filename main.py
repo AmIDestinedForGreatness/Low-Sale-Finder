@@ -56,15 +56,6 @@ def db():
     return conn
 
 
-# ── grail watchlist: keywords that ping @everyone no matter the price ──
-GRAILS_PATH = os.path.join(os.path.dirname(__file__), "grails.json")
-
-def load_grails():
-    try:
-        with open(GRAILS_PATH, encoding="utf-8") as f:
-            return [str(g).lower().strip() for g in json.load(f) if str(g).strip()]
-    except Exception:
-        return []
 
 def already_seen(conn, url, table="seen"):
     return conn.execute(f"SELECT 1 FROM {table} WHERE url=?", (url,)).fetchone() is not None
@@ -123,6 +114,8 @@ def evaluate(listing, conn):
         return
     if listing.get("status") in ("sold", "reserved"):
         return  # nothing to snipe
+    if scraper.is_merch(listing.get("title", "") + " " + listing.get("raw", "")):
+        return  # merch, not cards
 
     market, label = prices.market_value(listing["title"])
     if not market or market <= 0:
@@ -224,9 +217,15 @@ def feed_once(conn):
                     conn.commit()
 
         # 2) send new listings (one message each so we can edit them later)
-        grails = load_grails()
         new = [L for L in listings if not already_seen(conn, L["url"], "seen_feed")]
-        print(f"  {len(new)} new listing(s)")
+        # cards only — Pokémon merch (plush/hats/figures...) never hits the feed
+        merch = [L for L in new
+                 if scraper.is_merch(L.get("title", "") + " " + L.get("raw", ""))]
+        for L in merch:
+            mark_seen(conn, L["url"], "seen_feed")  # don't re-inspect next pass
+        new = [L for L in new if L not in merch]
+        print(f"  {len(new)} new listing(s)"
+              + (f" ({len(merch)} merch filtered)" if merch else ""))
         for L in new:
             if not have_wh:
                 print(f"    P{L['price']:,.0f} | {L['title'][:60]} | {L['url']}")
@@ -245,19 +244,6 @@ def feed_once(conn):
                 conn.execute("INSERT OR REPLACE INTO feed_msgs (url, msg_id, status, ts, price) VALUES (?,?,?,?,?)",
                              (L["url"], msg_id, L.get("status") or "", time.time(), L["price"]))
                 conn.commit()
-                # grail hit: separate loud ping, regardless of price
-                text = (L.get("title", "") + " " + L.get("raw", "")).lower()
-                hits = [g for g in grails if g in text]
-                if hits:
-                    ge = feed_embed(L)
-                    ge["title"] = ("\U0001F6A8 GRAIL — " + ge["title"])[:230]
-                    ge["color"] = 0xFFD700
-                    try:
-                        requests.post(wh, json={"content": f"@everyone GRAIL match: **{hits[0]}**",
-                                                "embeds": [ge]}, timeout=15)
-                        print(f"  GRAIL HIT ({hits[0]}): {L['title'][:45]}".encode("ascii", "replace").decode())
-                    except Exception as ex:
-                        print(f"  [discord error] {ex}")
             except Exception as e:
                 print(f"  [discord error] {e}")
             mark_seen(conn, L["url"], "seen_feed")
