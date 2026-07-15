@@ -521,31 +521,49 @@ def run_once(conn):
 
 
 def check_auction_warnings(conn):
-    """Ping the auction channel ~10 min before a tracked auction ends."""
+    """Runs every ~2 min: (1) ~10-min-before-end reminder for tracked auctions,
+    (2) delete the Discord post of any auction that has ended."""
     warn_wh = getattr(config, "FB_AUCTION_WEBHOOK", "") or config.DISCORD_WEBHOOK_URL
     if not warn_wh or "PASTE" in warn_wh:
         return
     now = time.time()
     window = getattr(config, "FB_AUCTION_WARN_MINUTES", 10) * 60
-    # only auctions you reacted to on Discord (tracked=1) get the reminder
+
+    # (1) 10-min-before-end reminder — only auctions you reacted to (tracked=1)
     rows = conn.execute("SELECT url,title,end_ts,under_market FROM fb_auctions "
                         "WHERE warned=0 AND tracked=1 AND end_ts BETWEEN ? AND ?",
                         (now, now + window)).fetchall()
     for url, title, end_ts, under in rows:
-        tag = " \U0001F6A8 UNDER MARKET" if under else ""
         embed = {"title": f"⏰ ENDING SOON: {title[:150]}",
                  "url": url, "color": 0xE91E63,
                  "description": f"Auction ends <t:{int(end_ts)}:R> — <t:{int(end_ts)}:t>\n"
                                 f"[open post]({url})"}
         try:
-            requests.post(warn_wh, json={"content": f"@everyone auction ending soon{tag}",
+            requests.post(warn_wh, json={"content": "@everyone auction ending soon",
                                          "embeds": [embed]}, timeout=15)
             conn.execute("UPDATE fb_auctions SET warned=1 WHERE url=?", (url,))
             conn.commit()
             print(f"  AUCTION WARN: {title[:45]}".encode("ascii", "replace").decode())
         except Exception as e:
             print(f"  [auction warn error] {e}")
-    # purge auctions that ended over an hour ago
+
+    # (2) auction has ended -> delete its Discord post, then drop the row.
+    # A small grace (30s) avoids deleting exactly on the boundary.
+    ended = conn.execute("SELECT url,title,msg_id FROM fb_auctions "
+                         "WHERE end_ts < ? AND msg_id IS NOT NULL",
+                         (now - 30,)).fetchall()
+    for url, title, msg_id in ended:
+        try:
+            r = requests.delete(f"{warn_wh}/messages/{msg_id}", timeout=15)
+            if r.status_code in (200, 204, 404):   # 404 = already gone
+                print(f"  AUCTION ENDED, post deleted: {title[:40]}".encode("ascii", "replace").decode())
+            else:
+                print(f"  [auction delete {r.status_code}] {r.text[:80]}")
+        except Exception as e:
+            print(f"  [auction delete error] {e}")
+        conn.execute("DELETE FROM fb_auctions WHERE url=?", (url,))
+        conn.commit()
+    # also drop any stale rows with no msg_id once well past end
     conn.execute("DELETE FROM fb_auctions WHERE end_ts < ?", (now - 3600,))
     conn.commit()
 
