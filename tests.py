@@ -13,6 +13,7 @@ import unittest
 
 import scraper
 import tcg_price
+import valuator
 from fb_feed import parse_price, parse_end_time, parse_auction
 
 
@@ -158,6 +159,34 @@ class TestTcgMatching(unittest.TestCase):
         # graded slabs must never get a raw-card price
         self.assertEqual(tcg_price.market_value("PSA 9 Charizard 4/102"),
                          (None, None))
+
+
+class TestValuator(unittest.TestCase):
+    """Card valuator (V0.5): OCR-guess + velocity confidence (L16)."""
+
+    def test_guess_query_from_real_ocr(self):
+        # actual Windows-OCR output from the Magcargo GX scan
+        lines = ["Magcargo", "STAGEI", "Evolves from Slugma",
+                 "Crushing Charge", "Ability", "Hp2100"]
+        name, number = valuator.guess_query(lines)
+        self.assertEqual(name, "Magcargo")
+        self.assertIsNone(number)
+
+    def test_guess_query_reads_number(self):
+        name, number = valuator.guess_query(["Charizard", "006/165"])
+        self.assertEqual(number, "006/165")
+
+    def test_body_text_never_becomes_the_name(self):
+        name, _ = valuator.guess_query(
+            ["Evolves from Slugma", "Discard the top card", "Pikachu"])
+        self.assertEqual(name, "Pikachu")
+
+    def test_confidence_thresholds(self):
+        # L16: a price with almost no sales is a rumor, not a market
+        self.assertEqual(valuator._confidence(2, 30)[0], "LOW")     # <3 sales
+        self.assertEqual(valuator._confidence(25, 20)[0], "HIGH")   # >0.5/day
+        self.assertEqual(valuator._confidence(5, 14)[0], "MED")
+        self.assertEqual(valuator._confidence(3, 300)[0], "LOW")    # thin
 
 
 if __name__ == "__main__":

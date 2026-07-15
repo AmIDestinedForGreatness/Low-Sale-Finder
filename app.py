@@ -25,9 +25,11 @@ from flask import Flask, request, jsonify, Response, send_file
 
 import config
 import engine
+import valuator
 from version import VERSION
 
 STATUS_PATH = os.path.join(os.path.dirname(__file__), "feed_status.json")
+UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 
 
 def _feed_online():
@@ -174,6 +176,45 @@ def restart():
         threading.Timer(1.0, lambda: os._exit(0)).start()
         return jsonify({"ok": True, "msg": "dashboard restarting (~30s)"})
     return jsonify({"error": "unknown target"}), 400
+
+
+# ── card valuator: photo -> OCR -> candidates -> real-sold valuation ──
+@app.route("/api/valuator/ocr", methods=["POST"])
+def valuator_ocr():
+    f = request.files.get("photo")
+    if not f:
+        return jsonify({"error": "no photo"}), 400
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    ext = os.path.splitext(f.filename or "")[1].lower() or ".jpg"
+    if ext not in (".jpg", ".jpeg", ".png", ".bmp", ".webp"):
+        return jsonify({"error": "not an image"}), 400
+    path = os.path.join(UPLOAD_DIR, f"card_{int(time.time())}{ext}")
+    f.save(path)
+    lines = valuator.ocr_lines(path)
+    name, number = valuator.guess_query(lines)
+    return jsonify({"query": (name + " " + (number or "")).strip(),
+                    "name": name, "number": number, "lines": lines[:12]})
+
+
+@app.route("/api/valuator/search")
+def valuator_search():
+    q = (request.args.get("q") or "").strip()
+    if len(q) < 2:
+        return jsonify({"candidates": []})
+    return jsonify({"candidates": valuator.search_candidates(q)})
+
+
+@app.route("/api/valuator/value")
+def valuator_value():
+    try:
+        pid = int(request.args.get("pid", ""))
+    except ValueError:
+        return jsonify({"error": "bad pid"}), 400
+    try:
+        ph = float(request.args.get("ph_factor", 1.2))
+    except ValueError:
+        ph = 1.2
+    return jsonify(valuator.valuate(pid, ph_factor=max(0.5, min(3.0, ph))))
 
 
 @app.route("/api/stats")
@@ -398,6 +439,24 @@ HTML = r"""<!doctype html>
   </section>
 
   <section class="card">
+    <h2>Card valuator</h2>
+    <p class="muted" style="margin:4px 0 10px">Drop a card photo — I read it, you confirm the exact card, it prices from <b>real recent sales</b>.</p>
+    <div id="dropZone" style="border:2px dashed var(--line);border-radius:10px;padding:22px;text-align:center;cursor:pointer">
+      <div style="font-size:26px">🃏</div>
+      <div>Drop card photo here or <b>click to choose</b></div>
+      <input type="file" id="cardFile" accept="image/*" style="display:none">
+    </div>
+    <div id="valQueryRow" class="hidden" style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <img id="valThumb" style="height:64px;border-radius:6px" alt="">
+      <input type="text" id="valQuery" placeholder="card name + number" style="flex:1;min-width:200px">
+      <button class="btn-primary" id="valSearch">Find card</button>
+      <span id="valMsg" class="muted"></span>
+    </div>
+    <div id="valCands" style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px"></div>
+    <div id="valResult" style="margin-top:12px"></div>
+  </section>
+
+  <section class="card">
     <h2>Discord alerts</h2>
     <p class="muted" style="margin:0 0 12px">
       In Discord: your server → <b>⚙ Server Settings → Integrations → Webhooks → New Webhook → Copy Webhook URL</b> — then paste it here.
@@ -489,6 +548,76 @@ async function loadFeedStatus(){
   }catch(e){}
 }
 setInterval(loadFeedStatus, 5000); loadFeedStatus();
+
+// ── card valuator ──
+const dz = $('#dropZone'), cf = $('#cardFile');
+dz.onclick = ()=>cf.click();
+dz.ondragover = e=>{ e.preventDefault(); dz.style.borderColor='var(--accent)'; };
+dz.ondragleave = ()=>{ dz.style.borderColor='var(--line)'; };
+dz.ondrop = e=>{ e.preventDefault(); dz.style.borderColor='var(--line)';
+  if(e.dataTransfer.files.length) valUpload(e.dataTransfer.files[0]); };
+cf.onchange = ()=>{ if(cf.files.length) valUpload(cf.files[0]); };
+
+async function valUpload(file){
+  $('#valQueryRow').classList.remove('hidden');
+  $('#valThumb').src = URL.createObjectURL(file);
+  $('#valMsg').innerHTML = '<span class="spin"></span> reading card…';
+  $('#valCands').innerHTML = ''; $('#valResult').innerHTML = '';
+  const fd = new FormData(); fd.append('photo', file);
+  try{
+    const d = await (await fetch('/api/valuator/ocr',{method:'POST',body:fd})).json();
+    $('#valQuery').value = d.query || '';
+    $('#valMsg').textContent = d.query ? 'read: "' + d.query + '" — fix it if wrong, then Find card'
+                                       : 'could not read the photo — type name + number';
+    if(d.query) valFind();
+  }catch(e){ $('#valMsg').textContent = 'upload failed: ' + e; }
+}
+
+async function valFind(){
+  const q = $('#valQuery').value.trim();
+  if(q.length < 2) return;
+  $('#valMsg').innerHTML = '<span class="spin"></span> searching…';
+  $('#valResult').innerHTML = '';
+  const d = await (await fetch('/api/valuator/search?q=' + encodeURIComponent(q))).json();
+  const c = d.candidates || [];
+  $('#valMsg').textContent = c.length ? 'tap YOUR exact card:' : 'nothing found — try fewer words';
+  $('#valCands').innerHTML = c.map(x=>`
+    <div class="cand" data-pid="${x.pid}" style="cursor:pointer;text-align:center;border:1px solid var(--line);border-radius:8px;padding:8px">
+      <img src="${x.img}" style="width:100%;border-radius:6px" loading="lazy"
+           onerror="this.style.display='none'">
+      <div style="font-size:12px;margin-top:5px">${escapeHtml(x.name)}</div>
+      <div class="muted" style="font-size:11px">${escapeHtml(x.set)}<br>#${escapeHtml(x.number)}${x.market?' · $'+x.market:''}</div>
+    </div>`).join('');
+  document.querySelectorAll('.cand').forEach(el=>el.onclick=()=>valPick(+el.dataset.pid));
+}
+$('#valSearch').onclick = valFind;
+$('#valQuery').onkeydown = e=>{ if(e.key==='Enter') valFind(); };
+
+async function valPick(pid){
+  $('#valResult').innerHTML = '<p class="muted"><span class="spin"></span> pricing from real sales…</p>';
+  const v = await (await fetch('/api/valuator/value?pid=' + pid)).json();
+  const CONF_C = {HIGH:'var(--green)', MED:'var(--accent)', LOW:'var(--red)'};
+  const conds = Object.entries(v.by_condition||{});
+  $('#valResult').innerHTML = `
+    <div style="border:1px solid var(--line);border-radius:10px;padding:14px">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <b>Market ${v.market_php?('₱'+fmt(v.market_php)+' ($'+v.market_usd+')'):'—'}</b>
+        <span class="badge" style="color:${CONF_C[v.confidence]||''}">confidence: ${v.confidence}</span>
+        <span class="muted" style="font-size:12px">${escapeHtml(v.confidence_why||'')}</span>
+      </div>
+      <table style="width:100%;margin-top:10px;font-size:13px;border-collapse:collapse">
+        <tr class="muted"><td>Condition</td><td>Worth</td><td>List (×${v.ph_factor})</td><td>Steal ≤</td><td>Based on</td></tr>
+        ${conds.map(([c,x])=>`<tr>
+          <td style="padding:3px 0">${c}</td><td>₱${fmt(x.php)}</td>
+          <td>₱${fmt(v.suggest[c].list_php)}</td><td>₱${fmt(v.suggest[c].steal_php)}</td>
+          <td class="muted">${x.from}</td></tr>`).join('')}
+      </table>
+      ${(v.sales&&v.sales.length)?`<div class="muted" style="margin-top:10px;font-size:12px">
+        last real sales: ${v.sales.slice(0,6).map(s=>`${s.date} $${s.usd} <i>${(s.condition||'').split(' ').map(w=>w[0]).join('')}</i>`).join(' · ')}
+      </div>`:'<div class="muted" style="margin-top:10px;font-size:12px">no recorded recent sales — prices are estimates.</div>'}
+      <div class="muted" style="margin-top:8px;font-size:12px">⚠️ check condition yourself: corners/edges for whitening FIRST — assume LP until it proves NM.</div>
+    </div>`;
+}
 
 // ── restart buttons ──
 async function restartTarget(target){
