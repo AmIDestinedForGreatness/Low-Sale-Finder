@@ -14,6 +14,7 @@ Flow (human-in-the-loop by design — the honest fix for image matching):
 """
 import os
 import re
+import sqlite3
 import statistics
 import subprocess
 import time
@@ -49,10 +50,64 @@ def ocr_lines(image_path):
         r = subprocess.run(
             ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass",
              "-File", os.path.join(_HERE, "ocr_card.ps1"), image_path],
-            capture_output=True, text=True, timeout=60)
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            timeout=60)  # utf-8: JP glyphs crashed the default cp1252 decode
         return [ln.strip() for ln in (r.stdout or "").splitlines() if ln.strip()]
     except Exception:
         return []
+
+
+# ── attack-damage fingerprint (the auto-ID path) ──────────────────────
+# Attack damage numbers (30+, 230, 200+…) are the biggest, boldest text on a
+# card — the one thing OCR reads reliably even on Japanese cards. Very few
+# cards share an exact profile (often exactly ONE), so damages + HP work as
+# a fingerprint against the local index built by build_fingerprints.py.
+FP_DB = os.path.join(_HERE, "fingerprints.sqlite")
+_DMG = re.compile(r"(?<![\d/.,])(\d{2,3})\s*([+x×])?(?![\d/.,])")
+
+
+def _extract_damages(lines):
+    dmgs, hp, tags = set(), None, set()
+    for ln in lines:
+        if re.search(r"\d{1,3}\s*/\s*\d{1,3}", ln):
+            continue                      # collector number, not damage
+        low = ln.lower()
+        if "tag team" in low:
+            tags.add("TAG TEAM")
+        m = re.search(r"hp\s*(\d{2,3})", low)
+        if m:
+            hp = int(m.group(1))
+        for m in _DMG.finditer(ln):
+            v = int(m.group(1))
+            if 10 <= v <= 400 and v % 5 == 0 and v != hp:
+                mod = m.group(2) or ""
+                # NB: `mod in "x×"` is True for "" — must compare exactly
+                dmgs.add(m.group(1) + ("x" if mod in ("x", "×") else mod))
+    return dmgs, hp, tags
+
+
+def fingerprint_names(lines, limit=5):
+    """OCR lines -> candidate card NAMES via the damage-profile index."""
+    dmgs, hp, tags = _extract_damages(lines)
+    if len(dmgs) < 2 or not os.path.exists(FP_DB):
+        return []
+    conn = sqlite3.connect(FP_DB)
+    try:
+        best = {}
+        for name, chp, cd, subs in conn.execute(
+                "SELECT name, hp, damages, subtypes FROM fp WHERE damages != ''"):
+            cds = set(cd.split(","))
+            if not dmgs <= cds:           # every OCR'd damage must be on the card
+                continue
+            score = (len(dmgs)
+                     + (2 if hp and chp == hp else 0)
+                     + (1 if tags and tags <= set(subs.split(",")) else 0)
+                     - 0.1 * max(0, len(cds) - len(dmgs)))
+            if name not in best or score > best[name]:
+                best[name] = score
+        return [n for n, _ in sorted(best.items(), key=lambda kv: -kv[1])][:limit]
+    finally:
+        conn.close()
 
 
 # JP set codes are printed in LATIN on the card (sm12a, s4a, xy10…) and,

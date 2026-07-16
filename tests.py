@@ -8,6 +8,7 @@ this suite screaming. Pair each test with its entry in LESSONS.md.
 
 Run:  E:\python.exe tests.py     (offline — no network, no Discord, no FB)
 """
+import os
 import sys
 import unittest
 
@@ -211,6 +212,16 @@ class TestValuator(unittest.TestCase):
         self.assertFalse(valuator._is_junk("McDonalds Pikachu"))
         name, _ = valuator.guess_query(["li&DhJ", "TAG TEAM", "HP270"])
         self.assertEqual(name, "")
+
+    def test_attack_fingerprint_identifies_jp_card(self):
+        # THE identification path (Yujin: "identification is the most
+        # important part"): JP name unreadable, but damages 30+/230/200+
+        # match exactly ONE card in the whole game.
+        if not os.path.exists(valuator.FP_DB):
+            self.skipTest("fingerprint index not built")
+        names = valuator.fingerprint_names(
+            ["TEAM", "li&DhJ", "30+", "230", "+ 200+", "TAG TEAM"])
+        self.assertEqual(names, ["Reshiram & Charizard-GX"])
 
     def test_confidence_thresholds(self):
         # L16: a price with almost no sales is a rumor, not a market

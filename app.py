@@ -192,8 +192,15 @@ def valuator_ocr():
     f.save(path)
     lines = valuator.ocr_lines(path)
     name, number = valuator.guess_query(lines)
+    via = None
+    if not name:
+        # name unreadable (Japanese / blur) -> identify by attack fingerprint
+        fp = valuator.fingerprint_names(lines)
+        if fp:
+            name, via = fp[0], "attack fingerprint"
     return jsonify({"query": (name + " " + (number or "")).strip(),
                     "name": name, "number": number, "lines": lines[:12],
+                    "via": via,
                     "file": "/uploads/" + os.path.basename(path)})
 
 
@@ -595,8 +602,10 @@ async function valUpload(file){
     const d = await (await fetch('/api/valuator/ocr',{method:'POST',body:fd})).json();
     if(d.file) $('#valThumb').dataset.full = d.file;   // server copy, survives refresh
     $('#valQuery').value = d.query || '';
-    $('#valMsg').textContent = d.query ? 'read: "' + d.query + '" — fix it if wrong, then Find card'
-                                       : 'could not read it — type the name, or the set code + number from the card\'s bottom edge (e.g. sm12a 016/173)';
+    $('#valMsg').textContent = d.query
+      ? (d.via ? 'identified by ' + d.via + ': "' + d.query + '"'
+               : 'read: "' + d.query + '" — fix it if wrong, then Find card')
+      : 'could not read it — type the name, or the set code + number from the card\'s bottom edge (e.g. sm12a 016/173)';
     if(d.query) valFind();
   }catch(e){ $('#valMsg').textContent = 'upload failed: ' + e; }
 }
