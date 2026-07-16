@@ -269,6 +269,22 @@ class TestValuator(unittest.TestCase):
         # nothing close -> no guess
         self.assertIsNone(valuator.snap_number("555/555", printings))
 
+    def test_close_only_pruning(self):
+        # number pinned -> Jumbos and far-numbered variants are noise
+        mk = lambda num, set_: {"number": num, "set": set_}
+        cands = [mk("016/173", "SM12a: Tag All Stars"),
+                 mk("220/173", "SM12a: Tag All Stars"),
+                 mk("SM201", "Jumbo Cards"),
+                 mk("097/095", "SM10: Double Blaze")]
+        out = valuator._close_only(cands, "16/173")
+        self.assertEqual([c["number"] for c in out], ["016/173"])
+        # no number -> keep everything except Jumbos
+        out2 = valuator._close_only(cands, None)
+        self.assertNotIn("SM201", [c["number"] for c in out2])
+        # nothing close -> honest fallback to the full (non-jumbo) list
+        out3 = valuator._close_only(cands, "555/555")
+        self.assertEqual(len(out3), 3)
+
     def test_confidence_thresholds(self):
         # L16: a price with almost no sales is a rumor, not a market
         self.assertEqual(valuator._confidence(2, 30)[0], "LOW")     # <3 sales

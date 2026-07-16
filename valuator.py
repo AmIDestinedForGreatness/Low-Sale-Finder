@@ -372,6 +372,7 @@ def search_candidates(query, size=12, prefer_jp=False):
     out = [c for c in out if c["number"]]
 
     want = _norm_num(number) if number else None
+    out = _close_only(out, want, query)
 
     def rank(c):
         # nearest-to-farthest by number distance (his ordering spec)
@@ -383,6 +384,24 @@ def search_candidates(query, size=12, prefer_jp=False):
 
     out.sort(key=rank)
     return out
+
+
+def _close_only(cands, want, query=""):
+    """When the printing number is known, show ONLY close/identical
+    printings (Yujin: 'remove unnecessary searches') — a Jumbo promo and a
+    far-numbered variant are noise once the number is pinned. Falls back to
+    the full list rather than showing nothing."""
+    if "jumbo" not in (query or "").lower():
+        non_j = [c for c in cands if "jumbo" not in c["set"].lower()]
+        if non_j:
+            cands = non_j
+    if not want:
+        return cands
+    for maxd in (1, 2):
+        close = [c for c in cands if _lev(want, _norm_num(c["number"])) <= maxd]
+        if close:
+            return close
+    return cands
 
 
 def _confidence(n_sales, days_span):
