@@ -111,6 +111,14 @@ def _run_job(queries, below, steal, push, label):
 
 
 # ── routes ────────────────────────────────────────────────────────────
+@app.after_request
+def _no_cache(resp):
+    # the dashboard is one server-rendered page — a cached copy means the
+    # user sees an OLD build after we ship a fix ("#2 did not work")
+    resp.headers["Cache-Control"] = "no-store"
+    return resp
+
+
 @app.route("/")
 def index():
     return Response(HTML.replace("__VERSION__", VERSION), mimetype="text/html")
@@ -511,6 +519,13 @@ HTML = r"""<!doctype html>
           <div class="cmp-imgwrap"><img id="cmpMine" alt=""></div></div>
         <div><div class="muted" style="font-size:11px;margin-bottom:4px">🗄 DATABASE SCAN</div>
           <div class="cmp-imgwrap"><img id="cmpTheir" alt=""></div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;justify-content:center">
+          <div class="muted" style="font-size:11px">🔍 ZOOM</div>
+          <input type="range" id="cmpZoom" min="1.5" max="6" step="0.5" value="2.5"
+                 style="writing-mode:vertical-lr;direction:rtl;height:150px">
+          <span id="cmpZoomLbl" class="slider-val">2.5×</span>
+          <div class="muted" style="font-size:10px;max-width:70px;text-align:center">click a card to zoom, move mouse to pan</div>
+        </div>
       </div>
       <div class="btn-row" style="justify-content:center;margin-top:16px">
         <button class="btn-primary" id="cmpYes">✅ Yes — this is my card</button>
@@ -680,7 +695,7 @@ async function valFind(){
     <div class="cand" data-pid="${x.pid}" style="cursor:pointer;text-align:center;border:1px solid var(--line);border-radius:8px;padding:8px">
       <img src="${x.img}" style="width:100%;border-radius:6px" loading="lazy"
            onerror="this.style.display='none'">
-      <div style="font-size:12px;margin-top:5px">${escapeHtml(x.name)}</div>
+      <div style="font-size:12px;margin-top:5px">${escapeHtml(cardLabel(x))}</div>
       <div class="muted" style="font-size:11px">${escapeHtml(x.set)}<br>#${escapeHtml(x.number)}${x.market?' · $'+x.market:''}</div>
     </div>`).join('');
   document.querySelectorAll('.cand').forEach(el=>el.onclick=()=>valConfirm(+el.dataset.pid));
@@ -711,24 +726,39 @@ function valConfirm(pid){
   const big = 'https://product-images.tcgplayer.com/fit-in/874x1214/' + pid + '.jpg';
   $('#cmpTheir').onerror = ()=>{ $('#cmpTheir').onerror=null; $('#cmpTheir').src = cd.img||''; };
   $('#cmpTheir').src = big;
+  cmpResetZoom();                        // every confirm starts unzoomed
   $('#cmpModal').style.display = 'flex';
 }
 $('#cmpYes').onclick = ()=>{ $('#cmpModal').style.display='none'; if(cmpPid) valPick(cmpPid); };
 $('#cmpNo').onclick  = ()=>{ $('#cmpModal').style.display='none'; };
 $('#cmpModal').onclick = e=>{ if(e.target === $('#cmpModal')) $('#cmpModal').style.display='none'; };
 
-// magnifying glass: zoom follows the cursor; tap toggles on touch screens
+// magnifying glass: CLICK to zoom in/out (no surprise hover zoom), slider
+// sets the level, mouse-move pans while zoomed
+let cmpZoom = 2.5;
+$('#cmpZoom').oninput = e=>{
+  cmpZoom = +e.target.value;
+  $('#cmpZoomLbl').textContent = cmpZoom.toFixed(1) + '×';
+  document.querySelectorAll('.cmp-imgwrap img').forEach(img=>{
+    if(img.dataset.zoomed) img.style.transform = 'scale(' + cmpZoom + ')';
+  });
+};
+function cmpResetZoom(){
+  document.querySelectorAll('.cmp-imgwrap img').forEach(img=>{
+    img.dataset.zoomed=''; img.style.transform='scale(1)'; img.style.cursor='zoom-in';
+  });
+}
 document.querySelectorAll('.cmp-imgwrap').forEach(w=>{
   const img = w.querySelector('img');
   w.onmousemove = e=>{
+    if(!img.dataset.zoomed) return;      // pan only while zoomed
     const r = w.getBoundingClientRect();
     img.style.transformOrigin = ((e.clientX-r.left)/r.width*100)+'% '+((e.clientY-r.top)/r.height*100)+'%';
   };
-  w.onmouseenter = ()=>{ img.style.transform='scale(2.6)'; };
-  w.onmouseleave = ()=>{ img.style.transform='scale(1)'; img.dataset.zoomed=''; };
-  w.onclick = ()=>{           // touch: tap to toggle the lens
+  w.onclick = ()=>{                      // click toggles the lens
     img.dataset.zoomed = img.dataset.zoomed ? '' : '1';
-    img.style.transform = img.dataset.zoomed ? 'scale(2.6)' : 'scale(1)';
+    img.style.transform = img.dataset.zoomed ? 'scale('+cmpZoom+')' : 'scale(1)';
+    img.style.cursor = img.dataset.zoomed ? 'zoom-out' : 'zoom-in';
   };
 });
 
