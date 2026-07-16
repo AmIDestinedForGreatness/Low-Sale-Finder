@@ -206,7 +206,8 @@ def valuator_ocr():
             name, via = fp[0], "attack fingerprint"
     # unreadable name or a JP-style set code = the card is not English —
     # English cards read their own names fine
-    jp = bool(via) or bool(name and valuator._SET_RE.fullmatch(name))
+    jp = (bool(via) or bool(name and valuator._SET_RE.fullmatch(name))
+          or bool(number and not name))
     return jsonify({"query": (name + " " + (number or "")).strip(),
                     "name": name, "number": number, "lines": lines[:12],
                     "via": via, "jp": jp,
