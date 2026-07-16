@@ -119,20 +119,16 @@ _MECH = re.compile(r"^(tag\s*)?(team|gx|ex|v(max|star)?|hp\s*\d*)$", re.I)
 
 
 def _is_junk(text):
-    """True when OCR produced gibberish, not a name (e.g. 'li&DhJ' from a
-    Japanese card). Junk word = 3+ letters with no vowel, or random inner
-    capitals. A line is junk when most of its words are."""
-    words = re.findall(r"[A-Za-z]+", text)
-    if not words:
-        return True
-    junk = 0
-    for w in words:
-        no_vowel = len(w) >= 3 and not re.search(r"[aeiouyAEIOUY]", w)
-        # short scrambled-case fragments ("DhJ") — long Mc/Mac names are real
-        inner_caps = len(w) <= 4 and re.search(r"[a-z][A-Z]", w) is not None
-        if no_vowel or inner_caps:
-            junk += 1
-    return junk * 2 >= len(words)
+    """True when OCR produced gibberish, not a name ('li&DhJ', 'y- JV .M GX').
+    A line counts as a name only if it has at least one PLAUSIBLE word:
+    3+ letters, contains a vowel, no scrambled inner capitals (Mc names ok)."""
+    for w in re.findall(r"[A-Za-z]+", text):
+        plausible = (len(w) >= 3 and re.search(r"[aeiouyAEIOUY]", w)
+                     and (not re.search(r"[a-z][A-Z]", w)
+                          or re.match(r"Mc[A-Z]", w)))
+        if plausible:
+            return False
+    return True
 
 
 def guess_query(lines):
