@@ -1,0 +1,80 @@
+# Yujin's Pokestop — Progress
+
+> "We are nowhere near, but we are closer than where we were yesterday." — 2026-07-16
+
+The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
+written lesson (`LESSONS.md`). Current: **43 tests, 20 lessons.**
+
+## Version history
+
+| Ver | Shipped | What |
+|---|---|---|
+| V0.1 | 7/15 | Status dashboard: ON/OFF heartbeat, 10-min countdown, recent sends |
+| V0.2 | 7/15 | Dead-man Discord ping, price-drop alerts, phone LAN access, stats |
+| V0.3 | 7/15 | Logo hero, cards-only filter, restart buttons (watchlist/grails removed) |
+| V0.4 | 7/16 | GMT+8 upload times, FB groups in recent list, link-click fix, no stats cards |
+| V0.5 | 7/16 | **Card Valuator**: photo → OCR → confirm → real-sold valuation |
+| V0.6 | 7/16 | Build identity badge (#git-sha) + stale-page auto-detector |
+
+## The system (4 always-on processes)
+
+1. **Carousell feed** (`main.py --feed`) — every new TCG listing → Discord;
+   categories color-coded; sold/reserved edits; price-drop alerts;
+   "♻ resurfaced" tag on bumped old posts; mismatch-guarded deal alerts
+2. **FB groups feed** (`fb_feed.py`) — 15 PH TCG groups (headless burner);
+   sale/timed-auction/bidding split; auction channel; 10-min end reminders
+   (react-to-track); auto-delete ended auctions
+3. **Discord bot** (`bot.py`, Pokestop#6681) — react-to-track,
+   /dashboard /help /status + owner-only "." commands
+4. **Dashboard** (`app.py`, V0.6) — live status, merged recent list,
+   Card Valuator, webhook manager, self-identifying builds
+
+## Card Valuator — identification stack (the core IP)
+
+Photo in → exact printing out:
+
+1. **RapidOCR** (local onnx; reads 9px footers Windows OCR can't; JP-safe)
+2. **Name guess** — junk-shape filtering (proper-case words only; noise/
+   mechanic/footer/copyright lines excluded)
+3. **JP footer path** — set code + collector number = unique global ID
+   ("sm12a 016/173" → exactly one card)
+4. **Attack fingerprint** — damage numbers (standalone regions only) + HP
+   vs local index of 20,324 cards; {30+,230,200+} → exactly 1 card in the game
+5. **Deep-scan** — zoomed region crops × contrast variants for glare photos
+6. **Layer-B constraint snap** — the number must be a real printing of the
+   identified card; unique 1-edit errors auto-correct (015/173→016/173),
+   reported honestly
+7. **Grid** — cards only (no boxes/merch), nearest-to-farthest, JP-first
+   when the card is non-English, language-prefixed names
+8. **The eye gate** — side-by-side confirm (your photo vs 874×1214 scan),
+   click-zoom with level slider, stamps/1st-ed check. **The user's eye is
+   the final identification authority.**
+
+Valuation: TCGplayer market + latest real sales (per-condition medians,
+labeled real vs estimated) + sales-velocity confidence (HIGH/MED/LOW) +
+PH sell suggestion (× factor) + steal price (≤72%).
+
+## Pricing chain (feeds)
+
+manual CSV → TCGplayer (strict number match, Mega-promo name variants) →
+PriceCharting (specific-token matching only — L20). Coverage on his 20
+Carousell listings: 19/20 (Raichu GX Korean = no public data anywhere).
+
+## Known limits (honest)
+
+- 810px uploads: 5/6 digit ambiguity is in the pixels (Layer-B absorbs it;
+  original-resolution photos would eliminate it)
+- Trainer/item cards have no attack fingerprint (name OCR carries them)
+- Graded slabs: no dedicated path yet (PSA cert OCR = planned)
+- Vintage (no set codes): untested
+- FB comment reading (live current-bid): not built (embedded JSON, high risk)
+- Korean cards: no public price data — ×0.65 JP heuristic unvalidated
+- fingerprints.sqlite needs a rebuild when new sets release
+  (`build_fingerprints.py`)
+
+## Roadmap
+
+- Composite pricer step 2: blended TCG+PC × PH factor (step 1/PC precision ✅ 7/16)
+- PH price index from the sniper's own accumulated data (the real snipe engine)
+- Slab path (cert OCR), vintage support, condition checker (whitening-first, L17)
+- eBay/Shopee/Lazada as future data sources; FB Marketplace = his decision
