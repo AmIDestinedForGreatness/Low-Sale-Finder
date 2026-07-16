@@ -288,39 +288,6 @@ def feed_once(conn):
     write_status(state="idle", last_scan_end=time.time(), last_new=len(sent), recent=recent)
 
 
-# ── daily digest: one summary embed at/after 8PM local time ───────────
-def maybe_digest(conn):
-    now = datetime.datetime.now()
-    if now.hour < 20:
-        return
-    today = now.strftime("%Y-%m-%d")
-    if _read_status().get("last_digest") == today:
-        return
-    midnight = time.mktime(datetime.datetime(now.year, now.month, now.day).timetuple())
-    rows = conn.execute("SELECT title, price, category FROM feed_log WHERE ts>=?",
-                        (midnight,)).fetchall()
-    if not rows:
-        write_status(last_digest=today)
-        return
-    cats = Counter(r[2] for r in rows)
-    cat_line = " · ".join(f"{k} {v}" for k, v in cats.most_common())
-    desc = f"**{len(rows)}** new listings today\n{cat_line}"
-    singles = sorted((r for r in rows if r[2] == "single"), key=lambda r: r[1])[:5]
-    if singles:
-        desc += "\n\n**Cheapest singles today:**\n" + "\n".join(
-            f"₱{p:,.0f} — {t[:60]}" for t, p, _ in singles)
-    embed = {"title": f"\U0001F4CA Daily Digest — Yujin's Pokestop ({today})",
-             "description": desc, "color": 0x2AB8F6}
-    wh = config.DISCORD_WEBHOOK_URL
-    if wh and "PASTE" not in wh:
-        try:
-            requests.post(wh, json={"embeds": [embed]}, timeout=15)
-            print(f"  [digest sent: {len(rows)} listings]")
-        except Exception as e:
-            print(f"  [digest error] {e}")
-    write_status(last_digest=today)
-
-
 def run_once(conn):
     targets = list(config.SEARCH_QUERIES) + getattr(config, "CAROUSELL_CATEGORY_URLS", [])
     for q in targets:
@@ -354,7 +321,6 @@ def main():
         if feed:
             write_status(state="idle",
                          next_scan_at=time.time() + config.POLL_INTERVAL_MINUTES * 60)
-            maybe_digest(conn)
         print(f"[sleep] {config.POLL_INTERVAL_MINUTES} min…")
         time.sleep(config.POLL_INTERVAL_MINUTES * 60)
 
