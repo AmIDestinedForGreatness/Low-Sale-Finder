@@ -32,6 +32,22 @@ STATUS_PATH = os.path.join(os.path.dirname(__file__), "feed_status.json")
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 
 
+def _build_id():
+    """Git short SHA of the running code — shown next to the version so a
+    stale browser copy is visibly different from the live build."""
+    try:
+        import subprocess
+        r = subprocess.run(["git", "rev-parse", "--short", "HEAD"],
+                           capture_output=True, text=True, timeout=10,
+                           cwd=os.path.dirname(os.path.abspath(__file__)))
+        return r.stdout.strip() or "?"
+    except Exception:
+        return "?"
+
+
+BUILD = _build_id()
+
+
 def _feed_online():
     try:
         with open(STATUS_PATH, encoding="utf-8") as f:
@@ -121,7 +137,8 @@ def _no_cache(resp):
 
 @app.route("/")
 def index():
-    return Response(HTML.replace("__VERSION__", VERSION), mimetype="text/html")
+    return Response(HTML.replace("__VERSION__", VERSION)
+                        .replace("__BUILD__", BUILD), mimetype="text/html")
 
 @app.route("/logo")
 def logo():
@@ -162,6 +179,7 @@ def feedstatus():
         "recent": recent,
         "poll_minutes": config.POLL_INTERVAL_MINUTES,
         "version": VERSION,
+        "build": BUILD,
         "server_now": time.time(),
         "lan_url": f"http://{_lan_ip()}:5000",
     })
@@ -455,7 +473,7 @@ HTML = r"""<!doctype html>
     <div class="wordmark">Yujin's <b>Pokestop</b></div>
     <div class="sub">Carousell card sniper · live feed</div>
     <div class="badges">
-      <span class="badge" style="color:var(--accent);border-color:var(--line2)">V__VERSION__</span>
+      <span class="badge" style="color:var(--accent);border-color:var(--line2)" title="version · build (git)">V__VERSION__ · #__BUILD__</span>
       <span id="webhookBadge" class="badge">checking…</span>
       <span id="srcBadge" class="badge"></span>
       <span id="ctryBadge" class="badge"></span>
@@ -589,12 +607,27 @@ $('#whTest').onclick = async ()=>{
 function fmt(n){ return Number(n).toLocaleString(undefined,{maximumFractionDigits:0}); }
 function escapeHtml(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
+// ── stale-page detector: this page's build vs the server's build ──
+const PAGE_BUILD = '__BUILD__';
+function checkBuild(server){
+  if(!server || server === '?' || server === PAGE_BUILD) return;
+  if($('#staleBanner')) return;
+  const b = document.createElement('div');
+  b.id = 'staleBanner';
+  b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:100;background:#c0392b;color:#fff;'
+    + 'padding:8px 14px;text-align:center;font-weight:700;cursor:pointer';
+  b.textContent = '⚠ This page is an OLD build (#' + PAGE_BUILD + ' vs #' + server + ') — click here to reload';
+  b.onclick = ()=>location.reload();
+  document.body.prepend(b);
+}
+
 // ── live status: feed heartbeat + ticking countdown ──
 let nextScanAt = 0, clockSkew = 0;
 const CAT_ICON = {graded:'💎', sealed:'📦', bulk:'🗃️', collection:'📚', single:'🃏'};
 async function loadFeedStatus(){
   try{
     const s = await (await fetch('/api/feedstatus')).json();
+    checkBuild(s.build);
     clockSkew = Date.now()/1000 - s.server_now;
     nextScanAt = s.next_scan_at || 0;
     const on = s.online;
