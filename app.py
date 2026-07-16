@@ -192,15 +192,24 @@ def valuator_ocr():
     f.save(path)
     lines = valuator.ocr_lines(path)
     name, number = valuator.guess_query(lines)
+    if not name and not number:
+        # first pass unusable (glare/holo) -> deep scan: zoomed region crops
+        deep = valuator.ocr_deep(path)
+        if deep:
+            lines = lines + [ln for ln in deep if ln not in lines]
+            name, number = valuator.guess_query(lines)
     via = None
     if not name:
         # name unreadable (Japanese / blur) -> identify by attack fingerprint
         fp = valuator.fingerprint_names(lines)
         if fp:
             name, via = fp[0], "attack fingerprint"
+    # unreadable name or a JP-style set code = the card is not English —
+    # English cards read their own names fine
+    jp = bool(via) or bool(name and valuator._SET_RE.fullmatch(name))
     return jsonify({"query": (name + " " + (number or "")).strip(),
                     "name": name, "number": number, "lines": lines[:12],
-                    "via": via,
+                    "via": via, "jp": jp,
                     "file": "/uploads/" + os.path.basename(path)})
 
 
@@ -219,7 +228,8 @@ def valuator_search():
     q = (request.args.get("q") or "").strip()
     if len(q) < 2:
         return jsonify({"candidates": []})
-    return jsonify({"candidates": valuator.search_candidates(q)})
+    jp = request.args.get("jp") == "1"
+    return jsonify({"candidates": valuator.search_candidates(q, prefer_jp=jp)})
 
 
 @app.route("/api/valuator/value")
@@ -601,11 +611,16 @@ async function valUpload(file){
   try{
     const d = await (await fetch('/api/valuator/ocr',{method:'POST',body:fd})).json();
     if(d.file) $('#valThumb').dataset.full = d.file;   // server copy, survives refresh
+    window._jpHint = !!d.jp;   // unreadable name = non-English card, rank JP first
     $('#valQuery').value = d.query || '';
     $('#valMsg').textContent = d.query
-      ? (d.via ? 'identified by ' + d.via + ': "' + d.query + '"'
+      ? (d.via ? 'identified by ' + d.via + ': "' + d.query + '"' + (d.jp ? ' (Japanese print likely)' : '')
                : 'read: "' + d.query + '" — fix it if wrong, then Find card')
       : 'could not read it — type the name, or the set code + number from the card\'s bottom edge (e.g. sm12a 016/173)';
+    if(d.number && !d.name)
+      $('#valMsg').textContent = 'read the number ' + d.number + ' but not the set — '
+        + 'drop a straight-on CLOSE-UP of the bottom-left corner (set code + number), '
+        + 'or add the set code to the box (e.g. m1s ' + d.number + ')';
     if(d.query) valFind();
   }catch(e){ $('#valMsg').textContent = 'upload failed: ' + e; }
 }
@@ -615,7 +630,8 @@ async function valFind(){
   if(q.length < 2) return;
   $('#valMsg').innerHTML = '<span class="spin"></span> searching…';
   $('#valResult').innerHTML = '';
-  const d = await (await fetch('/api/valuator/search?q=' + encodeURIComponent(q))).json();
+  const d = await (await fetch('/api/valuator/search?q=' + encodeURIComponent(q)
+                               + (window._jpHint ? '&jp=1' : ''))).json();
   const c = d.candidates || [];
   const sameName = c.filter(x=>x.name.split(' - ')[0] === (c[0]&&c[0].name.split(' - ')[0])).length;
   $('#valMsg').textContent = c.length

@@ -208,8 +208,14 @@ class TestValuator(unittest.TestCase):
         # live catch: JP name OCR'd as "li&DhJ" -> searched as-is -> dead end.
         # Junk reads must be rejected so the footer/manual path can take over.
         self.assertTrue(valuator._is_junk("li&DhJ"))
+        # each of these shipped a live dead-end before being caught:
+        self.assertTrue(valuator._is_junk("y- JV .M GX"))   # short fragments
+        self.assertTrue(valuator._is_junk("ooo"))           # energy symbols
+        self.assertTrue(valuator._is_junk("IBO"))           # all-caps junk
+        self.assertTrue(valuator._is_junk("YEjj"))          # impossible case
         self.assertFalse(valuator._is_junk("Weakness Policy"))
         self.assertFalse(valuator._is_junk("McDonalds Pikachu"))
+        self.assertFalse(valuator._is_junk("Mew ex"))
         name, _ = valuator.guess_query(["li&DhJ", "TAG TEAM", "HP270"])
         self.assertEqual(name, "")
 

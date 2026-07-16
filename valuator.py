@@ -57,6 +57,45 @@ def ocr_lines(image_path):
         return []
 
 
+def ocr_deep(image_path):
+    """Second-pass OCR for hard photos (glare/holo/angle): zoomed region
+    crops with contrast variants, merged with the full-frame read. Slower
+    (~10s) — only runs when the first pass came back unusable."""
+    try:
+        from PIL import Image, ImageOps
+    except ImportError:
+        return []
+    try:
+        im = Image.open(image_path).convert("RGB")
+    except Exception:
+        return []
+    W, H = im.size
+    regions = [(0, 0.10, 1.0, 0.45, 2),      # name + HP band
+               (0, 0.40, 1.0, 0.80, 2),      # attacks / damage numbers
+               (0, 0.70, 1.0, 1.00, 2),      # footer band
+               (0, 0.75, 0.6, 1.00, 3)]      # bottom-left set code, extra zoom
+    lines, seen, tmp = [], set(), image_path + ".crop.png"
+    for x1, y1, x2, y2, zoom in regions:
+        crop = im.crop((int(x1 * W), int(y1 * H), int(x2 * W), int(y2 * H)))
+        crop = crop.resize((crop.width * zoom, crop.height * zoom), Image.LANCZOS)
+        g = ImageOps.autocontrast(ImageOps.grayscale(crop))
+        for variant in (g, ImageOps.invert(g)):
+            try:
+                variant.save(tmp)
+            except Exception:
+                continue
+            for ln in ocr_lines(tmp):
+                key = ln.lower()
+                if key not in seen:
+                    seen.add(key)
+                    lines.append(ln)
+    try:
+        os.remove(tmp)
+    except OSError:
+        pass
+    return lines
+
+
 # ── attack-damage fingerprint (the auto-ID path) ──────────────────────
 # Attack damage numbers (30+, 230, 200+…) are the biggest, boldest text on a
 # card — the one thing OCR reads reliably even on Japanese cards. Very few
@@ -92,7 +131,8 @@ def fingerprint_names(lines, limit=5):
     if len(dmgs) < 2 or not os.path.exists(FP_DB):
         return []
     conn = sqlite3.connect(FP_DB)
-    try:
+
+    def match(dmgs, hp):
         best = {}
         for name, chp, cd, subs in conn.execute(
                 "SELECT name, hp, damages, subtypes FROM fp WHERE damages != ''"):
@@ -106,6 +146,21 @@ def fingerprint_names(lines, limit=5):
             if name not in best or score > best[name]:
                 best[name] = score
         return [n for n, _ in sorted(best.items(), key=lambda kv: -kv[1])][:limit]
+
+    try:
+        names = match(dmgs, hp)
+        if not names and not hp and len(dmgs) >= 2:
+            # OCR often reads the HP number without its 'HP' label, which
+            # poisons the profile with a phantom damage ('330' on a card
+            # whose attacks are 120/200+). Retry treating each big plain
+            # number as the HP instead.
+            for d in sorted((x for x in dmgs if x.isdigit()),
+                            key=int, reverse=True):
+                if int(d) >= 120 and len(dmgs - {d}) >= 2:
+                    names = match(dmgs - {d}, int(d))
+                    if names:
+                        break
+        return names
     finally:
         conn.close()
 
@@ -113,7 +168,7 @@ def fingerprint_names(lines, limit=5):
 # JP set codes are printed in LATIN on the card (sm12a, s4a, xy10…) and,
 # with the collector number, uniquely identify the card on TCGplayer —
 # the searchable ID for Japanese cards whose names our OCR can't read
-_SET_RE = re.compile(r"\b(?:sm|sv|swsh|xy|bw|dp|pcg|cp)\d{1,2}[a-z]?\b", re.I)
+_SET_RE = re.compile(r"\b(?:sm|sv|swsh|xy|bw|dp|pcg|cp|m)\d{1,2}[a-z]?\b", re.I)  # m1S = Mega era
 # lines that are card MECHANIC labels, never a name ("TAG TEAM" -> "TEAM")
 _MECH = re.compile(r"^(tag\s*)?(team|gx|ex|v(max|star)?|hp\s*\d*)$", re.I)
 
@@ -123,9 +178,14 @@ def _is_junk(text):
     A line counts as a name only if it has at least one PLAUSIBLE word:
     3+ letters, contains a vowel, no scrambled inner capitals (Mc names ok)."""
     for w in re.findall(r"[A-Za-z]+", text):
-        plausible = (len(w) >= 3 and re.search(r"[aeiouyAEIOUY]", w)
-                     and (not re.search(r"[a-z][A-Z]", w)
-                          or re.match(r"Mc[A-Z]", w)))
+        # real words are proper-case or lowercase ('Reshiram', 'ex') — OCR
+        # junk has impossible case shapes (DhJ, IBO, YEjj, COifi)
+        shape_ok = (re.fullmatch(r"[A-Z]?[a-z]+", w)
+                    or re.fullmatch(r"Mc[A-Z][a-z]+", w))
+        plausible = (shape_ok and len(w) >= 3
+                     and re.search(r"[aeiouyAEIOUY]", w)
+                     and re.search(r"[^aeiouAEIOU]", w)      # 'ooo' is not a word
+                     and len(set(w.lower())) >= 2)
         if plausible:
             return False
     return True
@@ -154,6 +214,8 @@ def guess_query(lines):
     for ln in lines[:6]:                      # name sits in the top lines
         if _SET_RE.search(ln) or re.search(r"\b\d{1,3}\s*/\s*\d{1,3}\b", ln):
             continue  # footer line (set code / collector number), never the name
+        if re.search(r"[A-Za-z]\d[A-Za-z]", ln):
+            continue  # digits inside a word = OCR mash, never a name
         cand = re.sub(r"[^A-Za-z' .&-]", " ", ln)
         cand = " ".join(cand.split()).strip()
         if len(cand) < 3 or _NOISE.match(cand) or _MECH.match(cand) or _is_junk(cand):
@@ -179,7 +241,7 @@ def guess_query(lines):
     return name, number
 
 
-def search_candidates(query, size=12):
+def search_candidates(query, size=12, prefer_jp=False):
     """TCGplayer candidates for the picker grid (image = user's eyes).
     TCGplayer's search returns nothing when the collector number is in the
     query text — so search by NAME only, then rank number-matches first."""
@@ -228,12 +290,21 @@ def search_candidates(query, size=12):
             "img": IMG.format(pid),
             "url": f"https://www.tcgplayer.com/product/{pid}",
         })
-    # actual cards (they have a collector number) before boxes/merch
-    out.sort(key=lambda c: 0 if c["number"] else 1)
-    if number:  # user's number: bubble exact matches to the front
-        lead = number.split("/")[0].lstrip("0")
-        out.sort(key=lambda c: (0 if c["number"].lower() == number else
-                                1 if c["number"].split("/")[0].lstrip("0") == lead else 2))
+    lead = number.split("/")[0].lstrip("0") if number else None
+
+    def rank(c):
+        num_rank = 2
+        if number:
+            if c["number"].lower() == number:
+                num_rank = 0
+            elif c["number"].split("/")[0].lstrip("0") == lead:
+                num_rank = 1
+        is_jp = (c["line"] == "pokemon-japan" or "japan" in c["set"].lower())
+        return (num_rank,
+                (0 if is_jp else 1) if prefer_jp else 0,
+                0 if c["number"] else 1)   # real cards before boxes/merch
+
+    out.sort(key=rank)
     return out
 
 
