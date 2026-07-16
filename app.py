@@ -427,6 +427,12 @@ HTML = r"""<!doctype html>
   .wl-item .q{flex:1}
   .wl-item a{color:var(--ink);text-decoration:none}
   .wl-item a:hover{color:var(--accent)}
+  .cand{transition:transform .12s, border-color .12s, box-shadow .12s}
+  .cand:hover{transform:translateY(-3px);border-color:var(--accent)!important;
+    box-shadow:0 4px 18px rgba(42,184,246,.25)}
+  .cmp-imgwrap{overflow:hidden;border-radius:10px;width:min(340px,42vw);aspect-ratio:63/88;
+    background:#000;border:1px solid var(--line)}
+  .cmp-imgwrap img{width:100%;height:100%;object-fit:contain;transition:transform .08s;cursor:zoom-in}
   .muted{color:var(--muted);font-size:13px}
   .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--muted);
     border-top-color:var(--accent);border-radius:50%;animation:s .7s linear infinite;vertical-align:-2px}
@@ -489,6 +495,28 @@ HTML = r"""<!doctype html>
        .hidden class (inline > class) and blacked out the whole page -->
   <div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:99;align-items:center;justify-content:center;cursor:zoom-out">
     <img id="lightboxImg" style="max-width:92vw;max-height:92vh;border-radius:8px" alt="">
+  </div>
+
+  <!-- side-by-side confirmation: the FINAL identification authority is the
+       user's eye (stamps, promo marks, 1st edition). display via JS only. -->
+  <div id="cmpModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:98;align-items:center;justify-content:center">
+    <div class="card" style="max-width:880px;width:94vw;max-height:94vh;overflow:auto;margin:0">
+      <div id="cmpTitle" style="font-weight:700;font-size:17px"></div>
+      <div class="muted" style="font-size:12px;margin:4px 0 14px">
+        Final check is <b>your eye</b> — hover (or tap) to magnify. Compare art, stamps
+        (promo / 1st edition), collector number, holo pattern.
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
+        <div><div class="muted" style="font-size:11px;margin-bottom:4px">📷 YOUR CARD</div>
+          <div class="cmp-imgwrap"><img id="cmpMine" alt=""></div></div>
+        <div><div class="muted" style="font-size:11px;margin-bottom:4px">🗄 DATABASE SCAN</div>
+          <div class="cmp-imgwrap"><img id="cmpTheir" alt=""></div></div>
+      </div>
+      <div class="btn-row" style="justify-content:center;margin-top:16px">
+        <button class="btn-primary" id="cmpYes">✅ Yes — this is my card</button>
+        <button class="btn-ghost" id="cmpNo">↩ Not this one</button>
+      </div>
+    </div>
   </div>
 
   <section class="card">
@@ -608,6 +636,7 @@ async function valUpload(file){
   $('#valThumb').src = URL.createObjectURL(file);
   $('#valMsg').innerHTML = '<span class="spin"></span> reading card…';
   $('#valCands').innerHTML = ''; $('#valResult').innerHTML = '';
+  valBusy(true);
   const fd = new FormData(); fd.append('photo', file);
   try{
     const d = await (await fetch('/api/valuator/ocr',{method:'POST',body:fd})).json();
@@ -622,17 +651,23 @@ async function valUpload(file){
       $('#valMsg').textContent = 'read the number ' + d.number + ' but not the set — '
         + 'drop a straight-on CLOSE-UP of the bottom-left corner (set code + number), '
         + 'or add the set code to the box (e.g. m1s ' + d.number + ')';
-    if(d.query) valFind();
+    if(d.query) await valFind();
   }catch(e){ $('#valMsg').textContent = 'upload failed: ' + e; }
+  finally{ valBusy(false); }
 }
 
 async function valFind(){
   const q = $('#valQuery').value.trim();
   if(q.length < 2) return;
+  valBusy(true);            // lock the box — typing mid-search interrupts it
   $('#valMsg').innerHTML = '<span class="spin"></span> searching…';
   $('#valResult').innerHTML = '';
-  const d = await (await fetch('/api/valuator/search?q=' + encodeURIComponent(q)
+  let d = {};
+  try{
+    d = await (await fetch('/api/valuator/search?q=' + encodeURIComponent(q)
                                + (window._jpHint ? '&jp=1' : ''))).json();
+  }catch(e){}
+  finally{ valBusy(false); }
   const c = d.candidates || [];
   const sameName = c.filter(x=>x.name.split(' - ')[0] === (c[0]&&c[0].name.split(' - ')[0])).length;
   $('#valMsg').textContent = c.length
@@ -648,10 +683,54 @@ async function valFind(){
       <div style="font-size:12px;margin-top:5px">${escapeHtml(x.name)}</div>
       <div class="muted" style="font-size:11px">${escapeHtml(x.set)}<br>#${escapeHtml(x.number)}${x.market?' · $'+x.market:''}</div>
     </div>`).join('');
-  document.querySelectorAll('.cand').forEach(el=>el.onclick=()=>valPick(+el.dataset.pid));
+  document.querySelectorAll('.cand').forEach(el=>el.onclick=()=>valConfirm(+el.dataset.pid));
 }
 $('#valSearch').onclick = valFind;
 $('#valQuery').onkeydown = e=>{ if(e.key==='Enter') valFind(); };
+
+// searching state: lock the box so typing can't interrupt a running search
+function valBusy(b){
+  $('#valQuery').disabled = b;
+  $('#valSearch').disabled = b;
+}
+
+// language-aware full display name ("Japanese Mega Manectric ex")
+function cardLabel(cd){
+  const jp = cd.line === 'pokemon-japan' || /japan/i.test(cd.set||'');
+  return (jp ? 'Japanese ' : '') + (cd.name||'').split(' - ')[0];
+}
+
+// side-by-side confirmation before valuation — user's eye is the last gate
+let cmpPid = null;
+function valConfirm(pid){
+  const cd = (window._cands||{})[pid] || {};
+  cmpPid = pid;
+  $('#cmpTitle').textContent = cardLabel(cd) + ' — ' + (cd.set||'') + ' #' + (cd.number||'?');
+  $('#cmpMine').src = $('#valThumb').dataset.full || $('#valThumb').src || '';
+  // full-size scan for stamp inspection; fall back to the thumbnail
+  const big = 'https://product-images.tcgplayer.com/fit-in/874x1214/' + pid + '.jpg';
+  $('#cmpTheir').onerror = ()=>{ $('#cmpTheir').onerror=null; $('#cmpTheir').src = cd.img||''; };
+  $('#cmpTheir').src = big;
+  $('#cmpModal').style.display = 'flex';
+}
+$('#cmpYes').onclick = ()=>{ $('#cmpModal').style.display='none'; if(cmpPid) valPick(cmpPid); };
+$('#cmpNo').onclick  = ()=>{ $('#cmpModal').style.display='none'; };
+$('#cmpModal').onclick = e=>{ if(e.target === $('#cmpModal')) $('#cmpModal').style.display='none'; };
+
+// magnifying glass: zoom follows the cursor; tap toggles on touch screens
+document.querySelectorAll('.cmp-imgwrap').forEach(w=>{
+  const img = w.querySelector('img');
+  w.onmousemove = e=>{
+    const r = w.getBoundingClientRect();
+    img.style.transformOrigin = ((e.clientX-r.left)/r.width*100)+'% '+((e.clientY-r.top)/r.height*100)+'%';
+  };
+  w.onmouseenter = ()=>{ img.style.transform='scale(2.6)'; };
+  w.onmouseleave = ()=>{ img.style.transform='scale(1)'; img.dataset.zoomed=''; };
+  w.onclick = ()=>{           // touch: tap to toggle the lens
+    img.dataset.zoomed = img.dataset.zoomed ? '' : '1';
+    img.style.transform = img.dataset.zoomed ? 'scale(2.6)' : 'scale(1)';
+  };
+});
 
 async function valPick(pid){
   $('#valResult').innerHTML = '<p class="muted"><span class="spin"></span> pricing from real sales…</p>';
@@ -664,7 +743,7 @@ async function valPick(pid){
       <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">
         ${cd.img?`<img src="${cd.img}" style="height:86px;border-radius:6px">`:''}
         <div>
-          <div style="font-weight:700">${escapeHtml(cd.name||'')}</div>
+          <div style="font-weight:700">${escapeHtml(cardLabel(cd))}</div>
           <div class="muted" style="font-size:12px">${escapeHtml(cd.set||'')} · #${escapeHtml(cd.number||'')}
             ${cd.url?` · <a href="${cd.url}" target="_blank" rel="noopener" style="color:var(--accent)">TCGplayer ↗</a>`:''}</div>
         </div>
