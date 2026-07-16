@@ -12,6 +12,7 @@ import os
 import sys
 import unittest
 
+import pc_price
 import scraper
 import tcg_price
 import valuator
@@ -160,6 +161,34 @@ class TestTcgMatching(unittest.TestCase):
         # graded slabs must never get a raw-card price
         self.assertEqual(tcg_price.market_value("PSA 9 Charizard 4/102"),
                          (None, None))
+
+
+class TestPriceChartingPrecision(unittest.TestCase):
+    """Two live @everyone false snipes (2026-07-16 screenshots): a toy
+    Lucario priced as a P22k booster box, plushies priced at P846 —
+    both from generic-token matching."""
+
+    BOX = [("Pokemon Booster Box", "Pokemon Sealed", "380.00")]
+
+    def test_toy_with_box_never_matches_booster_box(self):
+        t = "FS pokemon with box na 200 nalang, sagot ko na bubble wrap"
+        self.assertIsNone(pc_price._pick(self.BOX, t))
+
+    def test_plush_sale_title_matches_nothing(self):
+        rows = [("Pikachu", "Pokemon Promo", "5.00")] + self.BOX
+        self.assertIsNone(pc_price._pick(rows, "Paubos Sale!! Price starts at 250!!"))
+
+    def test_combee_never_gets_combusken_price(self):
+        # the original dup-mismatch: overlap lived in the console text
+        rows = [("Combusken #65", "Pokemon Meiji Promo", "3.95")]
+        self.assertIsNone(
+            pc_price._pick(rows, "Pokemon Card Combee 081/DP-P Vintage Meiji"))
+
+    def test_real_card_still_matches(self):
+        rows = [("Staraptor #26", "Pokemon Japanese Diamond & Pearl", "5.58")]
+        best = pc_price._pick(rows, "Pokemon Card Staraptor Holo Japanese D&P")
+        self.assertIsNotNone(best)
+        self.assertEqual(best[0], "Staraptor #26")
 
 
 class TestValuator(unittest.TestCase):

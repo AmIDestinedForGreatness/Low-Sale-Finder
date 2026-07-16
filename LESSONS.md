@@ -151,3 +151,15 @@ ranking silently did nothing. Yujin caught it on a verified-V0.6 page.
 **Rule:** never assume a response field's format from the request's format —
 print an actual response value before comparing against it. (L1/L11 family:
 verify, don't assume.) Language checks now case-insensitively substring-match.
+
+### L20 — a valuation needs an IDENTITY, and absurd ratios mean wrong match (2026-07-16)
+**Mistake (two live @everyone false snipes):** a toy Lucario ("FS pokemon
+with box") priced as a ₱22k booster box; plushies ("Paubos Sale!!") priced
+at ₱846 — PriceCharting matched on generic tokens ("pokemon"+"box"), then
+1%/30%-of-market fired UNDER MARKET pings.
+**Rules:** (1) a price match requires a SPECIFIC identifying token (the
+Pokémon's name) in the product NAME itself — generic words and console-text
+overlap don't count (also kills the Combee←Combusken dup bug); a title with
+no specific tokens is unpriceable, full stop. (2) A listing under 15% of
+"market" is a wrong MATCH, not a snipe — mismatch guard, never ping.
+**Guard:** `TestPriceChartingPrecision`

@@ -140,6 +140,12 @@ def evaluate(listing, conn):
     savings = market - p
     if savings < config.MIN_ABSOLUTE_SAVINGS:
         return
+    if fraction < 0.15:
+        # a "1% of market" listing is a WRONG MATCH, not a snipe (a toy
+        # Lucario got priced as a P22k booster box) — never @everyone on it
+        print(f"  [mismatch guard] {listing['title'][:50]} @ {p:.0f} vs "
+              f"{market:.0f} ({fraction*100:.0f}%) — implausible, skipping")
+        return
 
     steal = fraction <= config.ALERT_STEAL_FRACTION
     deal = fraction <= config.ALERT_AT_OR_BELOW_FRACTION

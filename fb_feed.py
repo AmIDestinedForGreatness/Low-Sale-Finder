@@ -360,7 +360,9 @@ def analyze(item):
         except Exception:
             market = None
     item["market"] = market
-    item["undervalued"] = bool(market and price <= market * config.FB_DEAL_FRACTION)
+    # lower bound: sub-15%-of-market means the MATCH is wrong, not the price
+    item["undervalued"] = bool(market and price <= market * config.FB_DEAL_FRACTION
+                               and price >= market * 0.15)
     return item
 
 

@@ -32,6 +32,45 @@ def _tokens(s):
     return set(w for w in re.findall(r"[a-z0-9]+", (s or "").lower()) if len(w) > 1)
 
 
+# words that describe EVERY listing, not THIS card — matching on these
+# priced a toy Lucario as a P22k booster box ("pokemon"+"box", 2 tokens)
+_GENERIC = {
+    "pokemon", "pokemom", "pokemons", "card", "cards", "tcg", "japanese",
+    "japan", "korean", "english", "eng", "jp", "box", "pack", "packs", "set",
+    "sets", "sale", "price", "holo", "rare", "promo", "promos", "vintage",
+    "mint", "psa", "bgs", "cgc", "edition", "1st", "first", "booster",
+    "bundle", "lot", "collection", "collections", "with", "and", "the",
+    "for", "fs", "wts", "lf", "na", "ng", "sa", "ko", "po", "nalang",
+    "lang", "only", "new", "authentic", "original", "legit", "rush",
+    "starts", "start", "paubos", "secret", "full", "art", "fullart"}
+
+
+def _specific(tokens):
+    """Tokens that actually identify a card (Pokémon name, etc.)."""
+    return {t for t in tokens if t not in _GENERIC and len(t) >= 3
+            and not t.isdigit()}
+
+
+def _pick(rows, title):
+    """Choose the PriceCharting row for this title, or None.
+    The match must share a SPECIFIC token with the product NAME itself —
+    generic overlap ('pokemon box') is how plushies got booster-box prices,
+    and name-vs-console overlap is how Combee got Combusken's price."""
+    want = _specific(_tokens(title))
+    if not want:
+        return None                      # nothing identifying to match on
+    best, best_score = None, 0
+    for name, console, usd in rows:
+        name_hit = _specific(_tokens(name)) & want
+        if not name_hit:
+            continue
+        score = (len(name_hit) * 10
+                 + len(_tokens(name + " " + console) & _tokens(title)))
+        if score > best_score:
+            best, best_score = (name, console, usd), score
+    return best
+
+
 def _cache():
     conn = sqlite3.connect(config.SEEN_DB_PATH)
     conn.execute("CREATE TABLE IF NOT EXISTS pc_cache "
@@ -60,13 +99,8 @@ def market_value(title: str):
         try:
             r = requests.get(SEARCH, params={"q": query, "type": "prices"},
                              headers={"User-Agent": UA}, timeout=20)
-            want = _tokens(title)
-            best, best_score = None, 0
-            for name, console, usd in _ROW.findall(r.text):
-                score = len(_tokens(name + " " + console) & want)
-                if score > best_score:
-                    best, best_score = (name, console, usd), score
-            if best and best_score >= 2:
+            best = _pick(_ROW.findall(r.text), title)
+            if best:
                 usd = float(best[2].replace(",", ""))
                 price = usd * config.USD_TO_LOCAL_RATE
                 label = f"pc:{best[0]} [{best[1]}] (${usd})"
