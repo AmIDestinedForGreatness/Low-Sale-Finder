@@ -228,6 +228,8 @@ def search_candidates(query, size=12):
             "img": IMG.format(pid),
             "url": f"https://www.tcgplayer.com/product/{pid}",
         })
+    # actual cards (they have a collector number) before boxes/merch
+    out.sort(key=lambda c: 0 if c["number"] else 1)
     if number:  # user's number: bubble exact matches to the front
         lead = number.split("/")[0].lstrip("0")
         out.sort(key=lambda c: (0 if c["number"].lower() == number else
