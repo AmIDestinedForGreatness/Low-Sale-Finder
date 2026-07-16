@@ -287,15 +287,22 @@ def identify(image_paths, ocr_raw, wm):
             if name and number:
                 break
     all_lines = merged
-    jp = (bool(via) or bool(name and valuator._SET_RE.fullmatch(name))
-          or bool(number and not name))
+    # LANGUAGE is a claim — only POSITIVE evidence sets it: a JP set code,
+    # a JP promo footer (…/XY-P), or the paths that only fire when the name
+    # isn't Latin-readable. "identified via unique number match" says
+    # nothing about language (it mislabeled 4 English cards Japanese).
+    jp = (bool(name and valuator._SET_RE.fullmatch(str(name or "")))
+          or bool(re.search(r"[A-Za-z]-P$", str(number or "")))
+          or via in ("attack fingerprint", "dex number", "fingerprint × number"))
+    # …but for SEARCH RANKING an unreadable name is still a useful JP hint
+    prefer_jp = jp or bool(number and not name)
     number_read, snapped = number, False
     cands = []
     query = (str(name or "") + " " + str(number or "")).strip()
     if query:
-        cands = valuator.search_candidates(query, prefer_jp=jp)
+        cands = valuator.search_candidates(query, prefer_jp=prefer_jp)
         if not cands and name:                   # number may be misread
-            cands = valuator.search_candidates(str(name), prefer_jp=jp)
+            cands = valuator.search_candidates(str(name), prefer_jp=prefer_jp)
         # promo/JP numbers are near-unique: exactly ONE catalog product with
         # the read number = the card ("197/SV-P" -> Pikachu). Also upgrades
         # a setcode-only name ("sm3" -> Raichu GX). Still eye-gated.

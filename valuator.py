@@ -260,8 +260,9 @@ def _is_junk(text):
                     # Mega full-arts OCR as one glued token ('MCameruptEX',
                     # 'MBeedrillEX', 'MTyranitar') — M + name + mechanic
                     or re.fullmatch(r"M[A-Z][a-z]{3,}(?:EX|GX)?", w)
-                    # ...and EX/GX glue onto ANY name ('HydreigonEX')
-                    or re.fullmatch(r"[A-Z][a-z]{3,}(?:EX|GX)", w))
+                    # ...and EX/GX/V-mechanics glue onto ANY name
+                    # ('HydreigonEX', 'EeveeVax' = VMAX misread)
+                    or re.fullmatch(r"[A-Z][a-z]{3,}(?:EX|GX|V[A-Za-z]{0,4})", w))
         plausible = (shape_ok and len(w) >= 3
                      and re.search(r"[aeiouyAEIOUY]", w)
                      and re.search(r"[^aeiouAEIOU]", w)      # 'ooo' is not a word
@@ -302,6 +303,25 @@ def _name_vocab():
     return _VOCAB
 
 
+_VOCAB_NS = None
+
+
+def _vocab_nospace():
+    """separator-stripped vocab keys -> canonical (None when two different
+    canonicals collide on the same squashed form)."""
+    global _VOCAB_NS
+    if _VOCAB_NS is None:
+        ns = {}
+        for k, canon in _name_vocab().items():
+            sk = re.sub(r"[ .'&-]", "", k)
+            if sk in ns and ns[sk] != canon:
+                ns[sk] = None                      # ambiguous — never match
+            else:
+                ns.setdefault(sk, canon)
+        _VOCAB_NS = ns
+    return _VOCAB_NS
+
+
 def snap_name(raw):
     """LAYER-C identification: a guessed NAME must be a real card name.
     Snaps OCR misreads to the unique nearest real name ('Pikachue' ->
@@ -317,6 +337,13 @@ def snap_name(raw):
     q = " ".join(re.sub(r"[^a-z'&. -]", " ", raw.lower()).split())
     if q in vocab:
         return vocab[q]
+    # spacing-insensitive exact match: glued 'MManectricEX' is EXACTLY
+    # 'M Manectric-EX' minus separators — fuzzy matching saw a tie between
+    # 'manectric' and 'm manectric' (both distance 1, both start 'm')
+    ns = _vocab_nospace()
+    hit = ns.get(re.sub(r"[ .'&-]", "", q))
+    if hit:
+        return hit
     stripped = _MECH_SUFFIX.sub("", q).strip()
     if stripped and stripped != q:
         # glued mechanic ('pikachuex') — prefer the FULL mechanic form
@@ -343,18 +370,26 @@ def snap_name(raw):
         return None
     if ties == 1:
         return best[0][1]
-    # tie-break: OCR rarely loses the FIRST letter — 'mcamerupt' is 1 edit
+    # tie-break 1: OCR rarely loses the FIRST letter — 'mcamerupt' is 1 edit
     # from both 'camerupt' and 'm camerupt'; keep same-first-letter matches
     first = {c for k, c in best if k[:1] == q[:1]}
-    return first.pop() if len(first) == 1 else None   # still ambiguous = no snap
+    if len(first) == 1:
+        return first.pop()
+    # tie-break 2: distance on separator-stripped forms — glue misreads
+    # ('EeveeVax') sit closer to their true name once spacing is ignored
+    strip = lambda s: re.sub(r"[ .'&-]", "", s)
+    scored = sorted((_lev(strip(q), strip(k)), c) for k, c in best)
+    if len(scored) > 1 and scored[0][0] < scored[1][0]:
+        return scored[0][1]
+    return None                                       # still ambiguous = no snap
 
 
 # JP vintage cards (DP era, promos) print the National Dex number in the
 # Pokédex data strip — "NO.398 ムクホーク" — a direct species ID when neither
 # the (Japanese) name nor a set code is readable
-# NB: no trailing \b — JP text right after the digits ("NO.398走…") is a
-# word character, which kills the boundary
-_DEX_RE = re.compile(r"\bNO\.?\s*(\d{1,4})(?!\d)", re.I)
+# NB: no \b on either side — JP text around the token ("図鑑NO.0025走…")
+# is word characters, which kills both boundaries; lookarounds instead
+_DEX_RE = re.compile(r"(?<![A-Za-z0-9])NO\.?\s*(\d{1,4})(?!\d)", re.I)
 
 
 def dex_names(lines):
@@ -387,7 +422,8 @@ def guess_query(lines):
     number, setcode = None, None
     for ln in lines:
         if not number:  # prefer the slash form (016/173) over promo tokens
-            m = re.search(r"\b\d{1,3}\s*/\s*\d{1,3}\b", ln)
+            # numerator may carry a variant letter: alternate-art "24a/119"
+            m = re.search(r"\b\d{1,3}[a-z]?\s*/\s*\d{1,3}\b", ln, re.I)
             if m:
                 number = m.group(0).replace(" ", "")
         if not setcode:
@@ -504,7 +540,8 @@ def search_candidates(query, size=12, prefer_jp=False):
     """TCGplayer candidates for the picker grid (image = user's eyes).
     TCGplayer's search returns nothing when the collector number is in the
     query text — so search by NAME only, then rank number-matches first."""
-    m = (re.search(r"\b\d{1,3}\s*/\s*\d{1,3}\b", query) or _NUM_RE.search(query))
+    m = (re.search(r"\b\d{1,3}[a-z]?\s*/\s*\d{1,3}\b", query, re.I)
+         or _NUM_RE.search(query))
     number = (m.group(0).replace(" ", "") if m else "").lower()
     if _SET_RE.search(query) and number:
         # JP set-code query: TCGplayer resolves "sm12a 016/173" directly —

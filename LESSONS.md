@@ -225,3 +225,35 @@ photo, voting for the most specific validated read ("Pikachu ex" beats
 "Pikachu"; two-line TAG TEAM names join: "Naganadel&"+"Guzzlord").
 **Guard:** `ValuatorLayerCD.test_tag_team_name_spans_two_lines` + the
 Pikachu-ex snap case in the dataset itself (`dataset/carousell_profile.json`)
+
+## the overnight lot (2026-07-17 overnight, 38 cards incl. binder pages)
+
+### L26 — real-world photos: orientation, glue, variant letters, grids (2026-07-17)
+**Mistakes (one run, five classes):** sideways phone photos OCR'd scrambled;
+'MManectricEX' fuzzy-tied between 'manectric'/'m manectric' (both d1, both
+start 'm'); 'EeveeVax' (VMAX glue misread) failed the junk shape; '24a/119'
+alternate-art numerators were invisible to `\d{1,3}/\d{1,3}`; a 2×2 binder
+page OCR'd as one soup.
+**Rules:** (1) landscape photo → retry 90°/270°, best evidence wins;
+(2) separator-SQUASHED exact match before fuzzy ('mmanectricex' ==
+'m manectric-ex' squashed), and squashed distance as the final tie-break;
+(3) junk-shape allows Name+mechanic glue incl. V-forms; (4) numerators may
+carry a variant letter; (5) 3+ distinct vocabulary-validated names in one
+photo = multi-card → quadrant crops identified separately.
+**Guards:** `ValuatorLayerCD.test_layer_c_snaps_ocr_misreads` (MManectricEX,
+EeveeVax), `test_variant_letter_numerator`
+
+### L27 — language is a CLAIM; a price needs name+number AGREEMENT (2026-07-17)
+**Mistakes:** (1) `jp` was inferred from ANY identification-path evidence —
+"unique number match" says nothing about language; 4 English cards got
+renamed "…Japanese" before correction. (2) The lot pricer picked the sole
+candidate even when its NUMBER disagreed with the read one, and picked
+number-matches whose NAME disagreed — a "Snorlax" priced ₱6,850 off a
+LATIOS promo (L20's ghost, back through a new door).
+**Rules:** (1) "Japanese" only with positive evidence: JP set code, JP promo
+footer (…/XY-P), or the unreadable-name paths (fingerprint/dex); the weak
+"number-without-name" hint may rank searches but never label language.
+(2) `price_confident`: the priced product's name must CONTAIN the identified
+name's tokens AND its number must match the read number — else no price.
+Wrong prices are worse than no prices, doubly so when selling on 
+someone's behalf.

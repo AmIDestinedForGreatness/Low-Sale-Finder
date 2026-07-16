@@ -1,0 +1,2777 @@
+{
+ "725067133_27212577135072001_5638865472501436851_n.png": {
+  "file": "725067133_27212577135072001_5638865472501436851_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Hoopa",
+    "number": "96/181",
+    "number_read": "96/181",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Hoopa 96/181",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 598821,
+      "name": "Hoopa",
+      "set": "SM: The Best of XY",
+      "number": "057/171",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 165704,
+      "name": "Hoopa",
+      "set": "SM - Forbidden Light",
+      "number": "54/131",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 598823,
+      "name": "Hoopa EX",
+      "set": "SM: The Best of XY",
+      "number": "058/171",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 568767,
+      "name": "Hoopa",
+      "set": "S3: Infinity Zone",
+      "number": "061/100",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 572735,
+      "name": "Hoopa",
+      "set": "SM12a: TAG TEAM GX: Tag All Stars",
+      "number": "081/173",
+      "line": "Pokemon Japan"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "Hoopa 96-181 English.png"
+ },
+ "725360701_1458535039363747_7223853518911677105_n.png": {
+  "file": "725360701_1458535039363747_7223853518911677105_n.png",
+  "rotation": 270,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Pikachu",
+    "number": "SWSH286",
+    "number_read": "SWSH286",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Pikachu SWSH286",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 201241,
+      "name": "Pikachu",
+      "set": "SM - Cosmic Eclipse",
+      "number": "66/236",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 675867,
+      "name": "Pikachu",
+      "set": "ME: Ascended Heroes",
+      "number": "055/217",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 219157,
+      "name": "Pikachu - 19/68 (#30 Pikachu Stamped)",
+      "set": "Battle Academy",
+      "number": "019/068",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 246881,
+      "name": "Pikachu",
+      "set": "SWSH07: Evolving Skies",
+      "number": "049/203",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 268213,
+      "name": "Pikachu V - 043/185 (#60 Pikachu Stamped)",
+      "set": "Battle Academy 2022",
+      "number": "043/185",
+      "line": "Pokemon"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "Pikachu SWSH286 English.png"
+ },
+ "725610893_1341914270602662_420780957780373285_n.png": {
+  "file": "725610893_1341914270602662_420780957780373285_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "M Mewtwo EX (63)",
+    "number": "63/162",
+    "number_read": "63/162",
+    "snapped": false,
+    "via": "unique number match",
+    "jp": false,
+    "query": "63/162",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 107182,
+      "name": "M Mewtwo EX (63)",
+      "set": "XY - BREAKthrough",
+      "number": "63/162",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 107182,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 52.79,
+     "market_php": 3062,
+     "sales": [
+      {
+       "date": "2026-07-16",
+       "usd": 22.34,
+       "condition": "Moderately Played"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 14.7,
+       "condition": "Heavily Played"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 14.0,
+       "condition": "Damaged"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 12.59,
+       "condition": "Damaged"
+      },
+      {
+       "date": "2026-07-13",
+       "usd": 12.56,
+       "condition": "Damaged"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 3,
+     "confidence": "HIGH",
+     "confidence_why": "~1.7 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 52.79,
+       "php": 3062,
+       "from": "est. % of market"
+      },
+      "Lightly Played": {
+       "usd": 42.23,
+       "php": 2449,
+       "from": "est. % of market"
+      },
+      "Moderately Played": {
+       "usd": 22.34,
+       "php": 1296,
+       "from": "1 real sold"
+      },
+      "Heavily Played": {
+       "usd": 14.7,
+       "php": 853,
+       "from": "1 real sold"
+      },
+      "Damaged": {
+       "usd": 12.59,
+       "php": 730,
+       "from": "3 real sold"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 3674,
+       "steal_php": 2205
+      },
+      "Lightly Played": {
+       "list_php": 2939,
+       "steal_php": 1763
+      },
+      "Moderately Played": {
+       "list_php": 1555,
+       "steal_php": 933
+      },
+      "Heavily Played": {
+       "list_php": 1024,
+       "steal_php": 614
+      },
+      "Damaged": {
+       "list_php": 876,
+       "steal_php": 526
+      }
+     },
+     "product": "M Mewtwo EX (63)"
+    }
+   }
+  ],
+  "renamed_to": "M Mewtwo EX (63) 63-162 English.png"
+ },
+ "725648079_2483016895454061_7568971144471405601_n.png": {
+  "file": "725648079_2483016895454061_7568971144471405601_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Snorlax GX",
+    "number": "SM05",
+    "number_read": "SM05",
+    "snapped": false,
+    "via": "unique number match",
+    "jp": false,
+    "query": "sm05 SM05",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 126027,
+      "name": "Snorlax GX - SM05",
+      "set": "SM Promos",
+      "number": "SM05",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 126027,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 17.43,
+     "market_php": 1011,
+     "sales": [
+      {
+       "date": "2026-07-16",
+       "usd": 3.41,
+       "condition": "Heavily Played"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 3.71,
+       "condition": "Heavily Played"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 9.69,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 12.45,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 19.29,
+       "condition": "Near Mint"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 2,
+     "confidence": "HIGH",
+     "confidence_why": "~2.5 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 19.29,
+       "php": 1119,
+       "from": "1 real sold"
+      },
+      "Lightly Played": {
+       "usd": 11.07,
+       "php": 642,
+       "from": "2 real sold"
+      },
+      "Moderately Played": {
+       "usd": 10.46,
+       "php": 607,
+       "from": "est. % of market"
+      },
+      "Heavily Played": {
+       "usd": 3.56,
+       "php": 206,
+       "from": "2 real sold"
+      },
+      "Damaged": {
+       "usd": 5.23,
+       "php": 303,
+       "from": "est. % of market"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 1343,
+       "steal_php": 806
+      },
+      "Lightly Played": {
+       "list_php": 770,
+       "steal_php": 462
+      },
+      "Moderately Played": {
+       "list_php": 728,
+       "steal_php": 437
+      },
+      "Heavily Played": {
+       "list_php": 247,
+       "steal_php": 148
+      },
+      "Damaged": {
+       "list_php": 364,
+       "steal_php": 218
+      }
+     },
+     "product": "Snorlax GX - SM05"
+    }
+   }
+  ],
+  "renamed_to": "Snorlax GX SM05 English.png"
+ },
+ "725697153_1677246743559241_5594683240432573812_n.png": {
+  "file": "725697153_1677246743559241_5594683240432573812_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "M Steelix-EX",
+    "number": "68/114",
+    "number_read": "68/114",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "M Steelix-EX 68/114",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 121197,
+      "name": "M Steelix EX",
+      "set": "XY - Steam Siege",
+      "number": "68/114",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 121197,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 8.95,
+     "market_php": 519,
+     "sales": [
+      {
+       "date": "2026-07-16",
+       "usd": 3.17,
+       "condition": "Damaged"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 7.88,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 5.0,
+       "condition": "Damaged"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 6.69,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 5.68,
+       "condition": "Moderately Played"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 2,
+     "confidence": "HIGH",
+     "confidence_why": "~2.5 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 8.95,
+       "php": 519,
+       "from": "est. % of market"
+      },
+      "Lightly Played": {
+       "usd": 7.29,
+       "php": 423,
+       "from": "2 real sold"
+      },
+      "Moderately Played": {
+       "usd": 5.68,
+       "php": 329,
+       "from": "1 real sold"
+      },
+      "Heavily Played": {
+       "usd": 4.03,
+       "php": 234,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 4.08,
+       "php": 237,
+       "from": "2 real sold"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 623,
+       "steal_php": 374
+      },
+      "Lightly Played": {
+       "list_php": 508,
+       "steal_php": 305
+      },
+      "Moderately Played": {
+       "list_php": 395,
+       "steal_php": 237
+      },
+      "Heavily Played": {
+       "list_php": 281,
+       "steal_php": 168
+      },
+      "Damaged": {
+       "list_php": 284,
+       "steal_php": 171
+      }
+     },
+     "product": "M Steelix EX"
+    }
+   }
+  ],
+  "renamed_to": "M Steelix-EX 68-114 English.png"
+ },
+ "725707402_1553957382933059_1095004754974100203_n.png": {
+  "file": "725707402_1553957382933059_1095004754974100203_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Flygon-GX",
+    "number": "110/236",
+    "number_read": "110/236",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Flygon-GX 110/236",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 201141,
+      "name": "Flygon GX",
+      "set": "SM - Cosmic Eclipse",
+      "number": "110/236",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 201141,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 2.35,
+     "market_php": 136,
+     "sales": [
+      {
+       "date": "2026-07-16",
+       "usd": 2.37,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 2.66,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 1.98,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 2.38,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 2.4,
+       "condition": "Near Mint"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 2,
+     "confidence": "HIGH",
+     "confidence_why": "~2.5 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 2.38,
+       "php": 138,
+       "from": "4 real sold"
+      },
+      "Lightly Played": {
+       "usd": 2.66,
+       "php": 154,
+       "from": "1 real sold"
+      },
+      "Moderately Played": {
+       "usd": 1.41,
+       "php": 82,
+       "from": "est. % of market"
+      },
+      "Heavily Played": {
+       "usd": 1.06,
+       "php": 61,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 0.7,
+       "php": 41,
+       "from": "est. % of market"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 166,
+       "steal_php": 99
+      },
+      "Lightly Played": {
+       "list_php": 185,
+       "steal_php": 111
+      },
+      "Moderately Played": {
+       "list_php": 98,
+       "steal_php": 59
+      },
+      "Heavily Played": {
+       "list_php": 73,
+       "steal_php": 44
+      },
+      "Damaged": {
+       "list_php": 49,
+       "steal_php": 30
+      }
+     },
+     "product": "Flygon GX"
+    }
+   }
+  ],
+  "renamed_to": "Flygon-GX 110-236 English.png"
+ },
+ "726230979_2306497430119317_1024184715809451710_n.png": {
+  "file": "726230979_2306497430119317_1024184715809451710_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Incineroar",
+    "number": "27/149",
+    "number_read": "27/149",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Incineroar 27/149",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 126897,
+      "name": "Incineroar",
+      "set": "SM Base Set",
+      "number": "26/149",
+      "line": "Pokemon"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "Incineroar 27-149 English.png"
+ },
+ "726349520_1534329704822803_2650562899449340808_n.png": {
+  "file": "726349520_1534329704822803_2650562899449340808_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Golem",
+    "number": "26/114",
+    "number_read": "26/114",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Golem 26/114",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 85822,
+      "name": "Golem",
+      "set": "Legendary Collection",
+      "number": "024/110",
+      "line": "Pokemon"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "Golem 26-114 English.png"
+ },
+ "726431715_27352174164474169_2811779265679641649_n.png": {
+  "file": "726431715_27352174164474169_2811779265679641649_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Zoroark",
+    "number": "53/73",
+    "number_read": "53/73",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Zoroark 53/73",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 572733,
+      "name": "Zoroark",
+      "set": "SM12a: TAG TEAM GX: Tag All Stars",
+      "number": "079/173",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 90755,
+      "name": "Zoroark",
+      "set": "Legendary Treasures",
+      "number": "90/113",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 90750,
+      "name": "Zoroark",
+      "set": "Emerging Powers",
+      "number": "67/98",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 571629,
+      "name": "Zoroark",
+      "set": "S12a: VSTAR Universe",
+      "number": "091/172",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 601433,
+      "name": "Zoroark",
+      "set": "BW4: Dark Rush",
+      "number": "049/069",
+      "line": "Pokemon Japan"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "Zoroark 53-73 English.png"
+ },
+ "726446951_1658785082018171_2071464438310082680_n.png": {
+  "file": "726446951_1658785082018171_2071464438310082680_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Yveltal",
+    "number": "XY08",
+    "number_read": "XY08",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Yveltal XY08",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 90701,
+      "name": "Yveltal EX - XY08",
+      "set": "XY Promos",
+      "number": "XY08",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 90701,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 11.05,
+     "market_php": 641,
+     "sales": [
+      {
+       "date": "2026-07-16",
+       "usd": 12.3,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 13.65,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 10.75,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 3.47,
+       "condition": "Moderately Played"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 0.99,
+       "condition": "Damaged"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 1,
+     "confidence": "HIGH",
+     "confidence_why": "~5.0 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 12.3,
+       "php": 713,
+       "from": "3 real sold"
+      },
+      "Lightly Played": {
+       "usd": 8.84,
+       "php": 513,
+       "from": "est. % of market"
+      },
+      "Moderately Played": {
+       "usd": 3.47,
+       "php": 201,
+       "from": "1 real sold"
+      },
+      "Heavily Played": {
+       "usd": 4.97,
+       "php": 288,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 0.99,
+       "php": 57,
+       "from": "1 real sold"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 856,
+       "steal_php": 513
+      },
+      "Lightly Played": {
+       "list_php": 616,
+       "steal_php": 369
+      },
+      "Moderately Played": {
+       "list_php": 241,
+       "steal_php": 145
+      },
+      "Heavily Played": {
+       "list_php": 346,
+       "steal_php": 207
+      },
+      "Damaged": {
+       "list_php": 68,
+       "steal_php": 41
+      }
+     },
+     "product": "Yveltal EX - XY08"
+    }
+   }
+  ],
+  "renamed_to": "Yveltal XY08 English.png"
+ },
+ "726644614_1734290947564850_788107301852392322_n.png": {
+  "file": "726644614_1734290947564850_788107301852392322_n.png",
+  "rotation": 270,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Mew",
+    "number": "069/189",
+    "number_read": "069/189",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Mew 069/189",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 660448,
+      "name": "Mew",
+      "set": "BW: Extra Regulation Box",
+      "number": "009/048",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 197676,
+      "name": "Mew",
+      "set": "Hidden Fates",
+      "number": "32/68",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 611815,
+      "name": "Mew",
+      "set": "Mirage's Mew Constructed Starter Deck",
+      "number": "005/016",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 124066,
+      "name": "Mew",
+      "set": "XY - Evolutions",
+      "number": "53/108",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 87403,
+      "name": "Mew",
+      "set": "Secret Wonders",
+      "number": "15/132",
+      "line": "Pokemon"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "Mew 069-189 English.png"
+ },
+ "726733398_1034517599055902_7883988097122256108_n.png": {
+  "file": "726733398_1034517599055902_7883988097122256108_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Altaria",
+    "number": "123/124",
+    "number_read": "123/124",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Altaria 123/124",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 83519,
+      "name": "Altaria",
+      "set": "Dragons Exalted",
+      "number": "84/124",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 83515,
+      "name": "Altaria",
+      "set": "Power Keepers",
+      "number": "2/108",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 83514,
+      "name": "Altaria",
+      "set": "Deoxys",
+      "number": "1/107",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 83521,
+      "name": "Altaria",
+      "set": "Boundaries Crossed",
+      "number": "152/149",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 605452,
+      "name": "Altaria",
+      "set": "CP3: PokeKyun Collection",
+      "number": "029/032",
+      "line": "Pokemon Japan"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "Altaria 123-124 English.png"
+ },
+ "726794194_1551961519807407_1495276154433273510_n.png": {
+  "file": "726794194_1551961519807407_1495276154433273510_n.png",
+  "rotation": 90,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Lucario VSTAR",
+    "number": "SWSH291",
+    "number_read": "SWSH291",
+    "snapped": false,
+    "via": "unique number match",
+    "jp": false,
+    "query": "SWSH291",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 475642,
+      "name": "Lucario VSTAR - SWSH291",
+      "set": "SWSH: Sword & Shield Promo Cards",
+      "number": "SWSH291",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 475642,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 12.36,
+     "market_php": 717,
+     "sales": [
+      {
+       "date": "2026-07-16",
+       "usd": 12.72,
+       "condition": "Moderately Played"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 12.35,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 12.29,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 13.0,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 12.29,
+       "condition": "Near Mint"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 1,
+     "confidence": "HIGH",
+     "confidence_why": "~5.0 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 12.32,
+       "php": 715,
+       "from": "4 real sold"
+      },
+      "Lightly Played": {
+       "usd": 9.89,
+       "php": 574,
+       "from": "est. % of market"
+      },
+      "Moderately Played": {
+       "usd": 12.72,
+       "php": 738,
+       "from": "1 real sold"
+      },
+      "Heavily Played": {
+       "usd": 5.56,
+       "php": 323,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 3.71,
+       "php": 215,
+       "from": "est. % of market"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 858,
+       "steal_php": 515
+      },
+      "Lightly Played": {
+       "list_php": 689,
+       "steal_php": 413
+      },
+      "Moderately Played": {
+       "list_php": 886,
+       "steal_php": 531
+      },
+      "Heavily Played": {
+       "list_php": 388,
+       "steal_php": 233
+      },
+      "Damaged": {
+       "list_php": 258,
+       "steal_php": 155
+      }
+     },
+     "product": "Lucario VSTAR - SWSH291"
+    }
+   }
+  ],
+  "renamed_to": "Lucario VSTAR SWSH291 English.png"
+ },
+ "726838929_1660589496067331_1195583958885046392_n.png": {
+  "file": "726838929_1660589496067331_1195583958885046392_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "M Blastoise-EX",
+    "number": "22/108",
+    "number_read": "22/108",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "M Blastoise-EX 22/108",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 124035,
+      "name": "M Blastoise EX",
+      "set": "XY - Evolutions",
+      "number": "22/108",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 124035,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 21.63,
+     "market_php": 1255,
+     "sales": [
+      {
+       "date": "2026-07-16",
+       "usd": 12.3,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 7.0,
+       "condition": "Damaged"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 8.61,
+       "condition": "Heavily Played"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 25.98,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 25.99,
+       "condition": "Near Mint"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 1,
+     "confidence": "HIGH",
+     "confidence_why": "~5.0 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 25.98,
+       "php": 1507,
+       "from": "2 real sold"
+      },
+      "Lightly Played": {
+       "usd": 12.3,
+       "php": 713,
+       "from": "1 real sold"
+      },
+      "Moderately Played": {
+       "usd": 12.98,
+       "php": 753,
+       "from": "est. % of market"
+      },
+      "Heavily Played": {
+       "usd": 8.61,
+       "php": 499,
+       "from": "1 real sold"
+      },
+      "Damaged": {
+       "usd": 7.0,
+       "php": 406,
+       "from": "1 real sold"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 1808,
+       "steal_php": 1085
+      },
+      "Lightly Played": {
+       "list_php": 856,
+       "steal_php": 513
+      },
+      "Moderately Played": {
+       "list_php": 904,
+       "steal_php": 542
+      },
+      "Heavily Played": {
+       "list_php": 599,
+       "steal_php": 359
+      },
+      "Damaged": {
+       "list_php": 487,
+       "steal_php": 292
+      }
+     },
+     "product": "M Blastoise EX"
+    }
+   }
+  ],
+  "renamed_to": "M Blastoise-EX 22-108 English.png"
+ },
+ "726838936_1225617589588213_4455149587733904395_n.png": {
+  "file": "726838936_1225617589588213_4455149587733904395_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "M Venusaur-EX",
+    "number": "2/146",
+    "number_read": "2/146",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "M Venusaur-EX 2/146",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 86955,
+      "name": "M Venusaur EX",
+      "set": "XY Base Set",
+      "number": "2/146",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 86955,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 21.82,
+     "market_php": 1266,
+     "sales": [
+      {
+       "date": "2026-07-16",
+       "usd": 14.79,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 13.79,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 4.75,
+       "condition": "Damaged"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 24.62,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-12",
+       "usd": 9.26,
+       "condition": "Moderately Played"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 4,
+     "confidence": "HIGH",
+     "confidence_why": "~1.2 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 24.62,
+       "php": 1428,
+       "from": "1 real sold"
+      },
+      "Lightly Played": {
+       "usd": 14.29,
+       "php": 829,
+       "from": "2 real sold"
+      },
+      "Moderately Played": {
+       "usd": 9.26,
+       "php": 537,
+       "from": "1 real sold"
+      },
+      "Heavily Played": {
+       "usd": 9.82,
+       "php": 570,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 4.75,
+       "php": 276,
+       "from": "1 real sold"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 1714,
+       "steal_php": 1028
+      },
+      "Lightly Played": {
+       "list_php": 995,
+       "steal_php": 597
+      },
+      "Moderately Played": {
+       "list_php": 644,
+       "steal_php": 387
+      },
+      "Heavily Played": {
+       "list_php": 684,
+       "steal_php": 410
+      },
+      "Damaged": {
+       "list_php": 331,
+       "steal_php": 199
+      }
+     },
+     "product": "M Venusaur EX"
+    }
+   }
+  ],
+  "renamed_to": "M Venusaur-EX 2-146 English.png"
+ },
+ "727312327_956391747437658_7736971297398262421_n.png": {
+  "file": "727312327_956391747437658_7736971297398262421_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "M Altaria-EX",
+    "number": "121/124",
+    "number_read": "121/124",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "M Altaria-EX 121/124",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 117893,
+      "name": "M Altaria EX (Full Art)",
+      "set": "XY - Fates Collide",
+      "number": "121/124",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 117893,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 24.9,
+     "market_php": 1444,
+     "sales": [
+      {
+       "date": "2026-07-16",
+       "usd": 14.44,
+       "condition": "Moderately Played"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 15.33,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 15.33,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 17.07,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 29.92,
+       "condition": "Near Mint"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 2,
+     "confidence": "HIGH",
+     "confidence_why": "~2.5 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 29.92,
+       "php": 1735,
+       "from": "1 real sold"
+      },
+      "Lightly Played": {
+       "usd": 15.33,
+       "php": 889,
+       "from": "3 real sold"
+      },
+      "Moderately Played": {
+       "usd": 14.44,
+       "php": 838,
+       "from": "1 real sold"
+      },
+      "Heavily Played": {
+       "usd": 11.21,
+       "php": 650,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 7.47,
+       "php": 433,
+       "from": "est. % of market"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 2082,
+       "steal_php": 1249
+      },
+      "Lightly Played": {
+       "list_php": 1067,
+       "steal_php": 640
+      },
+      "Moderately Played": {
+       "list_php": 1006,
+       "steal_php": 603
+      },
+      "Heavily Played": {
+       "list_php": 780,
+       "steal_php": 468
+      },
+      "Damaged": {
+       "list_php": 520,
+       "steal_php": 312
+      }
+     },
+     "product": "M Altaria EX (Full Art)"
+    }
+   }
+  ],
+  "renamed_to": "M Altaria-EX 121-124 English.png"
+ },
+ "727345030_27400196932980430_7984112754005703682_n.png": {
+  "file": "727345030_27400196932980430_7984112754005703682_n.png",
+  "rotation": 270,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Mimikyu",
+    "number": "068/172",
+    "number_read": "068/172",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Mimikyu 068/172",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 263785,
+      "name": "Mimikyu VMAX",
+      "set": "SWSH09: Brilliant Stars",
+      "number": "069/172",
+      "line": "Pokemon"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "Mimikyu 068-172 English.png"
+ },
+ "727834132_27596193393350086_2994552713962021760_n.png": {
+  "file": "727834132_27596193393350086_2994552713962021760_n.png",
+  "rotation": 90,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Detective Pikachu",
+    "number": "SM194",
+    "number_read": "SM194",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Detective Pikachu SM194",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 185254,
+      "name": "Detective Pikachu - SM194",
+      "set": "SM Promos",
+      "number": "SM194",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 189805,
+      "name": "Detective Pikachu - SM190",
+      "set": "SM Promos",
+      "number": "SM190",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 185254,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 10.54,
+     "market_php": 611,
+     "sales": [
+      {
+       "date": "2026-07-16",
+       "usd": 11.29,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 11.25,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 4.25,
+       "condition": "Moderately Played"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 3.0,
+       "condition": "Moderately Played"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 7.92,
+       "condition": "Lightly Played"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 2,
+     "confidence": "HIGH",
+     "confidence_why": "~2.5 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 11.27,
+       "php": 654,
+       "from": "2 real sold"
+      },
+      "Lightly Played": {
+       "usd": 7.92,
+       "php": 459,
+       "from": "1 real sold"
+      },
+      "Moderately Played": {
+       "usd": 3.62,
+       "php": 210,
+       "from": "2 real sold"
+      },
+      "Heavily Played": {
+       "usd": 4.74,
+       "php": 275,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 3.16,
+       "php": 183,
+       "from": "est. % of market"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 785,
+       "steal_php": 471
+      },
+      "Lightly Played": {
+       "list_php": 551,
+       "steal_php": 330
+      },
+      "Moderately Played": {
+       "list_php": 252,
+       "steal_php": 151
+      },
+      "Heavily Played": {
+       "list_php": 330,
+       "steal_php": 198
+      },
+      "Damaged": {
+       "list_php": 220,
+       "steal_php": 132
+      }
+     },
+     "product": "Detective Pikachu - SM194"
+    }
+   }
+  ],
+  "renamed_to": "Detective Pikachu SM194 English.png"
+ },
+ "728286014_1666225467993026_3482990176428977109_n.png": {
+  "file": "728286014_1666225467993026_3482990176428977109_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Scizor",
+    "number": "119/122",
+    "number_read": "119/122",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Scizor 119/122",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 213224,
+      "name": "Scizor",
+      "set": "SWSH02: Rebel Clash",
+      "number": "128/192",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 88961,
+      "name": "Scizor",
+      "set": "Majestic Dawn",
+      "number": "29/100",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 88967,
+      "name": "Scizor ex",
+      "set": "Unseen Forces",
+      "number": "108/115",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 535149,
+      "name": "Scizor",
+      "set": "SV: Paldean Fates",
+      "number": "191/091",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 88966,
+      "name": "Scizor E4",
+      "set": "Rising Rivals",
+      "number": "48/111",
+      "line": "Pokemon"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "Scizor 119-122 English.png"
+ },
+ "728490777_36600657396245777_3942800816637077619_n.png": {
+  "file": "728490777_36600657396245777_3942800816637077619_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Lunala-GX",
+    "number": "SM17",
+    "number_read": "SM17",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Lunala-GX SM17",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 129312,
+      "name": "Lunala GX - SM17",
+      "set": "SM Promos",
+      "number": "SM17",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 129312,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 4.33,
+     "market_php": 251,
+     "sales": [
+      {
+       "date": "2026-07-15",
+       "usd": 2.5,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 3.38,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 3.39,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-13",
+       "usd": 1.32,
+       "condition": "Damaged"
+      },
+      {
+       "date": "2026-07-12",
+       "usd": 1.86,
+       "condition": "Moderately Played"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 3,
+     "confidence": "HIGH",
+     "confidence_why": "~1.7 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 4.33,
+       "php": 251,
+       "from": "est. % of market"
+      },
+      "Lightly Played": {
+       "usd": 3.38,
+       "php": 196,
+       "from": "3 real sold"
+      },
+      "Moderately Played": {
+       "usd": 1.86,
+       "php": 108,
+       "from": "1 real sold"
+      },
+      "Heavily Played": {
+       "usd": 1.95,
+       "php": 113,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 1.32,
+       "php": 77,
+       "from": "1 real sold"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 301,
+       "steal_php": 181
+      },
+      "Lightly Played": {
+       "list_php": 235,
+       "steal_php": 141
+      },
+      "Moderately Played": {
+       "list_php": 130,
+       "steal_php": 78
+      },
+      "Heavily Played": {
+       "list_php": 136,
+       "steal_php": 81
+      },
+      "Damaged": {
+       "list_php": 92,
+       "steal_php": 55
+      }
+     },
+     "product": "Lunala GX - SM17"
+    }
+   }
+  ],
+  "renamed_to": "Lunala-GX SM17 English.png"
+ },
+ "728543661_1485949276180262_5691663172151547484_n.png": {
+  "file": "728543661_1485949276180262_5691663172151547484_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "M Audino-EX",
+    "number": "85/124",
+    "number_read": "85/124",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "M Audino-EX 85/124",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 605427,
+      "name": "Diancie EX",
+      "set": "XYH: M Audino-EX Mega Battle Deck",
+      "number": "008/026",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 605431,
+      "name": "Mega Audino EX",
+      "set": "XYH: M Audino-EX Mega Battle Deck",
+      "number": "012/026",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 605430,
+      "name": "Audino EX",
+      "set": "XYH: M Audino-EX Mega Battle Deck",
+      "number": "011/026",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 605435,
+      "name": "Audino Spirit Link",
+      "set": "XYH: M Audino-EX Mega Battle Deck",
+      "number": "019/026",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 605423,
+      "name": "Mr. Mime",
+      "set": "XYH: M Audino-EX Mega Battle Deck",
+      "number": "004/026",
+      "line": "Pokemon Japan"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "M Audino-EX 85-124 English.png"
+ },
+ "728744248_1638839040544737_1052471487627715014_n.png": {
+  "file": "728744248_1638839040544737_1052471487627715014_n.png",
+  "rotation": 90,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Detective Pikachu",
+    "number": "10/18",
+    "number_read": "10/18",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Detective Pikachu 10/18",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 186015,
+      "name": "Detective Pikachu",
+      "set": "Detective Pikachu",
+      "number": "10/18",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 186015,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 13.55,
+     "market_php": 786,
+     "sales": [
+      {
+       "date": "2026-07-16",
+       "usd": 19.12,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 5.98,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 13.33,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 19.12,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 4.16,
+       "condition": "Moderately Played"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 1,
+     "confidence": "HIGH",
+     "confidence_why": "~5.0 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 19.12,
+       "php": 1109,
+       "from": "3 real sold"
+      },
+      "Lightly Played": {
+       "usd": 5.98,
+       "php": 347,
+       "from": "1 real sold"
+      },
+      "Moderately Played": {
+       "usd": 4.16,
+       "php": 241,
+       "from": "1 real sold"
+      },
+      "Heavily Played": {
+       "usd": 6.1,
+       "php": 354,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 4.07,
+       "php": 236,
+       "from": "est. % of market"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 1331,
+       "steal_php": 798
+      },
+      "Lightly Played": {
+       "list_php": 416,
+       "steal_php": 250
+      },
+      "Moderately Played": {
+       "list_php": 289,
+       "steal_php": 174
+      },
+      "Heavily Played": {
+       "list_php": 425,
+       "steal_php": 255
+      },
+      "Damaged": {
+       "list_php": 283,
+       "steal_php": 170
+      }
+     },
+     "product": "Detective Pikachu"
+    }
+   }
+  ],
+  "renamed_to": "Detective Pikachu 10-18 English.png"
+ },
+ "728794261_4508380372748633_482573837708007399_n.png": {
+  "file": "728794261_4508380372748633_482573837708007399_n.png",
+  "rotation": 90,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Charizard",
+    "number": "010/078",
+    "number_read": "010/078",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Charizard 010/078",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 274439,
+      "name": "Charizard",
+      "set": "Pokemon GO",
+      "number": "010/078",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 274439,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 2.84,
+     "market_php": 165,
+     "sales": [
+      {
+       "date": "2026-07-16",
+       "usd": 4.5,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 2.76,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 2.29,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 3.91,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 3.13,
+       "condition": "Near Mint"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 1,
+     "confidence": "HIGH",
+     "confidence_why": "~5.0 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 3.13,
+       "php": 182,
+       "from": "5 real sold"
+      },
+      "Lightly Played": {
+       "usd": 2.27,
+       "php": 132,
+       "from": "est. % of market"
+      },
+      "Moderately Played": {
+       "usd": 1.7,
+       "php": 99,
+       "from": "est. % of market"
+      },
+      "Heavily Played": {
+       "usd": 1.28,
+       "php": 74,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 0.85,
+       "php": 49,
+       "from": "est. % of market"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 218,
+       "steal_php": 131
+      },
+      "Lightly Played": {
+       "list_php": 158,
+       "steal_php": 95
+      },
+      "Moderately Played": {
+       "list_php": 119,
+       "steal_php": 71
+      },
+      "Heavily Played": {
+       "list_php": 89,
+       "steal_php": 53
+      },
+      "Damaged": {
+       "list_php": 59,
+       "steal_php": 35
+      }
+     },
+     "product": "Charizard"
+    }
+   }
+  ],
+  "renamed_to": "Charizard 010-078 English.png"
+ },
+ "729889152_2256986964837974_5250247293787708444_n.png": {
+  "file": "729889152_2256986964837974_5250247293787708444_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Lycanroc",
+    "number": "82/181",
+    "number_read": "82/181",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Lycanroc 82/181",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 571340,
+      "name": "Lycanroc",
+      "set": "S8b: VMAX Climax",
+      "number": "087/184",
+      "line": "Pokemon Japan"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "Lycanroc 82-181 English.png"
+ },
+ "730049059_1512067690085499_499776270517785258_n.png": {
+  "file": "730049059_1512067690085499_499776270517785258_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "M Slowbro-EX",
+    "number": "27/108",
+    "number_read": "27/108",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "M Slowbro-EX 27/108",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 124040,
+      "name": "M Slowbro EX",
+      "set": "XY - Evolutions",
+      "number": "27/108",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 124040,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 9.46,
+     "market_php": 549,
+     "sales": [
+      {
+       "date": "2026-07-16",
+       "usd": 3.81,
+       "condition": "Damaged"
+      },
+      {
+       "date": "2026-07-14",
+       "usd": 8.36,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-12",
+       "usd": 10.26,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-12",
+       "usd": 9.59,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-11",
+       "usd": 9.54,
+       "condition": "Near Mint"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 5,
+     "confidence": "HIGH",
+     "confidence_why": "~1.0 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 9.59,
+       "php": 556,
+       "from": "3 real sold"
+      },
+      "Lightly Played": {
+       "usd": 8.36,
+       "php": 485,
+       "from": "1 real sold"
+      },
+      "Moderately Played": {
+       "usd": 5.68,
+       "php": 329,
+       "from": "est. % of market"
+      },
+      "Heavily Played": {
+       "usd": 4.26,
+       "php": 247,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 3.81,
+       "php": 221,
+       "from": "1 real sold"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 667,
+       "steal_php": 400
+      },
+      "Lightly Played": {
+       "list_php": 582,
+       "steal_php": 349
+      },
+      "Moderately Played": {
+       "list_php": 395,
+       "steal_php": 237
+      },
+      "Heavily Played": {
+       "list_php": 296,
+       "steal_php": 178
+      },
+      "Damaged": {
+       "list_php": 265,
+       "steal_php": 159
+      }
+     },
+     "product": "M Slowbro EX"
+    }
+   }
+  ],
+  "renamed_to": "M Slowbro-EX 27-108 English.png"
+ },
+ "731199287_1002647439209657_8248321879949954389_n.png": {
+  "file": "731199287_1002647439209657_8248321879949954389_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Snorlax",
+    "number": "XY79",
+    "number_read": "XY79",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Snorlax XY79",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 108609,
+      "name": "Latios (Full Art Promo)",
+      "set": "XY Promos",
+      "number": "XY79",
+      "line": "Pokemon"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "Snorlax XY79 English.png"
+ },
+ "harder one but good for u to try (BINDER PAGE).jpg": {
+  "file": "harder one but good for u to try (BINDER PAGE).jpg",
+  "rotation": 0,
+  "multi_card": true,
+  "cards": [
+   {
+    "name": "Victini",
+    "number": null,
+    "number_read": null,
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Victini",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 451654,
+      "name": "Victini",
+      "set": "SWSH12: Silver Tempest",
+      "number": "023/195",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 574449,
+      "name": "Victini",
+      "set": "SM2K: Islands Await You",
+      "number": "008/050",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 604826,
+      "name": "Victini",
+      "set": "Master Deck Build Box EX",
+      "number": "001/046",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 246836,
+      "name": "Victini",
+      "set": "SWSH07: Evolving Skies",
+      "number": "020/203",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 566170,
+      "name": "Victini",
+      "set": "SV5M: Cyber Judge",
+      "number": "019/071",
+      "line": "Pokemon Japan"
+     }
+    ],
+    "value": null
+   },
+   {
+    "name": "Meloetta",
+    "number": null,
+    "number_read": null,
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Meloetta",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 107204,
+      "name": "Meloetta",
+      "set": "XY - BREAKthrough",
+      "number": "85/162",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 87299,
+      "name": "Meloetta",
+      "set": "Boundaries Crossed",
+      "number": "77/149",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 574203,
+      "name": "Meloetta",
+      "set": "SM10a: GG End",
+      "number": "027/054",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 253308,
+      "name": "Meloetta",
+      "set": "SWSH08: Fusion Strike",
+      "number": "124/264",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 604761,
+      "name": "Meloetta",
+      "set": "Everyone's Exciting Battle",
+      "number": "025/047",
+      "line": "Pokemon Japan"
+     }
+    ],
+    "value": null
+   },
+   {
+    "name": "Magearna",
+    "number": null,
+    "number_read": null,
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Magearna",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 127138,
+      "name": "Magearna - XY186",
+      "set": "XY Promos",
+      "number": "XY186",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 571949,
+      "name": "Magearna",
+      "set": "S3a: Legendary Heartbeat",
+      "number": "054/076",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 226584,
+      "name": "Magearna",
+      "set": "SWSH04: Vivid Voltage",
+      "number": "128/185",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 623534,
+      "name": "Magearna",
+      "set": "SV09: Journey Together",
+      "number": "107/159",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 178948,
+      "name": "Magearna",
+      "set": "SM - Lost Thunder",
+      "number": "131/214",
+      "line": "Pokemon"
+     }
+    ],
+    "value": null
+   },
+   {
+    "name": "Manaphy",
+    "number": null,
+    "number_read": null,
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Manaphy",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 87146,
+      "name": "Manaphy",
+      "set": "Majestic Dawn",
+      "number": "8/100",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 588751,
+      "name": "Manaphy",
+      "set": "SV: Future Miraidon ex Starter Deck & Build Set",
+      "number": "002/053",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 613886,
+      "name": "Manaphy",
+      "set": "PPP Promotional cards",
+      "number": "004/PPP",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 118861,
+      "name": "Manaphy",
+      "set": "XY Promos",
+      "number": "XY113",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 87147,
+      "name": "Manaphy",
+      "set": "POP Series 9",
+      "number": "002/017",
+      "line": "Pokemon"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "BINDER - Victini  English, Meloetta  English, Magearna  English, Manaphy  English.jpg"
+ },
+ "727542342_2283261092416003_5062389408869499570_n.png": {
+  "file": "727542342_2283261092416003_5062389408869499570_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "M Manectric-EX",
+    "number": "024a/119",
+    "number_read": "24a/19",
+    "snapped": true,
+    "via": null,
+    "jp": false,
+    "query": "M Manectric-EX 24a/19",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 131696,
+      "name": "M Manectric EX - 24a/119",
+      "set": "Alternate Art Promos",
+      "number": "024a/119",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 131696,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 13.62,
+     "market_php": 790,
+     "sales": [
+      {
+       "date": "2026-07-16",
+       "usd": 6.69,
+       "condition": "Moderately Played"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 8.4,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 8.4,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 5.99,
+       "condition": "Damaged"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 7.49,
+       "condition": "Heavily Played"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 1,
+     "confidence": "HIGH",
+     "confidence_why": "~5.0 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 13.62,
+       "php": 790,
+       "from": "est. % of market"
+      },
+      "Lightly Played": {
+       "usd": 8.4,
+       "php": 487,
+       "from": "2 real sold"
+      },
+      "Moderately Played": {
+       "usd": 6.69,
+       "php": 388,
+       "from": "1 real sold"
+      },
+      "Heavily Played": {
+       "usd": 7.49,
+       "php": 434,
+       "from": "1 real sold"
+      },
+      "Damaged": {
+       "usd": 5.99,
+       "php": 347,
+       "from": "1 real sold"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 948,
+       "steal_php": 569
+      },
+      "Lightly Played": {
+       "list_php": 584,
+       "steal_php": 351
+      },
+      "Moderately Played": {
+       "list_php": 466,
+       "steal_php": 279
+      },
+      "Heavily Played": {
+       "list_php": 521,
+       "steal_php": 312
+      },
+      "Damaged": {
+       "list_php": 416,
+       "steal_php": 250
+      }
+     },
+     "product": "M Manectric EX - 24a/119"
+    }
+   }
+  ],
+  "renamed_to": "M Manectric-EX 024a-119 English.png"
+ },
+ "728568470_820438084336464_6079721030391735100_n.png": {
+  "file": "728568470_820438084336464_6079721030391735100_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "",
+    "number": "22/145",
+    "number_read": "22/145",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "22/145",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 481830,
+      "name": "Alolan Ninetales GX - 2017 (Zachary Bokhari)",
+      "set": "World Championship Decks",
+      "number": "22/145",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 130920,
+      "name": "Alolan Ninetales GX",
+      "set": "SM - Guardians Rising",
+      "number": "22/145",
+      "line": "Pokemon"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "UNIDENTIFIED printing 22-145 English.png"
+ },
+ "730347720_2146077769273333_8386160662968648503_n.png": {
+  "file": "730347720_2146077769273333_8386160662968648503_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Yveltal",
+    "number": null,
+    "number_read": null,
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Yveltal",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 183873,
+      "name": "Yveltal",
+      "set": "SM - Team Up",
+      "number": "95/181",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 250315,
+      "name": "Yveltal",
+      "set": "Celebrations",
+      "number": "019/025",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 654427,
+      "name": "Yveltal",
+      "set": "ME01: Mega Evolution",
+      "number": "088/132",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 107213,
+      "name": "Yveltal",
+      "set": "XY - BREAKthrough",
+      "number": "94/162",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 121194,
+      "name": "Yveltal",
+      "set": "XY - Steam Siege",
+      "number": "65/114",
+      "line": "Pokemon"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "Yveltal  English.png"
+ },
+ "730436913_1323812196601605_8030019550987116927_n.png": {
+  "file": "730436913_1323812196601605_8030019550987116927_n.png",
+  "rotation": 0,
+  "multi_card": false,
+  "cards": [
+   {
+    "name": "Eevee VMAX",
+    "number": null,
+    "number_read": null,
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Eevee VMAX",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 232611,
+      "name": "Eevee VMAX - SWSH087",
+      "set": "SWSH: Sword & Shield Promo Cards",
+      "number": "SWSH087",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 571378,
+      "name": "Eevee - 125/184",
+      "set": "S8b: VMAX Climax",
+      "number": "125/184",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 571462,
+      "name": "Eevee - 210/184",
+      "set": "S8b: VMAX Climax",
+      "number": "210/184",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 570550,
+      "name": "Leafeon VMAX - 088/069",
+      "set": "S6a: Eevee Heroes",
+      "number": "088/069",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 597302,
+      "name": "Eevee VMAX - 101/S-P",
+      "set": "S-P: Sword & Shield Promos",
+      "number": "101/S-P",
+      "line": "Pokemon Japan"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "Eevee VMAX  English.png"
+ },
+ "harder one but good for u to try (BINDER PAGE) 2.jpg": {
+  "file": "harder one but good for u to try (BINDER PAGE) 2.jpg",
+  "rotation": 0,
+  "multi_card": true,
+  "cards": [
+   {
+    "name": "",
+    "number": null,
+    "number_read": null,
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "",
+    "watermark_dropped": [],
+    "candidates": [],
+    "value": null
+   },
+   {
+    "name": "Excadrill",
+    "number": null,
+    "number_read": null,
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Excadrill",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 600804,
+      "name": "Excadrill",
+      "set": "BW1: Black Collection",
+      "number": "032/053",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 589938,
+      "name": "Excadrill",
+      "set": "SV08: Surging Sparks",
+      "number": "109/191",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 669327,
+      "name": "Excadrill",
+      "set": "Start Deck 100 Battle Collection",
+      "number": "386/742",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 201147,
+      "name": "Excadrill",
+      "set": "SM - Cosmic Eclipse",
+      "number": "115/236",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 226576,
+      "name": "Excadrill",
+      "set": "SWSH04: Vivid Voltage",
+      "number": "122/185",
+      "line": "Pokemon"
+     }
+    ],
+    "value": null
+   },
+   {
+    "name": "Stoutland",
+    "number": "240/256",
+    "number_read": "240/256",
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Stoutland 240/256",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 89573,
+      "name": "Stoutland",
+      "set": "XY Base Set",
+      "number": "110/146",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 642189,
+      "name": "Stoutland",
+      "set": "SV: White Flare",
+      "number": "076/086",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 642270,
+      "name": "Stoutland - 156/086",
+      "set": "SV: White Flare",
+      "number": "156/086",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 573263,
+      "name": "Stoutland",
+      "set": "SM1S: Collection Sun",
+      "number": "048/060",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 570425,
+      "name": "Stoutland",
+      "set": "S5a: Peerless Fighters",
+      "number": "060/070",
+      "line": "Pokemon Japan"
+     }
+    ],
+    "value": null
+   },
+   {
+    "name": "Wishiwashi",
+    "number": null,
+    "number_read": null,
+    "snapped": false,
+    "via": null,
+    "jp": false,
+    "query": "Wishiwashi",
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 573798,
+      "name": "Wishiwashi",
+      "set": "SM2+: Facing a New Trial",
+      "number": "017/049",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 130938,
+      "name": "Wishiwashi GX",
+      "set": "SM - Guardians Rising",
+      "number": "38/145",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 219375,
+      "name": "Wishiwashi",
+      "set": "SWSH03: Darkness Ablaze",
+      "number": "050/189",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 130937,
+      "name": "Wishiwashi",
+      "set": "SM - Guardians Rising",
+      "number": "37/145",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 246873,
+      "name": "Wishiwashi",
+      "set": "SWSH07: Evolving Skies",
+      "number": "046/203",
+      "line": "Pokemon"
+     }
+    ],
+    "value": null
+   }
+  ],
+  "renamed_to": "BINDER - UNIDENTIFIED, Excadrill  English, Stoutland 240-256 English, Wishiwashi  English.jpg"
+ }
+}

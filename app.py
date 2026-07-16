@@ -268,6 +268,53 @@ def valuator_ocr():
                     "file": "/uploads/" + os.path.basename(path)})
 
 
+@app.route("/api/valuator/from_url", methods=["POST"])
+def valuator_from_url():
+    """LINK AS SOURCE: paste a Carousell listing URL — the system fetches
+    the listing's photos itself and runs the full identification stack
+    (multi-photo evidence merge, same as the dataset pipeline)."""
+    url = ((request.get_json(silent=True) or {}).get("url") or "").strip()
+    if not re.match(r"https?://", url):
+        return jsonify({"error": "not a link"}), 400
+    if not re.search(r"(carousell|facebook\.com|fb\.com|fb\.watch)", url):
+        return jsonify({"error": "Carousell / FB links only (for now)"}), 400
+    try:
+        import profile_dataset
+        page = profile_dataset.scrape_listing_page(url)
+    except Exception as e:
+        return jsonify({"error": f"could not open that page: {e}"}), 502
+    imgs = (page or {}).get("images") or []
+    if not imgs:
+        return jsonify({"error": "no photos found on that page — FB usually "
+                        "needs login; save the photo and drop it in the box "
+                        "instead"}), 422
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    stamp, paths = int(time.time()), []
+    for n, u in enumerate(imgs[:6]):
+        try:
+            r = requests.get(profile_dataset._fullsize(u), timeout=30,
+                             headers={"User-Agent": profile_dataset.UA})
+            if r.status_code == 200 and len(r.content) > 4000:
+                p = os.path.join(UPLOAD_DIR, f"link_{stamp}_{n}.jpg")
+                with open(p, "wb") as f:
+                    f.write(r.content)
+                paths.append(p)
+        except Exception:
+            pass
+    if not paths:
+        return jsonify({"error": "the photos would not download"}), 422
+    # cap at 4 photos — identify() deep-scans when evidence is missing and
+    # this runs inside a web request
+    ident = profile_dataset.identify(paths[:4],
+                                     [valuator.ocr_lines(p) for p in paths[:4]],
+                                     set())
+    ident.pop("ocr", None)
+    ident.pop("candidates", None)
+    ident["file"] = "/uploads/" + os.path.basename(paths[0])
+    ident["title"] = (page.get("title") or "")[:120]   # for HIS eye only
+    return jsonify(ident)
+
+
 @app.route("/uploads/<name>")
 def valuator_upload_file(name):
     # serve back uploaded card photos (click-to-enlarge on the dashboard)
@@ -535,6 +582,11 @@ HTML = r"""<!doctype html>
       <div>Drop card photo here or <b>click to choose</b></div>
       <input type="file" id="cardFile" accept="image/*" style="display:none">
     </div>
+    <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+      <input type="text" id="valUrl" placeholder="…or paste a Carousell listing link — I'll pull its photos myself"
+             style="flex:1;min-width:220px">
+      <button class="btn-primary" id="valFromUrl">From link</button>
+    </div>
     <div id="valQueryRow" class="hidden" style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       <img id="valThumb" style="height:64px;border-radius:6px" alt="">
       <input type="text" id="valQuery" placeholder="card name + number" style="flex:1;min-width:200px">
@@ -707,6 +759,31 @@ $('#valThumb').onclick = ()=>{
 };
 $('#lightbox').onclick = ()=>{ $('#lightbox').style.display = 'none'; };
 
+// shared by BOTH sources (photo upload / listing link): apply the OCR
+// identification result to the UI and kick off the candidate search
+async function valApplyOcr(d){
+  if(d.file) $('#valThumb').dataset.full = d.file;   // server copy, survives refresh
+  window._jpHint = !!d.jp;   // unreadable name = non-English card, rank JP first
+  $('#valQuery').value = d.query || '';
+  // the message always states BOTH what was identified and what's missing,
+  // so name-path vs number-path never looks arbitrary
+  if(d.via && d.number)
+    $('#valMsg').textContent = '✅ card: "' + d.name + '" (' + d.via + ') + printing #' + d.number
+      + (d.snapped ? ' (read #' + d.number_read + ', auto-corrected — only valid printing)' : '')
+      + (d.jp ? ' · Japanese' : '');
+  else if(d.via)
+    $('#valMsg').textContent = '✅ card identified by ' + d.via + ': "' + d.name + '"'
+      + (d.jp ? ' (Japanese)' : '') + ' — exact PRINTING unknown: tap yours below, or drop a footer close-up';
+  else if(d.number && !d.name)
+    $('#valMsg').textContent = '✅ printing number ' + d.number + ' read — card NAME unknown: '
+      + 'tap yours below, or add the set code (e.g. m1s ' + d.number + ')';
+  else if(d.query)
+    $('#valMsg').textContent = 'read: "' + d.query + '" — fix it if wrong, then Find card';
+  else
+    $('#valMsg').textContent = 'could not read it — type the name, or the set code + number from the card\'s bottom edge (e.g. sm12a 016/173)';
+  if(d.query) await valFind();
+}
+
 async function valUpload(file){
   $('#valQueryRow').classList.remove('hidden');
   $('#valThumb').src = URL.createObjectURL(file);
@@ -716,29 +793,32 @@ async function valUpload(file){
   const fd = new FormData(); fd.append('photo', file);
   try{
     const d = await (await fetch('/api/valuator/ocr',{method:'POST',body:fd})).json();
-    if(d.file) $('#valThumb').dataset.full = d.file;   // server copy, survives refresh
-    window._jpHint = !!d.jp;   // unreadable name = non-English card, rank JP first
-    $('#valQuery').value = d.query || '';
-    // the message always states BOTH what was identified and what's missing,
-    // so name-path vs number-path never looks arbitrary
-    if(d.via && d.number)
-      $('#valMsg').textContent = '✅ card: "' + d.name + '" (' + d.via + ') + printing #' + d.number
-        + (d.snapped ? ' (read #' + d.number_read + ', auto-corrected — only valid printing)' : '')
-        + (d.jp ? ' · Japanese' : '');
-    else if(d.via)
-      $('#valMsg').textContent = '✅ card identified by ' + d.via + ': "' + d.name + '"'
-        + (d.jp ? ' (Japanese)' : '') + ' — exact PRINTING unknown: tap yours below, or drop a footer close-up';
-    else if(d.number && !d.name)
-      $('#valMsg').textContent = '✅ printing number ' + d.number + ' read — card NAME unknown: '
-        + 'tap yours below, or add the set code (e.g. m1s ' + d.number + ')';
-    else if(d.query)
-      $('#valMsg').textContent = 'read: "' + d.query + '" — fix it if wrong, then Find card';
-    else
-      $('#valMsg').textContent = 'could not read it — type the name, or the set code + number from the card\'s bottom edge (e.g. sm12a 016/173)';
-    if(d.query) await valFind();
+    await valApplyOcr(d);
   }catch(e){ $('#valMsg').textContent = 'upload failed: ' + e; }
   finally{ valBusy(false); }
 }
+
+// LINK AS SOURCE (his 7/17 request): paste a Carousell listing link —
+// the system pulls the listing's photos itself, then the same stack runs
+async function valFromUrl(){
+  const url = $('#valUrl').value.trim();
+  if(!/^https?:\/\//.test(url)){ $('#valMsg').textContent = 'paste a full link (https://…)'; return; }
+  $('#valQueryRow').classList.remove('hidden');
+  $('#valCands').innerHTML = ''; $('#valResult').innerHTML = '';
+  valBusy(true);
+  $('#valMsg').innerHTML = '<span class="spin"></span> fetching listing photos + reading (can take ~30s)…';
+  try{
+    const r = await fetch('/api/valuator/from_url', {method:'POST',
+      headers:{'Content-Type':'application/json'}, body: JSON.stringify({url})});
+    const d = await r.json();
+    if(d.error){ $('#valMsg').textContent = '⚠ ' + d.error; return; }
+    if(d.file){ $('#valThumb').src = d.file; }
+    await valApplyOcr(d);
+  }catch(e){ $('#valMsg').textContent = 'link fetch failed: ' + e; }
+  finally{ valBusy(false); }
+}
+$('#valFromUrl').onclick = valFromUrl;
+$('#valUrl').onkeydown = e=>{ if(e.key==='Enter') valFromUrl(); };
 
 async function valFind(){
   const q = $('#valQuery').value.trim();
@@ -776,6 +856,8 @@ $('#valQuery').onkeydown = e=>{ if(e.key==='Enter') valFind(); };
 function valBusy(b){
   $('#valQuery').disabled = b;
   $('#valSearch').disabled = b;
+  $('#valUrl').disabled = b;
+  $('#valFromUrl').disabled = b;
 }
 
 // language-aware full display name ("Japanese Mega Manectric ex")

@@ -322,6 +322,17 @@ class ValuatorLayerCD(unittest.TestCase):
         self.assertEqual(valuator.snap_name("MCameruptEX"), "M Camerupt-EX")
         self.assertEqual(valuator.snap_name("MTyranitar"), "M Tyranitar-EX")
         self.assertEqual(valuator.snap_name("Mega Tyranitar"), "M Tyranitar-EX")
+        # Nathan's lot: 'MManectricEX' squashes EXACTLY to 'M Manectric-EX'
+        # (fuzzy alone tied manectric/m-manectric); 'EeveeVax' = VMAX glue
+        self.assertEqual(valuator.snap_name("MManectricEX"), "M Manectric-EX")
+        self.assertEqual(valuator.snap_name("EeveeVax"), "Eevee VMAX")
+        self.assertFalse(valuator._is_junk("EeveeVax"))
+
+    def test_variant_letter_numerator(self):
+        # Nathan's lot: alternate-art numbers carry a letter ('24a/119')
+        name, number = valuator.guess_query(["MManectricEX", "HP210", "24a/119"])
+        self.assertEqual(name, "M Manectric-EX")
+        self.assertEqual(number, "24a/119")
 
     def test_layer_c_rejects_watermarks(self):
         # live catch: "Yujin's Pokestop" photo overlay became the card name
@@ -365,6 +376,10 @@ class ValuatorLayerCD(unittest.TestCase):
         # but the Pokédex strip prints "NO.398" = the species
         self.assertEqual(valuator.dex_names(["NO.398走毛高：1.2m"]),
                          ["Staraptor"])
+        # CJK on EITHER side of the token is a word char — \b never matched
+        # ("図鑑NO.0025"); leading zeros must parse too
+        self.assertEqual(valuator.dex_names(["全国网建NO.0025扫高04m"]),
+                         ["Pikachu"])
 
     def test_tag_team_name_spans_two_lines(self):
         name, _ = valuator.guess_query(

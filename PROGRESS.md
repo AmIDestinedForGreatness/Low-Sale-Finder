@@ -3,7 +3,7 @@
 > "We are nowhere near, but we are closer than where we were yesterday." — 2026-07-16
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
-written lesson (`LESSONS.md`). Current: **50 tests, 25 lessons.**
+written lesson (`LESSONS.md`). Current: **51 tests, 27 lessons.**
 
 ## Version history
 
@@ -16,6 +16,7 @@ written lesson (`LESSONS.md`). Current: **50 tests, 25 lessons.**
 | V0.5 | 7/16 | **Card Valuator**: photo → OCR → confirm → real-sold valuation |
 | V0.6 | 7/16 | Build identity badge (#git-sha) + stale-page auto-detector |
 | V0.7 | 7/17 | **The dataset run**: all 20 shop listings identified image-first (19/20). New layers: name vocabulary snap (C), dex number (D), fingerprint ambiguity guard + tie-break, promo footers, watermark defense, `profile_dataset.py` |
+| V0.8 | 7/17 | **Overnight (the overnight lot, 38 cards)**: LINK AS SOURCE on the dashboard (paste a Carousell listing URL → photos fetched → identified); orientation auto-righting; binder-page 2×2 splitting; squashed-form name matching; variant-letter numerators (24a/119); language-claim discipline; identity-strict lot pricing; `folder_dataset.py` |
 
 ## The system (4 always-on processes)
 
