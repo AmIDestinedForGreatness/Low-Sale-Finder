@@ -258,6 +258,17 @@ class TestValuator(unittest.TestCase):
             ["TEAM", "li&DhJ", "30+", "230", "+ 200+", "TAG TEAM"])
         self.assertEqual(names, ["Reshiram & Charizard-GX"])
 
+    def test_manectric_fingerprint_from_real_lines(self):
+        # his 8PM catch: '130??' (body prose) + unlabeled HP 330 = TWO
+        # phantoms; standalone damages must be PURELY number+modifier
+        lines = ["330", "120", "200+", "130??", "???", "ex?",
+                 "llusSbanGraplhites", "077/063SR"]
+        if not os.path.exists(valuator.FP_DB):
+            self.skipTest("fingerprint index not built")
+        d, hp, _ = valuator._extract_damages(lines)
+        self.assertEqual(sorted(d), ["120", "200+", "330"])  # 130?? rejected
+        self.assertEqual(valuator.fingerprint_names(lines), ["Mega Manectric ex"])
+
     def test_snap_number_layer_b(self):
         # HIS CATCH: 016/173 read as 015/173 at 810px -> Kartana. The number
         # must be a real printing of the identified card; snap 1-digit errors.

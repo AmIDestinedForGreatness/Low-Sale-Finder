@@ -147,10 +147,10 @@ def _extract_damages(lines):
             v = int(m.group(1))
             mod = m.group(2) or ""
             # damage numbers are BIG standalone OCR regions ('230', '30+',
-            # '…GX200+'); a bare number inside a long garbled line is body
-            # text ('…100ダメージ…'), not an attack — phantom damages from
-            # body text broke the fingerprint on the live Reshiram run
-            standalone = len(ln.strip()) <= 6
+            # '…GX200+'); a bare number inside garbled text is body prose
+            # ('…100ダメージ…', '130??') — phantoms broke Reshiram AND
+            # Manectric fingerprints live. Standalone = PURELY number+mod.
+            standalone = re.fullmatch(r"\d{2,3}[+x×]?", ln.strip()) is not None
             if not (mod or standalone):
                 continue
             if 10 <= v <= 400 and v % 5 == 0 and v != hp:
