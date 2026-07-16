@@ -691,14 +691,20 @@ async function valUpload(file){
     if(d.file) $('#valThumb').dataset.full = d.file;   // server copy, survives refresh
     window._jpHint = !!d.jp;   // unreadable name = non-English card, rank JP first
     $('#valQuery').value = d.query || '';
-    $('#valMsg').textContent = d.query
-      ? (d.via ? 'identified by ' + d.via + ': "' + d.query + '"' + (d.jp ? ' (Japanese print likely)' : '')
-               : 'read: "' + d.query + '" — fix it if wrong, then Find card')
-      : 'could not read it — type the name, or the set code + number from the card\'s bottom edge (e.g. sm12a 016/173)';
-    if(d.number && !d.name)
-      $('#valMsg').textContent = 'read the number ' + d.number + ' but not the set — '
-        + 'drop a straight-on CLOSE-UP of the bottom-left corner (set code + number), '
-        + 'or add the set code to the box (e.g. m1s ' + d.number + ')';
+    // the message always states BOTH what was identified and what's missing,
+    // so name-path vs number-path never looks arbitrary
+    if(d.via && d.number)
+      $('#valMsg').textContent = '✅ card: "' + d.name + '" (' + d.via + ') + printing #' + d.number + (d.jp ? ' · Japanese' : '');
+    else if(d.via)
+      $('#valMsg').textContent = '✅ card identified by ' + d.via + ': "' + d.name + '"'
+        + (d.jp ? ' (Japanese)' : '') + ' — exact PRINTING unknown: tap yours below, or drop a footer close-up';
+    else if(d.number && !d.name)
+      $('#valMsg').textContent = '✅ printing number ' + d.number + ' read — card NAME unknown: '
+        + 'tap yours below, or add the set code (e.g. m1s ' + d.number + ')';
+    else if(d.query)
+      $('#valMsg').textContent = 'read: "' + d.query + '" — fix it if wrong, then Find card';
+    else
+      $('#valMsg').textContent = 'could not read it — type the name, or the set code + number from the card\'s bottom edge (e.g. sm12a 016/173)';
     if(d.query) await valFind();
   }catch(e){ $('#valMsg').textContent = 'upload failed: ' + e; }
   finally{ valBusy(false); }
