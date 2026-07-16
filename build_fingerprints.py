@@ -48,7 +48,7 @@ def main():
     conn.execute("DROP TABLE IF EXISTS fp")
     conn.execute("CREATE TABLE fp (id TEXT PRIMARY KEY, name TEXT, hp INTEGER, "
                  "damages TEXT, subtypes TEXT, setname TEXT, number TEXT, "
-                 "rarity TEXT)")
+                 "rarity TEXT, dex INTEGER)")
     n = 0
     for fn in card_files:
         try:
@@ -64,10 +64,14 @@ def main():
                 hp = int(re.sub(r"\D", "", c.get("hp") or "") or 0) or None
             except ValueError:
                 pass
-            conn.execute("INSERT OR REPLACE INTO fp VALUES (?,?,?,?,?,?,?,?)",
+            # National Dex number: JP vintage cards print "NO.398" — a direct
+            # species ID when the name itself is unreadable (Layer D)
+            dex = (c.get("nationalPokedexNumbers") or [None])[0]
+            conn.execute("INSERT OR REPLACE INTO fp VALUES (?,?,?,?,?,?,?,?,?)",
                          (c.get("id"), c.get("name"), hp, ",".join(dmgs),
                           ",".join(c.get("subtypes") or []), setname,
-                          str(c.get("number") or ""), c.get("rarity") or ""))
+                          str(c.get("number") or ""), c.get("rarity") or "",
+                          dex))
             n += 1
     conn.commit()
     total = conn.execute("SELECT COUNT(*) FROM fp").fetchone()[0]

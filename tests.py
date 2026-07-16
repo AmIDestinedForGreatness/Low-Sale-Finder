@@ -304,6 +304,74 @@ class TestValuator(unittest.TestCase):
         self.assertEqual(valuator._confidence(3, 300)[0], "LOW")    # thin
 
 
+class ValuatorLayerCD(unittest.TestCase):
+    """V0.7 layers, born from the 20-listing dataset run (L21-L25):
+    name vocabulary snap (C), dex number (D), fingerprint ambiguity guard,
+    watermark rejection, promo footers, two-line TAG TEAM names."""
+
+    @classmethod
+    def setUpClass(cls):
+        if not os.path.exists(valuator.FP_DB):
+            raise unittest.SkipTest("fingerprint index not built")
+
+    def test_layer_c_snaps_ocr_misreads(self):
+        # live catches: glued/chopped OCR reads snap to REAL card names
+        self.assertEqual(valuator.snap_name("Pikachue"), "Pikachu")
+        self.assertEqual(valuator.snap_name("Pikachuex"), "Pikachu ex")
+        self.assertEqual(valuator.snap_name("arizardex"), "Charizard")
+        self.assertEqual(valuator.snap_name("MCameruptEX"), "M Camerupt-EX")
+        self.assertEqual(valuator.snap_name("MTyranitar"), "M Tyranitar-EX")
+        self.assertEqual(valuator.snap_name("Mega Tyranitar"), "M Tyranitar-EX")
+
+    def test_layer_c_rejects_watermarks(self):
+        # live catch: "Yujin's Pokestop" photo overlay became the card name
+        # in 14/20 dataset listings — anything matching NO real name is out
+        self.assertIsNone(valuator.snap_name("Yojins Pokestop"))
+        self.assertIsNone(valuator.snap_name("Yojins"))
+        name, number = valuator.guess_query(
+            ["Yujin's Pokestop", "Pikachue", "063/193"])
+        self.assertEqual(name, "Pikachu")
+        self.assertEqual(number, "063/193")
+
+    def test_glued_mechanic_shapes_not_junk(self):
+        # 'HydreigonEX' / 'MBeedrillEX' are real reads, 'YEjj' is still junk
+        self.assertFalse(valuator._is_junk("HydreigonEX"))
+        self.assertFalse(valuator._is_junk("MBeedrillEX"))
+        self.assertTrue(valuator._is_junk("YEjj"))
+        self.assertTrue(valuator._is_junk("BASIG"))
+
+    def test_promo_letter_footer(self):
+        # JP/KR promos number with LETTER denominators — 6 of his 20
+        # listings were numberless until this pattern existed
+        _, number = valuator.guess_query(["Chespin", "034/XY-P"])
+        self.assertEqual(number, "034/XY-P")
+        _, number = valuator.guess_query(["70", "197/SV-P"])
+        self.assertEqual(number, "197/SV-P")
+
+    def test_fingerprint_ambiguity_guard(self):
+        # live catch: {10,20} named a Chespin promo "Arbok" — tiny generic
+        # profiles with no corroboration must not claim an identity
+        self.assertEqual(valuator.fingerprint_names(["10", "20", "MP60"]), [])
+        # corroborated but TIED ({60,150}+HP180 fits 4 cards): silent by
+        # default, exposed with ties=True for cross-evidence resolution
+        lines = ["180", "60", "150", "P180"]
+        self.assertEqual(valuator.fingerprint_names(lines), [])
+        tie = valuator.fingerprint_names(lines, ties=True)
+        self.assertIn("Black Kyurem-EX", tie)
+        self.assertGreater(len(tie), 1)
+
+    def test_layer_d_dex_number(self):
+        # JP vintage (his Staraptor DP holo): no Latin name, no set code,
+        # but the Pokédex strip prints "NO.398" = the species
+        self.assertEqual(valuator.dex_names(["NO.398走毛高：1.2m"]),
+                         ["Staraptor"])
+
+    def test_tag_team_name_spans_two_lines(self):
+        name, _ = valuator.guess_query(
+            ["P280", "Naganadel&", "Guzzlord", "BASIC", "TAG TEAM"])
+        self.assertEqual(name, "Naganadel & Guzzlord-GX")
+
+
 if __name__ == "__main__":
     result = unittest.main(exit=False, verbosity=1).result
     n = result.testsRun

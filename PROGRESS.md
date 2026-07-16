@@ -3,7 +3,7 @@
 > "We are nowhere near, but we are closer than where we were yesterday." — 2026-07-16
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
-written lesson (`LESSONS.md`). Current: **43 tests, 20 lessons.**
+written lesson (`LESSONS.md`). Current: **50 tests, 25 lessons.**
 
 ## Version history
 
@@ -15,6 +15,7 @@ written lesson (`LESSONS.md`). Current: **43 tests, 20 lessons.**
 | V0.4 | 7/16 | GMT+8 upload times, FB groups in recent list, link-click fix, no stats cards |
 | V0.5 | 7/16 | **Card Valuator**: photo → OCR → confirm → real-sold valuation |
 | V0.6 | 7/16 | Build identity badge (#git-sha) + stale-page auto-detector |
+| V0.7 | 7/17 | **The dataset run**: all 20 shop listings identified image-first (19/20). New layers: name vocabulary snap (C), dex number (D), fingerprint ambiguity guard + tie-break, promo footers, watermark defense, `profile_dataset.py` |
 
 ## The system (4 always-on processes)
 
@@ -34,21 +35,41 @@ written lesson (`LESSONS.md`). Current: **43 tests, 20 lessons.**
 Photo in → exact printing out:
 
 1. **RapidOCR** (local onnx; reads 9px footers Windows OCR can't; JP-safe)
-2. **Name guess** — junk-shape filtering (proper-case words only; noise/
-   mechanic/footer/copyright lines excluded)
-3. **JP footer path** — set code + collector number = unique global ID
-   ("sm12a 016/173" → exactly one card)
-4. **Attack fingerprint** — damage numbers (standalone regions only) + HP
-   vs local index of 20,324 cards; {30+,230,200+} → exactly 1 card in the game
-5. **Deep-scan** — zoomed region crops × contrast variants for glare photos
-6. **Layer-B constraint snap** — the number must be a real printing of the
+2. **Name guess** — junk-shape filtering (proper-case words; glued Mega/EX
+   forms allowed: MCameruptEX, HydreigonEX; two-line TAG TEAM names joined)
+3. **Layer C: name vocabulary snap** — a name must be (or snap uniquely to)
+   one of 4,428 REAL card names (Pikachue→Pikachu, arizardex→Charizard);
+   watermark/garbage text is rejected so deeper layers take over (L21)
+4. **JP footer path** — set code + collector number = unique global ID
+   ("sm12a 016/173" → exactly one card); promo LETTER footers too
+   ("034/XY-P", "197/SV-P") — unique catalog match = the card (L24)
+5. **Attack fingerprint** — damage numbers (standalone regions only) + HP
+   vs local index of 20,324 cards; ambiguity-guarded (corroboration + clear
+   winner, L23); corroborated ties break against the collector number's own
+   catalog matches ("fingerprint × number")
+6. **Layer D: dex number** — JP vintage prints "NO.398" in the Pokédex
+   strip → species ID when nothing else is readable (L24)
+7. **Deep-scan** — zoomed region crops × contrast variants for glare photos
+8. **Layer-B constraint snap** — the number must be a real printing of the
    identified card; unique 1-edit errors auto-correct (015/173→016/173),
-   reported honestly
-7. **Grid** — cards only (no boxes/merch), nearest-to-farthest, JP-first
+   only when the name is certain/specific (L25), reported honestly
+9. **Grid** — cards only (no boxes/merch), nearest-to-farthest, JP-first
    when the card is non-English, language-prefixed names
-8. **The eye gate** — side-by-side confirm (your photo vs 874×1214 scan),
-   click-zoom with level slider, stamps/1st-ed check. **The user's eye is
-   the final identification authority.**
+10. **The eye gate** — side-by-side confirm (your photo vs 874×1214 scan),
+    click-zoom with level slider, stamps/1st-ed check. **The user's eye is
+    the final identification authority.**
+
+## The dataset (`dataset/carousell_profile.json` + `profile_dataset.py`)
+
+His task (7/16): identify all 20 shop listings from IMAGES ONLY — titles
+used only to verify afterward. Result: **19/20 identified image-first**
+(18 with exact printing), 1 partial (Coalossal: printing read, name
+ambiguous), 1 unreadable (Rota's Mime Jr. — footer never resolves in any
+photo). In 3 cases the images beat the metadata (exact printings the
+titles don't carry; one title typo corrected). Five identification runs,
+each failure → a new layer (L21-L25). Batch watermark defense
+(cross-listing token frequency) lives in the dataset pipeline; everything
+else is shared with the dashboard valuator.
 
 Valuation: TCGplayer market + latest real sales (per-condition medians,
 labeled real vs estimated) + sales-velocity confidence (HIGH/MED/LOW) +

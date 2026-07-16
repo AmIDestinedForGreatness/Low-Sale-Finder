@@ -1,0 +1,4008 @@
+[
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-pikachu-ex-063-193-pokemon-paldea-evolved-1449678565/",
+  "title": "Pokemon Card Pikachu ex 063/193 Pokemon Paldea Evolved",
+  "price_text": "PHP 350",
+  "status": "",
+  "raw": "Pokemon Card Pikachu ex 063/193 Pokemon Paldea Evolved\n\nPHP 350\n\nLightly used\n\n1",
+  "full_title": "Pokemon Card Pikachu ex 063/193 Pokemon Paldea Evolved",
+  "desc": "Please base the condition on the pictures shown.\n\n‼️ Card has a mark as shown‼️ \n\n💵  Mode of Payment (MOP): GCASH/PAYMAYA\n🛵  Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌  Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L00_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L00_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L00_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L00_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L00_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L00_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "BASIG",
+    "Pikachue",
+    "1907",
+    "Yujin's Pokestop",
+    "2026"
+   ],
+   [
+    "BASIG",
+    "Pikachue",
+    "1907",
+    "Yujin's Pokestop",
+    "2026"
+   ],
+   [
+    "BASIG",
+    "Pikachuex",
+    "190",
+    "Pika Punch",
+    "30",
+    "Dynamic Bolt",
+    "220",
+    "Flip a coin.If tails,discard all Energyfromthis Pokemon",
+    "weakness ×2",
+    "resistance",
+    "retreat",
+    "Pokemonexrule",
+    "llus.N-DESIGNIne.",
+    "WhenyourPokemonex",
+    "GPALEN",
+    "is Knocked Out,your opponent takes 2Prizecards.",
+    "063/193★★",
+    "C2023Pokemon/Nntendo/Creatures/GAN"
+   ],
+   [
+    "BASIG",
+    "Pikachuex",
+    "1907",
+    "Pika Punch",
+    "30",
+    "Dynamic Bolt",
+    "220",
+    "Flipntairdll",
+    "from this Pokemon.",
+    "weaknss×2",
+    "resistance",
+    "retreat",
+    "Pokemonexrule",
+    "WhenyourPokemonex",
+    "Ilus.N-DESIGNnG.",
+    "GPALEN",
+    "isKnockedOut,ourpponntakes2Priecards.",
+    "063/193★★",
+    "C2023Pokemon/Nintendo/Creatures"
+   ],
+   [
+    "Pika Punch",
+    "30",
+    "220",
+    "Dynamic Bolt",
+    "Flip a coin f tails discard all Energy from this Pokemon.",
+    "retreat",
+    "Weakne55",
+    "inonexrule",
+    "When your Pokemonex",
+    "IlUS.N-DESIGNA",
+    "Cked Out your opponent takes 2 Prize cards.",
+    "GPALIN063"
+   ],
+   [
+    "Pikachuex",
+    "190",
+    "Pika Punch",
+    "30",
+    "DynamicBolt",
+    "220",
+    "eerdn Energyfromthis Pokemon.",
+    "yourPokimoneX"
+   ]
+  ],
+  "ident": {
+   "name": "Pikachu ex",
+   "number": "063/193",
+   "number_read": "063/193",
+   "snapped": false,
+   "via": null,
+   "jp": false,
+   "query": "Pikachu ex 063/193",
+   "watermark_dropped": [
+    "Yujin's Pokestop"
+   ],
+   "candidates": [
+    {
+     "pid": 497474,
+     "name": "Pikachu ex",
+     "set": "SV02: Paldea Evolved",
+     "number": "063/193",
+     "line": "Pokemon"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L00_0.jpg",
+     "lines": [
+      "BASIG",
+      "Pikachue",
+      "1907",
+      "Yujin's Pokestop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L00_1.jpg",
+     "lines": [
+      "BASIG",
+      "Pikachue",
+      "1907",
+      "Yujin's Pokestop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L00_2.jpg",
+     "lines": [
+      "BASIG",
+      "Pikachuex",
+      "190",
+      "Pika Punch",
+      "30",
+      "Dynamic Bolt",
+      "220",
+      "Flip a coin.If tails,discard all Energyfromthis Pokemon",
+      "weakness ×2",
+      "resistance",
+      "retreat",
+      "Pokemonexrule",
+      "llus.N-DESIGNIne.",
+      "WhenyourPokemonex"
+     ]
+    },
+    {
+     "img": "L00_3.jpg",
+     "lines": [
+      "BASIG",
+      "Pikachuex",
+      "1907",
+      "Pika Punch",
+      "30",
+      "Dynamic Bolt",
+      "220",
+      "Flipntairdll",
+      "from this Pokemon.",
+      "weaknss×2",
+      "resistance",
+      "retreat",
+      "Pokemonexrule",
+      "WhenyourPokemonex"
+     ]
+    },
+    {
+     "img": "L00_4.jpg",
+     "lines": [
+      "Pika Punch",
+      "30",
+      "220",
+      "Dynamic Bolt",
+      "Flip a coin f tails discard all Energy from this Pokemon.",
+      "retreat",
+      "Weakne55",
+      "inonexrule",
+      "When your Pokemonex",
+      "IlUS.N-DESIGNA",
+      "Cked Out your opponent takes 2 Prize cards.",
+      "GPALIN063"
+     ]
+    },
+    {
+     "img": "L00_5.jpg",
+     "lines": [
+      "Pikachuex",
+      "190",
+      "Pika Punch",
+      "30",
+      "DynamicBolt",
+      "220",
+      "eerdn Energyfromthis Pokemon.",
+      "yourPokimoneX"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Pikachu ex 063/193 Pokemon Paldea Evolved",
+   "name_match": true,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-charizard-ex-006-165-pokemon-scarlet-violet-151-1448662695/",
+  "title": "Pokemon Card Charizard ex 006/165 Pokemon Scarlet & Violet 151",
+  "price_text": "PHP 650",
+  "status": "",
+  "raw": "Pokemon Card Charizard ex 006/165 Pokemon Scarlet & Violet 151\n\nPHP 650\n\nLike new\n\n1",
+  "full_title": "Pokemon Card Charizard ex 006/165 Pokemon Scarlet & Violet 151",
+  "desc": "Please base the condition on the pictures shown.\n\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L01_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L01_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L01_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L01_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L01_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L01_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "STAGE2",
+    "arizardex",
+    "330?",
+    "EvolvesfromCharm",
+    "Yujin's Pokestop",
+    "2026"
+   ],
+   [
+    "STAGE2",
+    "narizardex",
+    "330?",
+    "EvohvesfromCham",
+    "Yujin's Pokestop",
+    "2026"
+   ],
+   [
+    "Charizard",
+    "330",
+    "Evolvesfco",
+    "Brave Wing",
+    "60+",
+    "If this Pokemon has anydamage counters onitthis attack",
+    "does 10omoredamage.",
+    "ExplosiveVortex",
+    "330",
+    "Discard 3Energyfrom this Pokemon.",
+    "retrea",
+    "tonexrule",
+    "HIUS:PUANETA",
+    "WhenyourPokimonex",
+    "GMEWER",
+    "sKnocked Out your opponent takes 2Priecards.",
+    "SIGAMEPRE"
+   ],
+   [
+    "SAGE2",
+    "Charizardex",
+    "330g",
+    "EvolvesfromCharmeleon",
+    "Brave Wing",
+    "60+",
+    "If thisPokemonhas anydamagecounterson it,this attack",
+    "does1oomoredamage.",
+    "ExplosiveVortex",
+    "330",
+    "Discard3Energyfromthis Pokemon.",
+    "Tetreat",
+    "llur:PLANETAMochizuki",
+    "Pokemonexrule",
+    "When yourPokimonex",
+    "GMEWD006/165*★",
+    "RS/GAMEFREAN"
+   ],
+   [
+    "Charizardex",
+    "￥3308",
+    "EvolvesfromCharmeleon",
+    "Brave Wing",
+    "60+",
+    "If this Pokemon has anydamage counters on it,this attack",
+    "does1oomoredamage.",
+    "ExplosiveVortex",
+    "330",
+    "Discard3Energyfrom this Pokemon",
+    "retreat",
+    "weakness",
+    "**",
+    "Pokemonex rule",
+    "WhenyourPokimonex",
+    "is Knocked Out, your opponent takes2Prize cardk.",
+    "GMEWEM006/165*"
+   ],
+   [
+    "Poke Moy"
+   ]
+  ],
+  "ident": {
+   "name": "Charizard ex",
+   "number": "006/165",
+   "number_read": "006/165",
+   "snapped": false,
+   "via": null,
+   "jp": false,
+   "query": "Charizard ex 006/165",
+   "watermark_dropped": [
+    "Yujin's Pokestop"
+   ],
+   "candidates": [
+    {
+     "pid": 588625,
+     "name": "Charizard ex",
+     "set": "SV: Terastal Charizard ex Battle Master Deck",
+     "number": "006/021",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 124024,
+     "name": "Charizard EX",
+     "set": "XY - Evolutions",
+     "number": "12/108",
+     "line": "Pokemon"
+    },
+    {
+     "pid": 605092,
+     "name": "Charizard EX",
+     "set": "XYA: M Charizard-EX Mega Battle Deck",
+     "number": "001/021",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 589027,
+     "name": "Charizard ex",
+     "set": "SV: Venusaur, Charizard & Blastoise Special Deck Set",
+     "number": "009/049",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 606404,
+     "name": "Charizard EX",
+     "set": "M Master Deck Build Box Power Style",
+     "number": "001/049",
+     "line": "Pokemon Japan"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L01_0.jpg",
+     "lines": [
+      "STAGE2",
+      "arizardex",
+      "330?",
+      "EvolvesfromCharm",
+      "Yujin's Pokestop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L01_1.jpg",
+     "lines": [
+      "STAGE2",
+      "narizardex",
+      "330?",
+      "EvohvesfromCham",
+      "Yujin's Pokestop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L01_2.jpg",
+     "lines": [
+      "Charizard",
+      "330",
+      "Evolvesfco",
+      "Brave Wing",
+      "60+",
+      "If this Pokemon has anydamage counters onitthis attack",
+      "does 10omoredamage.",
+      "ExplosiveVortex",
+      "330",
+      "Discard 3Energyfrom this Pokemon.",
+      "retrea",
+      "tonexrule",
+      "HIUS:PUANETA",
+      "WhenyourPokimonex"
+     ]
+    },
+    {
+     "img": "L01_3.jpg",
+     "lines": [
+      "SAGE2",
+      "Charizardex",
+      "330g",
+      "EvolvesfromCharmeleon",
+      "Brave Wing",
+      "60+",
+      "If thisPokemonhas anydamagecounterson it,this attack",
+      "does1oomoredamage.",
+      "ExplosiveVortex",
+      "330",
+      "Discard3Energyfromthis Pokemon.",
+      "Tetreat",
+      "llur:PLANETAMochizuki",
+      "Pokemonexrule"
+     ]
+    },
+    {
+     "img": "L01_4.jpg",
+     "lines": [
+      "Charizardex",
+      "￥3308",
+      "EvolvesfromCharmeleon",
+      "Brave Wing",
+      "60+",
+      "If this Pokemon has anydamage counters on it,this attack",
+      "does1oomoredamage.",
+      "ExplosiveVortex",
+      "330",
+      "Discard3Energyfrom this Pokemon",
+      "retreat",
+      "weakness",
+      "**",
+      "Pokemonex rule"
+     ]
+    },
+    {
+     "img": "L01_5.jpg",
+     "lines": [
+      "Poke Moy"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Charizard ex 006/165 Pokemon Scarlet & Violet 151",
+   "name_match": true,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-lillie-s-clefairy-ex-173-159-journey-together-full-art-1446987434/",
+  "title": "Pokemon Card Lillie's Clefairy ex 173/159 Journey Together Full art",
+  "price_text": "PHP 850",
+  "status": "",
+  "raw": "Pokemon Card Lillie's Clefairy ex 173/159 Journey Together Full art\n\nPHP 850\n\nLike new\n\n5",
+  "full_title": "Pokemon Card Lillie's Clefairy ex 173/159 Journey Together Full art",
+  "desc": "Please base the condition on the pictures shown.\n\n💵  Mode of Payment (MOP): GCASH/PAYMAYA\n🛵  Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌  Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L02_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L02_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L02_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L02_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L02_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L02_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "BASIG",
+    "LilliesClefairye",
+    "190",
+    "Yujin's Pokestop",
+    "2026"
+   ],
+   [
+    "BASIC",
+    "LilliesClefairye",
+    "190",
+    "Yujin's Pokestop",
+    "2026"
+   ],
+   [
+    "BASIC",
+    "Lillie's Clefairyex",
+    "M190O",
+    "Ability",
+    "Fairy Zonez",
+    "TheWeakness ofeachof youropponent'sPokemon in",
+    "playisnow(Applyweaknessas×2.)",
+    "Full MoonRondo",
+    "20+",
+    "This attack does 20 more damage for each Benched",
+    "Pokemon (bothyoursond youropponent's)",
+    "Whenyour Pokemonex",
+    "pont cakes2Prize Cards.",
+    "DIUIGN",
+    "173/159"
+   ],
+   [
+    "BASI",
+    "LiliesClefairyexwp190",
+    "Ability",
+    "Fairy Zonez",
+    "The Weakness ofeach of youropponent's CPokemon in",
+    "play is now.(ApplyWeakness as x2.)",
+    "Full Moon Rondo",
+    "20+",
+    "This attack does 20 more damage for each Benched",
+    "Pokemon (both yours and your opponent's)",
+    "weaknessx2",
+    "resistance",
+    "retreat",
+    "llus.Sbon Grophics",
+    "Pokemonex rule",
+    "When yourPokemonex",
+    "JIGEN",
+    "isKnockedOutyouropponentakes2Prizecard",
+    "173/159"
+   ],
+   [
+    "BASIC",
+    "LiliesClefairyex190",
+    "Abty",
+    "Fairy Zone",
+    "TheWeakhess ofeachof your opponents SPokemon in",
+    "playisnow.(ApplyWeaknessas2.)",
+    "Full Moon Rondo",
+    "20+",
+    "This attack does 20 more damage for each Benched",
+    "Pokemon (bothyours ond your opponent's)",
+    "Ketreat",
+    "When yourPokemonex",
+    "takes2Prizecards."
+   ],
+   [
+    "BASIG",
+    "Lilie'sClefairyex",
+    "190",
+    "Ability",
+    "Fairy Zone",
+    "The Weakness ofeach of youropponent's Pokemon in",
+    "play is now.(ApplyWeakness asx2.)",
+    "Full Moon Rondo",
+    "20+",
+    "This attack does 20 more damage for each Benched",
+    "Pokemon (bothyours and your opponent's)",
+    "resistance",
+    "retreat",
+    "weakness×2",
+    "Pokemonexrule",
+    "WhenyourPokimoneX",
+    "llus.5ban Grophics",
+    "isKnockdut.ourppoomtaPrize",
+    "JTGEN",
+    "173/159",
+    "oo/Mtendo/CetuGATRE"
+   ]
+  ],
+  "ident": {
+   "name": "Lillie's Clefairy ex",
+   "number": "173/159",
+   "number_read": "173/159",
+   "snapped": false,
+   "via": null,
+   "jp": false,
+   "query": "Lillie's Clefairy ex 173/159",
+   "watermark_dropped": [
+    "Yujin's Pokestop"
+   ],
+   "candidates": [
+    {
+     "pid": 623600,
+     "name": "Lillie's Clefairy ex - 173/159",
+     "set": "SV09: Journey Together",
+     "number": "173/159",
+     "line": "Pokemon"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L02_0.jpg",
+     "lines": [
+      "BASIG",
+      "LilliesClefairye",
+      "190",
+      "Yujin's Pokestop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L02_1.jpg",
+     "lines": [
+      "BASIC",
+      "LilliesClefairye",
+      "190",
+      "Yujin's Pokestop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L02_2.jpg",
+     "lines": [
+      "BASIC",
+      "Lillie's Clefairyex",
+      "M190O",
+      "Ability",
+      "Fairy Zonez",
+      "TheWeakness ofeachof youropponent'sPokemon in",
+      "playisnow(Applyweaknessas×2.)",
+      "Full MoonRondo",
+      "20+",
+      "This attack does 20 more damage for each Benched",
+      "Pokemon (bothyoursond youropponent's)",
+      "Whenyour Pokemonex",
+      "pont cakes2Prize Cards.",
+      "DIUIGN"
+     ]
+    },
+    {
+     "img": "L02_3.jpg",
+     "lines": [
+      "BASI",
+      "LiliesClefairyexwp190",
+      "Ability",
+      "Fairy Zonez",
+      "The Weakness ofeach of youropponent's CPokemon in",
+      "play is now.(ApplyWeakness as x2.)",
+      "Full Moon Rondo",
+      "20+",
+      "This attack does 20 more damage for each Benched",
+      "Pokemon (both yours and your opponent's)",
+      "weaknessx2",
+      "resistance",
+      "retreat",
+      "llus.Sbon Grophics"
+     ]
+    },
+    {
+     "img": "L02_4.jpg",
+     "lines": [
+      "BASIC",
+      "LiliesClefairyex190",
+      "Abty",
+      "Fairy Zone",
+      "TheWeakhess ofeachof your opponents SPokemon in",
+      "playisnow.(ApplyWeaknessas2.)",
+      "Full Moon Rondo",
+      "20+",
+      "This attack does 20 more damage for each Benched",
+      "Pokemon (bothyours ond your opponent's)",
+      "Ketreat",
+      "When yourPokemonex",
+      "takes2Prizecards."
+     ]
+    },
+    {
+     "img": "L02_5.jpg",
+     "lines": [
+      "BASIG",
+      "Lilie'sClefairyex",
+      "190",
+      "Ability",
+      "Fairy Zone",
+      "The Weakness ofeach of youropponent's Pokemon in",
+      "play is now.(ApplyWeakness asx2.)",
+      "Full Moon Rondo",
+      "20+",
+      "This attack does 20 more damage for each Benched",
+      "Pokemon (bothyours and your opponent's)",
+      "resistance",
+      "retreat",
+      "weakness×2"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Lillie's Clefairy ex 173/159 Journey Together Full art",
+   "name_match": true,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-mega-manectric-ex-077-063-japanese-full-art-1417355249/",
+  "title": "Pokemon Card Mega Manectric ex 077/063 Japanese Full Art",
+  "price_text": "PHP 320",
+  "status": "",
+  "raw": "Pokemon Card Mega Manectric ex 077/063 Japanese Full Art\n\nPHP 320\n\nPHP 350\n\nLightly used\n\n1",
+  "full_title": "Pokemon Card Mega Manectric ex 077/063 Japanese Full Art",
+  "desc": "Please base the condition on the pictures shown.\n\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L03_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L03_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L03_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L03_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L03_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L03_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "1道化",
+    "@X330",
+    "Yojins Pokestp",
+    "2026"
+   ],
+   [
+    "术X330",
+    "Yojins Poestop",
+    "2026"
+   ],
+   [
+    "330",
+    "120",
+    "200+",
+    "130追加",
+    "抵抗力",
+    "ex一",
+    "llusSbanGraplhites",
+    "077/063SR"
+   ],
+   [
+    "330",
+    "120",
+    "才汽-200",
+    "130岁追加",
+    "382",
+    "0771063SR"
+   ],
+   [
+    "1進化",
+    "330G",
+    "加5进化",
+    "120",
+    "在受时",
+    "200+",
+    "000",
+    "130岁×追加"
+   ],
+   [
+    "#330",
+    "120",
+    "200+",
+    "、130岁×一追加",
+    "x2",
+    "Iun.Sbun Craphiao",
+    "ex一儿",
+    "DMIS",
+    "077/0635R"
+   ]
+  ],
+  "ident": {
+   "name": "Mega Manectric ex",
+   "number": "077/063",
+   "number_read": "077/063",
+   "snapped": false,
+   "via": "attack fingerprint",
+   "jp": true,
+   "query": "Mega Manectric ex 077/063",
+   "watermark_dropped": [
+    "Yojins Poestop",
+    "Yojins Pokestp"
+   ],
+   "candidates": [
+    {
+     "pid": 647251,
+     "name": "Mega Manectric ex - 077/063",
+     "set": "m1S: Mega Symphonia",
+     "number": "077/063",
+     "line": "Pokemon Japan"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L03_0.jpg",
+     "lines": [
+      "1道化",
+      "@X330",
+      "Yojins Pokestp",
+      "2026"
+     ]
+    },
+    {
+     "img": "L03_1.jpg",
+     "lines": [
+      "术X330",
+      "Yojins Poestop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L03_2.jpg",
+     "lines": [
+      "330",
+      "120",
+      "200+",
+      "130追加",
+      "抵抗力",
+      "ex一",
+      "llusSbanGraplhites",
+      "077/063SR"
+     ]
+    },
+    {
+     "img": "L03_3.jpg",
+     "lines": [
+      "330",
+      "120",
+      "才汽-200",
+      "130岁追加",
+      "382",
+      "0771063SR"
+     ]
+    },
+    {
+     "img": "L03_4.jpg",
+     "lines": [
+      "1進化",
+      "330G",
+      "加5进化",
+      "120",
+      "在受时",
+      "200+",
+      "000",
+      "130岁×追加"
+     ]
+    },
+    {
+     "img": "L03_5.jpg",
+     "lines": [
+      "#330",
+      "120",
+      "200+",
+      "、130岁×一追加",
+      "x2",
+      "Iun.Sbun Craphiao",
+      "ex一儿",
+      "DMIS",
+      "077/0635R"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Mega Manectric ex 077/063 Japanese Full Art",
+   "name_match": true,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-chespin-034-x-p-xy-japanese-promo-1416045418/",
+  "title": "Pokemon Card Chespin 034/X-P XY Japanese Promo",
+  "price_text": "PHP 290",
+  "status": "",
+  "raw": "Pokemon Card Chespin 034/X-P XY Japanese Promo\n\nPHP 290\n\nLightly used\n\n3",
+  "full_title": "Pokemon Card Chespin 034/X-P XY Japanese Promo",
+  "desc": "Please base the condition on the pictures shown.\n\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L04_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L04_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L04_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L04_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L04_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L04_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "MP60",
+    "Pokestop",
+    "Yojin's",
+    "2026"
+   ],
+   [
+    "HP60",
+    "Pokestop",
+    "Yojin's",
+    "2026"
+   ],
+   [
+    "MP60",
+    "全国网座NO650L办0水久天高去04m重支90kg",
+    "10",
+    "20",
+    "抵抗力",
+    "x2",
+    "illus.5banGraphics",
+    "034/XY-P"
+   ],
+   [
+    "MP60",
+    "10",
+    "20",
+    "034/XYPW",
+    "lus.SbonGrophia"
+   ],
+   [
+    "HP60",
+    "10",
+    "20",
+    "tlus-5banGraphis.",
+    "034/XY-P"
+   ],
+   []
+  ],
+  "ident": {
+   "name": "Chespin",
+   "number": "034/XY-P",
+   "number_read": "034/XY-P",
+   "snapped": false,
+   "via": "unique number match",
+   "jp": true,
+   "query": "034/XY-P",
+   "watermark_dropped": [
+    "Pokestop",
+    "Yojin's"
+   ],
+   "candidates": [
+    {
+     "pid": 601939,
+     "name": "Chespin - 034/XY-P",
+     "set": "XY-P: XY Promos",
+     "number": "034/XY-P",
+     "line": "Pokemon Japan"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L04_0.jpg",
+     "lines": [
+      "MP60",
+      "Pokestop",
+      "Yojin's",
+      "2026"
+     ]
+    },
+    {
+     "img": "L04_1.jpg",
+     "lines": [
+      "HP60",
+      "Pokestop",
+      "Yojin's",
+      "2026"
+     ]
+    },
+    {
+     "img": "L04_2.jpg",
+     "lines": [
+      "MP60",
+      "全国网座NO650L办0水久天高去04m重支90kg",
+      "10",
+      "20",
+      "抵抗力",
+      "x2",
+      "illus.5banGraphics",
+      "034/XY-P"
+     ]
+    },
+    {
+     "img": "L04_3.jpg",
+     "lines": [
+      "MP60",
+      "10",
+      "20",
+      "034/XYPW",
+      "lus.SbonGrophia"
+     ]
+    },
+    {
+     "img": "L04_4.jpg",
+     "lines": [
+      "HP60",
+      "10",
+      "20",
+      "tlus-5banGraphis.",
+      "034/XY-P"
+     ]
+    },
+    {
+     "img": "L04_5.jpg",
+     "lines": []
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Chespin 034/X-P XY Japanese Promo",
+   "name_match": true,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-mega-camerupt-full-art-xy198a-promo-1408706031/",
+  "title": "Pokemon Card Mega Camerupt Full art XY198a Promo",
+  "price_text": "PHP 1,880",
+  "status": "",
+  "raw": "Pokemon Card Mega Camerupt Full art XY198a Promo\n\nPHP 1,880\n\nPHP 1,890\n\nLightly used\n\n4",
+  "full_title": "Pokemon Card Mega Camerupt Full art XY198a Promo",
+  "desc": "Please base condition as pictures showed.\n\nWYSIWYG\n\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L05_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L05_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L05_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L05_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L05_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L05_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "MEGA",
+    "MCameruptEX",
+    "HP230",
+    "Yojins",
+    "Pokestop",
+    "2025"
+   ],
+   [
+    "EGA",
+    "MCameruptEX",
+    "HP230",
+    "Yojins",
+    "Pkestop",
+    "2025"
+   ],
+   [
+    "EGA",
+    "MCameruptEX",
+    "HP230",
+    "EvoyasfromCameruptzx",
+    "Mega Evolution rule",
+    "becomes aMega Evolution",
+    "Magma Eruption",
+    "You maydiscard thetop",
+    "If you do, this attack does",
+    "Energy card you discarded in this way",
+    "esistance",
+    "weakness",
+    "Pokemon-EX",
+    "retreat",
+    "C20179ko"
+   ],
+   [
+    "EaMCameruptEX",
+    "￥230",
+    "Mega Evolution rule",
+    "When1of yourPokemon",
+    "*Magma Eruption",
+    "120+",
+    "Youmaydiscard thetop3cards of each player'sdeck.",
+    "If you do,this attack does 40more damagefor each",
+    "esistance",
+    "Pokemon-EXrule",
+    "kness",
+    "WhenaPokemon-EX has been Knocked Out,",
+    "youropponenttakes 2Prizecards.",
+    "Illus.SbanGraphics",
+    "XY198a"
+   ],
+   [
+    "MEGA",
+    "MCameruptEX",
+    "EvolvesfromCamerue",
+    "H230",
+    "Mega Evolution rule",
+    "When ofyourPokemon",
+    "120+",
+    "Magma Eruption",
+    "this attack does 40more damage for each",
+    "card youdisearded in this way",
+    "Energy",
+    "Pokemon-EXrule",
+    "sistance",
+    "IlusSbanGrophe",
+    "retreat"
+   ],
+   [
+    "HP230",
+    "MCameruptEX",
+    "MEGA",
+    "Mega Evolution rule",
+    "When",
+    "1ofyourPokemon",
+    "Magma Eruption",
+    "120+",
+    "You may discard the top3 cards of each player's deck.",
+    "If you do,this attack does 40more damagefor each",
+    "Energy card you discarded in this way.",
+    "weakness",
+    "resistance",
+    "Pokemon-EX rule",
+    "WhenaPckemon-EXhasbeenKnocked Out,",
+    "retreat",
+    "youropponent takes2Pnze cards.",
+    "C20179otem",
+    "Illus.5banGrphics",
+    "XY198aA"
+   ]
+  ],
+  "ident": {
+   "name": "M Camerupt-EX",
+   "number": "XY198a",
+   "number_read": "XY198a",
+   "snapped": false,
+   "via": null,
+   "jp": false,
+   "query": "M Camerupt-EX XY198a",
+   "watermark_dropped": [
+    "Pkestop",
+    "Pokestop",
+    "Yojins"
+   ],
+   "candidates": [
+    {
+     "pid": 148345,
+     "name": "M Camerupt EX - XY198a",
+     "set": "Alternate Art Promos",
+     "number": "XY198a",
+     "line": "Pokemon"
+    },
+    {
+     "pid": 129898,
+     "name": "M Camerupt EX - XY198",
+     "set": "XY Promos",
+     "number": "XY198",
+     "line": "Pokemon"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L05_0.jpg",
+     "lines": [
+      "MEGA",
+      "MCameruptEX",
+      "HP230",
+      "Yojins",
+      "Pokestop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L05_1.jpg",
+     "lines": [
+      "EGA",
+      "MCameruptEX",
+      "HP230",
+      "Yojins",
+      "Pkestop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L05_2.jpg",
+     "lines": [
+      "EGA",
+      "MCameruptEX",
+      "HP230",
+      "EvoyasfromCameruptzx",
+      "Mega Evolution rule",
+      "becomes aMega Evolution",
+      "Magma Eruption",
+      "You maydiscard thetop",
+      "If you do, this attack does",
+      "Energy card you discarded in this way",
+      "esistance",
+      "weakness",
+      "Pokemon-EX",
+      "retreat"
+     ]
+    },
+    {
+     "img": "L05_3.jpg",
+     "lines": [
+      "EaMCameruptEX",
+      "￥230",
+      "Mega Evolution rule",
+      "When1of yourPokemon",
+      "*Magma Eruption",
+      "120+",
+      "Youmaydiscard thetop3cards of each player'sdeck.",
+      "If you do,this attack does 40more damagefor each",
+      "esistance",
+      "Pokemon-EXrule",
+      "kness",
+      "WhenaPokemon-EX has been Knocked Out,",
+      "youropponenttakes 2Prizecards.",
+      "Illus.SbanGraphics"
+     ]
+    },
+    {
+     "img": "L05_4.jpg",
+     "lines": [
+      "MEGA",
+      "MCameruptEX",
+      "EvolvesfromCamerue",
+      "H230",
+      "Mega Evolution rule",
+      "When ofyourPokemon",
+      "120+",
+      "Magma Eruption",
+      "this attack does 40more damage for each",
+      "card youdisearded in this way",
+      "Energy",
+      "Pokemon-EXrule",
+      "sistance",
+      "IlusSbanGrophe"
+     ]
+    },
+    {
+     "img": "L05_5.jpg",
+     "lines": [
+      "HP230",
+      "MCameruptEX",
+      "MEGA",
+      "Mega Evolution rule",
+      "When",
+      "1ofyourPokemon",
+      "Magma Eruption",
+      "120+",
+      "You may discard the top3 cards of each player's deck.",
+      "If you do,this attack does 40more damagefor each",
+      "Energy card you discarded in this way.",
+      "weakness",
+      "resistance",
+      "Pokemon-EX rule"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Mega Camerupt Full art XY198a Promo",
+   "name_match": true,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-pikachu-197-sv-p-japanese-promo-1417247925/",
+  "title": "Pokemon Card Pikachu 197/SV-P Japanese Promo",
+  "price_text": "PHP 650",
+  "status": "",
+  "raw": "Pokemon Card Pikachu 197/SV-P Japanese Promo\n\nPHP 650\n\nLightly used\n\n5",
+  "full_title": "Pokemon Card Pikachu 197/SV-P Japanese Promo",
+  "desc": "Please base the condition on the pictures shown.\n\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L06_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L06_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L06_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L06_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L06_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L06_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "70",
+    "Yojins Poestop",
+    "2026"
+   ],
+   [
+    "70",
+    "Yojins Pokestop",
+    "2026"
+   ],
+   [
+    "700",
+    "HP",
+    "全国网建NO.0025",
+    "高：0.4m：6.0kg",
+    "30+",
+    "出投才の数0加。",
+    "抵抗力",
+    "llus,AtsushiFurusawa",
+    "PROMG",
+    "197/SV-P",
+    "c2t24Pokkmon/Nintendo/Creatures/GAMEFREAK"
+   ],
+   [
+    "70",
+    "匕力于工之",
+    "30+"
+   ],
+   [
+    "匕力于",
+    "70",
+    "全国NO0025扫高04m重：6.0kg",
+    "30+",
+    "x2",
+    "抵航力",
+    "Asunhi Fervseve",
+    "197/SV-P",
+    "ntendo/Creatures/GAMEFREAK.",
+    "C4 Poktonon"
+   ],
+   [
+    "700",
+    "HP",
+    "全国然N0.0025扫寸高寸：0.4m重寸6.0kg",
+    "30+",
+    "9×2",
+    "llus.AtsushiFurusawa",
+    "抵抗力",
+    "PROMO",
+    "197/SV-P",
+    "63",
+    "e2024PokemonNir",
+    "MEFREAK"
+   ]
+  ],
+  "ident": {
+   "name": "Pikachu",
+   "number": "197/SV-P",
+   "number_read": "197/SV-P",
+   "snapped": false,
+   "via": "unique number match",
+   "jp": true,
+   "query": "197/SV-P",
+   "watermark_dropped": [
+    "Yojins Poestop",
+    "Yojins Pokestop"
+   ],
+   "candidates": [
+    {
+     "pid": 587919,
+     "name": "Pikachu - 197/SV-P",
+     "set": "SV-P Promotional Cards",
+     "number": "197/SV-P",
+     "line": "Pokemon Japan"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L06_0.jpg",
+     "lines": [
+      "70",
+      "Yojins Poestop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L06_1.jpg",
+     "lines": [
+      "70",
+      "Yojins Pokestop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L06_2.jpg",
+     "lines": [
+      "700",
+      "HP",
+      "全国网建NO.0025",
+      "高：0.4m：6.0kg",
+      "30+",
+      "出投才の数0加。",
+      "抵抗力",
+      "llus,AtsushiFurusawa",
+      "PROMG",
+      "197/SV-P",
+      "c2t24Pokkmon/Nintendo/Creatures/GAMEFREAK"
+     ]
+    },
+    {
+     "img": "L06_3.jpg",
+     "lines": [
+      "70",
+      "匕力于工之",
+      "30+"
+     ]
+    },
+    {
+     "img": "L06_4.jpg",
+     "lines": [
+      "匕力于",
+      "70",
+      "全国NO0025扫高04m重：6.0kg",
+      "30+",
+      "x2",
+      "抵航力",
+      "Asunhi Fervseve",
+      "197/SV-P",
+      "ntendo/Creatures/GAMEFREAK.",
+      "C4 Poktonon"
+     ]
+    },
+    {
+     "img": "L06_5.jpg",
+     "lines": [
+      "700",
+      "HP",
+      "全国然N0.0025扫寸高寸：0.4m重寸6.0kg",
+      "30+",
+      "9×2",
+      "llus.AtsushiFurusawa",
+      "抵抗力",
+      "PROMO",
+      "197/SV-P",
+      "63",
+      "e2024PokemonNir",
+      "MEFREAK"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Pikachu 197/SV-P Japanese Promo",
+   "name_match": true,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-coalossal-117-100-japanese-secret-rare-1417159332/",
+  "title": "Pokemon Card Coalossal 117/100 Japanese Secret Rare",
+  "price_text": "PHP 550",
+  "status": "",
+  "raw": "Pokemon Card Coalossal 117/100 Japanese Secret Rare\n\nPHP 550\n\nLike new\n\n2",
+  "full_title": "Pokemon Card Coalossal 117/100 Japanese Secret Rare",
+  "desc": "Please base the condition on the pictures shown.\n\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L07_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L07_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L07_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L07_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L07_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L07_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "p160",
+    "2遵化",
+    "Yojms Pokestop",
+    "2026"
+   ],
+   [
+    "p1600",
+    "2遵化",
+    "Yojns Pokestop",
+    "2026"
+   ],
+   [
+    "-160",
+    "2进化",
+    "特性",
+    "130",
+    "inPAMEAT",
+    "117/100UR",
+    "0315002"
+   ],
+   [
+    "七多1600",
+    "特性",
+    "130"
+   ],
+   [
+    "160",
+    "2莲化",
+    "一礼一",
+    "特性",
+    "左1枚送首の好。",
+    "130",
+    "抵抗力",
+    "普段",
+    "蒸3L1500度の飞烧寸。",
+    "O17/100UR",
+    "SIGAME FREAK"
+   ],
+   [
+    "p160",
+    "2道化",
+    "特性",
+    "左校自の好",
+    "130",
+    "抵玩力",
+    "inIANEA",
+    "30117I100UR"
+   ]
+  ],
+  "ident": {
+   "name": "",
+   "number": "117/100",
+   "number_read": "117/100",
+   "snapped": false,
+   "via": null,
+   "jp": true,
+   "query": "117/100",
+   "watermark_dropped": [
+    "Yojms Pokestop",
+    "Yojns Pokestop"
+   ],
+   "candidates": [
+    {
+     "pid": 568944,
+     "name": "Leon - 117/100",
+     "set": "S4: Amazing Volt Tackle",
+     "number": "117/100",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 569618,
+     "name": "Boltund VMAX - 117/100",
+     "set": "S8: Fusion Arts",
+     "number": "117/100",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 570049,
+     "name": "Kyurem VMAX - 117/100",
+     "set": "S11: Lost Abyss",
+     "number": "117/100",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 569745,
+     "name": "Shaymin VSTAR - 117/100",
+     "set": "S9: Star Birth",
+     "number": "117/100",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 614993,
+     "name": "N's Zoroark ex - 117/100",
+     "set": "SV9: Battle Partners",
+     "number": "117/100",
+     "line": "Pokemon Japan"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L07_0.jpg",
+     "lines": [
+      "p160",
+      "2遵化",
+      "Yojms Pokestop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L07_1.jpg",
+     "lines": [
+      "p1600",
+      "2遵化",
+      "Yojns Pokestop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L07_2.jpg",
+     "lines": [
+      "-160",
+      "2进化",
+      "特性",
+      "130",
+      "inPAMEAT",
+      "117/100UR",
+      "0315002"
+     ]
+    },
+    {
+     "img": "L07_3.jpg",
+     "lines": [
+      "七多1600",
+      "特性",
+      "130"
+     ]
+    },
+    {
+     "img": "L07_4.jpg",
+     "lines": [
+      "160",
+      "2莲化",
+      "一礼一",
+      "特性",
+      "左1枚送首の好。",
+      "130",
+      "抵抗力",
+      "普段",
+      "蒸3L1500度の飞烧寸。",
+      "O17/100UR",
+      "SIGAME FREAK"
+     ]
+    },
+    {
+     "img": "L07_5.jpg",
+     "lines": [
+      "p160",
+      "2道化",
+      "特性",
+      "左校自の好",
+      "130",
+      "抵玩力",
+      "inIANEA",
+      "30117I100UR"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Coalossal 117/100 Japanese Secret Rare",
+   "name_match": false,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-staraptor-holo-japanese-diamond-pearl-1403473501/",
+  "title": "Pokemon Card Staraptor Holo Japanese Diamond & Pearl",
+  "price_text": "PHP 300",
+  "status": "",
+  "raw": "Pokemon Card Staraptor Holo Japanese Diamond & Pearl\n\nPHP 300\n\nPHP 320\n\nWell used\n\n1",
+  "full_title": "Pokemon Card Staraptor Holo Japanese Diamond & Pearl",
+  "desc": "Card Condition & Pricing (shown in both picture and description)\r\n💵  Mode of Payment (MOP): GCASH/PAYMAYA\r\n🛵  Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\r\n📌  Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L08_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L08_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L08_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L08_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L08_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L08_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "勺v.54",
+    "HP100*",
+    "己进化么夕八一办5进化",
+    "YujinPokesiop",
+    "202S"
+   ],
+   [
+    "么勺一勺v.54",
+    "HP100*",
+    "YujinPokestop",
+    "202S"
+   ],
+   [
+    "勺v.54",
+    "HP100*",
+    "已化么八一下办5进化",
+    "NO.398走毛高：1.2m重：24.9kg",
+    "30",
+    "、次の自分の番の自",
+    "****",
+    "100",
+    "1回投自100",
+    "illus.Masahikolshii",
+    "弱点",
+    "抵抗力",
+    "+30",
+    "9-20",
+    "2006okemon/Nintendo/Creatures/GAMEFREAK",
+    "DPBP#459*DPJ"
+   ],
+   [
+    "勺久v.54",
+    "HP100*",
+    "己進化夕八一下5进化",
+    "NO.398毛走人高：1.2m重寸：24.9kg",
+    "30",
+    "左1回投失敢才",
+    "亍5，次の自分の番の终自分",
+    "****",
+    "100",
+    "1回投5、自分100岁",
+    "6点",
+    "抵抗力",
+    "+30",
+    "-20",
+    "G2006fokeman/Nintendo/Crealurey"
+   ],
+   [
+    "么勺久v.54",
+    "HP100*",
+    "已進化么连化",
+    "NO.3983±水正高±：12m",
+    "30",
+    "回投胶才",
+    "5，次の自分の番の将自分",
+    "****",
+    "100",
+    "1回投付自分100岁",
+    "llus.MosahikoIshm",
+    "抵抗力",
+    "+30",
+    "#-20",
+    "@2006Fokenon/Nintendo/Cretures/GAMEFREAK",
+    "DPBP#459*DP"
+   ],
+   [
+    "v.54",
+    "HP100*",
+    "已進化么一办S选化",
+    "NO.398",
+    "七走h毛高之：1.2m重达：24.9kg",
+    "30",
+    "，次の自分のの自分",
+    "****",
+    "100",
+    "回投、自分100",
+    "Illus.Masahiko Ishii",
+    "弱点",
+    "抵抗力",
+    "+30",
+    "-20",
+    "2006Pokomon/Nintendo/Creatures/GAMEFREAK.",
+    "DPBP#459*DP"
+   ]
+  ],
+  "ident": {
+   "name": "Staraptor",
+   "number": null,
+   "number_read": null,
+   "snapped": false,
+   "via": "dex number",
+   "jp": true,
+   "query": "Staraptor",
+   "watermark_dropped": [
+    "YujinPokestop"
+   ],
+   "candidates": [
+    {
+     "pid": 604118,
+     "name": "Staraptor",
+     "set": "XY8-Br: Red Flash",
+     "number": "053/059",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 569708,
+     "name": "Staraptor",
+     "set": "S9: Star Birth",
+     "number": "080/100",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 573032,
+     "name": "Staraptor",
+     "set": "SM4S: Awakened Heroes",
+     "number": "040/050",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 488040,
+     "name": "Staraptor",
+     "set": "SV01: Scarlet & Violet Base Set",
+     "number": "150/198",
+     "line": "Pokemon"
+    },
+    {
+     "pid": 219355,
+     "name": "Staraptor",
+     "set": "SWSH03: Darkness Ablaze",
+     "number": "147/189",
+     "line": "Pokemon"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L08_0.jpg",
+     "lines": [
+      "勺v.54",
+      "HP100*",
+      "己进化么夕八一办5进化",
+      "YujinPokesiop",
+      "202S"
+     ]
+    },
+    {
+     "img": "L08_1.jpg",
+     "lines": [
+      "么勺一勺v.54",
+      "HP100*",
+      "YujinPokestop",
+      "202S"
+     ]
+    },
+    {
+     "img": "L08_2.jpg",
+     "lines": [
+      "勺v.54",
+      "HP100*",
+      "已化么八一下办5进化",
+      "NO.398走毛高：1.2m重：24.9kg",
+      "30",
+      "、次の自分の番の自",
+      "****",
+      "100",
+      "1回投自100",
+      "illus.Masahikolshii",
+      "弱点",
+      "抵抗力",
+      "+30",
+      "9-20"
+     ]
+    },
+    {
+     "img": "L08_3.jpg",
+     "lines": [
+      "勺久v.54",
+      "HP100*",
+      "己進化夕八一下5进化",
+      "NO.398毛走人高：1.2m重寸：24.9kg",
+      "30",
+      "左1回投失敢才",
+      "亍5，次の自分の番の终自分",
+      "****",
+      "100",
+      "1回投5、自分100岁",
+      "6点",
+      "抵抗力",
+      "+30",
+      "-20"
+     ]
+    },
+    {
+     "img": "L08_4.jpg",
+     "lines": [
+      "么勺久v.54",
+      "HP100*",
+      "已進化么连化",
+      "NO.3983±水正高±：12m",
+      "30",
+      "回投胶才",
+      "5，次の自分の番の将自分",
+      "****",
+      "100",
+      "1回投付自分100岁",
+      "llus.MosahikoIshm",
+      "抵抗力",
+      "+30",
+      "#-20"
+     ]
+    },
+    {
+     "img": "L08_5.jpg",
+     "lines": [
+      "v.54",
+      "HP100*",
+      "已進化么一办S选化",
+      "NO.398",
+      "七走h毛高之：1.2m重达：24.9kg",
+      "30",
+      "，次の自分のの自分",
+      "****",
+      "100",
+      "回投、自分100",
+      "Illus.Masahiko Ishii",
+      "弱点",
+      "抵抗力",
+      "+30"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Staraptor Holo Japanese Diamond & Pearl",
+   "name_match": true,
+   "number_match": false
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-combusken-065-pcg-p-vintage-meiji-chocolate-japanese-promo-1414405344/",
+  "title": "Pokemon Card Combusken 065/PCG-P Vintage Meiji Chocolate Japanese Promo",
+  "price_text": "PHP 390",
+  "status": "",
+  "raw": "Pokemon Card Combusken 065/PCG-P Vintage Meiji Chocolate Japanese Promo\n\nPHP 390\n\nHeavily used\n\n1",
+  "full_title": "Pokemon Card Combusken 065/PCG-P Vintage Meiji Chocolate Japanese Promo",
+  "desc": "Has a lot of surface scratches, markings and dents on corners as shown.\n\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L09_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L09_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L09_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L09_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L09_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L09_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "HP70W",
+    "Yojins",
+    "Poke stop",
+    "2026"
+   ],
+   [
+    "HP70W",
+    "Yojins",
+    "Poke stop",
+    "2026"
+   ],
+   [
+    "HP7O",
+    "手毛5進化",
+    "10",
+    "50",
+    "自の个。",
+    "抵抗力",
+    "MWJA34N52)",
+    "2005Pokamon/Nintendo/Crealures/GAME.FREAK",
+    "065/PCG-P0"
+   ],
+   [
+    "HP70",
+    "10",
+    "50",
+    "02005Poke",
+    "GGAMZEREA"
+   ],
+   [
+    "HP70W",
+    "10",
+    "50",
+    "EFREAK",
+    "065/PCG"
+   ],
+   [
+    "HP70W",
+    "50",
+    "自の个。",
+    "抵抗力",
+    "065/PCG-P",
+    "C2005Pokmon/Nintendo/Creatures/GAMEFREAK"
+   ]
+  ],
+  "ident": {
+   "name": "Combusken",
+   "number": "065/PCG-P",
+   "number_read": "065/PCG-P",
+   "snapped": false,
+   "via": "unique number match",
+   "jp": true,
+   "query": "065/PCG-P",
+   "watermark_dropped": [
+    "Poke stop",
+    "Yojins"
+   ],
+   "candidates": [
+    {
+     "pid": 613414,
+     "name": "Combusken - 065/PCG-P",
+     "set": "PCG-P Promotional cards",
+     "number": "065/PCG-P",
+     "line": "Pokemon Japan"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L09_0.jpg",
+     "lines": [
+      "HP70W",
+      "Yojins",
+      "Poke stop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L09_1.jpg",
+     "lines": [
+      "HP70W",
+      "Yojins",
+      "Poke stop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L09_2.jpg",
+     "lines": [
+      "HP7O",
+      "手毛5進化",
+      "10",
+      "50",
+      "自の个。",
+      "抵抗力",
+      "MWJA34N52)",
+      "2005Pokamon/Nintendo/Crealures/GAME.FREAK",
+      "065/PCG-P0"
+     ]
+    },
+    {
+     "img": "L09_3.jpg",
+     "lines": [
+      "HP70",
+      "10",
+      "50",
+      "02005Poke",
+      "GGAMZEREA"
+     ]
+    },
+    {
+     "img": "L09_4.jpg",
+     "lines": [
+      "HP70W",
+      "10",
+      "50",
+      "EFREAK",
+      "065/PCG"
+     ]
+    },
+    {
+     "img": "L09_5.jpg",
+     "lines": [
+      "HP70W",
+      "50",
+      "自の个。",
+      "抵抗力",
+      "065/PCG-P",
+      "C2005Pokmon/Nintendo/Creatures/GAMEFREAK"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Combusken 065/PCG-P Vintage Meiji Chocolate Japanese Promo",
+   "name_match": true,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-combee-081-dp-p-vintage-meiji-chocolate-japanese-promo-1414235170/",
+  "title": "Pokemon Card Combee 081/DP-P Vintage Meiji Chocolate Japanese Promo",
+  "price_text": "PHP 390",
+  "status": "",
+  "raw": "Pokemon Card Combee 081/DP-P Vintage Meiji Chocolate Japanese Promo\n\nPHP 390\n\nWell used",
+  "full_title": "Pokemon Card Combee 081/DP-P Vintage Meiji Chocolate Japanese Promo",
+  "desc": "Card has visible marks, as shown in the pictures. Some scratches that might not be seen also from the back and front. Overall a well-used card especially with markings shown.\n\nPlease base the condition on the pictures shown.\n\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L10_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L10_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L10_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L10_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L10_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L10_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "三三",
+    "LV.6",
+    "HP500",
+    "Yojins",
+    "Poke stop",
+    "2026"
+   ],
+   [
+    "Lv.6",
+    "Hp500",
+    "Yojins",
+    "Poke stop",
+    "2026"
+   ],
+   [
+    "三八二—V6",
+    "HP50",
+    "NO.415休5の术毛高：0.3m重达：5.5kg",
+    "自分の匹",
+    "2個上百。",
+    "353523",
+    "相手の术勺毛1匹、弱点·抵抗力网保杯，",
+    "20×。",
+    "llus.MidoriHaroda",
+    "抵抗力",
+    "+10",
+    "9-20"
+   ],
+   [
+    "三八二—V6",
+    "Mp50",
+    "3m重达=5.5kg",
+    "353523",
+    "相手の术勺毛1匹、弱点·抵抗力隔保",
+    "20岁次",
+    "W+10",
+    "illus Midori Har",
+    "9-20",
+    "081/0P-P"
+   ],
+   [
+    "三八二一06",
+    "-500",
+    "NO.415350三水手",
+    "30.3m重含：5.5kg",
+    "353523",
+    "相手の木午毛1匹七、弱点·抵抗力阳保芯",
+    "202-5",
+    "us.MidoriHarada",
+    "0-20",
+    "081/DP-P"
+   ],
+   [
+    "PoKeHov."
+   ]
+  ],
+  "ident": {
+   "name": "Combee",
+   "number": "081/DP-P",
+   "number_read": "081/DP-P",
+   "snapped": false,
+   "via": "dex number",
+   "jp": true,
+   "query": "Combee 081/DP-P",
+   "watermark_dropped": [
+    "Poke stop",
+    "Yojins"
+   ],
+   "candidates": [
+    {
+     "pid": 613269,
+     "name": "Combee - 081/DP-P",
+     "set": "DP-P Promotional cards",
+     "number": "081/DP-P",
+     "line": "Pokemon Japan"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L10_0.jpg",
+     "lines": [
+      "三三",
+      "LV.6",
+      "HP500",
+      "Yojins",
+      "Poke stop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L10_1.jpg",
+     "lines": [
+      "Lv.6",
+      "Hp500",
+      "Yojins",
+      "Poke stop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L10_2.jpg",
+     "lines": [
+      "三八二—V6",
+      "HP50",
+      "NO.415休5の术毛高：0.3m重达：5.5kg",
+      "自分の匹",
+      "2個上百。",
+      "353523",
+      "相手の术勺毛1匹、弱点·抵抗力网保杯，",
+      "20×。",
+      "llus.MidoriHaroda",
+      "抵抗力",
+      "+10",
+      "9-20"
+     ]
+    },
+    {
+     "img": "L10_3.jpg",
+     "lines": [
+      "三八二—V6",
+      "Mp50",
+      "3m重达=5.5kg",
+      "353523",
+      "相手の术勺毛1匹、弱点·抵抗力隔保",
+      "20岁次",
+      "W+10",
+      "illus Midori Har",
+      "9-20",
+      "081/0P-P"
+     ]
+    },
+    {
+     "img": "L10_4.jpg",
+     "lines": [
+      "三八二一06",
+      "-500",
+      "NO.415350三水手",
+      "30.3m重含：5.5kg",
+      "353523",
+      "相手の木午毛1匹七、弱点·抵抗力阳保芯",
+      "202-5",
+      "us.MidoriHarada",
+      "0-20",
+      "081/DP-P"
+     ]
+    },
+    {
+     "img": "L10_5.jpg",
+     "lines": [
+      "PoKeHov."
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Combee 081/DP-P Vintage Meiji Chocolate Japanese Promo",
+   "name_match": true,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-rota-s-mime-jr-086-pcg-p-vintage-mcdonalds-japanese-promo-1413137412/",
+  "title": "Pokemon Card Rota's Mime Jr. 086/PCG-P Vintage McDonalds Japanese Promo",
+  "price_text": "PHP 390",
+  "status": "",
+  "raw": "Pokemon Card Rota's Mime Jr. 086/PCG-P Vintage McDonalds Japanese Promo\n\nPHP 390\n\nWell used",
+  "full_title": "Pokemon Card Rota's Mime Jr. 086/PCG-P Vintage McDonalds Japanese Promo",
+  "desc": "Please base the condition on the picture shown.\n\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L11_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L11_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L11_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L11_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L11_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L11_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "HP50",
+    "Yoins",
+    "Pokestop",
+    "2026"
+   ],
+   [
+    "HP50",
+    "Yoins",
+    "Pokestop",
+    "2026"
+   ],
+   [
+    "日一女の",
+    "HP50",
+    "回投才相手",
+    "5.自分相手左h寸。"
+   ],
+   [
+    "HP50",
+    "在回投才相手",
+    "5自相手寸"
+   ],
+   [
+    "口一夕の",
+    "HP500",
+    "回投才相手",
+    "5.自分相手5。"
+   ],
+   [
+    "HP50",
+    "回投才相手",
+    "5自分相手5h寸。"
+   ]
+  ],
+  "ident": {
+   "name": "",
+   "number": null,
+   "number_read": null,
+   "snapped": false,
+   "via": null,
+   "jp": false,
+   "query": "",
+   "watermark_dropped": [
+    "Pokestop",
+    "Yoins"
+   ],
+   "candidates": [],
+   "ocr": [
+    {
+     "img": "L11_0.jpg",
+     "lines": [
+      "HP50",
+      "Yoins",
+      "Pokestop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L11_1.jpg",
+     "lines": [
+      "HP50",
+      "Yoins",
+      "Pokestop",
+      "2026"
+     ]
+    },
+    {
+     "img": "L11_2.jpg",
+     "lines": [
+      "日一女の",
+      "HP50",
+      "回投才相手",
+      "5.自分相手左h寸。"
+     ]
+    },
+    {
+     "img": "L11_3.jpg",
+     "lines": [
+      "HP50",
+      "在回投才相手",
+      "5自相手寸"
+     ]
+    },
+    {
+     "img": "L11_4.jpg",
+     "lines": [
+      "口一夕の",
+      "HP500",
+      "回投才相手",
+      "5.自分相手5。"
+     ]
+    },
+    {
+     "img": "L11_5.jpg",
+     "lines": [
+      "HP50",
+      "回投才相手",
+      "5自分相手5h寸。"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Rota's Mime Jr. 086/PCG-P Vintage McDonalds Japanese Promo",
+   "name_match": false,
+   "number_match": false
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-croagunk-032-dp-p-vintage-mcdonald-japanese-promo-1412547410/",
+  "title": "Pokemon Card Croagunk 032/DP-P Vintage McDonald Japanese Promo",
+  "price_text": "PHP 390",
+  "status": "",
+  "raw": "Pokemon Card Croagunk 032/DP-P Vintage McDonald Japanese Promo\n\nPHP 390\n\nLightly used",
+  "full_title": "Pokemon Card Croagunk 032/DP-P Vintage McDonald Japanese Promo",
+  "desc": "Please base the condition on the pictures shown.\r\n\r\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\r\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\r\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L12_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L12_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L12_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L12_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L12_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L12_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "17",
+    "￥600",
+    "Yujins",
+    "Pokestop"
+   ],
+   [
+    "Yujins",
+    "Pokestop",
+    "2025"
+   ],
+   [
+    "HP60",
+    "NO.453七<3送毛高之：0.7m重达：23.0kg",
+    "1回投才毛5、次の相手の番、相手",
+    "手礼出使",
+    "20",
+    "1回投才相手",
+    "sKoukSodou",
+    "@+10",
+    "2007Pokk",
+    "032/DP-P4"
+   ],
+   [
+    "-60#",
+    "NO.4535造承久",
+    "823.0kg",
+    "衣回搅付才毛杯5次の相手の番相手",
+    "十，手机一出使",
+    "20",
+    "5.相手忘寸。",
+    "illus.KoukiSaitou",
+    "MEFREAK",
+    "032/DP-P"
+   ],
+   [
+    ".17",
+    "600",
+    "NO.453七<走水久毛之高：0.7m重之：23.0kg",
+    "1回投才、次の相手の番、相手",
+    "手出使",
+    "20",
+    "1回投才5相手",
+    "@+10"
+   ],
+   [
+    "HP60",
+    "17",
+    "NO.453",
+    "高±：0.7m重±23.0kg",
+    "1回投才、次の相手の番、相手",
+    "手出使",
+    "回投相手",
+    "20",
+    "@+10",
+    "llusKoukiSaitou",
+    "032/DP-P"
+   ]
+  ],
+  "ident": {
+   "name": "Croagunk",
+   "number": "032/DP-P",
+   "number_read": "032/DP-P",
+   "snapped": false,
+   "via": "dex number",
+   "jp": true,
+   "query": "Croagunk 032/DP-P",
+   "watermark_dropped": [
+    "Pokestop",
+    "Yujins"
+   ],
+   "candidates": [
+    {
+     "pid": 613270,
+     "name": "Croagunk - 032/DP-P",
+     "set": "DP-P Promotional cards",
+     "number": "032/DP-P",
+     "line": "Pokemon Japan"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L12_0.jpg",
+     "lines": [
+      "17",
+      "￥600",
+      "Yujins",
+      "Pokestop"
+     ]
+    },
+    {
+     "img": "L12_1.jpg",
+     "lines": [
+      "Yujins",
+      "Pokestop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L12_2.jpg",
+     "lines": [
+      "HP60",
+      "NO.453七<3送毛高之：0.7m重达：23.0kg",
+      "1回投才毛5、次の相手の番、相手",
+      "手礼出使",
+      "20",
+      "1回投才相手",
+      "sKoukSodou",
+      "@+10",
+      "2007Pokk",
+      "032/DP-P4"
+     ]
+    },
+    {
+     "img": "L12_3.jpg",
+     "lines": [
+      "-60#",
+      "NO.4535造承久",
+      "823.0kg",
+      "衣回搅付才毛杯5次の相手の番相手",
+      "十，手机一出使",
+      "20",
+      "5.相手忘寸。",
+      "illus.KoukiSaitou",
+      "MEFREAK",
+      "032/DP-P"
+     ]
+    },
+    {
+     "img": "L12_4.jpg",
+     "lines": [
+      ".17",
+      "600",
+      "NO.453七<走水久毛之高：0.7m重之：23.0kg",
+      "1回投才、次の相手の番、相手",
+      "手出使",
+      "20",
+      "1回投才5相手",
+      "@+10"
+     ]
+    },
+    {
+     "img": "L12_5.jpg",
+     "lines": [
+      "HP60",
+      "17",
+      "NO.453",
+      "高±：0.7m重±23.0kg",
+      "1回投才、次の相手の番、相手",
+      "手出使",
+      "回投相手",
+      "20",
+      "@+10",
+      "llusKoukiSaitou",
+      "032/DP-P"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Croagunk 032/DP-P Vintage McDonald Japanese Promo",
+   "name_match": true,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-weakness-policy-secret-rare-trainer-164-160-primal-clash-1405301610/",
+  "title": "Pokemon Card Weakness Policy Secret Rare Trainer 164/160 Primal Clash",
+  "price_text": "PHP 490",
+  "status": "",
+  "raw": "Pokemon Card Weakness Policy Secret Rare Trainer 164/160 Primal Clash\n\nPHP 490\n\nPHP 690\n\nWell used",
+  "full_title": "Pokemon Card Weakness Policy Secret Rare Trainer 164/160 Primal Clash",
+  "desc": "WYSIWYG\nVisible Dent, markings as shown.\n\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L13_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L13_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L13_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L13_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L13_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L13_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "TRAINER",
+    "ITEM",
+    "Weakness Policy",
+    "Yojins",
+    "Pketop",
+    "2025"
+   ],
+   [
+    "TRARINER",
+    "ITE",
+    "Weakness Policy",
+    "Yojins",
+    "Poketop",
+    "2025"
+   ],
+   [
+    "TRAINE",
+    "ITEM",
+    "WeaknessPolicy",
+    "AttachaPokemonTooltoIofyour",
+    "Pokemon thatdoesn'talready have a Pokemon Tool attached to it.",
+    "The Pokemon this card is attached",
+    "to has no",
+    "Weakness",
+    "Youmayplayasmanyltemcardsasyoulikeduringyourturn",
+    "weforeyouratack).",
+    "ilus.AyokaYoshido",
+    "164/160@"
+   ],
+   [
+    "TRAINER",
+    "ITEM",
+    "Weakness Policy",
+    "Pokemon thatdoesn't already have a Pokemon Tool attached to it.",
+    "AttachaPokemonToolto ofyour",
+    "The Pokemon this card is attached to has no",
+    "Weakness.",
+    "You may playasman outards asyou tikeduring yourturn",
+    "Bus.AyekaYoshido164/160"
+   ],
+   [
+    "TRRINER",
+    "Weakness Policy",
+    "Pokemon Tool",
+    "Pokemon that doesn't already have a Pokemon Tool attached to it.",
+    "Attacha Pokemon Tool toI of your",
+    "The Pokemon this card is attached to has no",
+    "Weakness."
+   ],
+   [
+    "TRAINER",
+    "Weakness Policy",
+    "PokemonsTool",
+    "Pokemon that doesn't already have a Pokemon Tool att",
+    "Attacha Pokemon Tool to",
+    "The Pokemon this card is attached to",
+    "Weakness."
+   ]
+  ],
+  "ident": {
+   "name": "Weakness Policy",
+   "number": "164/160",
+   "number_read": "164/160",
+   "snapped": false,
+   "via": null,
+   "jp": false,
+   "query": "Weakness Policy 164/160",
+   "watermark_dropped": [
+    "Pketop",
+    "Poketop",
+    "Yojins"
+   ],
+   "candidates": [
+    {
+     "pid": 96062,
+     "name": "Weakness Policy (164 Secret Rare)",
+     "set": "XY - Primal Clash",
+     "number": "164/160",
+     "line": "Pokemon"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L13_0.jpg",
+     "lines": [
+      "TRAINER",
+      "ITEM",
+      "Weakness Policy",
+      "Yojins",
+      "Pketop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L13_1.jpg",
+     "lines": [
+      "TRARINER",
+      "ITE",
+      "Weakness Policy",
+      "Yojins",
+      "Poketop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L13_2.jpg",
+     "lines": [
+      "TRAINE",
+      "ITEM",
+      "WeaknessPolicy",
+      "AttachaPokemonTooltoIofyour",
+      "Pokemon thatdoesn'talready have a Pokemon Tool attached to it.",
+      "The Pokemon this card is attached",
+      "to has no",
+      "Weakness",
+      "Youmayplayasmanyltemcardsasyoulikeduringyourturn",
+      "weforeyouratack).",
+      "ilus.AyokaYoshido",
+      "164/160@"
+     ]
+    },
+    {
+     "img": "L13_3.jpg",
+     "lines": [
+      "TRAINER",
+      "ITEM",
+      "Weakness Policy",
+      "Pokemon thatdoesn't already have a Pokemon Tool attached to it.",
+      "AttachaPokemonToolto ofyour",
+      "The Pokemon this card is attached to has no",
+      "Weakness.",
+      "You may playasman outards asyou tikeduring yourturn",
+      "Bus.AyekaYoshido164/160"
+     ]
+    },
+    {
+     "img": "L13_4.jpg",
+     "lines": [
+      "TRRINER",
+      "Weakness Policy",
+      "Pokemon Tool",
+      "Pokemon that doesn't already have a Pokemon Tool attached to it.",
+      "Attacha Pokemon Tool toI of your",
+      "The Pokemon this card is attached to has no",
+      "Weakness."
+     ]
+    },
+    {
+     "img": "L13_5.jpg",
+     "lines": [
+      "TRAINER",
+      "Weakness Policy",
+      "PokemonsTool",
+      "Pokemon that doesn't already have a Pokemon Tool att",
+      "Attacha Pokemon Tool to",
+      "The Pokemon this card is attached to",
+      "Weakness."
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Weakness Policy Secret Rare Trainer 164/160 Primal Clash",
+   "name_match": true,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-raichu-gx-rainbow-rare-fullart-korean-1405173137/",
+  "title": "Pokemon Card Raichu GX Rainbow Rare Fullart Korean",
+  "price_text": "PHP 890",
+  "status": "",
+  "raw": "Pokemon Card Raichu GX Rainbow Rare Fullart Korean\n\nPHP 890\n\nPHP 990\n\nLightly used\n\n2",
+  "full_title": "Pokemon Card Raichu GX Rainbow Rare Fullart Korean",
+  "desc": "WYSIWYG\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L14_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L14_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L14_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L14_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L14_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L14_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "HP210",
+    "Yojins",
+    "Pokestop",
+    "2025"
+   ],
+   [
+    "GX",
+    "HP2100",
+    "Yojins",
+    "Phestop",
+    "2025"
+   ],
+   [
+    "HP2100",
+    "20+",
+    "160",
+    "120",
+    "0-20",
+    "Illus.Sbon Graphics",
+    "SM3+079/072HR"
+   ],
+   [
+    "HP210G",
+    "20+",
+    "160",
+    "120",
+    "-20",
+    "lus,SbonGraphics",
+    "SM3+0"
+   ],
+   [
+    "PokeMoy"
+   ],
+   [
+    "PokeMon"
+   ]
+  ],
+  "ident": {
+   "name": "Raichu GX",
+   "number": "079/072",
+   "number_read": "079/072",
+   "snapped": false,
+   "via": "unique number match",
+   "jp": true,
+   "query": "sm3 079/072",
+   "watermark_dropped": [
+    "Phestop",
+    "Pokestop",
+    "Yojins"
+   ],
+   "candidates": [
+    {
+     "pid": 573993,
+     "name": "Raichu GX - 079/072",
+     "set": "SM3+: Shining Legends",
+     "number": "079/072",
+     "line": "Pokemon Japan"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L14_0.jpg",
+     "lines": [
+      "HP210",
+      "Yojins",
+      "Pokestop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L14_1.jpg",
+     "lines": [
+      "GX",
+      "HP2100",
+      "Yojins",
+      "Phestop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L14_2.jpg",
+     "lines": [
+      "HP2100",
+      "20+",
+      "160",
+      "120",
+      "0-20",
+      "Illus.Sbon Graphics",
+      "SM3+079/072HR"
+     ]
+    },
+    {
+     "img": "L14_3.jpg",
+     "lines": [
+      "HP210G",
+      "20+",
+      "160",
+      "120",
+      "-20",
+      "lus,SbonGraphics",
+      "SM3+0"
+     ]
+    },
+    {
+     "img": "L14_4.jpg",
+     "lines": [
+      "PokeMoy"
+     ]
+    },
+    {
+     "img": "L14_5.jpg",
+     "lines": [
+      "PokeMon"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Raichu GX Rainbow Rare Fullart Korean",
+   "name_match": true,
+   "number_match": false
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/mega-tyranitar-ex-43-98-ancient-origins-1403972172/",
+  "title": "Mega Tyranitar EX 43/98 Ancient Origins",
+  "price_text": "PHP 1,880",
+  "status": "",
+  "raw": "Mega Tyranitar EX 43/98 Ancient Origins\n\nPHP 1,880\n\nPHP 1,980\n\nLightly used\n\n2",
+  "full_title": "Mega Tyranitar EX 43/98 Ancient Origins",
+  "desc": "Card Condition & Pricing (shown in both picture and description)\r\n💵  Mode of Payment (MOP): GCASH/PAYMAYA\r\n🛵  Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\r\n📌  Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L15_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L15_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L15_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L15_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L15_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L15_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "MTyranitar",
+    "ODouble",
+    "Yojins",
+    "Pokestop",
+    "2025"
+   ],
+   [
+    "MEGA",
+    "MTyranitar",
+    "ODouble",
+    "Yojins",
+    "Pketop",
+    "2025"
+   ],
+   [
+    "MTyranitar",
+    "EX",
+    "HP240",
+    "ODouble",
+    "ThPoemonmyhaveuto2PokemonToolcardsaachedtot",
+    "IafyourPokemon",
+    "becomesa/M",
+    "spuauunjano",
+    "110+",
+    "This attack does",
+    "for eachdamage",
+    "counter on your",
+    "Pokemon.",
+    "weakness",
+    "resistance",
+    "×2",
+    "retreat",
+    "akesze cards",
+    "本*本",
+    "￥B6/EA"
+   ],
+   [
+    "MEGA",
+    "MTyranitar",
+    "HP240",
+    "Evovron",
+    "ODouble",
+    "ThisPokemonmay haveupto2Pokemon Toolcards attachedtoit",
+    "Mega Evolutlon rule",
+    "When ofyour Pokemon",
+    "**DestroyerKing",
+    "110+",
+    "This attack does 60 more damage for each damage",
+    "counter on your opponent's Active Pokemon",
+    "esistanc",
+    "Pokdimon-EXrule",
+    "veaknes",
+    "WhanaPokemanExNibeenKrodidout",
+    "etrtat"
+   ],
+   [
+    "MTyranitar",
+    "HP240",
+    "MEGA",
+    "ODouble",
+    "Mega Evolution rule",
+    "When ofyourPokemon",
+    "**DestroyerKing",
+    "This attack does 60 more damage for each damage",
+    "110+",
+    "counter on your opponent's Active Pokemon.",
+    "resistance",
+    "@-20",
+    "Pokamon-EXrule",
+    "****",
+    "13/98"
+   ],
+   [
+    "PoKeMoy"
+   ]
+  ],
+  "ident": {
+   "name": "M Tyranitar-EX",
+   "number": "43/98",
+   "number_read": "13/98",
+   "snapped": true,
+   "via": null,
+   "jp": false,
+   "query": "M Tyranitar-EX 13/98",
+   "watermark_dropped": [
+    "Pketop",
+    "Pokestop",
+    "Yojins"
+   ],
+   "candidates": [
+    {
+     "pid": 100625,
+     "name": "M Tyranitar EX",
+     "set": "XY - Ancient Origins",
+     "number": "43/98",
+     "line": "Pokemon"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L15_0.jpg",
+     "lines": [
+      "MTyranitar",
+      "ODouble",
+      "Yojins",
+      "Pokestop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L15_1.jpg",
+     "lines": [
+      "MEGA",
+      "MTyranitar",
+      "ODouble",
+      "Yojins",
+      "Pketop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L15_2.jpg",
+     "lines": [
+      "MTyranitar",
+      "EX",
+      "HP240",
+      "ODouble",
+      "ThPoemonmyhaveuto2PokemonToolcardsaachedtot",
+      "IafyourPokemon",
+      "becomesa/M",
+      "spuauunjano",
+      "110+",
+      "This attack does",
+      "for eachdamage",
+      "counter on your",
+      "Pokemon.",
+      "weakness"
+     ]
+    },
+    {
+     "img": "L15_3.jpg",
+     "lines": [
+      "MEGA",
+      "MTyranitar",
+      "HP240",
+      "Evovron",
+      "ODouble",
+      "ThisPokemonmay haveupto2Pokemon Toolcards attachedtoit",
+      "Mega Evolutlon rule",
+      "When ofyour Pokemon",
+      "**DestroyerKing",
+      "110+",
+      "This attack does 60 more damage for each damage",
+      "counter on your opponent's Active Pokemon",
+      "esistanc",
+      "Pokdimon-EXrule"
+     ]
+    },
+    {
+     "img": "L15_4.jpg",
+     "lines": [
+      "MTyranitar",
+      "HP240",
+      "MEGA",
+      "ODouble",
+      "Mega Evolution rule",
+      "When ofyourPokemon",
+      "**DestroyerKing",
+      "This attack does 60 more damage for each damage",
+      "110+",
+      "counter on your opponent's Active Pokemon.",
+      "resistance",
+      "@-20",
+      "Pokamon-EXrule",
+      "****"
+     ]
+    },
+    {
+     "img": "L15_5.jpg",
+     "lines": [
+      "PoKeMoy"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Mega Tyranitar EX 43/98 Ancient Origins",
+   "name_match": true,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-mega-beedrill-xy158-promo-1409499908/",
+  "title": "Pokemon Card Mega Beedrill XY158 Promo",
+  "price_text": "PHP 1,390",
+  "status": "",
+  "raw": "Pokemon Card Mega Beedrill XY158 Promo\n\nPHP 1,390\n\nWell used\n\n2",
+  "full_title": "Pokemon Card Mega Beedrill XY158 Promo",
+  "desc": "Please base the condition on the pictures shown.\n\nWYSIWYG\n\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L16_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L16_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L16_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L16_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L16_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L16_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "NP200",
+    "MEGA",
+    "MBeedrill EX",
+    "Yojins",
+    "Pokestop",
+    "2025"
+   ],
+   [
+    "P200",
+    "MEGA",
+    "MBeedrillEX",
+    "Yojins",
+    "Pokestop",
+    "2025"
+   ],
+   [
+    "MEGA",
+    "MBeedrill",
+    "HP200",
+    "Evofves",
+    "Mega Evolution rule",
+    "When1of yourPokemon",
+    "becomesaMegaEvolution Pokemon,your turn ends.",
+    "Hazard Stinger",
+    "Discard",
+    "Energy attached to this Pokemon.Your",
+    "opponent's Active Pokemon is now Paralyzed and",
+    "Poisoned. Put 4 damage counters instead of I on that",
+    "Pokemon between turns.",
+    "weakness",
+    "resistance",
+    "Pokemon-EXrule",
+    "WhenaPokeman-EXhasbeenKnockedOuc",
+    "your opponenttakesZ Priecards",
+    "retreat",
+    "llus.SbanGraphics",
+    "XY158"
+   ],
+   [
+    "MEGA",
+    "MBeedrillEX",
+    "*p200",
+    "Mega Evolutionrule",
+    "When1ofyourPokemon",
+    "Hazard Stinger",
+    "40",
+    "Discard all Energy attached to this Pokemon. Your",
+    "opponent's Active Pokemon is now Paralyzed and",
+    "Poisoned. Put 4 damage counters instead of I on that",
+    "Pokemon between turns.",
+    "weakness",
+    "resistance",
+    "Pokemon-EXrule",
+    "W×2",
+    "Whena Pokemon-EX has been Knocked Out,",
+    "youropponenttakes2Prizecards.",
+    "retreat",
+    "Illus.5banGraphics",
+    "XY158"
+   ],
+   [
+    "HP200",
+    "MBeedrillEX",
+    "MEGA",
+    "Mega Evolution rule",
+    "When1of yourPokemon",
+    "Hazard Stinger",
+    "Discard all Energy attached to this Pokemon. Your",
+    "40",
+    "opponent's Active Pokemon is now Paralyzed and",
+    "Poisoned. Put 4damage counters instead of 1 on that",
+    "Pokemon between turns.",
+    "weakness",
+    "8x2",
+    "resistance",
+    "Pokemon-EXrule",
+    "retreat",
+    "illus.5banGrophics",
+    "XY158"
+   ],
+   [
+    "When1of your Pokemon",
+    "Hazard Stinger",
+    "40",
+    "iscard all Energy attached to this Pokemon.Your",
+    "pponent's Active Pokemon is now Paralyzed and",
+    "oisoned,Put 4damage counters insteadof I on that",
+    "okemonbetween.tur",
+    "Pokemon-EXrute",
+    "nKnocked Out,",
+    "tards.",
+    "XY158"
+   ]
+  ],
+  "ident": {
+   "name": "M Beedrill-EX",
+   "number": "XY158",
+   "number_read": "XY158",
+   "snapped": false,
+   "via": null,
+   "jp": false,
+   "query": "M Beedrill-EX XY158",
+   "watermark_dropped": [
+    "Pokestop",
+    "Yojins"
+   ],
+   "candidates": [
+    {
+     "pid": 125566,
+     "name": "M Beedrill EX",
+     "set": "XY Promos",
+     "number": "XY158",
+     "line": "Pokemon"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L16_0.jpg",
+     "lines": [
+      "NP200",
+      "MEGA",
+      "MBeedrill EX",
+      "Yojins",
+      "Pokestop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L16_1.jpg",
+     "lines": [
+      "P200",
+      "MEGA",
+      "MBeedrillEX",
+      "Yojins",
+      "Pokestop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L16_2.jpg",
+     "lines": [
+      "MEGA",
+      "MBeedrill",
+      "HP200",
+      "Evofves",
+      "Mega Evolution rule",
+      "When1of yourPokemon",
+      "becomesaMegaEvolution Pokemon,your turn ends.",
+      "Hazard Stinger",
+      "Discard",
+      "Energy attached to this Pokemon.Your",
+      "opponent's Active Pokemon is now Paralyzed and",
+      "Poisoned. Put 4 damage counters instead of I on that",
+      "Pokemon between turns.",
+      "weakness"
+     ]
+    },
+    {
+     "img": "L16_3.jpg",
+     "lines": [
+      "MEGA",
+      "MBeedrillEX",
+      "*p200",
+      "Mega Evolutionrule",
+      "When1ofyourPokemon",
+      "Hazard Stinger",
+      "40",
+      "Discard all Energy attached to this Pokemon. Your",
+      "opponent's Active Pokemon is now Paralyzed and",
+      "Poisoned. Put 4 damage counters instead of I on that",
+      "Pokemon between turns.",
+      "weakness",
+      "resistance",
+      "Pokemon-EXrule"
+     ]
+    },
+    {
+     "img": "L16_4.jpg",
+     "lines": [
+      "HP200",
+      "MBeedrillEX",
+      "MEGA",
+      "Mega Evolution rule",
+      "When1of yourPokemon",
+      "Hazard Stinger",
+      "Discard all Energy attached to this Pokemon. Your",
+      "40",
+      "opponent's Active Pokemon is now Paralyzed and",
+      "Poisoned. Put 4damage counters instead of 1 on that",
+      "Pokemon between turns.",
+      "weakness",
+      "8x2",
+      "resistance"
+     ]
+    },
+    {
+     "img": "L16_5.jpg",
+     "lines": [
+      "When1of your Pokemon",
+      "Hazard Stinger",
+      "40",
+      "iscard all Energy attached to this Pokemon.Your",
+      "pponent's Active Pokemon is now Paralyzed and",
+      "oisoned,Put 4damage counters insteadof I on that",
+      "okemonbetween.tur",
+      "Pokemon-EXrute",
+      "nKnocked Out,",
+      "tards.",
+      "XY158"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Mega Beedrill XY158 Promo",
+   "name_match": true,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-black-kyurem-ex-black-white-japanese-boundaries-crossed-1403559349/",
+  "title": "Pokemon Card Black Kyurem EX Black & White Japanese Boundaries Crossed",
+  "price_text": "PHP 380",
+  "status": "",
+  "raw": "Pokemon Card Black Kyurem EX Black & White Japanese Boundaries Crossed\n\nPHP 380\n\nPHP 400\n\nWell used\n\n2",
+  "full_title": "Pokemon Card Black Kyurem EX Black & White Japanese Boundaries Crossed",
+  "desc": "Card Condition & Pricing (shown in both picture and description)\r\n💵   Mode of Payment (MOP): GCASH/PAYMAYA\r\n🛵   Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\r\n📌   Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L17_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L17_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L17_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L17_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L17_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L17_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "180",
+    "202S",
+    "*-术儿",
+    "60",
+    "150"
+   ],
+   [
+    "180",
+    "2025",
+    "*一术儿",
+    "60",
+    "150",
+    "BW"
+   ],
+   [
+    "P180",
+    "60",
+    "才、相手の。",
+    "*一术",
+    "150",
+    "抵抗力",
+    "相手（枚。",
+    "llus.Eske Yoshinob 045/059RBW",
+    "02012Pokemo/Nintendo/Creatures/GAMEFREAK."
+   ],
+   [
+    "180",
+    "60",
+    "个简投才毛5、相手の儿",
+    "150",
+    "一术儿",
+    "抵抗力",
+    "x2",
+    "手2枚上",
+    "***",
+    "lun Eake roihino6 045/059RBWa"
+   ],
+   [
+    "180",
+    "60",
+    "*列一术儿外",
+    "150",
+    "の自のの使",
+    "抵抗力",
+    "Cx2",
+    "***",
+    "lux.EsleYoshinob 045/059RBW",
+    "HUGAMEFREAK"
+   ],
+   [
+    "POKeMON"
+   ]
+  ],
+  "ident": {
+   "name": "Black Kyurem-EX",
+   "number": "045/059",
+   "number_read": "045/059",
+   "snapped": false,
+   "via": "fingerprint × number",
+   "jp": true,
+   "query": "Black Kyurem-EX 045/059",
+   "watermark_dropped": [],
+   "candidates": [
+    {
+     "pid": 604957,
+     "name": "Magneton",
+     "set": "BKB: Black Kyurem-EX Battle Strength Deck",
+     "number": "005/018",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 589874,
+     "name": "Black Kyurem ex - 048/191",
+     "set": "SV08: Surging Sparks",
+     "number": "048/191",
+     "line": "Pokemon"
+    },
+    {
+     "pid": 604951,
+     "name": "Black Kyurem EX",
+     "set": "BKB: Black Kyurem-EX Battle Strength Deck",
+     "number": "008/018",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 604952,
+     "name": "Zapdos EX (Team Plasma)",
+     "set": "BKB: Black Kyurem-EX Battle Strength Deck",
+     "number": "007/018",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 579393,
+     "name": "Black Kyurem ex - 011/064",
+     "set": "SV7a: Paradise Dragona",
+     "number": "011/064",
+     "line": "Pokemon Japan"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L17_0.jpg",
+     "lines": [
+      "180",
+      "202S",
+      "*-术儿",
+      "60",
+      "150"
+     ]
+    },
+    {
+     "img": "L17_1.jpg",
+     "lines": [
+      "180",
+      "2025",
+      "*一术儿",
+      "60",
+      "150",
+      "BW"
+     ]
+    },
+    {
+     "img": "L17_2.jpg",
+     "lines": [
+      "P180",
+      "60",
+      "才、相手の。",
+      "*一术",
+      "150",
+      "抵抗力",
+      "相手（枚。",
+      "llus.Eske Yoshinob 045/059RBW",
+      "02012Pokemo/Nintendo/Creatures/GAMEFREAK."
+     ]
+    },
+    {
+     "img": "L17_3.jpg",
+     "lines": [
+      "180",
+      "60",
+      "个简投才毛5、相手の儿",
+      "150",
+      "一术儿",
+      "抵抗力",
+      "x2",
+      "手2枚上",
+      "***",
+      "lun Eake roihino6 045/059RBWa"
+     ]
+    },
+    {
+     "img": "L17_4.jpg",
+     "lines": [
+      "180",
+      "60",
+      "*列一术儿外",
+      "150",
+      "の自のの使",
+      "抵抗力",
+      "Cx2",
+      "***",
+      "lux.EsleYoshinob 045/059RBW",
+      "HUGAMEFREAK"
+     ]
+    },
+    {
+     "img": "L17_5.jpg",
+     "lines": [
+      "POKeMON"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Black Kyurem EX Black & White Japanese Boundaries Crossed",
+   "name_match": true,
+   "number_match": false
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemom-card-hydreigon-ex-full-art-103-108-roaring-skies-1409079356/",
+  "title": "Pokemom Card Hydreigon EX Full art 103/108 Roaring Skies",
+  "price_text": "PHP 1,980",
+  "status": "",
+  "raw": "Pokemom Card Hydreigon EX Full art 103/108 Roaring Skies\n\nPHP 1,980\n\nWell used",
+  "full_title": "Pokemom Card Hydreigon EX Full art 103/108 Roaring Skies",
+  "desc": "Please base the condition on the pictures shown.\n\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L18_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L18_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L18_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L18_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L18_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L18_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "p180",
+    "BASIC",
+    "Hydreigon",
+    "Yojins",
+    "Poestop",
+    "2025"
+   ],
+   [
+    "180",
+    "BASIC",
+    "Hydreigon",
+    "Yojins",
+    "Pokestop",
+    "2025"
+   ],
+   [
+    "BASIC",
+    "Hydreigon",
+    "p180",
+    "Ability",
+    "Dragon Road",
+    "If there is any Stadiun card in play the Retreat Cost",
+    "80",
+    "This attacks damage isnt affected by any effects on",
+    "your opponent's Active Pokemon.",
+    "resistance",
+    "weakness",
+    "Pokemon-EXrule",
+    "youropponenttakes2:Prire",
+    "llusRyoUe",
+    "103/108"
+   ],
+   [
+    "BASIC",
+    "HydreigonEX",
+    "HP180",
+    "Ability",
+    "Dragon Road",
+    "If there is anyStadiun cardin play theRetreat Cost",
+    "of each of your  Pokemon in play is",
+    "**less",
+    "Shred",
+    "80",
+    "This attacks damage isnit affected by any effects on",
+    "your opponent's Active Pokemon.",
+    "weakness",
+    "resistance",
+    "Pokemon-EXrule",
+    "Whena Pokemon-EXhasbeenKnocked Out.",
+    "your opponent takes 2 Prize cards.",
+    "opanokgsnl",
+    "103/108★"
+   ],
+   [
+    "HydreigonEX",
+    "180",
+    "Ability",
+    "Dragon Road",
+    "fthereis anyStadium cardin playtheRetreat Cost",
+    "ofeachofyour",
+    "80",
+    "palsx",
+    "This attacks damage isn'taffectedby any effects an",
+    "Pokemon.",
+    "youropponent'sActive",
+    "resistanc"
+   ],
+   [
+    "BASIC",
+    "Hydreigon",
+    "Hp180",
+    "Ability",
+    "Dragon Road",
+    "If there is any Stadium card in play the Retreat Cost",
+    "of each of your Pokemon in play is ** less.",
+    "Shred",
+    "This attacks damage isnit affected by any effects on",
+    "80",
+    "weakness",
+    "nesistance",
+    "Pokemon-EXrule",
+    "When aPokemon Ex hasbeenKnodked Out,",
+    "yeur eppenenttakes2Prure Cards",
+    "103/108★"
+   ]
+  ],
+  "ident": {
+   "name": "Hydreigon ex",
+   "number": "103/108",
+   "number_read": "103/108",
+   "snapped": false,
+   "via": null,
+   "jp": false,
+   "query": "Hydreigon ex 103/108",
+   "watermark_dropped": [
+    "Poestop",
+    "Pokestop",
+    "Yojins"
+   ],
+   "candidates": [
+    {
+     "pid": 98098,
+     "name": "Hydreigon EX",
+     "set": "XY - Roaring Skies",
+     "number": "62/108",
+     "line": "Pokemon"
+    },
+    {
+     "pid": 589965,
+     "name": "Hydreigon ex - 119/191",
+     "set": "SV08: Surging Sparks",
+     "number": "119/191",
+     "line": "Pokemon"
+    },
+    {
+     "pid": 589966,
+     "name": "Hydreigon ex - 223/191",
+     "set": "SV08: Surging Sparks",
+     "number": "223/191",
+     "line": "Pokemon"
+    },
+    {
+     "pid": 598824,
+     "name": "Hydreigon EX",
+     "set": "SM: The Best of XY",
+     "number": "099/171",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 603003,
+     "name": "Hydreigon",
+     "set": "EX Battle Boost",
+     "number": "083/093",
+     "line": "Pokemon Japan"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L18_0.jpg",
+     "lines": [
+      "p180",
+      "BASIC",
+      "Hydreigon",
+      "Yojins",
+      "Poestop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L18_1.jpg",
+     "lines": [
+      "180",
+      "BASIC",
+      "Hydreigon",
+      "Yojins",
+      "Pokestop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L18_2.jpg",
+     "lines": [
+      "BASIC",
+      "Hydreigon",
+      "p180",
+      "Ability",
+      "Dragon Road",
+      "If there is any Stadiun card in play the Retreat Cost",
+      "80",
+      "This attacks damage isnt affected by any effects on",
+      "your opponent's Active Pokemon.",
+      "resistance",
+      "weakness",
+      "Pokemon-EXrule",
+      "youropponenttakes2:Prire",
+      "llusRyoUe"
+     ]
+    },
+    {
+     "img": "L18_3.jpg",
+     "lines": [
+      "BASIC",
+      "HydreigonEX",
+      "HP180",
+      "Ability",
+      "Dragon Road",
+      "If there is anyStadiun cardin play theRetreat Cost",
+      "of each of your  Pokemon in play is",
+      "**less",
+      "Shred",
+      "80",
+      "This attacks damage isnit affected by any effects on",
+      "your opponent's Active Pokemon.",
+      "weakness",
+      "resistance"
+     ]
+    },
+    {
+     "img": "L18_4.jpg",
+     "lines": [
+      "HydreigonEX",
+      "180",
+      "Ability",
+      "Dragon Road",
+      "fthereis anyStadium cardin playtheRetreat Cost",
+      "ofeachofyour",
+      "80",
+      "palsx",
+      "This attacks damage isn'taffectedby any effects an",
+      "Pokemon.",
+      "youropponent'sActive",
+      "resistanc"
+     ]
+    },
+    {
+     "img": "L18_5.jpg",
+     "lines": [
+      "BASIC",
+      "Hydreigon",
+      "Hp180",
+      "Ability",
+      "Dragon Road",
+      "If there is any Stadium card in play the Retreat Cost",
+      "of each of your Pokemon in play is ** less.",
+      "Shred",
+      "This attacks damage isnit affected by any effects on",
+      "80",
+      "weakness",
+      "nesistance",
+      "Pokemon-EXrule",
+      "When aPokemon Ex hasbeenKnodked Out,"
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemom Card Hydreigon EX Full art 103/108 Roaring Skies",
+   "name_match": true,
+   "number_match": true
+  }
+ },
+ {
+  "url": "https://www.carousell.ph/p/pokemon-card-naganadel-guzzlord-gx-tag-team-158-236-cosmic-eclipse-1408992498/",
+  "title": "Pokemon Card Naganadel & Guzzlord GX Tag Team 158/236 Cosmic Eclipse",
+  "price_text": "PHP 690",
+  "status": "",
+  "raw": "Pokemon Card Naganadel & Guzzlord GX Tag Team 158/236 Cosmic Eclipse\n\nPHP 690\n\nLightly used\n\n3",
+  "full_title": "Pokemon Card Naganadel & Guzzlord GX Tag Team 158/236 Cosmic Eclipse",
+  "desc": "Please base condition on the pictures shown.\r\n\r\n💵 Mode of Payment (MOP): GCASH/PAYMAYA\r\n🛵 Mode of Delivery (MOD): LBC / Lalamove (Buyer shoulders sf)\r\n📌 Location: Brgy. Sikatuna Village, Quezon City",
+  "images": [
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L19_0.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L19_1.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L19_2.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L19_3.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L19_4.jpg",
+   "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L19_5.jpg"
+  ],
+  "ocr_raw": [
+   [
+    "P280",
+    "Naganadel&",
+    "Guzzlord",
+    "BASIC",
+    "Uitra Beast",
+    "TAG TEAM",
+    "Yojins",
+    "Poketop",
+    "2025"
+   ],
+   [
+    "P280",
+    "Naganadel&",
+    "BASIC",
+    "Guzzlord",
+    "Utra Beast",
+    "TAG TEAM",
+    "Yojins",
+    "Poketop",
+    "2025"
+   ],
+   [
+    "Naganadel&",
+    "GX",
+    "BASIC",
+    "HP280",
+    "Guzzlord",
+    "TAG TEAM",
+    "Uitra Beast",
+    "Abity",
+    "Violent Appetite",
+    "Once during your turn (before",
+    "your",
+    "attack)",
+    "you",
+    "discard a Pokemen from your",
+    "hand.",
+    "you",
+    "60damagefrom this Pokemon.",
+    "Jet Pierce",
+    "ChaoticOrderGX",
+    "and",
+    "Eheng/atadhed tole (fin oddition to dits attacks",
+    "take2Pizecards.",
+    "resistance",
+    "weakness",
+    "retreat 来",
+    "TAGTEAMTu",
+    "Misuhiro Aritn",
+    "1581236",
+    "enttaken Prizecardl"
+   ],
+   [
+    "Naganadel&",
+    "BASIC",
+    "HP280",
+    "Guzzlord",
+    "TAG TEAM",
+    "Uitra Beast",
+    "Ability",
+    "Violent Appetite",
+    "Once",
+    "during your turn (before",
+    "your attack),you may",
+    "discard a Pokemon from your",
+    "hand. If you do,heal",
+    "60damagefromthis Pokemon.",
+    "Jet Pierce",
+    "180",
+    "ChaoticOrderGX",
+    "Turm allofyour Prize cardsface up.(Those Prize cards remdin",
+    "face up",
+    "fortherestfthegamefthisPokemonhasatleastextra",
+    "Energy",
+    "and I extra Enengyattached to lt (in addition to this attack's cost)",
+    "take2Prtzecards.foucantusemorethanICXotacktnagame)",
+    "weakness",
+    "resistance",
+    "llus: Mibuhiro Anito",
+    "TAGTEAMrule",
+    "When yourTAGTEAMis",
+    "158/236*"
+   ],
+   [
+    "BASIC",
+    "Naganadel&",
+    "Guzzlord",
+    "TAG TEAM",
+    "HP280",
+    "Uitra Beast",
+    "Ability",
+    "Violent Appetite",
+    "discard a Pokemon from your",
+    "60damage from this Pokemon.",
+    "180",
+    "Jet Pierce",
+    "Tum all ef your Prize cards face",
+    "take2Prizecards.MoucantusamedaalCXo",
+    "resistance",
+    "TAGTEANNIN",
+    "weakness",
+    "lfus:Mitsuhiro Aritd",
+    "158/236"
+   ],
+   [
+    "HP280",
+    "BASIC",
+    "Naganadel&",
+    "Guzzlord",
+    "TAG TEAM",
+    "Ultra Beast",
+    "Abllity",
+    "Violent Appetite",
+    "Once during your turn (before",
+    "discard a Pokemon from your",
+    "your",
+    "Kew nok pDmD",
+    "60 damage from this Pokemon.",
+    "hand.",
+    "Jet Pierce",
+    "ChaoticOrderGX",
+    "180",
+    "Tuelldfy",
+    "face up",
+    "weakness",
+    "Energy",
+    "0×2",
+    "resistance",
+    "158/2364",
+    "TAGTEAMTuIO"
+   ]
+  ],
+  "ident": {
+   "name": "Naganadel & Guzzlord-GX",
+   "number": "158/236",
+   "number_read": "158/236",
+   "snapped": false,
+   "via": null,
+   "jp": false,
+   "query": "Naganadel & Guzzlord-GX 158/236",
+   "watermark_dropped": [
+    "Poketop",
+    "Yojins"
+   ],
+   "candidates": [
+    {
+     "pid": 201208,
+     "name": "Naganadel & Guzzlord GX",
+     "set": "SM - Cosmic Eclipse",
+     "number": "158/236",
+     "line": "Pokemon"
+    }
+   ],
+   "ocr": [
+    {
+     "img": "L19_0.jpg",
+     "lines": [
+      "P280",
+      "Naganadel&",
+      "Guzzlord",
+      "BASIC",
+      "Uitra Beast",
+      "TAG TEAM",
+      "Yojins",
+      "Poketop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L19_1.jpg",
+     "lines": [
+      "P280",
+      "Naganadel&",
+      "BASIC",
+      "Guzzlord",
+      "Utra Beast",
+      "TAG TEAM",
+      "Yojins",
+      "Poketop",
+      "2025"
+     ]
+    },
+    {
+     "img": "L19_2.jpg",
+     "lines": [
+      "Naganadel&",
+      "GX",
+      "BASIC",
+      "HP280",
+      "Guzzlord",
+      "TAG TEAM",
+      "Uitra Beast",
+      "Abity",
+      "Violent Appetite",
+      "Once during your turn (before",
+      "your",
+      "attack)",
+      "you",
+      "discard a Pokemen from your"
+     ]
+    },
+    {
+     "img": "L19_3.jpg",
+     "lines": [
+      "Naganadel&",
+      "BASIC",
+      "HP280",
+      "Guzzlord",
+      "TAG TEAM",
+      "Uitra Beast",
+      "Ability",
+      "Violent Appetite",
+      "Once",
+      "during your turn (before",
+      "your attack),you may",
+      "discard a Pokemon from your",
+      "hand. If you do,heal",
+      "60damagefromthis Pokemon."
+     ]
+    },
+    {
+     "img": "L19_4.jpg",
+     "lines": [
+      "BASIC",
+      "Naganadel&",
+      "Guzzlord",
+      "TAG TEAM",
+      "HP280",
+      "Uitra Beast",
+      "Ability",
+      "Violent Appetite",
+      "discard a Pokemon from your",
+      "60damage from this Pokemon.",
+      "180",
+      "Jet Pierce",
+      "Tum all ef your Prize cards face",
+      "take2Prizecards.MoucantusamedaalCXo"
+     ]
+    },
+    {
+     "img": "L19_5.jpg",
+     "lines": [
+      "HP280",
+      "BASIC",
+      "Naganadel&",
+      "Guzzlord",
+      "TAG TEAM",
+      "Ultra Beast",
+      "Abllity",
+      "Violent Appetite",
+      "Once during your turn (before",
+      "discard a Pokemon from your",
+      "your",
+      "Kew nok pDmD",
+      "60 damage from this Pokemon.",
+      "hand."
+     ]
+    }
+   ]
+  },
+  "verify": {
+   "title": "Pokemon Card Naganadel & Guzzlord GX Tag Team 158/236 Cosmic Eclipse",
+   "name_match": true,
+   "number_match": true
+  }
+ }
+]

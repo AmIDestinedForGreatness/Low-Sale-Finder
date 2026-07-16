@@ -13,3 +13,4 @@ card_index.sqlite
 uploads/
 fingerprints.sqlite
 fp_data.zip
+dataset/images/

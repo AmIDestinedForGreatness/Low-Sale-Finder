@@ -163,3 +163,65 @@ overlap don't count (also kills the Combee←Combusken dup bug); a title with
 no specific tokens is unpriceable, full stop. (2) A listing under 15% of
 "market" is a wrong MATCH, not a snipe — mismatch guard, never ping.
 **Guard:** `TestPriceChartingPrecision`
+
+## The 20-listing dataset run (2026-07-16→17, his task: identify every
+## Pokestop listing from IMAGES ONLY, titles used only to verify after)
+
+### L21 — a guessed name must be a REAL card name (Layer C) (2026-07-17)
+**Mistake:** the name guesser accepted any plausible-shaped text. His photo
+watermark "Yujin's Pokestop" became the searched card name in 14/20
+listings (as "Yojins Pokestop", "Pokestop", "Yoins"…), and OCR misreads
+("Pikachue", "arizardex") searched as-is → dead ends.
+**Rule:** validate every name against the local all-cards vocabulary
+(4,428 names): snap unique near-misses (Pikachue→Pikachu,
+arizardex→Charizard, MCameruptEX→M Camerupt-EX, glued-suffix priority
+pikachuex→Pikachu ex), REJECT what matches nothing — rejection is
+information: it hands control to the setcode/fingerprint/dex layers.
+**Guard:** `ValuatorLayerCD.test_layer_c_*`
+
+### L22 — seller watermarks are cross-LISTING repeats, not cross-photo (2026-07-17)
+**Mistake #1:** filtered text appearing on 3+ photos of one listing — wrong:
+6 photos of the SAME card repeat the card's own text (it deleted the attack
+damages and killed fingerprints), while the overlay OCR'd differently every
+photo ("Yojins"/"Yoins"/"Poke stop") and escaped.
+**Rule:** watermark = high document-frequency tokens ACROSS listings
+(≥40% of different cards), minus universal card terms (weakness/retreat/…
+— else "Weakness Policy" loses its name), matched fuzzily (lev ≤1-2) and
+on joined letters ("Poke stop"→pokestop). Bonus trap: "Pokestop" itself is
+a REAL card (PokéStop, Pokémon GO set) — only cross-listing frequency can
+tell the overlay from the card.
+
+### L23 — a 2-damage fingerprint with no corroboration is a coin flip (2026-07-17)
+**Mistake:** {10,20} named a Chespin promo "Arbok"; a Pikachu promo became
+"Lucario"; and the {60,150}+HP180 profile that "identified" Black Kyurem-EX
+actually fits FOUR cards — it had won by alphabet, not evidence.
+**Rules:** (1) claim a fingerprint only with corroboration (matched HP or
+3+ damages) AND a clear winner — ambiguity returns nothing; (2) a
+corroborated TIE is still usable evidence: cross it with the collector
+number's own catalog matches — exactly one card in both = identified
+("fingerprint × number", how Black Kyurem was legitimately resolved).
+**Guard:** `ValuatorLayerCD.test_fingerprint_ambiguity_guard`
+
+### L24 — JP promos number with LETTER denominators; JP vintage prints the
+### DEX number (Layers footer+D) (2026-07-17)
+**Mistake:** 6 of his 20 listings are promos numbered "034/XY-P",
+"197/SV-P", "065/PCG-P" — the digit-only footer regexes read NOTHING off
+them. And his JP D&P Staraptor has no collector number at all.
+**Rules:** (1) promo footer pattern `NNN/<LETTERS>-P` is a first-class
+collector number — and TCGplayer resolves most uniquely (unique catalog
+match = the card, still eye-gated); (2) JP vintage prints the National Dex
+number in the Pokédex strip ("NO.398" → Staraptor) — a species ID when
+nothing else is readable (needed the dex column added to the fingerprint DB).
+**Guard:** `ValuatorLayerCD.test_promo_letter_footer`, `test_layer_d_dex_number`
+
+### L25 — Layer-B number snapping needs a STRONG name (2026-07-17)
+**Mistake:** with weak name "Pikachu" (base of "Pikachu ex"), snap
+"corrected" a correctly-read 063/193 BACKWARD to 062/193 — the plain
+Pikachu's printing. The snap direction was driven by an under-specified
+name, not by OCR error.
+**Rule:** snap numbers only when the name is CERTAIN (fingerprint/dex) or
+SPECIFIC (full mechanic form / multi-word). And harvest names from EVERY
+photo, voting for the most specific validated read ("Pikachu ex" beats
+"Pikachu"; two-line TAG TEAM names join: "Naganadel&"+"Guzzlord").
+**Guard:** `ValuatorLayerCD.test_tag_team_name_spans_two_lines` + the
+Pikachu-ex snap case in the dataset itself (`dataset/carousell_profile.json`)

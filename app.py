@@ -230,6 +230,16 @@ def valuator_ocr():
         fp = valuator.fingerprint_names(lines)
         if fp:
             name, via = fp[0], "attack fingerprint"
+    if not name:
+        # LAYER D: JP vintage prints the National Dex number ("NO.398")
+        dx = valuator.dex_names(lines)
+        if len(dx) == 1:
+            name, via = dx[0], "dex number"
+    if not name and number:
+        # TIE-BREAK: tied fingerprint × the number's own catalog matches
+        cross = valuator.crosscheck_name(lines, number)
+        if cross:
+            name, via = cross, "fingerprint × number"
     if name and not number:
         # PROCEDURE RULE (Yujin): identification = name AND printing ID.
         # Success on the name must not end the hunt for the number —

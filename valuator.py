@@ -159,8 +159,12 @@ def _extract_damages(lines):
     return dmgs, hp, tags
 
 
-def fingerprint_names(lines, limit=5):
-    """OCR lines -> candidate card NAMES via the damage-profile index."""
+def fingerprint_names(lines, limit=5, ties=False):
+    """OCR lines -> candidate card NAMES via the damage-profile index.
+    ties=True: when the evidence is corroborated but the winner is TIED
+    ({60,150}+HP180 fits Black Kyurem-EX, White Kyurem-EX, Charizard-EX
+    AND Dialga-EX), return the tied set so the caller can break the tie
+    with independent evidence (e.g. the collector number)."""
     dmgs, hp, tags = _extract_damages(lines)
     if len(dmgs) < 2 or not os.path.exists(FP_DB):
         return []
@@ -179,10 +183,28 @@ def fingerprint_names(lines, limit=5):
                      - 0.1 * max(0, len(cds) - len(dmgs)))
             if name not in best or score > best[name]:
                 best[name] = score
-        return [n for n, _ in sorted(best.items(), key=lambda kv: -kv[1])][:limit]
+        return best
+
+    def guard(scored, used_dmgs, used_hp):
+        """AMBIGUITY GUARD (live catch: {10,20} named a Chespin 'Arbok', a
+        Pikachu promo 'Lucario'): tiny generic profiles match hundreds of
+        cards. Claim a fingerprint only when the evidence is CORROBORATED
+        (matched HP, or 3+ damages) and the winner is clear of rivals."""
+        ranked = sorted(scored.items(), key=lambda kv: -kv[1])
+        if not ranked:
+            return []
+        top = ranked[0][1]
+        corroborated = ((used_hp and top >= len(used_dmgs) + 2)
+                        or len(used_dmgs) >= 3)
+        rivals = [n for n, s in ranked if s > top - 0.45]
+        if not corroborated:
+            return []
+        if len(rivals) > 1:
+            return rivals[:limit] if ties else []
+        return [n for n, _ in ranked[:limit]]
 
     try:
-        names = match(dmgs, hp)
+        names = guard(match(dmgs, hp), dmgs, hp)
         if not names and not hp and len(dmgs) >= 2:
             # OCR often reads the HP number without its 'HP' label, which
             # poisons the profile with a phantom damage ('330' on a card
@@ -191,12 +213,31 @@ def fingerprint_names(lines, limit=5):
             for d in sorted((x for x in dmgs if x.isdigit()),
                             key=int, reverse=True):
                 if int(d) >= 120 and len(dmgs - {d}) >= 2:
-                    names = match(dmgs - {d}, int(d))
+                    names = guard(match(dmgs - {d}, int(d)), dmgs - {d}, int(d))
                     if names:
                         break
         return names
     finally:
         conn.close()
+
+
+def crosscheck_name(lines, number):
+    """TIE-BREAK: a corroborated-but-tied fingerprint ({60,150}+HP180 fits
+    Black Kyurem-EX, White Kyurem-EX, Charizard-EX AND Dialga-EX) crossed
+    with the collector number's own TCGplayer matches — exactly one card
+    in both sets = identified with real evidence."""
+    if not number:
+        return None
+    tie = fingerprint_names(lines, ties=True)
+    if len(tie) <= 1:
+        return None
+    cands = search_candidates(str(number), prefer_jp=True)
+
+    def _toks(s):
+        return set(re.sub(r"[^a-z& ]", " ",
+                          s.split(" - ")[0].lower().replace("-", " ")).split())
+    hits = {t for t in tie if any(_toks(t) <= _toks(c["name"]) for c in cands)}
+    return hits.pop() if len(hits) == 1 else None
 
 
 # JP set codes are printed in LATIN on the card (sm12a, s4a, xy10…) and,
@@ -215,7 +256,12 @@ def _is_junk(text):
         # real words are proper-case or lowercase ('Reshiram', 'ex') — OCR
         # junk has impossible case shapes (DhJ, IBO, YEjj, COifi)
         shape_ok = (re.fullmatch(r"[A-Z]?[a-z]+", w)
-                    or re.fullmatch(r"Mc[A-Z][a-z]+", w))
+                    or re.fullmatch(r"Mc[A-Z][a-z]+", w)
+                    # Mega full-arts OCR as one glued token ('MCameruptEX',
+                    # 'MBeedrillEX', 'MTyranitar') — M + name + mechanic
+                    or re.fullmatch(r"M[A-Z][a-z]{3,}(?:EX|GX)?", w)
+                    # ...and EX/GX glue onto ANY name ('HydreigonEX')
+                    or re.fullmatch(r"[A-Z][a-z]{3,}(?:EX|GX)", w))
         plausible = (shape_ok and len(w) >= 3
                      and re.search(r"[aeiouyAEIOUY]", w)
                      and re.search(r"[^aeiouAEIOU]", w)      # 'ooo' is not a word
@@ -225,9 +271,119 @@ def _is_junk(text):
     return True
 
 
+# mechanic suffix on a NAME ("Pikachu ex", glued OCR "arizardex") — stripped
+# to reach the base name when matching against the vocabulary
+_MECH_SUFFIX = re.compile(r"[\s-]*(?:tag team\s+)?(?:gx|ex|v|vmax|vstar|break)\.?$",
+                          re.I)
+_VOCAB = None
+
+
+def _name_vocab():
+    """lowercase name -> canonical, from the local all-cards index (4,428
+    distinct real card names), plus mechanic-suffix-stripped base forms."""
+    global _VOCAB
+    if _VOCAB is None:
+        vocab = {}
+        if os.path.exists(FP_DB):
+            conn = sqlite3.connect(FP_DB)
+            names = [n for (n,) in conn.execute("SELECT DISTINCT name FROM fp")]
+            conn.close()
+            for n in names:
+                vocab.setdefault(n.lower(), n)
+            for n in names:                    # "Pikachu ex" -> "pikachu"
+                base = _MECH_SUFFIX.sub("", n.lower()).strip()
+                if base:
+                    vocab.setdefault(base, n)
+                # cards SAY "Mega", TCG data says "M ..." (same trap as the
+                # Mega-promo pricing miss) — alias both forms
+                if base.startswith("m "):
+                    vocab.setdefault("mega " + base[2:], n)
+        _VOCAB = vocab
+    return _VOCAB
+
+
+def snap_name(raw):
+    """LAYER-C identification: a guessed NAME must be a real card name.
+    Snaps OCR misreads to the unique nearest real name ('Pikachue' ->
+    Pikachu, 'arizardex' -> Charizard) and REJECTS text that matches
+    nothing — seller watermarks stamped on listing photos ('Yojins
+    Pokestop') were passing the shape filter and becoming search queries.
+    Returns the canonical name, or None when raw is not a card name."""
+    if not raw:
+        return None
+    vocab = _name_vocab()
+    if not vocab:
+        return raw           # no index on disk -> can't validate, pass through
+    q = " ".join(re.sub(r"[^a-z'&. -]", " ", raw.lower()).split())
+    if q in vocab:
+        return vocab[q]
+    stripped = _MECH_SUFFIX.sub("", q).strip()
+    if stripped and stripped != q:
+        # glued mechanic ('pikachuex') — prefer the FULL mechanic form
+        # ('pikachu ex') over the bare base name
+        suf = q[len(stripped):].strip(" -.")
+        for k in (stripped + " " + suf, stripped + "-" + suf, stripped):
+            if k in vocab:
+                return vocab[k]
+    variants = {q, stripped} - {""}
+    best, best_d, ties = [], 99, 0
+    for v in variants:
+        budget = 0 if len(v) <= 4 else (1 if len(v) <= 6 else 2)
+        for k, canon in vocab.items():
+            if not budget or abs(len(k) - len(v)) > budget:
+                continue
+            d = _lev(v, k)
+            if d <= budget:
+                if d < best_d:
+                    best, best_d, ties = [(k, canon)], d, 1
+                elif d == best_d and canon not in (c for _, c in best):
+                    best.append((k, canon))
+                    ties += 1
+    if not best:
+        return None
+    if ties == 1:
+        return best[0][1]
+    # tie-break: OCR rarely loses the FIRST letter — 'mcamerupt' is 1 edit
+    # from both 'camerupt' and 'm camerupt'; keep same-first-letter matches
+    first = {c for k, c in best if k[:1] == q[:1]}
+    return first.pop() if len(first) == 1 else None   # still ambiguous = no snap
+
+
+# JP vintage cards (DP era, promos) print the National Dex number in the
+# Pokédex data strip — "NO.398 ムクホーク" — a direct species ID when neither
+# the (Japanese) name nor a set code is readable
+# NB: no trailing \b — JP text right after the digits ("NO.398走…") is a
+# word character, which kills the boundary
+_DEX_RE = re.compile(r"\bNO\.?\s*(\d{1,4})(?!\d)", re.I)
+
+
+def dex_names(lines):
+    """LAYER-D identification: OCR lines -> species name via the National
+    Dex number ('NO.398' -> Staraptor). Returns the plain species name(s)."""
+    if not os.path.exists(FP_DB):
+        return []
+    dexes = {int(m.group(1)) for ln in lines for m in _DEX_RE.finditer(ln)
+             if 1 <= int(m.group(1)) <= 1200}
+    if not dexes:
+        return []
+    conn = sqlite3.connect(FP_DB)
+    try:
+        names = set()
+        for d in dexes:
+            rows = conn.execute("SELECT DISTINCT name FROM fp WHERE dex=?",
+                                (d,)).fetchall()
+            if rows:   # shortest form = the plain species name (not ex/GX)
+                names.add(min((r[0] for r in rows), key=len))
+        return sorted(names)
+    finally:
+        conn.close()
+
+
 def guess_query(lines):
     """Best-guess card name + collector number from OCR lines.
-    The name is printed big near the top; body text is filtered by _NOISE."""
+    The name is printed big near the top; body text is filtered by _NOISE.
+    Names are vocabulary-validated (Layer C) — unvalidatable reads are
+    skipped so the setcode / fingerprint paths can take over."""
     number, setcode = None, None
     for ln in lines:
         if not number:  # prefer the slash form (016/173) over promo tokens
@@ -238,6 +394,14 @@ def guess_query(lines):
             m = _SET_RE.search(ln)
             if m:
                 setcode = m.group(0).lower()
+    if not number:
+        # JP/KR PROMO footers use a LETTER denominator ("034/XY-P",
+        # "197/SV-P", "065/PCG-P") — the digit-only patterns never saw them
+        for ln in lines:
+            m = re.search(r"(?<!\d)(\d{1,3})\s*/\s*([A-Za-z]{1,4}\s*-\s*[Pp])\b", ln)
+            if m:
+                number = m.group(1) + "/" + m.group(2).upper().replace(" ", "")
+                break
     if not number:
         # relaxed pass: OCR glues rarity glyphs onto the number ('016/173RR'
         # read as '015/1738R') — printed totals are 2-3 digits, trim the rest
@@ -254,7 +418,7 @@ def guess_query(lines):
                 number = m.group(0).replace(" ", "")
                 break
     name = ""
-    for ln in lines[:6]:                      # name sits in the top lines
+    for i, ln in enumerate(lines[:6]):        # name sits in the top lines
         if _SET_RE.search(ln) or re.search(r"\b\d{1,3}\s*/\s*\d{1,3}\b", ln):
             continue  # footer line (set code / collector number), never the name
         if re.search(r"[A-Za-z]\d[A-Za-z]", ln):
@@ -263,9 +427,25 @@ def guess_query(lines):
         cand = " ".join(cand.split()).strip()
         if len(cand) < 3 or _NOISE.match(cand) or _MECH.match(cand) or _is_junk(cand):
             continue
-        # OCR often drops the stylized GX/EX/V suffix — keep what it read
-        name = cand
-        break
+        # TAG TEAM names span TWO stacked lines ("Naganadel&" / "Guzzlord")
+        # — join with the next non-mechanic line before single-line matching
+        if cand.endswith("&"):
+            for j in (i + 1, i + 2):
+                if j >= len(lines) or _MECH.match(lines[j].strip()):
+                    continue
+                nxt = " ".join(re.sub(r"[^A-Za-z' .&-]", " ", lines[j]).split())
+                joined = snap_name((cand + " " + nxt).strip())
+                if joined:
+                    name = joined
+                    break
+            if name:
+                break
+        # LAYER C: must be (or snap to) a REAL card name — keep scanning
+        # otherwise; the real name may sit below a watermark line
+        cand = snap_name(cand)
+        if cand:
+            name = cand
+            break
     if not name:
         # fallback: ITEM cards are legitimately NAMED with "noise" words
         # ("Weakness Policy") — accept a multi-word top line after all
@@ -275,8 +455,10 @@ def guess_query(lines):
             cand = " ".join(re.sub(r"[^A-Za-z' .&-]", " ", ln).split()).strip()
             if (len(cand) >= 3 and len(cand.split()) >= 2
                     and not _MECH.match(cand) and not _is_junk(cand)):
-                name = cand
-                break
+                cand = snap_name(cand)
+                if cand:
+                    name = cand
+                    break
     if not name and setcode:
         # Japanese card: no readable Latin name, but setcode+number IS the
         # unique ID (verified: "sm12a 016/173" -> exactly Reshiram&Charizard)
