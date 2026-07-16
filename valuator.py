@@ -299,7 +299,9 @@ def search_candidates(query, size=12, prefer_jp=False):
                 num_rank = 0
             elif c["number"].split("/")[0].lstrip("0") == lead:
                 num_rank = 1
-        is_jp = (c["line"] == "pokemon-japan" or "japan" in c["set"].lower())
+        # 'line' is the DISPLAY name ('Pokemon Japan'), not the slug
+        is_jp = ("japan" in (c["line"] or "").lower()
+                 or "japan" in c["set"].lower())
         return (num_rank,
                 (0 if is_jp else 1) if prefer_jp else 0,
                 0 if c["number"] else 1)   # real cards before boxes/merch

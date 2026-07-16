@@ -138,7 +138,10 @@ def _search(name, number_token, want_lead, prefer_jp, want_jumbo):
         if non_jumbo:
             hits = non_jumbo
     if prefer_jp:
-        jp = [h for h in hits if h.get("productLineName") == "pokemon-japan"
+        # productLineName in RESULTS is the display name ('Pokemon Japan'),
+        # not the request-filter slug ('pokemon-japan')
+        jp = [h for h in hits
+              if "japan" in (h.get("productLineName") or "").lower()
               or "japan" in (h.get("setName", "").lower())]
         if jp:
             hits = jp

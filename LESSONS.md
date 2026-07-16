@@ -142,3 +142,12 @@ the API endpoint after the change but never reloaded the PAGE itself.
 assert on the served HTML) — an endpoint returning 200 says nothing about
 what the user sees. Element visibility that JS toggles should have ONE
 source of truth (JS sets style.display), never a class fighting an inline style.
+
+### L19 — an API's request slug is not its response value (2026-07-16)
+**Mistake:** requests FILTER on `productLineName: ["pokemon-japan"]` (slug),
+but RESULTS return `"Pokemon Japan"` (display name). Code compared results
+against the slug — never matched — so the "Japanese" prefix and JP-first
+ranking silently did nothing. Yujin caught it on a verified-V0.6 page.
+**Rule:** never assume a response field's format from the request's format —
+print an actual response value before comparing against it. (L1/L11 family:
+verify, don't assume.) Language checks now case-insensitively substring-match.

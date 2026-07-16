@@ -744,7 +744,9 @@ function valBusy(b){
 
 // language-aware full display name ("Japanese Mega Manectric ex")
 function cardLabel(cd){
-  const jp = cd.line === 'pokemon-japan' || /japan/i.test(cd.set||'');
+  // NB: TCGplayer returns the DISPLAY name 'Pokemon Japan', not the slug
+  // 'pokemon-japan' — exact-compare never matched (V0.6 missing-prefix bug)
+  const jp = /japan/i.test(cd.line||'') || /japan/i.test(cd.set||'');
   return (jp ? 'Japanese ' : '') + (cd.name||'').split(' - ')[0];
 }
 
