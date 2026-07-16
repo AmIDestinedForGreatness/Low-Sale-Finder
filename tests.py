@@ -203,6 +203,15 @@ class TestValuator(unittest.TestCase):
         name, _ = valuator.guess_query(["TAG TEAM", "GX"])
         self.assertEqual(name, "")
 
+    def test_gibberish_ocr_never_becomes_the_query(self):
+        # live catch: JP name OCR'd as "li&DhJ" -> searched as-is -> dead end.
+        # Junk reads must be rejected so the footer/manual path can take over.
+        self.assertTrue(valuator._is_junk("li&DhJ"))
+        self.assertFalse(valuator._is_junk("Weakness Policy"))
+        self.assertFalse(valuator._is_junk("McDonalds Pikachu"))
+        name, _ = valuator.guess_query(["li&DhJ", "TAG TEAM", "HP270"])
+        self.assertEqual(name, "")
+
     def test_confidence_thresholds(self):
         # L16: a price with almost no sales is a rumor, not a market
         self.assertEqual(valuator._confidence(2, 30)[0], "LOW")     # <3 sales

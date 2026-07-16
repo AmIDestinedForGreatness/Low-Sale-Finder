@@ -596,7 +596,7 @@ async function valUpload(file){
     if(d.file) $('#valThumb').dataset.full = d.file;   // server copy, survives refresh
     $('#valQuery').value = d.query || '';
     $('#valMsg').textContent = d.query ? 'read: "' + d.query + '" — fix it if wrong, then Find card'
-                                       : 'could not read the photo — type name + number';
+                                       : 'could not read it — type the name, or the set code + number from the card\'s bottom edge (e.g. sm12a 016/173)';
     if(d.query) valFind();
   }catch(e){ $('#valMsg').textContent = 'upload failed: ' + e; }
 }
@@ -608,7 +608,8 @@ async function valFind(){
   $('#valResult').innerHTML = '';
   const d = await (await fetch('/api/valuator/search?q=' + encodeURIComponent(q))).json();
   const c = d.candidates || [];
-  $('#valMsg').textContent = c.length ? 'tap YOUR exact card:' : 'nothing found — try fewer words';
+  $('#valMsg').textContent = c.length ? 'tap YOUR exact card:'
+    : 'nothing found — check the name, or type the set code + number from the card\'s bottom edge (e.g. sm12a 016/173)';
   window._cands = {};
   c.forEach(x=>window._cands[x.pid]=x);
   $('#valCands').innerHTML = c.map(x=>`

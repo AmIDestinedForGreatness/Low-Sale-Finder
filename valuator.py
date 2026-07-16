@@ -63,6 +63,23 @@ _SET_RE = re.compile(r"\b(?:sm|sv|swsh|xy|bw|dp|pcg|cp)\d{1,2}[a-z]?\b", re.I)
 _MECH = re.compile(r"^(tag\s*)?(team|gx|ex|v(max|star)?|hp\s*\d*)$", re.I)
 
 
+def _is_junk(text):
+    """True when OCR produced gibberish, not a name (e.g. 'li&DhJ' from a
+    Japanese card). Junk word = 3+ letters with no vowel, or random inner
+    capitals. A line is junk when most of its words are."""
+    words = re.findall(r"[A-Za-z]+", text)
+    if not words:
+        return True
+    junk = 0
+    for w in words:
+        no_vowel = len(w) >= 3 and not re.search(r"[aeiouyAEIOUY]", w)
+        # short scrambled-case fragments ("DhJ") — long Mc/Mac names are real
+        inner_caps = len(w) <= 4 and re.search(r"[a-z][A-Z]", w) is not None
+        if no_vowel or inner_caps:
+            junk += 1
+    return junk * 2 >= len(words)
+
+
 def guess_query(lines):
     """Best-guess card name + collector number from OCR lines.
     The name is printed big near the top; body text is filtered by _NOISE."""
@@ -88,7 +105,7 @@ def guess_query(lines):
             continue  # footer line (set code / collector number), never the name
         cand = re.sub(r"[^A-Za-z' .&-]", " ", ln)
         cand = " ".join(cand.split()).strip()
-        if len(cand) < 3 or _NOISE.match(cand) or _MECH.match(cand):
+        if len(cand) < 3 or _NOISE.match(cand) or _MECH.match(cand) or _is_junk(cand):
             continue
         # OCR often drops the stylized GX/EX/V suffix — keep what it read
         name = cand
@@ -100,7 +117,8 @@ def guess_query(lines):
             if _SET_RE.search(ln) or re.search(r"\b\d{1,3}\s*/\s*\d{1,3}\b", ln):
                 continue  # footer line here too — "sm12a c 016/173 RR" is not a name
             cand = " ".join(re.sub(r"[^A-Za-z' .&-]", " ", ln).split()).strip()
-            if len(cand) >= 3 and len(cand.split()) >= 2 and not _MECH.match(cand):
+            if (len(cand) >= 3 and len(cand.split()) >= 2
+                    and not _MECH.match(cand) and not _is_junk(cand)):
                 name = cand
                 break
     if not name and setcode:
