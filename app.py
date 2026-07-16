@@ -230,6 +230,13 @@ def valuator_ocr():
         fp = valuator.fingerprint_names(lines)
         if fp:
             name, via = fp[0], "attack fingerprint"
+    if name and not number:
+        # PROCEDURE RULE (Yujin): identification = name AND printing ID.
+        # Success on the name must not end the hunt for the number —
+        # zoom-scan the footer region too.
+        deep = valuator.ocr_deep(path)
+        if deep:
+            _, number = valuator.guess_query(lines + deep)
     # unreadable name or a JP-style set code = the card is not English —
     # English cards read their own names fine
     jp = (bool(via) or bool(name and valuator._SET_RE.fullmatch(name))

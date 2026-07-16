@@ -44,8 +44,35 @@ _NUM_RE = re.compile(r"\b(\d{1,3})\s*/\s*(\d{1,3})\b|"
                      r"\b((?:XY|SM|SWSH|BW|HGSS|SVP?)\d{1,3}[A-Za-z]?)\b", re.I)
 
 
+_RAPID = None
+
+
+def _rapid():
+    """RapidOCR (local onnx models) — reads the tiny footer text and the
+    damage numbers that Windows OCR can't (proven on the 810px Reshiram
+    photo: footer 'sm12a C 016/173 RR' readable only with this engine).
+    Lazy singleton: model load costs ~8s once per process."""
+    global _RAPID
+    if _RAPID is None:
+        try:
+            from rapidocr_onnxruntime import RapidOCR
+            _RAPID = RapidOCR()
+        except Exception:
+            _RAPID = False
+    return _RAPID
+
+
 def ocr_lines(image_path):
-    """Run Windows OCR on the photo; [] if the engine/scan fails."""
+    """OCR the photo: RapidOCR first, Windows OCR as fallback."""
+    eng = _rapid()
+    if eng:
+        try:
+            res, _ = eng(image_path)
+            lines = [str(r[1]).strip() for r in (res or []) if str(r[1]).strip()]
+            if lines:
+                return lines
+        except Exception:
+            pass
     try:
         r = subprocess.run(
             ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass",
@@ -204,6 +231,15 @@ def guess_query(lines):
             m = _SET_RE.search(ln)
             if m:
                 setcode = m.group(0).lower()
+    if not number:
+        # relaxed pass: OCR glues rarity glyphs onto the number ('016/173RR'
+        # read as '015/1738R') — printed totals are 2-3 digits, trim the rest
+        for ln in lines:
+            # no \b: OCR glues the footer into one token ('Sm120C015/1738R')
+            m = re.search(r"(?<![\d/])(\d{1,3})\s*/\s*(\d{2,4})", ln)
+            if m:
+                number = m.group(1) + "/" + m.group(2)[:3]
+                break
     if not number:
         for ln in lines:
             m = _NUM_RE.search(ln)
