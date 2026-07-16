@@ -241,8 +241,19 @@ def valuator_ocr():
     # English cards read their own names fine
     jp = (bool(via) or bool(name and valuator._SET_RE.fullmatch(name))
           or bool(number and not name))
+    # LAYER B: a number must be a real printing of the identified card —
+    # snap 1-digit OCR errors (015/173 -> 016/173) against actual printings
+    number_read, snapped = number, False
+    if via and name and number:
+        cands = valuator.search_candidates(name, prefer_jp=jp)
+        fixed = valuator.snap_number(number, [c["number"] for c in cands])
+        if fixed and valuator._norm_num(fixed) != valuator._norm_num(number):
+            number, snapped = fixed, True
+        elif fixed:
+            number = fixed               # canonical zero-padding
     return jsonify({"query": (name + " " + (number or "")).strip(),
-                    "name": name, "number": number, "lines": lines[:12],
+                    "name": name, "number": number, "number_read": number_read,
+                    "snapped": snapped, "lines": lines[:12],
                     "via": via, "jp": jp,
                     "file": "/uploads/" + os.path.basename(path)})
 
@@ -701,7 +712,9 @@ async function valUpload(file){
     // the message always states BOTH what was identified and what's missing,
     // so name-path vs number-path never looks arbitrary
     if(d.via && d.number)
-      $('#valMsg').textContent = '✅ card: "' + d.name + '" (' + d.via + ') + printing #' + d.number + (d.jp ? ' · Japanese' : '');
+      $('#valMsg').textContent = '✅ card: "' + d.name + '" (' + d.via + ') + printing #' + d.number
+        + (d.snapped ? ' (read #' + d.number_read + ', auto-corrected — only valid printing)' : '')
+        + (d.jp ? ' · Japanese' : '');
     else if(d.via)
       $('#valMsg').textContent = '✅ card identified by ' + d.via + ': "' + d.name + '"'
         + (d.jp ? ' (Japanese)' : '') + ' — exact PRINTING unknown: tap yours below, or drop a footer close-up';

@@ -284,6 +284,40 @@ def guess_query(lines):
     return name, number
 
 
+def _norm_num(n):
+    """'016/173' -> '16/173' (leading zeros differ between printings/OCR)."""
+    parts = (n or "").lower().replace(" ", "").split("/")
+    return "/".join(p.lstrip("0") or "0" for p in parts)
+
+
+def _lev(a, b):
+    """Levenshtein distance (tiny strings only)."""
+    if a == b:
+        return 0
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i]
+        for j, cb in enumerate(b, 1):
+            cur.append(min(prev[j] + 1, cur[-1] + 1, prev[j - 1] + (ca != cb)))
+        prev = cur
+    return prev[-1]
+
+
+def snap_number(number, valid_numbers):
+    """LAYER-B identification: the number must be a real printing of the
+    identified card. If the OCR'd number isn't, but exactly ONE valid
+    printing is a single edit away (016/173 read as 015/173 at low res),
+    snap to it. Returns the corrected number or None."""
+    if not number:
+        return None
+    want = _norm_num(number)
+    valid = {_norm_num(v): v for v in valid_numbers if v}
+    if want in valid:
+        return valid[want]               # already valid (canonical form)
+    close = {v for k, v in valid.items() if _lev(want, k) == 1}
+    return close.pop() if len(close) == 1 else None
+
+
 def search_candidates(query, size=12, prefer_jp=False):
     """TCGplayer candidates for the picker grid (image = user's eyes).
     TCGplayer's search returns nothing when the collector number is in the
@@ -333,21 +367,19 @@ def search_candidates(query, size=12, prefer_jp=False):
             "img": IMG.format(pid),
             "url": f"https://www.tcgplayer.com/product/{pid}",
         })
-    lead = number.split("/")[0].lstrip("0") if number else None
+    # boxes/collections/merch have no collector number — they are not cards
+    # and never belong in an identification grid (Yujin: "remove completely")
+    out = [c for c in out if c["number"]]
+
+    want = _norm_num(number) if number else None
 
     def rank(c):
-        num_rank = 2
-        if number:
-            if c["number"].lower() == number:
-                num_rank = 0
-            elif c["number"].split("/")[0].lstrip("0") == lead:
-                num_rank = 1
+        # nearest-to-farthest by number distance (his ordering spec)
+        dist = _lev(want, _norm_num(c["number"])) if want else 0
         # 'line' is the DISPLAY name ('Pokemon Japan'), not the slug
         is_jp = ("japan" in (c["line"] or "").lower()
                  or "japan" in c["set"].lower())
-        return (num_rank,
-                (0 if is_jp else 1) if prefer_jp else 0,
-                0 if c["number"] else 1)   # real cards before boxes/merch
+        return (dist, (0 if is_jp else 1) if prefer_jp else 0)
 
     out.sort(key=rank)
     return out

@@ -258,6 +258,17 @@ class TestValuator(unittest.TestCase):
             ["TEAM", "li&DhJ", "30+", "230", "+ 200+", "TAG TEAM"])
         self.assertEqual(names, ["Reshiram & Charizard-GX"])
 
+    def test_snap_number_layer_b(self):
+        # HIS CATCH: 016/173 read as 015/173 at 810px -> Kartana. The number
+        # must be a real printing of the identified card; snap 1-digit errors.
+        printings = ["016/173", "220/173", "096/095", "097/095", "20/214"]
+        self.assertEqual(valuator.snap_number("015/173", printings), "016/173")
+        self.assertEqual(valuator.snap_number("016/173", printings), "016/173")
+        # ambiguous (two printings both 1 edit away) -> no guess
+        self.assertIsNone(valuator.snap_number("098/095", ["096/095", "099/095"]))
+        # nothing close -> no guess
+        self.assertIsNone(valuator.snap_number("555/555", printings))
+
     def test_confidence_thresholds(self):
         # L16: a price with almost no sales is a rumor, not a market
         self.assertEqual(valuator._confidence(2, 30)[0], "LOW")     # <3 sales
