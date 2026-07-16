@@ -173,6 +173,11 @@ def feed_embed(L):
     # hover shows the full date); fall back to raw text if unparseable
     when = f"<t:{epoch}:R>" if epoch else (L.get("posted") or "time unknown")
     when = ("bumped " if L.get("bumped") else "posted ") + when
+    # Carousell's newest-first sort ranks by ACTIVITY: bumped/edited old
+    # listings resurface with their original post date — label them so an
+    # old post entering the feed late is never mistaken for a fresh one
+    if epoch and time.time() - epoch > 12 * 3600 and not L.get("bumped"):
+        when += " · ♻ resurfaced"
     e = {
         # title is already the clickable link — no raw URL in the body
         "title": (prefix + icon + " " + L["title"])[:230],
