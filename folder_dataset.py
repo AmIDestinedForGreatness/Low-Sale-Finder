@@ -144,11 +144,21 @@ def main():
             continue
         path = os.path.join(folder, fn)
         rot, upath, lines = best_orientation(path, tmpdir)
-        multi = len(distinct_names(lines)) >= 3 or "binder" in fn.lower()
-        entry = {"file": fn, "rotation": rot, "multi_card": multi, "cards": []}
-        if multi:
-            print(f"[{i+1}/{len(files)}] {fn} -> BINDER PAGE (2x2)")
-            for cell in split_grid(upath, tmpdir):
+        n_names = len(distinct_names(lines))
+        land = Image.open(upath).width > Image.open(upath).height
+        # 3+ names = binder page (2x2). TWO names in a LANDSCAPE frame =
+        # two cards side by side (live catch: a Volcanion EX + Golem EX
+        # photo fused Golem's name with Volcanion's number). Tag-team
+        # cards also read 2 names but are portrait — excluded.
+        multi = n_names >= 3 or "binder" in fn.lower()
+        pair = (not multi) and n_names == 2 and land
+        entry = {"file": fn, "rotation": rot,
+                 "multi_card": multi or pair, "cards": []}
+        if multi or pair:
+            rows, cols = (1, 2) if pair else (2, 2)
+            print(f"[{i+1}/{len(files)}] {fn} -> "
+                  f"{'SIDE-BY-SIDE (1x2)' if pair else 'BINDER PAGE (2x2)'}")
+            for cell in split_grid(upath, tmpdir, rows=rows, cols=cols):
                 ident = identify([cell], [valuator.ocr_lines(cell)], set())
                 ident.pop("ocr", None)
                 if do_price:

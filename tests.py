@@ -386,6 +386,26 @@ class ValuatorLayerCD(unittest.TestCase):
             ["P280", "Naganadel&", "Guzzlord", "BASIC", "TAG TEAM"])
         self.assertEqual(name, "Naganadel & Guzzlord-GX")
 
+    def test_local_printings_join(self):
+        # lot catches: the local index is COMPLETE where TCGplayer text
+        # search is not. A read number that is a real printing of exactly
+        # one mechanic variant determines the name; promo tokens snap
+        # against the family's real printings.
+        lp = valuator.local_printings("Scizor")
+        owners = [n for n, nums in lp.items()
+                  if any(valuator._norm_num(x) == valuator._norm_num("119/122")
+                         for x in nums)]
+        self.assertEqual(owners, ["Scizor-EX"])
+        lp2 = valuator.local_printings("Snorlax")
+        allnums = sorted(set().union(*lp2.values()))
+        self.assertEqual(valuator.snap_number("XY79", allnums), "XY179")
+        # 26/114 is VOLCANION's number — Golem's family must NOT claim it
+        # (it came from a two-card photo that fused both cards' evidence)
+        lp3 = valuator.local_printings("Golem")
+        self.assertEqual([n for n, nums in lp3.items()
+                          if any(valuator._norm_num(x) == valuator._norm_num("26/114")
+                                 for x in nums)], [])
+
 
 if __name__ == "__main__":
     result = unittest.main(exit=False, verbosity=1).result

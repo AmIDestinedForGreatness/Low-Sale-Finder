@@ -118,7 +118,7 @@ def _fullsize(u):
     return u
 
 
-def download_images(listing_idx, urls):
+def download_images(listing_idx, urls, prefix=""):
     os.makedirs(IMG_DIR, exist_ok=True)
     paths = []
     seen_size = set()
@@ -131,7 +131,7 @@ def download_images(listing_idx, urls):
                 continue
             seen_size.add(len(r.content))
             ext = ".png" if r.content[:4] == b"\x89PNG" else ".jpg"
-            path = os.path.join(IMG_DIR, f"L{listing_idx:02d}_{n}{ext}")
+            path = os.path.join(IMG_DIR, f"{prefix}L{listing_idx:02d}_{n}{ext}")
             with open(path, "wb") as f:
                 f.write(r.content)
             paths.append(path)
@@ -311,9 +311,70 @@ def identify(image_paths, ocr_raw, wm):
                 and valuator._norm_num(cands[0]["number"]) == valuator._norm_num(str(number))):
             name = cands[0]["name"].split(" - ")[0]
             via = via or "unique number match"
-        # Layer-B snap only when the name is CERTAIN (fingerprint/dex) or
-        # specific (full mechanic form) — see _strong's live catch
-        if name and number and cands and (via or _strong(str(name))):
+        # CANDIDATE CONSENSUS: several products share the read number but
+        # they are all the SAME card (Alolan Ninetales GX 22/145 appeared
+        # twice; the system claimed nothing). One name in all candidates =
+        # the name is determined even without a readable title.
+        elif (not name and number and len(cands) >= 2):
+            bases = {re.sub(r"\s*\(.*\)$", "", cd["name"].split(" - ")[0]).strip()
+                     for cd in cands
+                     if valuator._norm_num(cd["number"]) == valuator._norm_num(str(number))}
+            if len(bases) == 1:
+                name = bases.pop()
+                via = via or "candidate consensus"
+        # LOCAL-INDEX JOIN: the number is EVIDENCE and the local index is
+        # COMPLETE (TCGplayer text search often never surfaces promos/Full
+        # Arts). If the read number is a real printing of exactly one
+        # mechanic variant of the name, that variant IS the card ("Scizor"
+        # #119/122 -> Scizor-EX). If not, snap promo tokens against the
+        # family's real printings (Snorlax "XY79" -> XY179).
+        if (name and number and via is None
+                and not any(valuator._norm_num(c["number"]) == valuator._norm_num(str(number))
+                            for c in cands)):
+            lp = valuator.local_printings(str(name))
+            hit = sorted(n for n, nums in lp.items()
+                         if any(valuator._norm_num(x) == valuator._norm_num(str(number))
+                                for x in nums))
+            if len(hit) == 1:
+                name, via = hit[0], "local index: number is a printing"
+                cands = valuator.search_candidates(f"{name} {number}",
+                                                   prefer_jp=prefer_jp) or cands
+            elif lp:
+                allnums = sorted(set().union(*lp.values()))
+                fixed = valuator.snap_number(number, allnums)
+                if fixed and valuator._norm_num(fixed) != valuator._norm_num(str(number)):
+                    owners = sorted(n for n, nums in lp.items() if fixed in nums)
+                    if len(owners) == 1:
+                        number, snapped = fixed, True
+                        name, via = owners[0], "local index snap"
+                        cands = valuator.search_candidates(f"{name} {number}",
+                                                           prefer_jp=prefer_jp) or cands
+        # MECHANIC-VARIANT RETRY (TCGplayer-side): the read name is usually
+        # missing its mechanic (OCR drops the stylized V/GX glyph:
+        # "Mimikyu" #068/172 is Mimikyu V). Try suffixed forms; keep the
+        # first that yields an exact-number product.
+        if (name and number and via is None
+                and not any(valuator._norm_num(c["number"]) == valuator._norm_num(str(number))
+                            for c in cands)):
+            for suf in ("V", "VMAX", "GX", "EX", "ex"):
+                c2 = valuator.search_candidates(f"{name} {suf} {number}",
+                                                prefer_jp=prefer_jp)
+                exact = [c for c in c2
+                         if valuator._norm_num(c["number"]) == valuator._norm_num(str(number))]
+                if exact:
+                    cands, name = c2, exact[0]["name"].split(" - ")[0]
+                    via = "number-variant match"
+                    break
+        # Layer-B snap when the name is CERTAIN (fingerprint/dex), specific
+        # (full mechanic form) — or when EVERY candidate already shares the
+        # read name (snapping among one card's own printings is safe:
+        # Snorlax "XY79" → XY179, the only Snorlax printing 1 edit away)
+        def _ntoks(s):
+            return set(re.sub(r"[^a-z& ]", " ",
+                              s.split(" - ")[0].lower().replace("-", " ")).split())
+        same_base = bool(cands) and all(
+            _ntoks(str(name)) <= _ntoks(c["name"]) for c in cands)
+        if name and number and cands and (via or _strong(str(name)) or same_base):
             fixed = valuator.snap_number(number, [c["number"] for c in cands])
             if fixed and valuator._norm_num(fixed) != valuator._norm_num(number):
                 number, snapped = fixed, True
@@ -327,24 +388,38 @@ def identify(image_paths, ocr_raw, wm):
 
 
 # ── main ────────────────────────────────────────────────────────────────
+def _argval(flag, default=None):
+    if flag in sys.argv:
+        i = sys.argv.index(flag)
+        if i + 1 < len(sys.argv):
+            return sys.argv[i + 1]
+    return default
+
+
 def main():
     os.makedirs(DATASET_DIR, exist_ok=True)
-    meta_path = os.path.join(DATASET_DIR, "carousell_profile.json")
+    # --out <slug>: any Carousell page with listings (profile OR search)
+    # can be a dataset — search pages are the TRAINING-DATA firehose
+    slug = _argval("--out", "carousell_profile")
+    meta_path = os.path.join(DATASET_DIR, f"{slug}.json")
+    max_n = int(_argval("--max", "60"))
     identify_only = "--identify-only" in sys.argv
 
     if not identify_only:
         url = next((a for a in sys.argv[1:] if a.startswith("http")),
                    "https://www.carousell.ph/u/yujins-pokestop/")
-        print(f"[1/3] scraping profile: {url}")
-        listings = scrape_profile(url)
-        print(f"      {len(listings)} listings found")
+        print(f"[1/3] scraping listings page: {url}")
+        listings = scrape_profile(url)[:max_n]
+        print(f"      {len(listings)} listings kept")
         for i, L in enumerate(listings):
             print(f"[2/3] listing {i+1}/{len(listings)}: {L['url']}")
             try:
                 page = scrape_listing_page(L["url"])
                 L["full_title"] = page["title"] or L["title"]
                 L["desc"] = page["desc"]
-                L["images"] = download_images(i, page["images"])
+                L["images"] = download_images(
+                    i, page["images"],
+                    prefix="" if slug == "carousell_profile" else slug + "_")
                 print(f"      {len(L['images'])} images saved")
             except Exception as e:
                 print(f"      [page failed] {e}")

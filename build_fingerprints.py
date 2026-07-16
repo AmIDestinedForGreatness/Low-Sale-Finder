@@ -43,6 +43,13 @@ def main():
     card_files = [n for n in zf.namelist()
                   if re.search(r"/cards/en/[^/]+\.json$", n)]
     print(f"{len(card_files)} set files")
+    # set id -> printedTotal, so numbers become full "119/122" collector
+    # numbers (bare numerators are ambiguous across a card's variants)
+    totals = {}
+    sets_file = next((n for n in zf.namelist() if n.endswith("/sets/en.json")), None)
+    if sets_file:
+        for s in json.loads(zf.read(sets_file)):
+            totals[s.get("id")] = s.get("printedTotal")
 
     conn = sqlite3.connect(DB)
     conn.execute("DROP TABLE IF EXISTS fp")
@@ -67,11 +74,14 @@ def main():
             # National Dex number: JP vintage cards print "NO.398" — a direct
             # species ID when the name itself is unreadable (Layer D)
             dex = (c.get("nationalPokedexNumbers") or [None])[0]
+            num = str(c.get("number") or "")
+            total = totals.get(setname)
+            if num.isdigit() and total:
+                num = f"{num}/{total}"     # full collector number
             conn.execute("INSERT OR REPLACE INTO fp VALUES (?,?,?,?,?,?,?,?,?)",
                          (c.get("id"), c.get("name"), hp, ",".join(dmgs),
                           ",".join(c.get("subtypes") or []), setname,
-                          str(c.get("number") or ""), c.get("rarity") or "",
-                          dex))
+                          num, c.get("rarity") or "", dex))
             n += 1
     conn.commit()
     total = conn.execute("SELECT COUNT(*) FROM fp").fetchone()[0]

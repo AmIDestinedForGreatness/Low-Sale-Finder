@@ -257,3 +257,22 @@ footer (…/XY-P), or the unreadable-name paths (fingerprint/dex); the weak
 name's tokens AND its number must match the read number — else no price.
 Wrong prices are worse than no prices, doubly so when selling on 
 someone's behalf.
+
+### L28 — the number is evidence; the LOCAL index is complete (2026-07-17, training shift)
+**Mistakes (one per rule):** "Mimikyu #068/172" claimed nothing — the card
+is Mimikyu V, OCR drops the stylized V/GX glyph, and the base-name search
+never surfaces the variant product; "Snorlax XY79" became a LATIOS (XY79
+promo-token matched the JP-setcode regex → whole-query search → zero hits
+→ retry dropped "Snorlax"); "Golem #26/114" fused TWO cards' evidence —
+the photo held Volcanion EX + Golem EX side by side; TCGplayer text search
+simply never returns some promo/Full-Art products at any size.
+**Rules:** (1) when no candidate carries the read number, JOIN the number
+against the LOCAL index's printings of the name + its mechanic variants —
+a unique owner IS the card (Scizor #119/122 → Scizor-EX); unique 1-edit
+promo snaps ride the same printings (XY79→XY179). Index rebuilt with FULL
+collector numbers (numerators alone are ambiguous across variants).
+(2) The setcode fast-path requires a slash-number beside it — bare promo
+tokens are not set codes. (3) TWO validated names in a LANDSCAPE frame =
+two cards side by side → 1×2 split (tag-teams are portrait). (4) Candidate
+consensus: all number-matching products sharing ONE name = the name.
+**Guards:** `ValuatorLayerCD.test_local_printings_join`

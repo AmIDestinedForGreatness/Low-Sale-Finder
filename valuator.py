@@ -100,7 +100,11 @@ def ocr_deep(image_path):
     regions = [(0, 0.10, 1.0, 0.45, 2),      # name + HP band
                (0, 0.40, 1.0, 0.80, 2),      # attacks / damage numbers
                (0, 0.70, 1.0, 1.00, 2),      # footer band
-               (0, 0.75, 0.6, 1.00, 3)]      # bottom-left set code, extra zoom
+               (0, 0.75, 0.6, 1.00, 3),      # bottom-left set code, extra zoom
+               # XY-era prints the number bottom-RIGHT; binder-cell crops
+               # halve resolution — both sides get a high-zoom pass
+               (0.4, 0.78, 1.0, 1.00, 4),
+               (0.0, 0.82, 0.55, 1.00, 4)]
     lines, seen, tmp = [], set(), image_path + ".crop.png"
     for x1, y1, x2, y2, zoom in regions:
         crop = im.crop((int(x1 * W), int(y1 * H), int(x2 * W), int(y2 * H)))
@@ -217,6 +221,28 @@ def fingerprint_names(lines, limit=5, ties=False):
                     if names:
                         break
         return names
+    finally:
+        conn.close()
+
+
+def local_printings(name):
+    """All real printings of a card name AND its mechanic variants, from
+    the local index ('Scizor' -> Scizor, Scizor-EX, Scizor ex, M Scizor-EX
+    -> {name: {numbers}}). TCGplayer text search often never surfaces promo
+    and Full Art products — the local index is complete."""
+    if not name or not os.path.exists(FP_DB):
+        return {}
+    conn = sqlite3.connect(FP_DB)
+    try:
+        rows = conn.execute(
+            "SELECT DISTINCT name, number FROM fp WHERE name = ? "
+            "OR name LIKE ? OR name LIKE ? OR name LIKE ?",
+            (name, name + " %", name + "-%", "M " + name + "%")).fetchall()
+        out = {}
+        for n, num in rows:
+            if num:
+                out.setdefault(n, set()).add(num)
+        return out
     finally:
         conn.close()
 
@@ -543,9 +569,12 @@ def search_candidates(query, size=12, prefer_jp=False):
     m = (re.search(r"\b\d{1,3}[a-z]?\s*/\s*\d{1,3}\b", query, re.I)
          or _NUM_RE.search(query))
     number = (m.group(0).replace(" ", "") if m else "").lower()
-    if _SET_RE.search(query) and number:
+    if _SET_RE.search(query) and number and "/" in number:
         # JP set-code query: TCGplayer resolves "sm12a 016/173" directly —
-        # send it whole, don't strip the number
+        # send it whole, don't strip the number. Slash REQUIRED: a promo
+        # token like "XY79" also matches the setcode shape, and sending
+        # "Snorlax XY79" whole → zero hits → retry dropped "Snorlax" and
+        # returned a LATIOS (the real XY79; his card was XY179 misread)
         name_q = query
     else:
         name_q = " ".join(_NUM_RE.sub(" ", query).split()) or query
