@@ -617,7 +617,10 @@ async function valFind(){
   $('#valResult').innerHTML = '';
   const d = await (await fetch('/api/valuator/search?q=' + encodeURIComponent(q))).json();
   const c = d.candidates || [];
-  $('#valMsg').textContent = c.length ? 'tap YOUR exact card:'
+  const sameName = c.filter(x=>x.name.split(' - ')[0] === (c[0]&&c[0].name.split(' - ')[0])).length;
+  $('#valMsg').textContent = c.length
+    ? (sameName >= 4 ? 'tap YOUR exact printing — or drop a CLOSE-UP of the card\'s bottom-left footer to pin it automatically:'
+                     : 'tap YOUR exact card:')
     : 'nothing found — check the name, or type the set code + number from the card\'s bottom edge (e.g. sm12a 016/173)';
   window._cands = {};
   c.forEach(x=>window._cands[x.pid]=x);
