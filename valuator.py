@@ -145,8 +145,15 @@ def _extract_damages(lines):
             hp = int(m.group(1))
         for m in _DMG.finditer(ln):
             v = int(m.group(1))
+            mod = m.group(2) or ""
+            # damage numbers are BIG standalone OCR regions ('230', '30+',
+            # '…GX200+'); a bare number inside a long garbled line is body
+            # text ('…100ダメージ…'), not an attack — phantom damages from
+            # body text broke the fingerprint on the live Reshiram run
+            standalone = len(ln.strip()) <= 6
+            if not (mod or standalone):
+                continue
             if 10 <= v <= 400 and v % 5 == 0 and v != hp:
-                mod = m.group(2) or ""
                 # NB: `mod in "x×"` is True for "" — must compare exactly
                 dmgs.add(m.group(1) + ("x" if mod in ("x", "×") else mod))
     return dmgs, hp, tags
