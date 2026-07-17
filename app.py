@@ -86,7 +86,7 @@ def _watchdog():
                 requests.post(wh, json={"embeds": [{
                     "title": "⚠️ Yujin's Pokestop — feed OFFLINE",
                     "description": "The scan loop missed its scheduled pass. "
-                                   "Check the 'Sniper Feed' window on the PC.",
+                                   "Check the 'Pokestop Carousell' / 'Pokestop Facebook' windows on the PC.",
                     "color": 0xE74C3C}]}, timeout=15)
             if last is False and online:
                 requests.post(wh, json={"embeds": [{
@@ -657,12 +657,15 @@ HTML = r"""<!doctype html>
   <div class="hero">
     <img src="/logo" alt="" style="display:none" onload="this.style.display='inline-block'">
     <div class="wordmark">Yujin's <b>Pokestop</b></div>
-    <div class="sub">Carousell card sniper · live feed</div>
+    <div class="sub">Multi-source card scraper · AI identification · live feed</div>
     <div class="badges">
       <span class="badge" style="color:var(--accent);border-color:var(--line2)" title="version · build (git)">V__VERSION__ · #__BUILD__</span>
+      <span class="badge" style="color:#ffb454;border-color:rgba(255,180,84,.4)" title="still actively evolving — expect rough edges">BETA</span>
       <span id="webhookBadge" class="badge">checking…</span>
       <span id="srcBadge" class="badge"></span>
       <span id="ctryBadge" class="badge"></span>
+      <span class="badge ok" title="Facebook groups feed — live">Facebook ✓</span>
+      <span class="badge" style="color:var(--muted);border-color:var(--line)" title="not enabled yet — needs a real Marketplace search URL, coming soon">FB Marketplace (soon)</span>
     </div>
   </div>
 
