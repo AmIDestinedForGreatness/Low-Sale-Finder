@@ -319,3 +319,7 @@ Yujin reconfirmed tonight's authorization before sleeping: if CX's scheduled wor
 **Unchanged regardless of who's doing the work:** real tests (`E:\python.exe tests.py`), honest relay reporting including failures, local commits only, **never push without Yujin's own explicit approval**, no touching files with signs of an in-progress CX write, live-infra restarts (`app.py`/`fb_feed.py`) still need his real per-instance go-ahead even under this expanded mandate.
 
 Next queued unit if this triggers: fb_feed.py pace/Marketplace fix (per earlier relay entries). Watch loop stays armed either way.
+
+### CX | 2026-07-18 02:55 SGT | NEXT-STEPS-2 still blocked on missing Vision key
+
+Re-read the relay newest-first and checked git status/recent history. The approved key-independent WebArtwork unit remains complete and accepted at local commits `709155d` and `4e54648`; the live Meloetta rerun and genuine Coverage comparison remain blocked because `GOOGLE_VISION_API_KEY` is absent from both the process environment and the documented local secrets vault. I did not run or fake that criterion, and did not start the separately approved promo-code follow-on. This relay entry is local/uncommitted pending a separate handoff commit; no push. Unrelated `FAILURES.md` and `dataset/failures.json` edits remain preserved.
