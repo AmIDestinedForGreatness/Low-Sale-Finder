@@ -234,7 +234,11 @@ def valuator_ocr():
             ident = profile_dataset.identify([cell], [valuator.ocr_lines(cell)],
                                              set())
             ident.pop("ocr", None)
-            ident.pop("candidates", None)
+            # keep candidates when the printing is AMBIGUOUS (no number) —
+            # that's exactly when the eye-gate needs them; drop them once
+            # a card is fully pinned, where they're just dead weight
+            if ident.get("number"):
+                ident.pop("candidates", None)
             ident["cell"] = "/uploads/" + os.path.basename(cell)
             cards.append(ident)
         return jsonify({"multi": True, "cards": cards,
@@ -820,7 +824,11 @@ async function valApplyOcr(d){
             <img src="${c.cell||''}" style="width:100%;max-height:200px;object-fit:contain;border-radius:5px" loading="lazy"
                  onerror="this.style.display='none'">
             <div style="font-size:11px;margin-top:4px;font-weight:600">${escapeHtml(c.name||'(unread — tap 🔍, then type it)')}</div>
-            <div class="muted" style="font-size:10px">#${escapeHtml(c.number||'?')}${c.via?' · '+escapeHtml(c.via):''}</div>
+            <div class="muted" style="font-size:10px">${c.number
+                ? '#'+escapeHtml(c.number)+(c.via?' · '+escapeHtml(c.via):'')
+                : (c.candidates && c.candidates.length)
+                  ? `⚠ ${c.candidates.length} possible printings — tap to pick`
+                  : (c.name ? 'printing unread — tap to search' : '#?')}</div>
             <button class="bzoom" data-img="${c.cell||''}" title="zoom this card"
               style="position:absolute;top:4px;right:4px;border:none;border-radius:6px;padding:1px 6px;cursor:zoom-in;background:rgba(0,0,0,.55);color:#fff;font-size:12px">🔍</button>
           </div>`).join('')}
@@ -840,8 +848,19 @@ async function valApplyOcr(d){
       if(c.cell){ $('#valThumb').src = c.cell; $('#valThumb').dataset.full = c.cell; }
       window._jpHint = !!c.jp;
       $('#valQuery').value = c.query || '';
-      if(c.query) valFind();
-      else $('#valMsg').textContent = 'that card did not read — type its name or the footer, then Find card';
+      if(c.number && c.candidates && c.candidates.length){
+        // fully pinned — server already dropped candidates, so a plain
+        // Find-card search is fine and cheap
+        if(c.query) valFind();
+      } else if(!c.number && c.candidates && c.candidates.length){
+        // AMBIGUOUS: render the server's GUARANTEED candidates directly —
+        // a fresh name-only search can miss the real promo entirely
+        renderCandidateGrid(c.candidates, true);
+      } else if(c.query){
+        valFind();
+      } else {
+        $('#valMsg').textContent = 'that card did not read — type its name or the footer, then Find card';
+      }
     });
     return;
   }
@@ -928,22 +947,19 @@ async function valFromUrl(){
 $('#valFromUrl').onclick = valFromUrl;
 $('#valUrl').onkeydown = e=>{ if(e.key==='Enter') valFromUrl(); };
 
-async function valFind(){
-  const q = $('#valQuery').value.trim();
-  if(q.length < 2) return;
-  valBusy(true);            // lock the box — typing mid-search interrupts it
-  $('#valMsg').innerHTML = '<span class="spin"></span> searching…';
-  $('#valResult').innerHTML = '';
-  let d = {};
-  try{
-    d = await (await fetch('/api/valuator/search?q=' + encodeURIComponent(q)
-                               + (window._jpHint ? '&jp=1' : ''))).json();
-  }catch(e){}
-  finally{ valBusy(false); }
-  const c = d.candidates || [];
+// shared by valFind() AND binder-pocket taps — renders a candidate grid
+// for eye-gate picking. Binder taps pass server-guaranteed candidates
+// directly (bypassing a fresh search) because a bare-name TCGplayer search
+// can bury or omit the real promo printing entirely (confirmed live:
+// Victini/Manaphy's actual promos never appeared in the default top 12
+// results for their plain names) — the merge that fixes this lives in
+// identify(), not in the plain /api/valuator/search route, so re-searching
+// from a tapped pocket would silently lose it.
+function renderCandidateGrid(c, ambiguousNumberHint){
   const sameName = c.filter(x=>x.name.split(' - ')[0] === (c[0]&&c[0].name.split(' - ')[0])).length;
   $('#valMsg').textContent = c.length
-    ? (sameName >= 4 ? 'tap YOUR exact printing — or drop a CLOSE-UP of the card\'s bottom-left footer to pin it automatically:'
+    ? (ambiguousNumberHint ? 'multiple printings read off this card — tap YOUR exact one:'
+       : sameName >= 4 ? 'tap YOUR exact printing — or drop a CLOSE-UP of the card\'s bottom-left footer to pin it automatically:'
                      : 'tap YOUR exact card:')
     : 'nothing found — check the name, or type the set code + number from the card\'s bottom edge (e.g. sm12a 016/173)';
   window._cands = {};
@@ -956,6 +972,21 @@ async function valFind(){
       <div class="muted" style="font-size:11px">${escapeHtml(x.set)}<br>#${escapeHtml(x.number)}${x.market?' · $'+x.market:''}</div>
     </div>`).join('');
   document.querySelectorAll('.cand').forEach(el=>el.onclick=()=>valConfirm(+el.dataset.pid));
+}
+
+async function valFind(){
+  const q = $('#valQuery').value.trim();
+  if(q.length < 2) return;
+  valBusy(true);            // lock the box — typing mid-search interrupts it
+  $('#valMsg').innerHTML = '<span class="spin"></span> searching…';
+  $('#valResult').innerHTML = '';
+  let d = {};
+  try{
+    d = await (await fetch('/api/valuator/search?q=' + encodeURIComponent(q)
+                               + (window._jpHint ? '&jp=1' : ''))).json();
+  }catch(e){}
+  finally{ valBusy(false); }
+  renderCandidateGrid(d.candidates || []);
 }
 // fixes #5/#6: user-initiated triggers are hard-blocked while processing
 $('#valSearch').onclick = ()=>{ if(!window._valBusy) valFind(); };

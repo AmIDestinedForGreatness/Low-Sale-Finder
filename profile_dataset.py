@@ -327,6 +327,42 @@ def identify(image_paths, ocr_raw, wm):
         cands = valuator.search_candidates(query, prefer_jp=prefer_jp)
         if not cands and name:                   # number may be misread
             cands = valuator.search_candidates(str(name), prefer_jp=prefer_jp)
+        # AMBIGUOUS PROMO NUMBERS: Layer E narrowed to a name but couldn't
+        # pick ONE number (e.g. Victini's XY117 vs XY189, both promo-format).
+        # ROOT CAUSE (confirmed against the raw API): appending a promo
+        # token to the query does nothing — search_candidates() strips any
+        # slash-less number-shaped token via _NUM_RE before it ever reaches
+        # TCGplayer, so "Victini XY117" silently becomes a bare "Victini"
+        # search. And TCGplayer's OWN relevance ranking buries promos deep:
+        # Victini's XY117 card is real and present, but only surfaces
+        # around position ~40 of its own results — invisible at the
+        # default size=12 (confirmed: absent at 12 and 30, present at 50).
+        # Fix: search deep (size=50) directly by name and pull out an
+        # EXACT number match — this is a targeted lookup for a known
+        # number, not a relevance-ranked discovery search, so depth is safe.
+        if aid and not number and len(aid[1]) > 1 and name:
+            # collect first, merge once — prepending inside the loop pushed
+            # an EARLIER ambiguous candidate out of the eventual top-5 slice
+            # when a LATER one got inserted in front of it (live catch:
+            # fixing Meloetta's XY193 pushed her own XY120 out of view)
+            by_num = {valuator._norm_num(c["number"]): c for c in cands}
+            deep = valuator.search_candidates(str(name), size=50,
+                                              prefer_jp=prefer_jp)
+            found = []
+            for cand_num in aid[1]:
+                key = valuator._norm_num(cand_num)
+                if key in by_num:
+                    found.append(by_num[key])
+                    continue
+                hit = next((c for c in deep
+                           if valuator._norm_num(c["number"]) == key), None)
+                if hit:
+                    found.append(hit)
+                    by_num[key] = hit
+            if found:
+                keys = {valuator._norm_num(c["number"]) for c in found}
+                cands = found + [c for c in cands
+                                 if valuator._norm_num(c["number"]) not in keys]
         # GRADED SLABS: label numbers are region-ambiguous (a Beckett'd
         # CHINESE Pikachu promo #004/SV-P unique-matched the JAPANESE SV-P
         # 004 — Dondozo). Never adopt a name from a bare number on a slab.
@@ -415,8 +451,9 @@ def identify(image_paths, ocr_raw, wm):
             "graded": bool(query) and graded,
             "watermark_dropped": dropped[:8],
             "candidates": [{"pid": c["pid"], "name": c["name"], "set": c["set"],
-                            "number": c["number"], "line": c.get("line", "")}
-                           for c in cands[:5]],
+                            "number": c["number"], "line": c.get("line", ""),
+                            "img": c.get("img", "")}
+                           for c in cands[:6]],
             "ocr": per_img}
 
 

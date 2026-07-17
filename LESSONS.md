@@ -3,7 +3,7 @@
 Every entry is a real mistake that happened in production, the rule it taught,
 and the test that now guards it. **The rule: no bug is "fixed" until its
 lesson is encoded here AND in `tests.py`.** That's how the system compounds —
-each error makes it permanently smarter, not temporarily patched.
+each error makes it permanently smarter, not temporarily patched. **30 lessons.**
 
 Run the guard suite: `E:\python.exe tests.py`
 
@@ -299,3 +299,41 @@ keep the stronger evidence. (6) Evidence merged across runs is MARKED as
 merged, never presented as a single-run read.
 **Guards:** `ValuatorLayerCD.test_layer_e_attack_names`,
 `test_promo_letter_footer` (gallery+glue)
+
+### L30 — glued attack names, and ambiguous promos need a DEEPER search, not a smarter guess (2026-07-17, live dashboard bug report)
+**Mistake #1:** his live binder-mode screenshot showed 3/4 cards unread. Root
+cause, found by replaying his exact photo through the exact live code path:
+attack names OCR'd with NO space ("SopranoWave", "PrismaticWave",
+"MarineGuidance") — Layer E only matched space-joined tokens.
+**Fix:** camelCase-shaped glued runs are squash-matched against a no-space
+attack index (exact, then 1-2 edit fuzzy).
+**Mistake #2 (deeper, found chasing #1):** even once the NAME resolved,
+promo NUMBERS stayed blank. Two stacked root causes, both verified against
+the raw API, not assumed: (a) `search_candidates()` silently STRIPS any
+slash-less number-shaped token via `_NUM_RE` before the query ever reaches
+TCGplayer — `"Victini XY117"` was silently becoming a bare `"Victini"`
+search; (b) TCGplayer's own relevance ranking buries promos deep — Victini's
+real XY117 card is present in TCGplayer's own results but only surfaces
+around position ~40; invisible at the default `size=12` (confirmed absent
+at 12 and 30, present at 50).
+**Fix:** when Layer E narrows to a name but can't pick ONE number among
+2+ real candidates, run one targeted `size=50` search by name and pull out
+EXACT number matches — safe because this is a confirm-a-known-number
+lookup, not a relevance-ranked discovery search.
+**Mistake #3 (self-introduced, caught same session):** the first version of
+this fix prepended found candidates ONE AT A TIME inside the loop — fixing
+Meloetta's 2nd candidate (XY193) pushed her 1st (XY120) out of the eventual
+top-5 slice. **Fix:** collect all ambiguous hits FIRST, dedupe, place them
+all at the front in one pass, THEN append the rest — guarantees every
+known ambiguous candidate survives truncation regardless of merge order.
+**Also fixed:** the dashboard's binder route was unconditionally discarding
+`candidates` from the JSON response (`ident.pop("candidates", None)`) —
+even when a card couldn't be pinned to one printing, so the UI had nothing
+to show but a bare "#?". Now candidates are kept exactly when ambiguous,
+the binder pocket shows "N possible printings — tap to pick" instead of a
+dead end, and the tap renders the SERVER'S guaranteed candidates directly
+— re-searching from the tap would silently re-lose the size=50 fix, since
+the plain `/api/valuator/search` route doesn't carry it.
+**Guard:** manual live verification (documented in this session; the API
+call is non-deterministic enough that a hardcoded regression test would be
+flaky — the structural fix is what's covered, not one exact card's result).
