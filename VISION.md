@@ -74,10 +74,16 @@ correct thing to keep investing in before scaling scraper breadth.
   features — sending messages or making purchase decisions under Yujin's identity
   needs hard approval gates, which his own spec already correctly requires. Don't
   relax that requirement for convenience later.
-- **Money is real and currently tight** (see the brain's financial context) — any
-  paid API/service added for new marketplaces needs the same cost scrutiny already
-  applied to Oracle and Google Vision tonight (free tier first, real pricing checked
-  before committing, budget alerts as tripwires).
+- **Free/cheapest-viable is the explicit standing rule, not a nice-to-have** (Yujin's
+  own words: "we want everything to be free. or cheap as possible"). Same discipline
+  as Oracle and Google Vision tonight applies to every future integration: free tier
+  first, real pricing checked before committing, budget alerts as tripwires. Official
+  APIs aren't always an option even when free would be preferred — **TCGplayer no
+  longer grants API access** (Yujin confirmed this directly), which is why this
+  project already leans on scraping/PriceCharting/pokemontcg.io instead of a clean
+  TCGplayer API integration. Assume the same "check if the official API still exists
+  and what it costs" step is needed before building against Lazada/Shopee/eBay PH —
+  don't assume any of them still offer what worked when this was last researched.
 
 ## What's actually next, in sequence
 
