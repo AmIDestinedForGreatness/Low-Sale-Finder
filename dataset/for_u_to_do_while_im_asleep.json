@@ -1731,19 +1731,19 @@
   ],
   "renamed_to": "M Manectric-EX 024a-119 English.png"
  },
- "Eevee VMAX  English.png": {
+ "Eevee VMAX SWSH087 English.png": {
   "file": "Eevee VMAX  English.png",
   "rotation": 0,
   "multi_card": false,
   "cards": [
    {
     "name": "Eevee VMAX",
-    "number": null,
+    "number": "SWSH087",
     "number_read": null,
     "snapped": false,
-    "via": null,
+    "via": "visual read (assistant eye) — dark-holo footer",
     "jp": false,
-    "query": "Eevee VMAX",
+    "query": "Eevee VMAX SWSH087",
     "watermark_dropped": [],
     "candidates": [
      {
@@ -1752,40 +1752,99 @@
       "set": "SWSH: Sword & Shield Promo Cards",
       "number": "SWSH087",
       "line": "Pokemon"
-     },
-     {
-      "pid": 571462,
-      "name": "Eevee - 210/184",
-      "set": "S8b: VMAX Climax",
-      "number": "210/184",
-      "line": "Pokemon Japan"
-     },
-     {
-      "pid": 597302,
-      "name": "Eevee VMAX - 101/S-P",
-      "set": "S-P: Sword & Shield Promos",
-      "number": "101/S-P",
-      "line": "Pokemon Japan"
-     },
-     {
-      "pid": 570511,
-      "name": "Umbreon VMAX - 048/069",
-      "set": "S6a: Eevee Heroes",
-      "number": "048/069",
-      "line": "Pokemon Japan"
-     },
-     {
-      "pid": 571378,
-      "name": "Eevee - 125/184",
-      "set": "S8b: VMAX Climax",
-      "number": "125/184",
-      "line": "Pokemon Japan"
      }
     ],
-    "value": null
+    "value": {
+     "pid": 232611,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 4.3,
+     "market_php": 249,
+     "sales": [
+      {
+       "date": "2026-07-17",
+       "usd": 4.75,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 3.6,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 3.6,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 4.3,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 4.27,
+       "condition": "Near Mint"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 1,
+     "confidence": "HIGH",
+     "confidence_why": "~5.0 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 4.27,
+       "php": 248,
+       "from": "5 real sold"
+      },
+      "Lightly Played": {
+       "usd": 3.44,
+       "php": 200,
+       "from": "est. % of market"
+      },
+      "Moderately Played": {
+       "usd": 2.58,
+       "php": 150,
+       "from": "est. % of market"
+      },
+      "Heavily Played": {
+       "usd": 1.94,
+       "php": 112,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 1.29,
+       "php": 75,
+       "from": "est. % of market"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 298,
+       "steal_php": 179
+      },
+      "Lightly Played": {
+       "list_php": 240,
+       "steal_php": 144
+      },
+      "Moderately Played": {
+       "list_php": 180,
+       "steal_php": 108
+      },
+      "Heavily Played": {
+       "list_php": 134,
+       "steal_php": 81
+      },
+      "Damaged": {
+       "list_php": 90,
+       "steal_php": 54
+      }
+     },
+     "product": "Eevee VMAX - SWSH087"
+    }
    }
   ],
-  "renamed_to": "Eevee VMAX  English.png"
+  "renamed_to": "Eevee VMAX SWSH087 English.png"
  },
  "M Audino-EX 85-124 English.png": {
   "file": "M Audino-EX 85-124 English.png",
@@ -1902,61 +1961,61 @@
   ],
   "renamed_to": "M Audino-EX 85-124 English.png"
  },
- "Yveltal  English.png": {
+ "Yveltal-EX XY150 English.png": {
   "file": "Yveltal  English.png",
   "rotation": 0,
   "multi_card": false,
   "cards": [
    {
-    "name": "Yveltal",
-    "number": null,
+    "name": "Yveltal-EX",
+    "number": "XY150",
     "number_read": null,
     "snapped": false,
-    "via": null,
+    "via": "visual read (assistant eye) — dark-holo footer",
     "jp": false,
-    "query": "Yveltal",
+    "query": "Yveltal-EX XY150",
     "watermark_dropped": [],
     "candidates": [
      {
-      "pid": 183873,
-      "name": "Yveltal",
-      "set": "SM - Team Up",
-      "number": "95/181",
+      "pid": 605139,
+      "name": "Yveltal EX - 005/023",
+      "set": "XYC: Super Legend Set: Xerneas-EX & Yveltal-EX",
+      "number": "005/023",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 605140,
+      "name": "Yveltal EX - 006/023",
+      "set": "XYC: Super Legend Set: Xerneas-EX & Yveltal-EX",
+      "number": "006/023",
+      "line": "Pokemon Japan"
+     },
+     {
+      "pid": 684386,
+      "name": "Yveltal ex - 053/088",
+      "set": "ME03: Perfect Order",
+      "number": "053/088",
       "line": "Pokemon"
      },
      {
-      "pid": 654427,
-      "name": "Yveltal",
-      "set": "ME01: Mega Evolution",
-      "number": "088/132",
-      "line": "Pokemon"
+      "pid": 605157,
+      "name": "Double Colorless Energy",
+      "set": "XYC: Super Legend Set: Xerneas-EX & Yveltal-EX",
+      "number": "023/023",
+      "line": "Pokemon Japan"
      },
      {
-      "pid": 107213,
-      "name": "Yveltal",
-      "set": "XY - BREAKthrough",
-      "number": "94/162",
-      "line": "Pokemon"
-     },
-     {
-      "pid": 250315,
-      "name": "Yveltal",
-      "set": "Celebrations",
-      "number": "019/025",
-      "line": "Pokemon"
-     },
-     {
-      "pid": 560345,
-      "name": "Yveltal",
-      "set": "SV: Shrouded Fable",
-      "number": "035/064",
-      "line": "Pokemon"
+      "pid": 605148,
+      "name": "Switch",
+      "set": "XYC: Super Legend Set: Xerneas-EX & Yveltal-EX",
+      "number": "014/023",
+      "line": "Pokemon Japan"
      }
     ],
     "value": null
    }
   ],
-  "renamed_to": "Yveltal  English.png"
+  "renamed_to": "Yveltal-EX XY150 English.png"
  },
  "Mew V 069-189 English.png": {
   "file": "Mew 069-189 English.png",

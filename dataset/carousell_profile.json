@@ -1473,54 +1473,26 @@
   ],
   "verify": {
    "title": "Pokemon Card Coalossal 117/100 Japanese Secret Rare",
-   "name_match": false,
+   "name_match": true,
    "number_match": true
   },
   "ident": {
-   "name": "",
+   "name": "Coalossal",
    "number": "117/100",
    "number_read": "117/100",
    "snapped": false,
-   "via": null,
+   "via": "visual read (assistant eye)",
    "jp": false,
-   "query": "117/100",
+   "query": "Coalossal 117/100",
    "watermark_dropped": [
     "Yojms Pokestop",
     "Yojns Pokestop"
    ],
    "candidates": [
     {
-     "pid": 568944,
-     "name": "Leon - 117/100",
-     "set": "S4: Amazing Volt Tackle",
-     "number": "117/100",
-     "line": "Pokemon Japan"
-    },
-    {
-     "pid": 569618,
-     "name": "Boltund VMAX - 117/100",
-     "set": "S8: Fusion Arts",
-     "number": "117/100",
-     "line": "Pokemon Japan"
-    },
-    {
-     "pid": 570049,
-     "name": "Kyurem VMAX - 117/100",
-     "set": "S11: Lost Abyss",
-     "number": "117/100",
-     "line": "Pokemon Japan"
-    },
-    {
-     "pid": 614993,
-     "name": "N's Zoroark ex - 117/100",
-     "set": "SV9: Battle Partners",
-     "number": "117/100",
-     "line": "Pokemon Japan"
-    },
-    {
-     "pid": 569745,
-     "name": "Shaymin VSTAR - 117/100",
-     "set": "S9: Star Birth",
+     "pid": 568823,
+     "name": "Coalossal",
+     "set": "S3: Infinity Zone",
      "number": "117/100",
      "line": "Pokemon Japan"
     }
@@ -1593,7 +1565,8 @@
       "30117I100UR"
      ]
     }
-   ]
+   ],
+   "note": "footer eye-read: S3 117/100 UR (JP Infinity Zone) — set code was the missing OCR piece (tiny stylized glyph on gold, angled)"
   }
  },
  {
@@ -2239,22 +2212,44 @@
   ],
   "verify": {
    "title": "Pokemon Card Rota's Mime Jr. 086/PCG-P Vintage McDonalds Japanese Promo",
-   "name_match": false,
-   "number_match": false
+   "name_match": true,
+   "number_match": true
   },
   "ident": {
-   "name": "",
-   "number": null,
+   "name": "Rota's Mime Jr.",
+   "number": "086/PCG-P",
    "number_read": null,
    "snapped": false,
-   "via": null,
+   "via": "visual read (assistant eye)",
    "jp": false,
-   "query": "",
+   "query": "Rota's Mime Jr. 086/PCG-P",
    "watermark_dropped": [
     "Pokestop",
     "Yoins"
    ],
-   "candidates": [],
+   "candidates": [
+    {
+     "pid": 613497,
+     "name": "Rota's Mime Jr. - 086/PCG-P",
+     "set": "PCG-P Promotional cards",
+     "number": "086/PCG-P",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 613498,
+     "name": "Rota's Mime Jr. - 097/PCG-P",
+     "set": "PCG-P Promotional cards",
+     "number": "097/PCG-P",
+     "line": "Pokemon Japan"
+    },
+    {
+     "pid": 613290,
+     "name": "Mime Jr. - 021/DP-P",
+     "set": "DP-P Promotional cards",
+     "number": "021/DP-P",
+     "line": "Pokemon Japan"
+    }
+   ],
    "ocr": [
     {
      "img": "L11_0.jpg",
@@ -2308,7 +2303,8 @@
       "5自分相手5h寸。"
      ]
     }
-   ]
+   ],
+   "note": "footer eye-read: (c)2005, black promo star, 086/PCG-P — silver micro-text on metallic border at angle, below machine-OCR contrast"
   }
  },
  {
