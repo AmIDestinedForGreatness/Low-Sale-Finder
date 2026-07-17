@@ -47,7 +47,7 @@ _NUM_RE = re.compile(r"\b(\d{1,3})\s*/\s*(\d{1,3})\b|"
 # DP-P into EP-P; correcting only an edit-distance-1 suffix keeps the query
 # narrow while avoiding broad name-only fallback searches.
 _PROMO_SERIES = frozenset({"DP-P", "HGSS-P", "BW-P", "XY-P", "SM-P",
-                           "SWSH-P", "S-P", "SV-P", "SV-P"})
+                           "SWSH-P", "S-P", "SV-P"})
 
 
 _RAPID = None
