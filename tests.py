@@ -970,6 +970,39 @@ class TestEvidenceProviders(unittest.TestCase):
         for provider in (HPProvider(), AbilityProvider(), ExpansionProvider(), HoloProvider()):
             self.assertEqual(provider.verify(None, [], {})["status"], "not_checked")
 
+    def test_web_artwork_missing_key_degrades_cleanly(self):
+        from providers.web_artwork import WebArtworkProvider
+        with mock.patch.dict(os.environ, {}, clear=True), \
+             mock.patch("providers.web_artwork.os.path.exists", return_value=True):
+            result = WebArtworkProvider().verify("missing.png", [], {})
+        self.assertEqual(result["status"], "not_checked")
+        self.assertFalse(result["web_candidates"])
+
+    def test_web_artwork_cache_avoids_duplicate_calls(self):
+        from providers.web_artwork import WebArtworkProvider
+        class Client:
+            calls = 0
+            def annotate_image(self, request):
+                self.calls += 1
+                return {"web_detection": {"pages_with_matching_images": [
+                    {"page_title": "Testmon ex 010/100", "url": "https://example.test"}]}}
+        client = Client()
+        cache_data = {}
+        def load(path, default): return cache_data if path == "cache" else {}
+        def save(path, value):
+            if path == "cache": cache_data.update(value)
+        with mock.patch("providers.web_artwork.os.path.exists", return_value=True), \
+             mock.patch("providers.web_artwork.os.stat", return_value=mock.Mock(st_mtime_ns=1, st_size=2)), \
+             mock.patch("providers.web_artwork._file_hashes", return_value=("same", "same")), \
+             mock.patch.object(WebArtworkProvider, "_load", side_effect=load), \
+             mock.patch.object(WebArtworkProvider, "_save", side_effect=save), \
+             mock.patch.dict(os.environ, {}, clear=True):
+            first = WebArtworkProvider(client, "cache", "usage").verify("card.png", [], {})
+            second = WebArtworkProvider(client, "cache", "usage").verify("card.png", [], {})
+        self.assertEqual(first["status"], "matched")
+        self.assertEqual(second["status"], "matched")
+        self.assertEqual(client.calls, 1)
+
 
 class TestReauditHandoffEdges(unittest.TestCase):
     def test_lot_path_resolves_renamed_file_before_legacy_name(self):

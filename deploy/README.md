@@ -45,7 +45,7 @@ directly into files on the VM via SSH.
   from this machine to `/home/ubuntu/low-sale-finder/config.py`.
 
 - **`~/.claude/local-secrets/low-sale-finder.env.local`** - has
-  FB_BURNER_NAME, FB_BURNER_EMAIL, DISCORD_BOT_TOKEN. `config.py`'s
+    FB_BURNER_NAME, FB_BURNER_EMAIL, DISCORD_BOT_TOKEN, GOOGLE_VISION_API_KEY. `config.py`'s
   `_load_bot_token()` reads this exact path via `os.path.expanduser`, which
   resolves correctly on Linux too (`/home/ubuntu/.claude/local-secrets/...`)
   - so recreate the identical file at that path on the VM, same filename,

@@ -160,7 +160,16 @@ def _artwork_evidence(image_paths, candidates, provider_context):
     tested = [r for r in results if r.get("status") == "no_match"]
     if tested:
         return max(tested, key=lambda r: r.get("match_score", 0))
-    return results[0]
+    local = results[0]
+    if local.get("status") in ("not_verified", "no_match"):
+        try:
+            from providers import WebArtworkProvider
+            web = WebArtworkProvider().verify(image_paths[0], candidates, provider_context or {})
+            if web.get("status") == "matched":
+                local = web
+        except Exception as exc:
+            local["web_error"] = str(exc)
+    return local
 
 
 def _provisional_confidence(level, chain, ident, collision_result,
@@ -287,7 +296,7 @@ def build_evidence(ident, merged_lines, aid=None, image_paths=None,
         name, number, collision.norm_number(number), language_context,
         chain["expansion_symbol"], ident.get("card_type"),
         ident.get("attacks") or [], ident.get("abilities") or [],
-        ident.get("candidates") or [])
+        (ident.get("candidates") or []) + (artwork_result.get("web_candidates") or []))
 
     # API text search is not the only catalog. If the widened local catalog
     # contains the exact selected identity, record that corroboration in the
