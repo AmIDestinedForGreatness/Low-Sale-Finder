@@ -3,7 +3,7 @@
 Every entry is a real mistake that happened in production, the rule it taught,
 and the test that now guards it. **The rule: no bug is "fixed" until its
 lesson is encoded here AND in `tests.py`.** That's how the system compounds —
-each error makes it permanently smarter, not temporarily patched. **31 lessons.**
+each error makes it permanently smarter, not temporarily patched. **32 lessons.**
 
 **Governing standard as of L31: `DIRECTIVE.md`.** Every lesson from here on
 must classify its card(s) by Evidence Level (A-E), not a bare confidence %,
@@ -388,3 +388,29 @@ the pipeline itself does not emit Evidence Levels yet).
 `evidence_level` + `evidence_chain` fields to `identify()`'s output schema
 in `profile_dataset.py`/`folder_dataset.py`, surface them on the dashboard,
 and write `tests.py` assertions that reject any result missing them.
+**Update (same day):** built. `evidence.py` + pipeline wiring + dashboard
+badges + 9 tests + auto Failure Database (`FAILURES.md`). See L32 for the
+first bug the new standard caught in its own first full run.
+
+### L32 — the promo-preference heuristic was a prior, not evidence (2026-07-17)
+**Mistake:** when Layer E (attack names) narrowed a card to one species
+with MULTIPLE real printings and no directly-read number, identify()
+"preferred the promo-format token" among the candidates and adopted it
+as the number. In the full-directive re-audit this silently picked
+**SM38** for an Incineroar-GX whose footer plainly reads **27/149**, and
+**TG16** for a Mimikyu V that is **068/172** — both caught the same day
+by eye-adjudication of the actual photos (2/2 wrong). The heuristic's own
+comment claimed it was safe "when every OTHER card in this same photo
+also reads as a promo" — but that context condition was NEVER CODED; it
+fired unconditionally on standalone singles.
+**Rule:** a number that was not read (directly or by snap) may only be
+adopted from Layer E when the species has EXACTLY ONE candidate printing.
+Multiple printings + no read = Level D with candidates exposed for the
+eye-gate — never a heuristic pick. (This is the directive's mission
+statement in code: an uncertain answer with a complete evidence trail
+beats an unjustified high-confidence prediction.)
+**Also caught in the same re-audit:** a process-hygiene failure — a
+stopped background job's Python child survived and raced the corrected
+re-run on the same JSON, interleaving stale watermark-less results with
+good ones. Verify the actual saved state, never the log line.
+**Guard:** `test_attack_number_needs_single_printing` (tests.py).

@@ -252,6 +252,7 @@ def valuator_ocr():
             lines = lines + [ln for ln in deep if ln not in lines]
             name, number = valuator.guess_query(lines)
     via = None
+    aid = None
     if not name:
         # name unreadable (Japanese / blur) -> identify by attack fingerprint
         fp = valuator.fingerprint_names(lines)
@@ -289,18 +290,33 @@ def valuator_ocr():
     # LAYER B: a number must be a real printing of the identified card —
     # snap 1-digit OCR errors (015/173 -> 016/173) against actual printings
     number_read, snapped = number, False
+    cands = valuator.search_candidates(name, prefer_jp=jp) if name else []
     if via and name and number:
-        cands = valuator.search_candidates(name, prefer_jp=jp)
         fixed = valuator.snap_number(number, [c["number"] for c in cands])
         if fixed and valuator._norm_num(fixed) != valuator._norm_num(number):
             number, snapped = fixed, True
         elif fixed:
             number = fixed               # canonical zero-padding
-    return jsonify({"query": (name + " " + (number or "")).strip(),
-                    "name": name, "number": number, "number_read": number_read,
-                    "snapped": snapped, "lines": lines[:12],
-                    "via": via, "jp": jp,
-                    "file": "/uploads/" + os.path.basename(path)})
+    if name and number and not any(
+            valuator._norm_num(c["number"]) == valuator._norm_num(str(number)) for c in cands):
+        # the name-only search above may not carry the exact-number product —
+        # re-search with the number too so catalog_match evidence is real
+        cands = valuator.search_candidates(f"{name} {number}", prefer_jp=jp) or cands
+    graded = any(re.search(r"\b(psa|bgs|cgc|beckett|black label|"
+                           r"gem ?mint|pristine)", ln, re.I) for ln in lines)
+    result = {"query": (name + " " + (number or "")).strip(),
+              "name": name, "number": number, "number_read": number_read,
+              "snapped": snapped, "lines": lines[:12],
+              "via": via, "jp": jp, "graded": bool(name or number) and graded,
+              "candidates": cands[:6],
+              "file": "/uploads/" + os.path.basename(path)}
+    # DIRECTIVE.md, Rule 1/2: every identification carries its Evidence
+    # Level + chain. This route has its own inline identification logic
+    # (doesn't call profile_dataset.identify()) so it builds evidence here too.
+    import evidence
+    result.update(evidence.build_evidence(result, lines, aid))
+    evidence.log_failure(result)
+    return jsonify(result)
 
 
 @app.route("/api/valuator/from_url", methods=["POST"])
@@ -630,6 +646,9 @@ HTML = r"""<!doctype html>
               style="background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:7px 12px;cursor:pointer">✕ Clear</button>
       <span id="valMsg" class="muted"></span>
     </div>
+    <!-- DIRECTIVE.md: every identification shows its Evidence Level +
+         chain here — never just a bare name/number claim -->
+    <div id="valEvidence" style="margin-top:8px"></div>
     <!-- uploaded images live HERE and persist until ✕ Clear — search results
          render below in #valCands and never touch this container -->
     <div id="valBinder" style="margin-top:12px"></div>
@@ -829,6 +848,7 @@ async function valApplyOcr(d){
                 : (c.candidates && c.candidates.length)
                   ? `⚠ ${c.candidates.length} possible printings — tap to pick`
                   : (c.name ? 'printing unread — tap to search' : '#?')}</div>
+            <div style="margin-top:3px">${evidenceBadge(c, true)}</div>
             <button class="bzoom" data-img="${c.cell||''}" title="zoom this card"
               style="position:absolute;top:4px;right:4px;border:none;border-radius:6px;padding:1px 6px;cursor:zoom-in;background:rgba(0,0,0,.55);color:#fff;font-size:12px">🔍</button>
           </div>`).join('')}
@@ -882,6 +902,7 @@ async function valApplyOcr(d){
     $('#valMsg').textContent = 'read: "' + d.query + '" — fix it if wrong, then Find card';
   else
     $('#valMsg').textContent = 'could not read it — type the name, or the set code + number from the card\'s bottom edge (e.g. sm12a 016/173)';
+  $('#valEvidence').innerHTML = evidenceBadge(d, false);
   if(d.query) await valFind();
 }
 
@@ -892,6 +913,7 @@ function valResetSearch(){
   $('#valCands').innerHTML = '';
   $('#valResult').innerHTML = '';
   $('#valMsg').textContent = '';
+  $('#valEvidence').innerHTML = '';
   window._cands = {};
 }
 
@@ -946,6 +968,49 @@ async function valFromUrl(){
 }
 $('#valFromUrl').onclick = valFromUrl;
 $('#valUrl').onkeydown = e=>{ if(e.key==='Enter') valFromUrl(); };
+
+// DIRECTIVE.md: Evidence Level badge + chain + failure/inference detail.
+// "Users should never need to inspect logs to understand why a card was
+// classified" — this is the whole reason this function exists.
+const EV_COLOR = {A:'#3ddc84', B:'#5b9cff', C:'#e8a33d', D:'#ff8a3d', E:'#ff5c5c'};
+const EV_MARK  = {confirmed:'✓', inferred:'≈', failed:'✗', seen_not_itemized:'~', not_checked:'·'};
+const EV_MARKCOLOR = {confirmed:'#3ddc84', inferred:'#e8a33d', failed:'#ff5c5c', seen_not_itemized:'#5b9cff', not_checked:'#666'};
+function evidenceBadge(d, compact){
+  if(!d || !d.evidence_level) return '';
+  const color = EV_COLOR[d.evidence_level] || '#888';
+  const badge = `<span title="${escapeHtml(d.evidence_level_meaning||'')}" style="display:inline-flex;align-items:center;gap:4px;background:${color}22;border:1px solid ${color};color:${color};border-radius:999px;padding:1px 8px;font-size:11px;font-weight:700;letter-spacing:.02em;white-space:nowrap">Level ${d.evidence_level} · ${d.confidence}%</span>`;
+  if(compact) return badge;
+  const chain = d.evidence_chain || {};
+  const chainRows = Object.keys(chain).map(k=>{
+    const v = chain[k];
+    return `<tr><td style="padding:2px 8px;color:${EV_MARKCOLOR[v.status]||'#666'};font-weight:700">${EV_MARK[v.status]||'·'}</td>`
+      + `<td style="padding:2px 8px;text-transform:capitalize;white-space:nowrap">${k.replace(/_/g,' ')}</td>`
+      + `<td style="padding:2px 8px;font-size:11px" class="muted">${escapeHtml(v.note||'')}</td></tr>`;
+  }).join('');
+  let extra = '';
+  if(d.inference_explanation){
+    const ie = d.inference_explanation;
+    extra = `<div style="margin-top:6px;font-size:11px" class="muted">`
+      + `<b>Why OCR needed forcing:</b> ${escapeHtml(ie.why_ocr_failed||'')}<br>`
+      + `<b>Forcing logic:</b> ${escapeHtml(ie.why_only_one_candidate_remained||'')}<br>`
+      + `<b>Remaining uncertainty:</b> ${escapeHtml(ie.remaining_uncertainty||'')}</div>`;
+  }
+  if(d.failure_report){
+    const fr = d.failure_report;
+    const helps = Object.keys(fr).filter(k=>k.startsWith('would_') && fr[k])
+      .map(k=>k.replace('would_','').replace(/_/g,' ').replace(' help',''));
+    extra = `<div style="margin-top:6px;font-size:11px" class="muted">`
+      + `<b>Missing:</b> ${escapeHtml(fr.missing_feature||'')}<br>`
+      + `<b>Blocked by:</b> ${escapeHtml(fr.blocking_evidence||'')}<br>`
+      + (helps.length ? `<b>Would help:</b> ${escapeHtml(helps.join(', '))}` : '') + `</div>`;
+  }
+  return `<details style="border:1px solid var(--line);border-radius:8px;padding:6px 10px">
+    <summary style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px">${badge}
+      <span class="muted" style="font-size:11px">evidence chain — click to expand</span></summary>
+    <table style="margin-top:6px;border-collapse:collapse">${chainRows}</table>
+    ${extra}
+  </details>`;
+}
 
 // shared by valFind() AND binder-pocket taps — renders a candidate grid
 // for eye-gate picking. Binder taps pass server-guaranteed candidates

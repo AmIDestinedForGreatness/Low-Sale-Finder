@@ -12,6 +12,7 @@ import os
 import sys
 import unittest
 
+import evidence
 import pc_price
 import scraper
 import tcg_price
@@ -423,6 +424,138 @@ class ValuatorLayerCD(unittest.TestCase):
         self.assertEqual([n for n, nums in lp3.items()
                           if any(valuator._norm_num(x) == valuator._norm_num("26/114")
                                  for x in nums)], [])
+
+
+class TestL32AttackNumberAdoption(unittest.TestCase):
+    """L32: Layer E may adopt a number only when the species has exactly
+    ONE candidate printing. The retired promo-format preference picked
+    SM38 over an actual 27/149 (Incineroar) and TG16 over an actual
+    068/172 (Mimikyu V) — both eye-adjudicated wrong the same day."""
+
+    def test_single_printing_adopted(self):
+        import profile_dataset
+        self.assertEqual(profile_dataset.adopt_attack_number(["XY117"]), "XY117")
+
+    def test_multiple_printings_never_picked_even_with_one_promo(self):
+        import profile_dataset
+        # the exact Incineroar shape: one promo-format token among numbered
+        # reprints — the OLD code returned "SM38" here; the card was 27/149
+        self.assertIsNone(profile_dataset.adopt_attack_number(["27/149", "SM38"]))
+        # and the Mimikyu shape (TG-gallery token among regular numbers)
+        self.assertIsNone(profile_dataset.adopt_attack_number(["068/172", "TG16"]))
+
+    def test_empty_is_none(self):
+        import profile_dataset
+        self.assertIsNone(profile_dataset.adopt_attack_number([]))
+
+
+class TestEvidence(unittest.TestCase):
+    """DIRECTIVE.md (L31): no identification may omit its Evidence Level.
+    These guard the pipeline ITSELF, not one card's result — a card whose
+    output is missing evidence_level/evidence_chain is a Rule-1 violation
+    regardless of whether the name/number happen to be right."""
+
+    def _ident(self, **kw):
+        base = {"name": None, "number": None, "number_read": None,
+                "snapped": False, "via": None, "jp": False, "query": "",
+                "graded": False, "candidates": []}
+        base.update(kw)
+        return base
+
+    def test_every_result_has_the_required_fields(self):
+        ident = self._ident(name="Pikachu ex", number="063/193",
+                            candidates=[{"pid": 1, "name": "Pikachu ex", "set": "Paldea Evolved",
+                                        "number": "063/193"}])
+        ev = evidence.build_evidence(ident, ["Pikachu ex", "063/193"], None)
+        for field in ("evidence_level", "evidence_chain", "confidence", "confidence_reason"):
+            self.assertIn(field, ev)
+        self.assertEqual(set(ev["evidence_chain"]), set(evidence.CHAIN_STEPS))
+        self.assertIn(ev["evidence_level"], evidence.LEVELS)
+
+    def test_clean_direct_read_is_level_a(self):
+        ident = self._ident(name="Pikachu ex", number="063/193",
+                            candidates=[{"pid": 1, "name": "Pikachu ex", "set": "Paldea Evolved",
+                                        "number": "063/193"}])
+        ev = evidence.build_evidence(ident, ["Pikachu ex", "063/193"], None)
+        self.assertEqual(ev["evidence_level"], "A")
+        # even Level A must show the structural gap honestly, not hide it
+        self.assertEqual(ev["evidence_chain"]["artwork"]["status"], "not_checked")
+        self.assertEqual(ev["evidence_chain"]["holo_pattern"]["status"], "not_checked")
+
+    def test_eye_read_is_level_b_not_a(self):
+        ident = self._ident(name="Coalossal", number="117/100",
+                            via="visual read (assistant eye)",
+                            candidates=[{"pid": 2, "name": "Coalossal", "set": "S3",
+                                        "number": "117/100"}])
+        ev = evidence.build_evidence(ident, ["117/100"], None)
+        self.assertEqual(ev["evidence_level"], "B")
+
+    def test_snapped_number_is_level_c_with_inference_explanation(self):
+        # the directive's OWN worked example: M Manectric-EX 024a/119
+        ident = self._ident(name="M Manectric-EX", number="024a/119",
+                            number_read="24a/19", snapped=True,
+                            candidates=[{"pid": 3, "name": "M Manectric EX", "set": "Promo",
+                                        "number": "024a/119"}])
+        ev = evidence.build_evidence(ident, ["M Manectric-EX", "24a/19"], None)
+        self.assertEqual(ev["evidence_level"], "C")
+        ie = ev["inference_explanation"]
+        for field in ("original_ocr_text", "why_ocr_failed", "candidate_search_process",
+                     "why_only_one_candidate_remained", "remaining_uncertainty"):
+            self.assertIn(field, ie)
+
+    def test_name_only_is_level_d(self):
+        ident = self._ident(name="Yveltal", number=None)
+        ev = evidence.build_evidence(ident, ["Yveltal"], None)
+        self.assertEqual(ev["evidence_level"], "D")
+
+    def test_nothing_readable_is_level_e_with_failure_report(self):
+        ident = self._ident(name=None, number=None)
+        ev = evidence.build_evidence(ident, ["HP50", "blur"], None)
+        self.assertEqual(ev["evidence_level"], "E")
+        fr = ev["failure_report"]
+        for field in ("missing_feature", "blocking_evidence",
+                     "would_another_image_angle_help", "would_removing_glare_help"):
+            self.assertIn(field, fr)
+
+    def test_graded_slab_never_reaches_level_a(self):
+        # slabs are region-ambiguous by construction (L-series bug: a
+        # Beckett'd CHINESE promo unique-matched a JAPANESE card sharing
+        # its number) — must never claim the gold standard
+        ident = self._ident(name="Pikachu", number="004/SV-P", graded=True,
+                            candidates=[{"pid": 4, "name": "Pikachu", "set": "SV-P",
+                                        "number": "004/SV-P"}])
+        ev = evidence.build_evidence(ident, ["PSA 10", "004/SV-P"], None)
+        self.assertNotEqual(ev["evidence_level"], "A")
+
+    def test_confidence_never_counts_an_unchecked_step(self):
+        ident = self._ident(name="Pikachu ex", number="063/193",
+                            candidates=[{"pid": 1, "name": "Pikachu ex", "set": "Paldea Evolved",
+                                        "number": "063/193"}])
+        ev = evidence.build_evidence(ident, ["Pikachu ex", "063/193"], None)
+        confirmed = sum(1 for s in evidence.CHAIN_STEPS
+                        if ev["evidence_chain"][s]["status"] == "confirmed")
+        self.assertEqual(ev["confidence"], round(100 * confirmed / len(evidence.CHAIN_STEPS)))
+        self.assertLess(ev["confidence"], 100)   # 5 dims are structurally unchecked
+
+    def test_log_failure_skips_level_a_but_seeds_structural_gap(self):
+        # redirect to a scratch file — this must never mutate the real
+        # dataset/failures.json as a side effect of running the test suite
+        import tempfile
+        real_json, real_md = evidence.FAILURES_JSON, evidence.FAILURES_MD
+        tmpdir = tempfile.mkdtemp(prefix="failures_test_")
+        evidence.FAILURES_JSON = os.path.join(tmpdir, "failures.json")
+        evidence.FAILURES_MD = os.path.join(tmpdir, "FAILURES.md")
+        try:
+            ident = self._ident(name="Pikachu ex", number="063/193",
+                                candidates=[{"pid": 1, "name": "Pikachu ex", "set": "Paldea Evolved",
+                                            "number": "063/193"}])
+            ident.update(evidence.build_evidence(ident, ["Pikachu ex", "063/193"], None))
+            evidence.log_failure(ident)
+            db_after = evidence._load_failures()
+            self.assertIn(evidence._STRUCTURAL_GAP_ID, db_after)
+            self.assertNotIn(evidence._card_key(ident), db_after)  # Level A -> no per-card record
+        finally:
+            evidence.FAILURES_JSON, evidence.FAILURES_MD = real_json, real_md
 
 
 if __name__ == "__main__":

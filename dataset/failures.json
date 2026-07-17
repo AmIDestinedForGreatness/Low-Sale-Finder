@@ -1,0 +1,331 @@
+{
+ "STRUCTURAL-000": {
+  "problem": "Evidence chain has 5/10 structurally unchecked dimensions on EVERY identification, including Level A: artwork, hp, ability, expansion_symbol, holo_pattern",
+  "cause": "the pipeline is text/OCR-first; it has never had an independent visual-artwork match, holo-pattern detector, or structured HP/ability parser",
+  "current_solution": "assistant manual eye-read covers these implicitly but un-itemized when it runs (Level B path only)",
+  "future_solution": "build a visual-match step (perceptual hash or vision-model call against reference card images) — cost/API implications, needs sign-off before wiring into the automated pipeline",
+  "status": "Open — single highest-priority engineering item from DIRECTIVE.md adoption"
+ },
+ "Charizard|006/165|Charizard 006/165": {
+  "problem": "Charizard 006/165 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (None) — the read fragment(s) matched exactly one catalog entry via None",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Mega Manectric ex|077/063|Mega Manectric ex 077/063": {
+  "problem": "Mega Manectric ex 077/063 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (attack fingerprint) — the read fragment(s) matched exactly one catalog entry via attack fingerprint",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Chespin|034/XY-P|Chespin 034/XY-P": {
+  "problem": "Chespin 034/XY-P — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (dex number) — the read fragment(s) matched exactly one catalog entry via dex number",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Pikachu|197/SV-P|Pikachu 197/SV-P": {
+  "problem": "Pikachu 197/SV-P — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (dex number) — the read fragment(s) matched exactly one catalog entry via dex number",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Coalossal|117/100|Coalossal 117/100": {
+  "problem": "Coalossal 117/100 — automated OCR could not read this card at all",
+  "cause": "OCR produced no usable text on the identifying region",
+  "current_solution": "manual assistant visual read (eye-gate)",
+  "future_solution": "train footer-specific OCR preprocessing for this failure pattern (glare/dark-holo/micro-text — see LESSONS.md)",
+  "status": "Pending — mitigated by manual read, automated path unsolved"
+ },
+ "Staraptor|None|Staraptor": {
+  "problem": "Staraptor (unknown) — card number / exact printing",
+  "cause": "text present but no name-shaped or number-shaped fragment resolved",
+  "current_solution": "none — unidentified",
+  "future_solution": "another image angle help; removing glare help; scan instead of photo help",
+  "status": "Open"
+ },
+ "Combusken|065/PCG-P|065/PCG-P": {
+  "problem": "Combusken 065/PCG-P — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (unique number match) — the read fragment(s) matched exactly one catalog entry via unique number match",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Combee|081/DP-P|Combee 081/DP-P": {
+  "problem": "Combee 081/DP-P — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (dex number) — the read fragment(s) matched exactly one catalog entry via dex number",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Rota's Mime Jr.|086/PCG-P|Rota's Mime Jr. 086/PCG-P": {
+  "problem": "Rota's Mime Jr. 086/PCG-P — automated OCR could not read this card at all",
+  "cause": "read directly off the footer by the assistant (manual visual read, OCR had failed)",
+  "current_solution": "manual assistant visual read (eye-gate)",
+  "future_solution": "train footer-specific OCR preprocessing for this failure pattern (glare/dark-holo/micro-text — see LESSONS.md)",
+  "status": "Pending — mitigated by manual read, automated path unsolved"
+ },
+ "Croagunk|032/DP-P|Croagunk 032/DP-P": {
+  "problem": "Croagunk 032/DP-P — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (dex number) — the read fragment(s) matched exactly one catalog entry via dex number",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Raichu GX|079/072|sm3 079/072": {
+  "problem": "Raichu GX 079/072 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (unique number match) — the read fragment(s) matched exactly one catalog entry via unique number match",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "M Tyranitar-EX|43/98|M Tyranitar-EX 13/98": {
+  "problem": "M Tyranitar-EX 43/98 — identity forced by inference, not directly read",
+  "cause": "OCR read a number that is not a real catalog printing (misread/blur)",
+  "current_solution": "catalog-forced match (local index snap) — '13/98' does not exist in the catalog; '43/98' is the only real printing within edit distance",
+  "future_solution": "re-OCR this footer region at higher zoom, or add a targeted preprocessing pass for this failure pattern",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Black Kyurem-EX|045/059|Black Kyurem-EX 045/059": {
+  "problem": "Black Kyurem-EX 045/059 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (fingerprint × number) — the read fragment(s) matched exactly one catalog entry via fingerprint × number",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Hydreigon-EX|103/108|Hydreigon 103/108": {
+  "problem": "Hydreigon-EX 103/108 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (local index: number is a printing) — the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Snorlax GX|SM05|sm05 SM05": {
+  "problem": "Snorlax GX SM05 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (unique number match) — the read fragment(s) matched exactly one catalog entry via unique number match",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Yveltal-EX|XY08|Yveltal XY08": {
+  "problem": "Yveltal-EX XY08 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (local index: number is a printing) — the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Lucario VSTAR|SWSH291|Lucario VSTAR SWSH291": {
+  "problem": "Lucario VSTAR SWSH291 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (attack names) — the read fragment(s) matched exactly one catalog entry via attack names",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Pikachu|SM194|Pikachu SM194": {
+  "problem": "Pikachu SM194 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (dex number) — the read fragment(s) matched exactly one catalog entry via dex number",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Lunala-GX|SM17|Lunala-GX SM17": {
+  "problem": "Lunala-GX SM17 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (local index: number is a printing) — the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Pikachu|10/18|Pikachu 10/18": {
+  "problem": "Pikachu 10/18 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (dex number) — the read fragment(s) matched exactly one catalog entry via dex number",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Charizard|010/078|Charizard 010/078": {
+  "problem": "Charizard 010/078 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (dex number) — the read fragment(s) matched exactly one catalog entry via dex number",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "M Slowbro-EX|27/108|M Slowbro-EX 27/108": {
+  "problem": "M Slowbro-EX 27/108 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (attack names) — the read fragment(s) matched exactly one catalog entry via attack names",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "M Manectric-EX|024a/119|M Manectric-EX 24a/19": {
+  "problem": "M Manectric-EX 024a/119 — identity forced by inference, not directly read",
+  "cause": "OCR read a number that is not a real catalog printing (misread/blur)",
+  "current_solution": "catalog-forced match (None) — '24a/19' does not exist in the catalog; '024a/119' is the only real printing within edit distance",
+  "future_solution": "re-OCR this footer region at higher zoom, or add a targeted preprocessing pass for this failure pattern",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Eevee VMAX|SWSH087|Eevee VMAX SWSH087": {
+  "problem": "Eevee VMAX SWSH087 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (attack names) — the read fragment(s) matched exactly one catalog entry via attack names",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Yveltal-EX|XY150|Yveltal-EX XY150": {
+  "problem": "Yveltal-EX XY150 — automated OCR could not read this card at all",
+  "cause": "read directly off the footer by the assistant (manual visual read, OCR had failed)",
+  "current_solution": "manual assistant visual read (eye-gate)",
+  "future_solution": "train footer-specific OCR preprocessing for this failure pattern (glare/dark-holo/micro-text — see LESSONS.md)",
+  "status": "Pending — mitigated by manual read, automated path unsolved"
+ },
+ "Resistance Gym|069/189|Resistance Gym 069/189": {
+  "problem": "Resistance Gym 069/189 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (None) — the read fragment(s) matched exactly one catalog entry via None",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Mimikyu V|068/172|Mimikyu 068/172": {
+  "problem": "Mimikyu V 068/172 — automated OCR could not read this card at all",
+  "cause": "OCR produced no usable text on the identifying region",
+  "current_solution": "manual assistant visual read (eye-gate)",
+  "future_solution": "train footer-specific OCR preprocessing for this failure pattern (glare/dark-holo/micro-text — see LESSONS.md)",
+  "status": "Pending — mitigated by manual read, automated path unsolved"
+ },
+ "Pikachu VMAX|SWSH286|Pikachu VMAX SWSH286": {
+  "problem": "Pikachu VMAX SWSH286 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (attack names) — the read fragment(s) matched exactly one catalog entry via attack names",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Scizor-EX|119/122|Scizor 119/122": {
+  "problem": "Scizor-EX 119/122 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (local index: number is a printing) — the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Snorlax|XY179|Snorlax XY79": {
+  "problem": "Snorlax XY179 — identity forced by inference, not directly read",
+  "cause": "OCR read a number that is not a real catalog printing (misread/blur)",
+  "current_solution": "catalog-forced match (local index snap) — 'XY79' does not exist in the catalog; 'XY179' is the only real printing within edit distance",
+  "future_solution": "re-OCR this footer region at higher zoom, or add a targeted preprocessing pass for this failure pattern",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Alolan Ninetales-GX|22/145|Alolan Ninetales-GX 22/145": {
+  "problem": "Alolan Ninetales-GX 22/145 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (attack names) — the read fragment(s) matched exactly one catalog entry via attack names",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Altaria-EX|123/124|Altaria 123/124": {
+  "problem": "Altaria-EX 123/124 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (local index: number is a printing) — the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Hoopa-GX|96/181|Hoopa 96/181": {
+  "problem": "Hoopa-GX 96/181 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (local index: number is a printing) — the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Incineroar-GX|27/149|Incineroar 27/149": {
+  "problem": "Incineroar-GX 27/149 — automated OCR could not read this card at all",
+  "cause": "OCR produced no usable text on the identifying region",
+  "current_solution": "manual assistant visual read (eye-gate)",
+  "future_solution": "train footer-specific OCR preprocessing for this failure pattern (glare/dark-holo/micro-text — see LESSONS.md)",
+  "status": "Pending — mitigated by manual read, automated path unsolved"
+ },
+ "Lycanroc-GX|82/181|Lycanroc 82/181": {
+  "problem": "Lycanroc-GX 82/181 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (local index: number is a printing) — the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Zoroark-GX|53/73|Zoroark 53/73": {
+  "problem": "Zoroark-GX 53/73 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (local index: number is a printing) — the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Weavile|238/236|Weavile 238/236": {
+  "problem": "Weavile 238/236 — automated OCR could not read this card at all",
+  "cause": "read directly off the footer by the assistant (manual visual read, OCR had failed)",
+  "current_solution": "manual assistant visual read (eye-gate)",
+  "future_solution": "train footer-specific OCR preprocessing for this failure pattern (glare/dark-holo/micro-text — see LESSONS.md)",
+  "status": "Pending — mitigated by manual read, automated path unsolved"
+ },
+ "Excadrill|246/236|Excadrill 246/236": {
+  "problem": "Excadrill 246/236 — automated OCR could not read this card at all",
+  "cause": "read directly off the footer by the assistant (manual visual read, OCR had failed)",
+  "current_solution": "manual assistant visual read (eye-gate)",
+  "future_solution": "train footer-specific OCR preprocessing for this failure pattern (glare/dark-holo/micro-text — see LESSONS.md)",
+  "status": "Pending — mitigated by manual read, automated path unsolved"
+ },
+ "Stoutland|248/236|Stoutland 248/236": {
+  "problem": "Stoutland 248/236 — automated OCR could not read this card at all",
+  "cause": "OCR produced no usable text on the identifying region",
+  "current_solution": "manual assistant visual read (eye-gate)",
+  "future_solution": "train footer-specific OCR preprocessing for this failure pattern (glare/dark-holo/micro-text — see LESSONS.md)",
+  "status": "Pending — mitigated by manual read, automated path unsolved"
+ },
+ "Wishiwashi|240/236|Wishiwashi 240/236": {
+  "problem": "Wishiwashi 240/236 — automated OCR could not read this card at all",
+  "cause": "read directly off the footer by the assistant (manual visual read, OCR had failed)",
+  "current_solution": "manual assistant visual read (eye-gate)",
+  "future_solution": "train footer-specific OCR preprocessing for this failure pattern (glare/dark-holo/micro-text — see LESSONS.md)",
+  "status": "Pending — mitigated by manual read, automated path unsolved"
+ },
+ "Victini|XY117|Victini XY117": {
+  "problem": "Victini XY117 — automated OCR could not read this card at all",
+  "cause": "read directly off the footer by the assistant (manual visual read, OCR had failed)",
+  "current_solution": "manual assistant visual read (eye-gate)",
+  "future_solution": "train footer-specific OCR preprocessing for this failure pattern (glare/dark-holo/micro-text — see LESSONS.md)",
+  "status": "Pending — mitigated by manual read, automated path unsolved"
+ },
+ "Meloetta|XY120|Meloetta XY120": {
+  "problem": "Meloetta XY120 — automated OCR could not read this card at all",
+  "cause": "read directly off the footer by the assistant (manual visual read, OCR had failed)",
+  "current_solution": "manual assistant visual read (eye-gate)",
+  "future_solution": "train footer-specific OCR preprocessing for this failure pattern (glare/dark-holo/micro-text — see LESSONS.md)",
+  "status": "Pending — mitigated by manual read, automated path unsolved"
+ },
+ "Magearna|XY186|Magearna XY186": {
+  "problem": "Magearna XY186 — automated OCR could not read this card at all",
+  "cause": "read directly off the footer by the assistant (manual visual read, OCR had failed)",
+  "current_solution": "manual assistant visual read (eye-gate)",
+  "future_solution": "train footer-specific OCR preprocessing for this failure pattern (glare/dark-holo/micro-text — see LESSONS.md)",
+  "status": "Pending — mitigated by manual read, automated path unsolved"
+ },
+ "Manaphy|XY113|Manaphy XY113": {
+  "problem": "Manaphy XY113 — automated OCR could not read this card at all",
+  "cause": "read directly off the footer by the assistant (manual visual read, OCR had failed)",
+  "current_solution": "manual assistant visual read (eye-gate)",
+  "future_solution": "train footer-specific OCR preprocessing for this failure pattern (glare/dark-holo/micro-text — see LESSONS.md)",
+  "status": "Pending — mitigated by manual read, automated path unsolved"
+ },
+ "Volcanion-EX|26/114|Volcanion 26/314": {
+  "problem": "Volcanion-EX 26/114 — identity forced by inference, not directly read",
+  "cause": "OCR read a number that is not a real catalog printing (misread/blur)",
+  "current_solution": "catalog-forced match (local index snap) — '26/314' does not exist in the catalog; '26/114' is the only real printing within edit distance",
+  "future_solution": "re-OCR this footer region at higher zoom, or add a targeted preprocessing pass for this failure pattern",
+  "status": "Pending — mitigated by inference, not solved"
+ },
+ "Golem-EX|46/83|Golem 46/83": {
+  "problem": "Golem-EX 46/83 — identity forced by inference, not directly read",
+  "cause": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+  "current_solution": "catalog-forced match (local index: number is a printing) — the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+  "future_solution": "widen the automated evidence chain so this stops depending on elimination alone",
+  "status": "Pending — mitigated by inference, not solved"
+ }
+}

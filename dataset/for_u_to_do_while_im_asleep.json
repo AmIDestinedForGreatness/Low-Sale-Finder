@@ -5,13 +5,14 @@
   "multi_card": false,
   "cards": [
    {
-    "name": "M Mewtwo EX (63)",
+    "name": "M Mewtwo-EX",
     "number": "63/162",
     "number_read": "63/162",
     "snapped": false,
-    "via": "unique number match",
+    "via": null,
     "jp": false,
-    "query": "63/162",
+    "query": "M Mewtwo-EX 63/162",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -19,97 +20,64 @@
       "name": "M Mewtwo EX (63)",
       "set": "XY - BREAKthrough",
       "number": "63/162",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/107182.jpg"
+     },
+     {
+      "pid": 107183,
+      "name": "M Mewtwo EX (64)",
+      "set": "XY - BREAKthrough",
+      "number": "64/162",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/107183.jpg"
      }
     ],
-    "value": {
-     "pid": 107182,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 52.79,
-     "market_php": 3062,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 22.34,
-       "condition": "Moderately Played"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 14.7,
-       "condition": "Heavily Played"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 14.0,
-       "condition": "Damaged"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 12.59,
-       "condition": "Damaged"
-      },
-      {
-       "date": "2026-07-13",
-       "usd": 12.56,
-       "condition": "Damaged"
-      }
-     ],
-     "n_sales": 5,
-     "days_span": 3,
-     "confidence": "HIGH",
-     "confidence_why": "~1.7 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 52.79,
-       "php": 3062,
-       "from": "est. % of market"
-      },
-      "Lightly Played": {
-       "usd": 42.23,
-       "php": 2449,
-       "from": "est. % of market"
-      },
-      "Moderately Played": {
-       "usd": 22.34,
-       "php": 1296,
-       "from": "1 real sold"
-      },
-      "Heavily Played": {
-       "usd": 14.7,
-       "php": 853,
-       "from": "1 real sold"
-      },
-      "Damaged": {
-       "usd": 12.59,
-       "php": 730,
-       "from": "3 real sold"
-      }
+    "evidence_level": "A",
+    "evidence_level_meaning": "Verified — name and number both read directly, uniquely matched, no forcing/inference",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
      },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 3674,
-       "steal_php": 2205
-      },
-      "Lightly Played": {
-       "list_php": 2939,
-       "steal_php": 1763
-      },
-      "Moderately Played": {
-       "list_php": 1555,
-       "steal_php": 933
-      },
-      "Heavily Played": {
-       "list_php": 1024,
-       "steal_php": 614
-      },
-      "Damaged": {
-       "list_php": 876,
-       "steal_php": 526
-      }
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly from OCR text on the card"
      },
-     "product": "M Mewtwo EX (63)"
-    }
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'M Mewtwo-EX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: M Mewtwo EX (63) (XY - BREAKthrough)"
+     }
+    },
+    "confidence": 50,
+    "confidence_reason": "5/10 evidence-chain steps independently confirmed: pokemon_name, attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    }
   ],
   "renamed_to": "M Mewtwo EX (63) 63-162 English.png"
@@ -125,8 +93,9 @@
     "number_read": "SM05",
     "snapped": false,
     "via": "unique number match",
-    "jp": false,
+    "jp": true,
     "query": "sm05 SM05",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -134,96 +103,69 @@
       "name": "Snorlax GX - SM05",
       "set": "SM Promos",
       "number": "SM05",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/126027.jpg"
      }
     ],
-    "value": {
-     "pid": 126027,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 17.43,
-     "market_php": 1011,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 3.41,
-       "condition": "Heavily Played"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 3.71,
-       "condition": "Heavily Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 9.69,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 12.45,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 19.29,
-       "condition": "Near Mint"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "name derived because exactly one/only matching catalog product(s) share the read number (unique number match)"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Snorlax-GX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "inferred",
+      "note": "language claim follows from the identification path (unique number match), not a directly read language marker"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Snorlax GX - SM05 (SM Promos)"
+     }
+    },
+    "confidence": 30,
+    "confidence_reason": "3/10 evidence-chain steps independently confirmed: attack_names, card_number, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "HP190+",
+      "80",
+      "***PulverizingPancakeGX210",
+      "SM05",
+      "Knocked Out,your opponent takes 2 Prize sards,",
+      "o2016Pokemon"
      ],
-     "n_sales": 5,
-     "days_span": 2,
-     "confidence": "HIGH",
-     "confidence_why": "~2.5 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 19.29,
-       "php": 1119,
-       "from": "1 real sold"
-      },
-      "Lightly Played": {
-       "usd": 11.07,
-       "php": 642,
-       "from": "2 real sold"
-      },
-      "Moderately Played": {
-       "usd": 10.46,
-       "php": 607,
-       "from": "est. % of market"
-      },
-      "Heavily Played": {
-       "usd": 3.56,
-       "php": 206,
-       "from": "2 real sold"
-      },
-      "Damaged": {
-       "usd": 5.23,
-       "php": 303,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 1343,
-       "steal_php": 806
-      },
-      "Lightly Played": {
-       "list_php": 770,
-       "steal_php": 462
-      },
-      "Moderately Played": {
-       "list_php": 728,
-       "steal_php": 437
-      },
-      "Heavily Played": {
-       "list_php": 247,
-       "steal_php": 148
-      },
-      "Damaged": {
-       "list_php": 364,
-       "steal_php": 218
-      }
-     },
-     "product": "Snorlax GX - SM05"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=unique number match; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via unique number match",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -242,6 +184,7 @@
     "via": null,
     "jp": false,
     "query": "M Steelix-EX 68/114",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -249,97 +192,56 @@
       "name": "M Steelix EX",
       "set": "XY - Steam Siege",
       "number": "68/114",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/121197.jpg"
      }
     ],
-    "value": {
-     "pid": 121197,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 8.95,
-     "market_php": 519,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 3.17,
-       "condition": "Damaged"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 7.88,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 5.0,
-       "condition": "Damaged"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 6.69,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 5.68,
-       "condition": "Moderately Played"
-      }
-     ],
-     "n_sales": 5,
-     "days_span": 2,
-     "confidence": "HIGH",
-     "confidence_why": "~2.5 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 8.95,
-       "php": 519,
-       "from": "est. % of market"
-      },
-      "Lightly Played": {
-       "usd": 7.29,
-       "php": 423,
-       "from": "2 real sold"
-      },
-      "Moderately Played": {
-       "usd": 5.68,
-       "php": 329,
-       "from": "1 real sold"
-      },
-      "Heavily Played": {
-       "usd": 4.03,
-       "php": 234,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 4.08,
-       "php": 237,
-       "from": "2 real sold"
-      }
+    "evidence_level": "A",
+    "evidence_level_meaning": "Verified — name and number both read directly, uniquely matched, no forcing/inference",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
      },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 623,
-       "steal_php": 374
-      },
-      "Lightly Played": {
-       "list_php": 508,
-       "steal_php": 305
-      },
-      "Moderately Played": {
-       "list_php": 395,
-       "steal_php": 237
-      },
-      "Heavily Played": {
-       "list_php": 281,
-       "steal_php": 168
-      },
-      "Damaged": {
-       "list_php": 284,
-       "steal_php": 171
-      }
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly from OCR text on the card"
      },
-     "product": "M Steelix EX"
-    }
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'M Steelix-EX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: M Steelix EX (XY - Steam Siege)"
+     }
+    },
+    "confidence": 50,
+    "confidence_reason": "5/10 evidence-chain steps independently confirmed: pokemon_name, attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    }
   ],
   "renamed_to": "M Steelix-EX 68-114 English.png"
@@ -357,6 +259,7 @@
     "via": null,
     "jp": false,
     "query": "Flygon-GX 110/236",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -364,97 +267,56 @@
       "name": "Flygon GX",
       "set": "SM - Cosmic Eclipse",
       "number": "110/236",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/201141.jpg"
      }
     ],
-    "value": {
-     "pid": 201141,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 2.35,
-     "market_php": 136,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 2.37,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 2.66,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 1.98,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 2.38,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 2.4,
-       "condition": "Near Mint"
-      }
-     ],
-     "n_sales": 5,
-     "days_span": 2,
-     "confidence": "HIGH",
-     "confidence_why": "~2.5 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 2.38,
-       "php": 138,
-       "from": "4 real sold"
-      },
-      "Lightly Played": {
-       "usd": 2.66,
-       "php": 154,
-       "from": "1 real sold"
-      },
-      "Moderately Played": {
-       "usd": 1.41,
-       "php": 82,
-       "from": "est. % of market"
-      },
-      "Heavily Played": {
-       "usd": 1.06,
-       "php": 61,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 0.7,
-       "php": 41,
-       "from": "est. % of market"
-      }
+    "evidence_level": "A",
+    "evidence_level_meaning": "Verified — name and number both read directly, uniquely matched, no forcing/inference",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
      },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 166,
-       "steal_php": 99
-      },
-      "Lightly Played": {
-       "list_php": 185,
-       "steal_php": 111
-      },
-      "Moderately Played": {
-       "list_php": 98,
-       "steal_php": 59
-      },
-      "Heavily Played": {
-       "list_php": 73,
-       "steal_php": 44
-      },
-      "Damaged": {
-       "list_php": 49,
-       "steal_php": 30
-      }
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly from OCR text on the card"
      },
-     "product": "Flygon GX"
-    }
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "attack-shaped text present in OCR but did not resolve to a unique index match"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Flygon GX (SM - Cosmic Eclipse)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    }
   ],
   "renamed_to": "Flygon-GX 110-236 English.png"
@@ -465,110 +327,124 @@
   "multi_card": false,
   "cards": [
    {
-    "name": "Yveltal",
+    "name": "Yveltal-EX",
     "number": "XY08",
     "number_read": "XY08",
     "snapped": false,
-    "via": null,
+    "via": "local index: number is a printing",
     "jp": false,
     "query": "Yveltal XY08",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
-      "pid": 90701,
-      "name": "Yveltal EX - XY08",
-      "set": "XY Promos",
-      "number": "XY08",
-      "line": "Pokemon"
+      "pid": 605139,
+      "name": "Yveltal EX - 005/023",
+      "set": "XYC: Super Legend Set: Xerneas-EX & Yveltal-EX",
+      "number": "005/023",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/605139.jpg"
+     },
+     {
+      "pid": 605140,
+      "name": "Yveltal EX - 006/023",
+      "set": "XYC: Super Legend Set: Xerneas-EX & Yveltal-EX",
+      "number": "006/023",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/605140.jpg"
+     },
+     {
+      "pid": 684386,
+      "name": "Yveltal ex - 053/088",
+      "set": "ME03: Perfect Order",
+      "number": "053/088",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/684386.jpg"
+     },
+     {
+      "pid": 605138,
+      "name": "Malamar",
+      "set": "XYC: Super Legend Set: Xerneas-EX & Yveltal-EX",
+      "number": "004/023",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/605138.jpg"
+     },
+     {
+      "pid": 605135,
+      "name": "Pancham",
+      "set": "XYC: Super Legend Set: Xerneas-EX & Yveltal-EX",
+      "number": "001/023",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/605135.jpg"
+     },
+     {
+      "pid": 605141,
+      "name": "Spritzee",
+      "set": "XYC: Super Legend Set: Xerneas-EX & Yveltal-EX",
+      "number": "007/023",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/605141.jpg"
      }
     ],
-    "value": {
-     "pid": 90701,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 11.05,
-     "market_php": 641,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 12.3,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 13.65,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 10.75,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 3.47,
-       "condition": "Moderately Played"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 0.99,
-       "condition": "Damaged"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived by joining the read number against the local printings index (local index: number is a printing) — the number is the evidence, not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Yveltal-EX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "not_checked",
+      "note": "6 candidate(s) returned, none carry an exact number match"
+     }
+    },
+    "confidence": 30,
+    "confidence_reason": "3/10 evidence-chain steps independently confirmed: attack_names, card_number, language. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "Hp170",
+      "20+",
+      "This attack does 20 more damage times theamount",
+      "-20",
+      "yaroppenent taken2 Prizeardks",
+      "291sPokam"
      ],
-     "n_sales": 5,
-     "days_span": 1,
-     "confidence": "HIGH",
-     "confidence_why": "~5.0 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 12.3,
-       "php": 713,
-       "from": "3 real sold"
-      },
-      "Lightly Played": {
-       "usd": 8.84,
-       "php": 513,
-       "from": "est. % of market"
-      },
-      "Moderately Played": {
-       "usd": 3.47,
-       "php": 201,
-       "from": "1 real sold"
-      },
-      "Heavily Played": {
-       "usd": 4.97,
-       "php": 288,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 0.99,
-       "php": 57,
-       "from": "1 real sold"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 856,
-       "steal_php": 513
-      },
-      "Lightly Played": {
-       "list_php": 616,
-       "steal_php": 369
-      },
-      "Moderately Played": {
-       "list_php": 241,
-       "steal_php": 145
-      },
-      "Heavily Played": {
-       "list_php": 346,
-       "steal_php": 207
-      },
-      "Damaged": {
-       "list_php": 68,
-       "steal_php": 41
-      }
-     },
-     "product": "Yveltal EX - XY08"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=local index: number is a printing; 6 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -584,9 +460,10 @@
     "number": "SWSH291",
     "number_read": "SWSH291",
     "snapped": false,
-    "via": "unique number match",
+    "via": "attack names",
     "jp": false,
-    "query": "SWSH291",
+    "query": "Lucario VSTAR SWSH291",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -594,96 +471,67 @@
       "name": "Lucario VSTAR - SWSH291",
       "set": "SWSH: Sword & Shield Promo Cards",
       "number": "SWSH291",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/475642.jpg"
      }
     ],
-    "value": {
-     "pid": 475642,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 12.36,
-     "market_php": 717,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 12.72,
-       "condition": "Moderately Played"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 12.35,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 12.29,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 13.0,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 12.29,
-       "condition": "Near Mint"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived from a matched attack/ability name unique to one species — not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Lucario VSTAR'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Lucario VSTAR - SWSH291 (SWSH: Sword & Shield Promo Cards)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "attack does 120more damage.",
+      "WSH29",
+      "isKnockedutouropponntaks2Prizecar",
+      "270"
      ],
-     "n_sales": 5,
-     "days_span": 1,
-     "confidence": "HIGH",
-     "confidence_why": "~5.0 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 12.32,
-       "php": 715,
-       "from": "4 real sold"
-      },
-      "Lightly Played": {
-       "usd": 9.89,
-       "php": 574,
-       "from": "est. % of market"
-      },
-      "Moderately Played": {
-       "usd": 12.72,
-       "php": 738,
-       "from": "1 real sold"
-      },
-      "Heavily Played": {
-       "usd": 5.56,
-       "php": 323,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 3.71,
-       "php": 215,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 858,
-       "steal_php": 515
-      },
-      "Lightly Played": {
-       "list_php": 689,
-       "steal_php": 413
-      },
-      "Moderately Played": {
-       "list_php": 886,
-       "steal_php": 531
-      },
-      "Heavily Played": {
-       "list_php": 388,
-       "steal_php": 233
-      },
-      "Damaged": {
-       "list_php": 258,
-       "steal_php": 155
-      }
-     },
-     "product": "Lucario VSTAR - SWSH291"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=attack names; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via attack names",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -702,6 +550,7 @@
     "via": null,
     "jp": false,
     "query": "M Blastoise-EX 22/108",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -709,97 +558,56 @@
       "name": "M Blastoise EX",
       "set": "XY - Evolutions",
       "number": "22/108",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/124035.jpg"
      }
     ],
-    "value": {
-     "pid": 124035,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 21.63,
-     "market_php": 1255,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 12.3,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 7.0,
-       "condition": "Damaged"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 8.61,
-       "condition": "Heavily Played"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 25.98,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 25.99,
-       "condition": "Near Mint"
-      }
-     ],
-     "n_sales": 5,
-     "days_span": 1,
-     "confidence": "HIGH",
-     "confidence_why": "~5.0 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 25.98,
-       "php": 1507,
-       "from": "2 real sold"
-      },
-      "Lightly Played": {
-       "usd": 12.3,
-       "php": 713,
-       "from": "1 real sold"
-      },
-      "Moderately Played": {
-       "usd": 12.98,
-       "php": 753,
-       "from": "est. % of market"
-      },
-      "Heavily Played": {
-       "usd": 8.61,
-       "php": 499,
-       "from": "1 real sold"
-      },
-      "Damaged": {
-       "usd": 7.0,
-       "php": 406,
-       "from": "1 real sold"
-      }
+    "evidence_level": "A",
+    "evidence_level_meaning": "Verified — name and number both read directly, uniquely matched, no forcing/inference",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
      },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 1808,
-       "steal_php": 1085
-      },
-      "Lightly Played": {
-       "list_php": 856,
-       "steal_php": 513
-      },
-      "Moderately Played": {
-       "list_php": 904,
-       "steal_php": 542
-      },
-      "Heavily Played": {
-       "list_php": 599,
-       "steal_php": 359
-      },
-      "Damaged": {
-       "list_php": 487,
-       "steal_php": 292
-      }
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly from OCR text on the card"
      },
-     "product": "M Blastoise EX"
-    }
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'M Blastoise-EX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: M Blastoise EX (XY - Evolutions)"
+     }
+    },
+    "confidence": 50,
+    "confidence_reason": "5/10 evidence-chain steps independently confirmed: pokemon_name, attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    }
   ],
   "renamed_to": "M Blastoise-EX 22-108 English.png"
@@ -817,6 +625,7 @@
     "via": null,
     "jp": false,
     "query": "M Venusaur-EX 2/146",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -824,97 +633,56 @@
       "name": "M Venusaur EX",
       "set": "XY Base Set",
       "number": "2/146",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/86955.jpg"
      }
     ],
-    "value": {
-     "pid": 86955,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 21.82,
-     "market_php": 1266,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 14.79,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 13.79,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 4.75,
-       "condition": "Damaged"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 24.62,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-12",
-       "usd": 9.26,
-       "condition": "Moderately Played"
-      }
-     ],
-     "n_sales": 5,
-     "days_span": 4,
-     "confidence": "HIGH",
-     "confidence_why": "~1.2 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 24.62,
-       "php": 1428,
-       "from": "1 real sold"
-      },
-      "Lightly Played": {
-       "usd": 14.29,
-       "php": 829,
-       "from": "2 real sold"
-      },
-      "Moderately Played": {
-       "usd": 9.26,
-       "php": 537,
-       "from": "1 real sold"
-      },
-      "Heavily Played": {
-       "usd": 9.82,
-       "php": 570,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 4.75,
-       "php": 276,
-       "from": "1 real sold"
-      }
+    "evidence_level": "A",
+    "evidence_level_meaning": "Verified — name and number both read directly, uniquely matched, no forcing/inference",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
      },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 1714,
-       "steal_php": 1028
-      },
-      "Lightly Played": {
-       "list_php": 995,
-       "steal_php": 597
-      },
-      "Moderately Played": {
-       "list_php": 644,
-       "steal_php": 387
-      },
-      "Heavily Played": {
-       "list_php": 684,
-       "steal_php": 410
-      },
-      "Damaged": {
-       "list_php": 331,
-       "steal_php": 199
-      }
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly from OCR text on the card"
      },
-     "product": "M Venusaur EX"
-    }
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'M Venusaur-EX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: M Venusaur EX (XY Base Set)"
+     }
+    },
+    "confidence": 50,
+    "confidence_reason": "5/10 evidence-chain steps independently confirmed: pokemon_name, attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    }
   ],
   "renamed_to": "M Venusaur-EX 2-146 English.png"
@@ -932,6 +700,7 @@
     "via": null,
     "jp": false,
     "query": "M Altaria-EX 121/124",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -939,97 +708,56 @@
       "name": "M Altaria EX (Full Art)",
       "set": "XY - Fates Collide",
       "number": "121/124",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/117893.jpg"
      }
     ],
-    "value": {
-     "pid": 117893,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 24.9,
-     "market_php": 1444,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 14.44,
-       "condition": "Moderately Played"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 15.33,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 15.33,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 17.07,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 29.92,
-       "condition": "Near Mint"
-      }
-     ],
-     "n_sales": 5,
-     "days_span": 2,
-     "confidence": "HIGH",
-     "confidence_why": "~2.5 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 29.92,
-       "php": 1735,
-       "from": "1 real sold"
-      },
-      "Lightly Played": {
-       "usd": 15.33,
-       "php": 889,
-       "from": "3 real sold"
-      },
-      "Moderately Played": {
-       "usd": 14.44,
-       "php": 838,
-       "from": "1 real sold"
-      },
-      "Heavily Played": {
-       "usd": 11.21,
-       "php": 650,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 7.47,
-       "php": 433,
-       "from": "est. % of market"
-      }
+    "evidence_level": "A",
+    "evidence_level_meaning": "Verified — name and number both read directly, uniquely matched, no forcing/inference",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
      },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 2082,
-       "steal_php": 1249
-      },
-      "Lightly Played": {
-       "list_php": 1067,
-       "steal_php": 640
-      },
-      "Moderately Played": {
-       "list_php": 1006,
-       "steal_php": 603
-      },
-      "Heavily Played": {
-       "list_php": 780,
-       "steal_php": 468
-      },
-      "Damaged": {
-       "list_php": 520,
-       "steal_php": 312
-      }
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly from OCR text on the card"
      },
-     "product": "M Altaria EX (Full Art)"
-    }
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'M Altaria-EX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: M Altaria EX (Full Art) (XY - Fates Collide)"
+     }
+    },
+    "confidence": 50,
+    "confidence_reason": "5/10 evidence-chain steps independently confirmed: pokemon_name, attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    }
   ],
   "renamed_to": "M Altaria-EX 121-124 English.png"
@@ -1040,117 +768,124 @@
   "multi_card": false,
   "cards": [
    {
-    "name": "Detective Pikachu",
+    "name": "Pikachu",
     "number": "SM194",
     "number_read": "SM194",
     "snapped": false,
-    "via": null,
-    "jp": false,
-    "query": "Detective Pikachu SM194",
+    "via": "dex number",
+    "jp": true,
+    "query": "Pikachu SM194",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
-      "pid": 185254,
-      "name": "Detective Pikachu - SM194",
-      "set": "SM Promos",
-      "number": "SM194",
-      "line": "Pokemon"
+      "pid": 451703,
+      "name": "Pikachu",
+      "set": "SWSH12: Silver Tempest",
+      "number": "049/195",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/451703.jpg"
      },
      {
-      "pid": 189805,
-      "name": "Detective Pikachu - SM190",
-      "set": "SM Promos",
-      "number": "SM190",
-      "line": "Pokemon"
+      "pid": 219154,
+      "name": "Pikachu - 19/68 (#2 Pikachu Stamped)",
+      "set": "Battle Academy",
+      "number": "019/068",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/219154.jpg"
+     },
+     {
+      "pid": 124048,
+      "name": "Pikachu",
+      "set": "XY - Evolutions",
+      "number": "35/108",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/124048.jpg"
+     },
+     {
+      "pid": 219157,
+      "name": "Pikachu - 19/68 (#30 Pikachu Stamped)",
+      "set": "Battle Academy",
+      "number": "019/068",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/219157.jpg"
+     },
+     {
+      "pid": 107167,
+      "name": "Pikachu",
+      "set": "XY - BREAKthrough",
+      "number": "48/162",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/107167.jpg"
+     },
+     {
+      "pid": 113684,
+      "name": "Pikachu",
+      "set": "Generations",
+      "number": "26/83",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/113684.jpg"
      }
     ],
-    "value": {
-     "pid": 185254,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 10.54,
-     "market_php": 611,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 11.29,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 11.25,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 4.25,
-       "condition": "Moderately Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 3.0,
-       "condition": "Moderately Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 7.92,
-       "condition": "Lightly Played"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived from a National Dex number (JP vintage cards print no Latin name) — a species ID, not a name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Detective Pikachu'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "inferred",
+      "note": "language claim follows from the identification path (dex number), not a directly read language marker"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "not_checked",
+      "note": "6 candidate(s) returned, none carry an exact number match"
+     }
+    },
+    "confidence": 20,
+    "confidence_reason": "2/10 evidence-chain steps independently confirmed: attack_names, card_number. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "SM194",
+      "92019.Pokemon",
+      "Look at the top 4 cards of your deck and put I of them",
+      "NO.025MousePokemonHT:1'04*WT13.2Ibs.",
+      "0-20",
+      "MP90"
      ],
-     "n_sales": 5,
-     "days_span": 2,
-     "confidence": "HIGH",
-     "confidence_why": "~2.5 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 11.27,
-       "php": 654,
-       "from": "2 real sold"
-      },
-      "Lightly Played": {
-       "usd": 7.92,
-       "php": 459,
-       "from": "1 real sold"
-      },
-      "Moderately Played": {
-       "usd": 3.62,
-       "php": 210,
-       "from": "2 real sold"
-      },
-      "Heavily Played": {
-       "usd": 4.74,
-       "php": 275,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 3.16,
-       "php": 183,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 785,
-       "steal_php": 471
-      },
-      "Lightly Played": {
-       "list_php": 551,
-       "steal_php": 330
-      },
-      "Moderately Played": {
-       "list_php": 252,
-       "steal_php": 151
-      },
-      "Heavily Played": {
-       "list_php": 330,
-       "steal_php": 198
-      },
-      "Damaged": {
-       "list_php": 220,
-       "steal_php": 132
-      }
-     },
-     "product": "Detective Pikachu - SM194"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=dex number; 6 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via dex number",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -1166,106 +901,120 @@
     "number": "SM17",
     "number_read": "SM17",
     "snapped": false,
-    "via": null,
+    "via": "local index: number is a printing",
     "jp": false,
     "query": "Lunala-GX SM17",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
-      "pid": 129312,
-      "name": "Lunala GX - SM17",
-      "set": "SM Promos",
-      "number": "SM17",
-      "line": "Pokemon"
+      "pid": 599047,
+      "name": "Lunala GX",
+      "set": "smE: Solgaleo-GX & Lunala-GX Legendary Starter Set",
+      "number": "005/021",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/599047.jpg"
+     },
+     {
+      "pid": 599048,
+      "name": "Mawile",
+      "set": "smE: Solgaleo-GX & Lunala-GX Legendary Starter Set",
+      "number": "006/021",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/599048.jpg"
+     },
+     {
+      "pid": 599044,
+      "name": "Latios",
+      "set": "smE: Solgaleo-GX & Lunala-GX Legendary Starter Set",
+      "number": "002/021",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/599044.jpg"
+     },
+     {
+      "pid": 599043,
+      "name": "Mewtwo",
+      "set": "smE: Solgaleo-GX & Lunala-GX Legendary Starter Set",
+      "number": "001/021",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/599043.jpg"
+     },
+     {
+      "pid": 599050,
+      "name": "Spinda",
+      "set": "smE: Solgaleo-GX & Lunala-GX Legendary Starter Set",
+      "number": "008/021",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/599050.jpg"
+     },
+     {
+      "pid": 573170,
+      "name": "Lunala GX - 028/060",
+      "set": "SM1M: Collection Moon",
+      "number": "028/060",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/573170.jpg"
      }
     ],
-    "value": {
-     "pid": 129312,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 4.33,
-     "market_php": 251,
-     "sales": [
-      {
-       "date": "2026-07-15",
-       "usd": 2.5,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 3.38,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 3.39,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-13",
-       "usd": 1.32,
-       "condition": "Damaged"
-      },
-      {
-       "date": "2026-07-12",
-       "usd": 1.86,
-       "condition": "Moderately Played"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived by joining the read number against the local printings index (local index: number is a printing) — the number is the evidence, not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Lunala-GX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "not_checked",
+      "note": "6 candidate(s) returned, none carry an exact number match"
+     }
+    },
+    "confidence": 30,
+    "confidence_reason": "3/10 evidence-chain steps independently confirmed: attack_names, card_number, language. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "STAGE2",
+      "HP250",
+      "120",
+      "￥-20",
+      "×2",
+      "illus,5ban Graphies"
      ],
-     "n_sales": 5,
-     "days_span": 3,
-     "confidence": "HIGH",
-     "confidence_why": "~1.7 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 4.33,
-       "php": 251,
-       "from": "est. % of market"
-      },
-      "Lightly Played": {
-       "usd": 3.38,
-       "php": 196,
-       "from": "3 real sold"
-      },
-      "Moderately Played": {
-       "usd": 1.86,
-       "php": 108,
-       "from": "1 real sold"
-      },
-      "Heavily Played": {
-       "usd": 1.95,
-       "php": 113,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 1.32,
-       "php": 77,
-       "from": "1 real sold"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 301,
-       "steal_php": 181
-      },
-      "Lightly Played": {
-       "list_php": 235,
-       "steal_php": 141
-      },
-      "Moderately Played": {
-       "list_php": 130,
-       "steal_php": 78
-      },
-      "Heavily Played": {
-       "list_php": 136,
-       "steal_php": 81
-      },
-      "Damaged": {
-       "list_php": 92,
-       "steal_php": 55
-      }
-     },
-     "product": "Lunala GX - SM17"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=local index: number is a printing; 6 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -1277,110 +1026,92 @@
   "multi_card": false,
   "cards": [
    {
-    "name": "Detective Pikachu",
+    "name": "Pikachu",
     "number": "10/18",
     "number_read": "10/18",
     "snapped": false,
-    "via": null,
-    "jp": false,
-    "query": "Detective Pikachu 10/18",
+    "via": "dex number",
+    "jp": true,
+    "query": "Pikachu 10/18",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
-      "pid": 186015,
-      "name": "Detective Pikachu",
-      "set": "Detective Pikachu",
-      "number": "10/18",
-      "line": "Pokemon"
+      "pid": 219154,
+      "name": "Pikachu - 19/68 (#2 Pikachu Stamped)",
+      "set": "Battle Academy",
+      "number": "019/068",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/219154.jpg"
+     },
+     {
+      "pid": 219157,
+      "name": "Pikachu - 19/68 (#30 Pikachu Stamped)",
+      "set": "Battle Academy",
+      "number": "019/068",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/219157.jpg"
      }
     ],
-    "value": {
-     "pid": 186015,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 13.55,
-     "market_php": 786,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 19.12,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 5.98,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 13.33,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 19.12,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 4.16,
-       "condition": "Moderately Played"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived from a National Dex number (JP vintage cards print no Latin name) — a species ID, not a name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "attack-shaped text present in OCR but did not resolve to a unique index match"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "inferred",
+      "note": "language claim follows from the identification path (dex number), not a directly read language marker"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "not_checked",
+      "note": "2 candidate(s) returned, none carry an exact number match"
+     }
+    },
+    "confidence": 10,
+    "confidence_reason": "1/10 evidence-chain steps independently confirmed: card_number. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "g2019Pokemgn",
+      "10/18",
+      "×2",
+      "NO.025 MousePokemon HT:1'04-WT13.2lbs.",
+      "0-20",
+      "MP904"
      ],
-     "n_sales": 5,
-     "days_span": 1,
-     "confidence": "HIGH",
-     "confidence_why": "~5.0 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 19.12,
-       "php": 1109,
-       "from": "3 real sold"
-      },
-      "Lightly Played": {
-       "usd": 5.98,
-       "php": 347,
-       "from": "1 real sold"
-      },
-      "Moderately Played": {
-       "usd": 4.16,
-       "php": 241,
-       "from": "1 real sold"
-      },
-      "Heavily Played": {
-       "usd": 6.1,
-       "php": 354,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 4.07,
-       "php": 236,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 1331,
-       "steal_php": 798
-      },
-      "Lightly Played": {
-       "list_php": 416,
-       "steal_php": 250
-      },
-      "Moderately Played": {
-       "list_php": 289,
-       "steal_php": 174
-      },
-      "Heavily Played": {
-       "list_php": 425,
-       "steal_php": 255
-      },
-      "Damaged": {
-       "list_php": 283,
-       "steal_php": 170
-      }
-     },
-     "product": "Detective Pikachu"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=dex number; 2 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via dex number",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -1396,9 +1127,10 @@
     "number": "010/078",
     "number_read": "010/078",
     "snapped": false,
-    "via": null,
-    "jp": false,
+    "via": "dex number",
+    "jp": true,
     "query": "Charizard 010/078",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -1406,96 +1138,68 @@
       "name": "Charizard",
       "set": "Pokemon GO",
       "number": "010/078",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/274439.jpg"
      }
     ],
-    "value": {
-     "pid": 274439,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 2.84,
-     "market_php": 165,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 4.5,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 2.76,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 2.29,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 3.91,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 3.13,
-       "condition": "Near Mint"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived from a National Dex number (JP vintage cards print no Latin name) — a species ID, not a name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Charizard'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "inferred",
+      "note": "language claim follows from the identification path (dex number), not a directly read language marker"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Charizard (Pokemon GO)"
+     }
+    },
+    "confidence": 30,
+    "confidence_reason": "3/10 evidence-chain steps independently confirmed: attack_names, card_number, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "weakness x2",
+      "010/078★",
+      "@2022Hiantic.2022Pokemon/Nintendo/Creatures/GAMEFREAK",
+      "NO.006FlamePokemonHT:57-WT:199.5lbs.",
+      "m170@"
      ],
-     "n_sales": 5,
-     "days_span": 1,
-     "confidence": "HIGH",
-     "confidence_why": "~5.0 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 3.13,
-       "php": 182,
-       "from": "5 real sold"
-      },
-      "Lightly Played": {
-       "usd": 2.27,
-       "php": 132,
-       "from": "est. % of market"
-      },
-      "Moderately Played": {
-       "usd": 1.7,
-       "php": 99,
-       "from": "est. % of market"
-      },
-      "Heavily Played": {
-       "usd": 1.28,
-       "php": 74,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 0.85,
-       "php": 49,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 218,
-       "steal_php": 131
-      },
-      "Lightly Played": {
-       "list_php": 158,
-       "steal_php": 95
-      },
-      "Moderately Played": {
-       "list_php": 119,
-       "steal_php": 71
-      },
-      "Heavily Played": {
-       "list_php": 89,
-       "steal_php": 53
-      },
-      "Damaged": {
-       "list_php": 59,
-       "steal_php": 35
-      }
-     },
-     "product": "Charizard"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=dex number; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via dex number",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -1511,9 +1215,10 @@
     "number": "27/108",
     "number_read": "27/108",
     "snapped": false,
-    "via": null,
+    "via": "attack names",
     "jp": false,
     "query": "M Slowbro-EX 27/108",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -1521,96 +1226,65 @@
       "name": "M Slowbro EX",
       "set": "XY - Evolutions",
       "number": "27/108",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/124040.jpg"
      }
     ],
-    "value": {
-     "pid": 124040,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 9.46,
-     "market_php": 549,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 3.81,
-       "condition": "Damaged"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 8.36,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-12",
-       "usd": 10.26,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-12",
-       "usd": 9.59,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-11",
-       "usd": 9.54,
-       "condition": "Near Mint"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived from a matched attack/ability name unique to one species — not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'M Slowbro-EX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: M Slowbro EX (XY - Evolutions)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "220HP",
+      "566"
      ],
-     "n_sales": 5,
-     "days_span": 5,
-     "confidence": "HIGH",
-     "confidence_why": "~1.0 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 9.59,
-       "php": 556,
-       "from": "3 real sold"
-      },
-      "Lightly Played": {
-       "usd": 8.36,
-       "php": 485,
-       "from": "1 real sold"
-      },
-      "Moderately Played": {
-       "usd": 5.68,
-       "php": 329,
-       "from": "est. % of market"
-      },
-      "Heavily Played": {
-       "usd": 4.26,
-       "php": 247,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 3.81,
-       "php": 221,
-       "from": "1 real sold"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 667,
-       "steal_php": 400
-      },
-      "Lightly Played": {
-       "list_php": 582,
-       "steal_php": 349
-      },
-      "Moderately Played": {
-       "list_php": 395,
-       "steal_php": 237
-      },
-      "Heavily Played": {
-       "list_php": 296,
-       "steal_php": 178
-      },
-      "Damaged": {
-       "list_php": 265,
-       "steal_php": 159
-      }
-     },
-     "product": "M Slowbro EX"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=attack names; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via attack names",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -1629,6 +1303,7 @@
     "via": null,
     "jp": false,
     "query": "M Manectric-EX 24a/19",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -1636,96 +1311,69 @@
       "name": "M Manectric EX - 24a/119",
       "set": "Alternate Art Promos",
       "number": "024a/119",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/131696.jpg"
      }
     ],
-    "value": {
-     "pid": 131696,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 13.62,
-     "market_php": 790,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 6.69,
-       "condition": "Moderately Played"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 8.4,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 8.4,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 5.99,
-       "condition": "Damaged"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 7.49,
-       "condition": "Heavily Played"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly from OCR text on the card"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'M Manectric-EX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "inferred",
+      "note": "OCR read '24a/19', which is not a real printing — corrected to '024a/119' as the only real printing within edit distance"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: M Manectric EX - 24a/119 (Alternate Art Promos)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: pokemon_name, attack_names, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "MP210",
+      "When1of yourPokemon",
+      "110",
+      "Attach2basicEnergycardsfromyourdiscard pileto",
+      "youropponent akes2 Prizecards",
+      "Illus5banGraphis"
      ],
-     "n_sales": 5,
-     "days_span": 1,
-     "confidence": "HIGH",
-     "confidence_why": "~5.0 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 13.62,
-       "php": 790,
-       "from": "est. % of market"
-      },
-      "Lightly Played": {
-       "usd": 8.4,
-       "php": 487,
-       "from": "2 real sold"
-      },
-      "Moderately Played": {
-       "usd": 6.69,
-       "php": 388,
-       "from": "1 real sold"
-      },
-      "Heavily Played": {
-       "usd": 7.49,
-       "php": 434,
-       "from": "1 real sold"
-      },
-      "Damaged": {
-       "usd": 5.99,
-       "php": 347,
-       "from": "1 real sold"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 948,
-       "steal_php": 569
-      },
-      "Lightly Played": {
-       "list_php": 584,
-       "steal_php": 351
-      },
-      "Moderately Played": {
-       "list_php": 466,
-       "steal_php": 279
-      },
-      "Heavily Played": {
-       "list_php": 521,
-       "steal_php": 312
-      },
-      "Damaged": {
-       "list_php": 416,
-       "steal_php": 250
-      }
-     },
-     "product": "M Manectric EX - 24a/119"
+     "why_ocr_failed": "OCR read a number that is not a real catalog printing (misread/blur)",
+     "candidate_search_process": "via=None; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "'24a/19' does not exist in the catalog; '024a/119' is the only real printing within edit distance",
+     "remaining_uncertainty": "number was corrected, not read — confirm against the physical card's footer before listing"
     }
    }
   ],
@@ -1739,11 +1387,12 @@
    {
     "name": "Eevee VMAX",
     "number": "SWSH087",
-    "number_read": null,
+    "number_read": "SWSH087",
     "snapped": false,
-    "via": "visual read (assistant eye) — dark-holo footer",
+    "via": "attack names",
     "jp": false,
     "query": "Eevee VMAX SWSH087",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -1751,96 +1400,66 @@
       "name": "Eevee VMAX - SWSH087",
       "set": "SWSH: Sword & Shield Promo Cards",
       "number": "SWSH087",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/232611.jpg"
      }
     ],
-    "value": {
-     "pid": 232611,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 4.3,
-     "market_php": 249,
-     "sales": [
-      {
-       "date": "2026-07-17",
-       "usd": 4.75,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 3.6,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 3.6,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 4.3,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 4.27,
-       "condition": "Near Mint"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived from a matched attack/ability name unique to one species — not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Eevee VMAX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Eevee VMAX - SWSH087 (SWSH: Sword & Shield Promo Cards)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "￥3000",
+      "150",
+      "0SWSH087"
      ],
-     "n_sales": 5,
-     "days_span": 1,
-     "confidence": "HIGH",
-     "confidence_why": "~5.0 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 4.27,
-       "php": 248,
-       "from": "5 real sold"
-      },
-      "Lightly Played": {
-       "usd": 3.44,
-       "php": 200,
-       "from": "est. % of market"
-      },
-      "Moderately Played": {
-       "usd": 2.58,
-       "php": 150,
-       "from": "est. % of market"
-      },
-      "Heavily Played": {
-       "usd": 1.94,
-       "php": 112,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 1.29,
-       "php": 75,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 298,
-       "steal_php": 179
-      },
-      "Lightly Played": {
-       "list_php": 240,
-       "steal_php": 144
-      },
-      "Moderately Played": {
-       "list_php": 180,
-       "steal_php": 108
-      },
-      "Heavily Played": {
-       "list_php": 134,
-       "steal_php": 81
-      },
-      "Damaged": {
-       "list_php": 90,
-       "steal_php": 54
-      }
-     },
-     "product": "Eevee VMAX - SWSH087"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=attack names; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via attack names",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -1859,6 +1478,7 @@
     "via": null,
     "jp": false,
     "query": "M Audino-EX 85/124",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -1866,97 +1486,56 @@
       "name": "M Audino EX",
       "set": "XY - Fates Collide",
       "number": "85/124",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/117516.jpg"
      }
     ],
-    "value": {
-     "pid": 117516,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 8.54,
-     "market_php": 495,
-     "sales": [
-      {
-       "date": "2026-07-15",
-       "usd": 8.66,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-13",
-       "usd": 10.87,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-12",
-       "usd": 4.0,
-       "condition": "Moderately Played"
-      },
-      {
-       "date": "2026-07-12",
-       "usd": 4.36,
-       "condition": "Heavily Played"
-      },
-      {
-       "date": "2026-07-12",
-       "usd": 8.31,
-       "condition": "Near Mint"
-      }
-     ],
-     "n_sales": 5,
-     "days_span": 3,
-     "confidence": "HIGH",
-     "confidence_why": "~1.7 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 8.66,
-       "php": 502,
-       "from": "3 real sold"
-      },
-      "Lightly Played": {
-       "usd": 6.83,
-       "php": 396,
-       "from": "est. % of market"
-      },
-      "Moderately Played": {
-       "usd": 4.0,
-       "php": 232,
-       "from": "1 real sold"
-      },
-      "Heavily Played": {
-       "usd": 4.36,
-       "php": 253,
-       "from": "1 real sold"
-      },
-      "Damaged": {
-       "usd": 2.56,
-       "php": 149,
-       "from": "est. % of market"
-      }
+    "evidence_level": "A",
+    "evidence_level_meaning": "Verified — name and number both read directly, uniquely matched, no forcing/inference",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
      },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 602,
-       "steal_php": 361
-      },
-      "Lightly Played": {
-       "list_php": 475,
-       "steal_php": 285
-      },
-      "Moderately Played": {
-       "list_php": 278,
-       "steal_php": 167
-      },
-      "Heavily Played": {
-       "list_php": 304,
-       "steal_php": 182
-      },
-      "Damaged": {
-       "list_php": 179,
-       "steal_php": 107
-      }
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly from OCR text on the card"
      },
-     "product": "M Audino EX"
-    }
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'M Audino-EX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: M Audino EX (XY - Fates Collide)"
+     }
+    },
+    "confidence": 50,
+    "confidence_reason": "5/10 evidence-chain steps independently confirmed: pokemon_name, attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    }
   ],
   "renamed_to": "M Audino-EX 85-124 English.png"
@@ -2012,7 +1591,53 @@
       "line": "Pokemon Japan"
      }
     ],
-    "value": null
+    "value": null,
+    "evidence_level": "B",
+    "evidence_level_meaning": "Human Eye Verified — OCR failed; a manual (assistant) visual read succeeded and is exact",
+    "evidence_chain": {
+     "artwork": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly off the card by the assistant (manual visual read, OCR had failed)"
+     },
+     "hp": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "no attack/ability text usable in this OCR pass"
+     },
+     "ability": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "expansion_symbol": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly off the footer by the assistant (manual visual read, OCR had failed)"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "catalog_match": {
+      "status": "not_checked",
+      "note": "5 candidate(s) returned, none carry an exact number match"
+     }
+    },
+    "confidence": 30,
+    "confidence_reason": "3/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    }
   ],
   "renamed_to": "Yveltal-EX XY150 English.png"
@@ -2023,110 +1648,83 @@
   "multi_card": false,
   "cards": [
    {
-    "name": "Mew V",
+    "name": "Resistance Gym",
     "number": "069/189",
     "number_read": "069/189",
     "snapped": false,
-    "via": "number-variant match",
+    "via": null,
     "jp": false,
-    "query": "Mew 069/189",
+    "query": "Resistance Gym 069/189",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
-      "pid": 219443,
-      "name": "Mew V",
-      "set": "SWSH03: Darkness Ablaze",
-      "number": "069/189",
-      "line": "Pokemon"
+      "pid": 88717,
+      "name": "Resistance Gym",
+      "set": "Gym Challenge",
+      "number": "109/132",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/88717.jpg"
      }
     ],
-    "value": {
-     "pid": 219443,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 7.13,
-     "market_php": 414,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 6.86,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 9.09,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 6.5,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 7.2,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 6.5,
-       "condition": "Near Mint"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly from OCR text on the card"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "no attack/ability text usable in this OCR pass"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "not_checked",
+      "note": "1 candidate(s) returned, none carry an exact number match"
+     }
+    },
+    "confidence": 30,
+    "confidence_reason": "3/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "This attack does 30 damage for each Energyattached to",
+      "180",
+      "takes2Prize cards.",
+      "resistance9-30",
+      "weakness ×2"
      ],
-     "n_sales": 5,
-     "days_span": 1,
-     "confidence": "HIGH",
-     "confidence_why": "~5.0 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 6.86,
-       "php": 398,
-       "from": "5 real sold"
-      },
-      "Lightly Played": {
-       "usd": 5.7,
-       "php": 331,
-       "from": "est. % of market"
-      },
-      "Moderately Played": {
-       "usd": 4.28,
-       "php": 248,
-       "from": "est. % of market"
-      },
-      "Heavily Played": {
-       "usd": 3.21,
-       "php": 186,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 2.14,
-       "php": 124,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 478,
-       "steal_php": 287
-      },
-      "Lightly Played": {
-       "list_php": 397,
-       "steal_php": 238
-      },
-      "Moderately Played": {
-       "list_php": 298,
-       "steal_php": 179
-      },
-      "Heavily Played": {
-       "list_php": 223,
-       "steal_php": 134
-      },
-      "Damaged": {
-       "list_php": 149,
-       "steal_php": 89
-      }
-     },
-     "product": "Mew V"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=None; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via None",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -2142,7 +1740,7 @@
     "number": "068/172",
     "number_read": "068/172",
     "snapped": false,
-    "via": "number-variant match",
+    "via": "visual read (assistant eye)",
     "jp": false,
     "query": "Mimikyu 068/172",
     "watermark_dropped": [],
@@ -2249,7 +1847,54 @@
       }
      },
      "product": "Mimikyu V"
-    }
+    },
+    "eye_adjudicated": "2026-07-17: automated rerun picked a different printing (promo-preference bug, L32); footer eye-read confirmed this number",
+    "evidence_level": "B",
+    "evidence_level_meaning": "Human Eye Verified — OCR failed; a manual (assistant) visual read succeeded and is exact",
+    "evidence_chain": {
+     "artwork": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly off the card by the assistant (manual visual read, OCR had failed)"
+     },
+     "hp": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "no attack/ability text usable in this OCR pass"
+     },
+     "ability": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "expansion_symbol": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly off the footer by the assistant (manual visual read, OCR had failed)"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Mimikyu V (SWSH09: Brilliant Stars)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    }
   ],
   "renamed_to": "Mimikyu V 068-172 English.png"
@@ -2264,9 +1909,10 @@
     "number": "SWSH286",
     "number_read": "SWSH286",
     "snapped": false,
-    "via": "number-variant match",
+    "via": "attack names",
     "jp": false,
-    "query": "Pikachu SWSH286",
+    "query": "Pikachu VMAX SWSH286",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -2274,96 +1920,66 @@
       "name": "Pikachu VMAX - SWSH286",
       "set": "SWSH: Sword & Shield Promo Cards",
       "number": "SWSH286",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/478424.jpg"
      }
     ],
-    "value": {
-     "pid": 478424,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 7.46,
-     "market_php": 433,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 6.99,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 8.34,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 7.41,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 8.27,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 5.0,
-       "condition": "Lightly Played"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived from a matched attack/ability name unique to one species — not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Pikachu VMAX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Pikachu VMAX - SWSH286 (SWSH: Sword & Shield Promo Cards)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "Attachupto3Energycardsfromyourdiscardpileo",
+      "P3100",
+      "★SWSH286"
      ],
-     "n_sales": 5,
-     "days_span": 1,
-     "confidence": "HIGH",
-     "confidence_why": "~5.0 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 7.84,
-       "php": 455,
-       "from": "4 real sold"
-      },
-      "Lightly Played": {
-       "usd": 5.0,
-       "php": 290,
-       "from": "1 real sold"
-      },
-      "Moderately Played": {
-       "usd": 4.48,
-       "php": 260,
-       "from": "est. % of market"
-      },
-      "Heavily Played": {
-       "usd": 3.36,
-       "php": 195,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 2.24,
-       "php": 130,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 546,
-       "steal_php": 328
-      },
-      "Lightly Played": {
-       "list_php": 348,
-       "steal_php": 209
-      },
-      "Moderately Played": {
-       "list_php": 312,
-       "steal_php": 187
-      },
-      "Heavily Played": {
-       "list_php": 234,
-       "steal_php": 140
-      },
-      "Damaged": {
-       "list_php": 156,
-       "steal_php": 94
-      }
-     },
-     "product": "Pikachu VMAX - SWSH286"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=attack names; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via attack names",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -2382,6 +1998,7 @@
     "via": "local index: number is a printing",
     "jp": false,
     "query": "Scizor 119/122",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
@@ -2389,10 +2006,70 @@
       "name": "Scizor ex - 111/162",
       "set": "SV05: Temporal Forces",
       "number": "111/162",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/542855.jpg"
      }
     ],
-    "value": null
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived by joining the read number against the local printings index (local index: number is a printing) — the number is the evidence, not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Scizor-EX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "not_checked",
+      "note": "1 candidate(s) returned, none carry an exact number match"
+     }
+    },
+    "confidence": 30,
+    "confidence_reason": "3/10 evidence-chain steps independently confirmed: attack_names, card_number, language. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "HP170",
+      "20",
+      "this Pokemon by attacks is reduced by 207ate",
+      "Pokemon this turn, this attack does 60 more damage",
+      "-20",
+      "your opponenttakes2Ptizecards"
+     ],
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=local index: number is a printing; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
+    }
    }
   ],
   "renamed_to": "Scizor-EX 119-122 English.png"
@@ -2410,45 +2087,117 @@
     "via": "local index snap",
     "jp": false,
     "query": "Snorlax XY79",
+    "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
-      "pid": 276974,
+      "pid": 478136,
       "name": "Snorlax",
-      "set": "Pokemon GO",
-      "number": "055/078",
-      "line": "Pokemon"
+      "set": "SWSH: Crown Zenith",
+      "number": "109/159",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/478136.jpg"
      },
      {
       "pid": 607162,
       "name": "Snorlax",
       "set": "Pt2: Bonds to the End of Time",
       "number": "070/090",
-      "line": "Pokemon Japan"
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/607162.jpg"
      },
      {
-      "pid": 89388,
+      "pid": 213241,
       "name": "Snorlax",
-      "set": "FireRed & LeafGreen",
-      "number": "15/112",
-      "line": "Pokemon"
-     },
-     {
-      "pid": 591958,
-      "name": "Snorlax",
-      "set": "Pokemon TCG Classic: Venusaur",
-      "number": "016/032",
-      "line": "Pokemon Japan"
+      "set": "SWSH02: Rebel Clash",
+      "number": "141/192",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/213241.jpg"
      },
      {
       "pid": 113716,
       "name": "Snorlax",
       "set": "Generations",
       "number": "58/83",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/113716.jpg"
+     },
+     {
+      "pid": 42502,
+      "name": "Snorlax",
+      "set": "Base Set 2",
+      "number": "030/130",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/42502.jpg"
+     },
+     {
+      "pid": 527903,
+      "name": "Snorlax",
+      "set": "Trading Card Game Classic",
+      "number": "016/034",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/527903.jpg"
      }
     ],
-    "value": null
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived by joining the read number against the local printings index (local index snap) — the number is the evidence, not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "attack-shaped text present in OCR but did not resolve to a unique index match"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "inferred",
+      "note": "OCR read 'XY79', which is not a real printing — corrected to 'XY179' as the only real printing within edit distance"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "not_checked",
+      "note": "6 candidate(s) returned, none carry an exact number match"
+     }
+    },
+    "confidence": 10,
+    "confidence_reason": "1/10 evidence-chain steps independently confirmed: language. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "V.20130HP*",
+      "NO.143 Sleeping Pokemon HT:6'11\"WT:1014.1lbs",
+      "50",
+      "o2016Pokemon",
+      "XY79"
+     ],
+     "why_ocr_failed": "OCR read a number that is not a real catalog printing (misread/blur)",
+     "candidate_search_process": "via=local index snap; 6 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "'XY79' does not exist in the catalog; 'XY179' is the only real printing within edit distance",
+     "remaining_uncertainty": "number was corrected, not read — confirm against the physical card's footer before listing"
+    }
    }
   ],
   "renamed_to": "Snorlax XY179 English.png"
@@ -2474,96 +2223,69 @@
       "name": "Alolan Ninetales GX",
       "set": "SM - Guardians Rising",
       "number": "22/145",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/130920.jpg"
      }
     ],
-    "value": {
-     "pid": 130920,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 7.97,
-     "market_php": 462,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 5.64,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 6.67,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 6.64,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-16",
-       "usd": 4.24,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 4.23,
-       "condition": "Lightly Played"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived from a matched attack/ability name unique to one species — not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Alolan Ninetales-GX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Alolan Ninetales GX (SM - Guardians Rising)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "HP210",
+      "STAGE1",
+      "This attack does 50 damage to I of your opponent's",
+      "Discard2Energy from this Pokemon.",
+      "llus.5banGraphics",
+      "22/145"
      ],
-     "n_sales": 5,
-     "days_span": 1,
-     "confidence": "HIGH",
-     "confidence_why": "~5.0 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 6.14,
-       "php": 356,
-       "from": "2 real sold"
-      },
-      "Lightly Played": {
-       "usd": 4.24,
-       "php": 246,
-       "from": "3 real sold"
-      },
-      "Moderately Played": {
-       "usd": 4.78,
-       "php": 277,
-       "from": "est. % of market"
-      },
-      "Heavily Played": {
-       "usd": 3.59,
-       "php": 208,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 2.39,
-       "php": 139,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 427,
-       "steal_php": 256
-      },
-      "Lightly Played": {
-       "list_php": 295,
-       "steal_php": 177
-      },
-      "Moderately Played": {
-       "list_php": 332,
-       "steal_php": 199
-      },
-      "Heavily Played": {
-       "list_php": 250,
-       "steal_php": 150
-      },
-      "Damaged": {
-       "list_php": 167,
-       "steal_php": 100
-      }
-     },
-     "product": "Alolan Ninetales GX"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=attack names; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via attack names",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -2590,103 +2312,69 @@
       "name": "Altaria EX (Full Art)",
       "set": "XY - Fates Collide",
       "number": "123/124",
-      "line": "Pokemon"
-     },
-     {
-      "pid": 117893,
-      "name": "M Altaria EX (Full Art)",
-      "set": "XY - Fates Collide",
-      "number": "121/124",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/117895.jpg"
      }
     ],
-    "value": {
-     "pid": 117895,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 13.52,
-     "market_php": 784,
-     "sales": [
-      {
-       "date": "2026-07-15",
-       "usd": 12.65,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 13.76,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 11.99,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 12.65,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-13",
-       "usd": 9.99,
-       "condition": "Near Mint"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived by joining the read number against the local printings index (local index: number is a printing) — the number is the evidence, not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Altaria-EX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Altaria EX (Full Art) (XY - Fates Collide)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "170",
+      "30+",
+      "attack does 60 more damage and heal 30 damage",
+      "-20",
+      "youropponenttakes2Prizecards,",
+      "C2016Pdkemon"
      ],
-     "n_sales": 5,
-     "days_span": 2,
-     "confidence": "HIGH",
-     "confidence_why": "~2.5 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 12.65,
-       "php": 734,
-       "from": "5 real sold"
-      },
-      "Lightly Played": {
-       "usd": 10.82,
-       "php": 627,
-       "from": "est. % of market"
-      },
-      "Moderately Played": {
-       "usd": 8.11,
-       "php": 470,
-       "from": "est. % of market"
-      },
-      "Heavily Played": {
-       "usd": 6.08,
-       "php": 353,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 4.06,
-       "php": 235,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 881,
-       "steal_php": 528
-      },
-      "Lightly Played": {
-       "list_php": 752,
-       "steal_php": 451
-      },
-      "Moderately Played": {
-       "list_php": 564,
-       "steal_php": 338
-      },
-      "Heavily Played": {
-       "list_php": 424,
-       "steal_php": 254
-      },
-      "Damaged": {
-       "list_php": 282,
-       "steal_php": 169
-      }
-     },
-     "product": "Altaria EX (Full Art)"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=local index: number is a printing; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -2713,96 +2401,69 @@
       "name": "Hoopa GX",
       "set": "SM - Team Up",
       "number": "96/181",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/183874.jpg"
      }
     ],
-    "value": {
-     "pid": 183874,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 3.32,
-     "market_php": 193,
-     "sales": [
-      {
-       "date": "2026-07-15",
-       "usd": 4.01,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-13",
-       "usd": 3.33,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-13",
-       "usd": 2.8,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-12",
-       "usd": 3.0,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-11",
-       "usd": 3.28,
-       "condition": "Near Mint"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived by joining the read number against the local printings index (local index: number is a printing) — the number is the evidence, not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Hoopa-GX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Hoopa GX (SM - Team Up)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "Search your deck for up to 2 cards and put them into",
+      "160",
+      "do 30 damage to itc.This damage ie",
+      "-20",
+      "llus,5banGraphics",
+      "96/181*"
      ],
-     "n_sales": 5,
-     "days_span": 4,
-     "confidence": "HIGH",
-     "confidence_why": "~1.2 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 3.3,
-       "php": 192,
-       "from": "4 real sold"
-      },
-      "Lightly Played": {
-       "usd": 3.0,
-       "php": 174,
-       "from": "1 real sold"
-      },
-      "Moderately Played": {
-       "usd": 1.99,
-       "php": 116,
-       "from": "est. % of market"
-      },
-      "Heavily Played": {
-       "usd": 1.49,
-       "php": 87,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 1.0,
-       "php": 58,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 230,
-       "steal_php": 138
-      },
-      "Lightly Played": {
-       "list_php": 209,
-       "steal_php": 125
-      },
-      "Moderately Played": {
-       "list_php": 139,
-       "steal_php": 84
-      },
-      "Heavily Played": {
-       "list_php": 104,
-       "steal_php": 63
-      },
-      "Damaged": {
-       "list_php": 70,
-       "steal_php": 42
-      }
-     },
-     "product": "Hoopa GX"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=local index: number is a printing; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -2818,7 +2479,7 @@
     "number": "27/149",
     "number_read": "27/149",
     "snapped": false,
-    "via": "local index: number is a printing",
+    "via": "visual read (assistant eye)",
     "jp": false,
     "query": "Incineroar 27/149",
     "graded": false,
@@ -2919,7 +2580,54 @@
       }
      },
      "product": "Incineroar GX"
-    }
+    },
+    "eye_adjudicated": "2026-07-17: automated rerun picked a different printing (promo-preference bug, L32); footer eye-read confirmed this number",
+    "evidence_level": "B",
+    "evidence_level_meaning": "Human Eye Verified — OCR failed; a manual (assistant) visual read succeeded and is exact",
+    "evidence_chain": {
+     "artwork": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly off the card by the assistant (manual visual read, OCR had failed)"
+     },
+     "hp": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "no attack/ability text usable in this OCR pass"
+     },
+     "ability": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "expansion_symbol": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly off the footer by the assistant (manual visual read, OCR had failed)"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Incineroar GX (SM Base Set)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    }
   ],
   "renamed_to": "Incineroar-GX 27-149 English.png"
@@ -2945,96 +2653,69 @@
       "name": "Lycanroc GX",
       "set": "SM - Team Up",
       "number": "82/181",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/183860.jpg"
      }
     ],
-    "value": {
-     "pid": 183860,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 2.36,
-     "market_php": 137,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 1.61,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 2.25,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-13",
-       "usd": 2.38,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-11",
-       "usd": 2.41,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-10",
-       "usd": 2.57,
-       "condition": "Near Mint"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived by joining the read number against the local printings index (local index: number is a printing) — the number is the evidence, not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Lycanroc-GX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Lycanroc GX (SM - Team Up)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "MP200",
+      "This attack does 30damage for each",
+      "×2",
+      "82/181",
+      "Knocked Out.your opponent takes 2 Prize cards.",
+      "C2019Pokemom"
      ],
-     "n_sales": 5,
-     "days_span": 6,
-     "confidence": "HIGH",
-     "confidence_why": "~0.8 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 2.4,
-       "php": 139,
-       "from": "4 real sold"
-      },
-      "Lightly Played": {
-       "usd": 1.61,
-       "php": 93,
-       "from": "1 real sold"
-      },
-      "Moderately Played": {
-       "usd": 1.42,
-       "php": 82,
-       "from": "est. % of market"
-      },
-      "Heavily Played": {
-       "usd": 1.06,
-       "php": 62,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 0.71,
-       "php": 41,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 167,
-       "steal_php": 100
-      },
-      "Lightly Played": {
-       "list_php": 112,
-       "steal_php": 67
-      },
-      "Moderately Played": {
-       "list_php": 98,
-       "steal_php": 59
-      },
-      "Heavily Played": {
-       "list_php": 74,
-       "steal_php": 45
-      },
-      "Damaged": {
-       "list_php": 49,
-       "steal_php": 30
-      }
-     },
-     "product": "Lycanroc GX"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=local index: number is a printing; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -3061,96 +2742,69 @@
       "name": "Zoroark GX",
       "set": "Shining Legends",
       "number": "53/73",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/146715.jpg"
      }
     ],
-    "value": {
-     "pid": 146715,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 3.67,
-     "market_php": 213,
-     "sales": [
-      {
-       "date": "2026-07-16",
-       "usd": 1.99,
-       "condition": "Heavily Played"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 3.84,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 3.66,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 2.99,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 2.15,
-       "condition": "Heavily Played"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived by joining the read number against the local printings index (local index: number is a printing) — the number is the evidence, not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Zoroark-GX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Zoroark GX (Shining Legends)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "MP210",
+      "discard a card from your hand.ifyou do,draw 2 cards.",
+      "208",
+      "Thisattackdoes20damage foreachof youl",
+      "-20",
+      "53/73*"
      ],
-     "n_sales": 5,
-     "days_span": 2,
-     "confidence": "HIGH",
-     "confidence_why": "~2.5 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 3.75,
-       "php": 218,
-       "from": "2 real sold"
-      },
-      "Lightly Played": {
-       "usd": 2.99,
-       "php": 173,
-       "from": "1 real sold"
-      },
-      "Moderately Played": {
-       "usd": 2.2,
-       "php": 128,
-       "from": "est. % of market"
-      },
-      "Heavily Played": {
-       "usd": 2.07,
-       "php": 120,
-       "from": "2 real sold"
-      },
-      "Damaged": {
-       "usd": 1.1,
-       "php": 64,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 262,
-       "steal_php": 157
-      },
-      "Lightly Played": {
-       "list_php": 208,
-       "steal_php": 125
-      },
-      "Moderately Played": {
-       "list_php": 154,
-       "steal_php": 92
-      },
-      "Heavily Played": {
-       "list_php": 144,
-       "steal_php": 86
-      },
-      "Damaged": {
-       "list_php": 77,
-       "steal_php": 46
-      }
-     },
-     "product": "Zoroark GX"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=local index: number is a printing; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
@@ -3208,7 +2862,53 @@
       "line": "Pokemon"
      }
     ],
-    "value": null
+    "value": null,
+    "evidence_level": "B",
+    "evidence_level_meaning": "Human Eye Verified — OCR failed; a manual (assistant) visual read succeeded and is exact",
+    "evidence_chain": {
+     "artwork": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly off the card by the assistant (manual visual read, OCR had failed)"
+     },
+     "hp": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "no attack/ability text usable in this OCR pass"
+     },
+     "ability": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "expansion_symbol": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly off the footer by the assistant (manual visual read, OCR had failed)"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "catalog_match": {
+      "status": "not_checked",
+      "note": "5 candidate(s) returned, none carry an exact number match"
+     }
+    },
+    "confidence": 30,
+    "confidence_reason": "3/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    },
    {
     "name": "Excadrill",
@@ -3257,7 +2957,53 @@
       "line": "Pokemon"
      }
     ],
-    "value": null
+    "value": null,
+    "evidence_level": "B",
+    "evidence_level_meaning": "Human Eye Verified — OCR failed; a manual (assistant) visual read succeeded and is exact",
+    "evidence_chain": {
+     "artwork": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly off the card by the assistant (manual visual read, OCR had failed)"
+     },
+     "hp": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "no attack/ability text usable in this OCR pass"
+     },
+     "ability": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "expansion_symbol": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly off the footer by the assistant (manual visual read, OCR had failed)"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "catalog_match": {
+      "status": "not_checked",
+      "note": "5 candidate(s) returned, none carry an exact number match"
+     }
+    },
+    "confidence": 30,
+    "confidence_reason": "3/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    },
    {
     "name": "Stoutland",
@@ -3306,7 +3052,53 @@
       "line": "Pokemon"
      }
     ],
-    "value": null
+    "value": null,
+    "evidence_level": "B",
+    "evidence_level_meaning": "Human Eye Verified — OCR failed; a manual (assistant) visual read succeeded and is exact",
+    "evidence_chain": {
+     "artwork": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly off the card by the assistant (manual visual read, OCR had failed)"
+     },
+     "hp": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "no attack/ability text usable in this OCR pass"
+     },
+     "ability": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "expansion_symbol": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly off the footer by the assistant (manual visual read, OCR had failed)"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "catalog_match": {
+      "status": "not_checked",
+      "note": "5 candidate(s) returned, none carry an exact number match"
+     }
+    },
+    "confidence": 30,
+    "confidence_reason": "3/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    },
    {
     "name": "Wishiwashi",
@@ -3355,7 +3147,53 @@
       "line": "Pokemon Japan"
      }
     ],
-    "value": null
+    "value": null,
+    "evidence_level": "B",
+    "evidence_level_meaning": "Human Eye Verified — OCR failed; a manual (assistant) visual read succeeded and is exact",
+    "evidence_chain": {
+     "artwork": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly off the card by the assistant (manual visual read, OCR had failed)"
+     },
+     "hp": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "no attack/ability text usable in this OCR pass"
+     },
+     "ability": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "expansion_symbol": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly off the footer by the assistant (manual visual read, OCR had failed)"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "catalog_match": {
+      "status": "not_checked",
+      "note": "5 candidate(s) returned, none carry an exact number match"
+     }
+    },
+    "confidence": 30,
+    "confidence_reason": "3/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    }
   ],
   "merged_runs": true,
@@ -3413,7 +3251,53 @@
       "line": "Pokemon Japan"
      }
     ],
-    "value": null
+    "value": null,
+    "evidence_level": "B",
+    "evidence_level_meaning": "Human Eye Verified — OCR failed; a manual (assistant) visual read succeeded and is exact",
+    "evidence_chain": {
+     "artwork": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly off the card by the assistant (manual visual read, OCR had failed)"
+     },
+     "hp": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "no attack/ability text usable in this OCR pass"
+     },
+     "ability": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "expansion_symbol": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly off the footer by the assistant (manual visual read, OCR had failed)"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "catalog_match": {
+      "status": "not_checked",
+      "note": "5 candidate(s) returned, none carry an exact number match"
+     }
+    },
+    "confidence": 30,
+    "confidence_reason": "3/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    },
    {
     "name": "Meloetta",
@@ -3521,7 +3405,53 @@
       }
      },
      "product": "Meloetta - XY120"
-    }
+    },
+    "evidence_level": "B",
+    "evidence_level_meaning": "Human Eye Verified — OCR failed; a manual (assistant) visual read succeeded and is exact",
+    "evidence_chain": {
+     "artwork": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly off the card by the assistant (manual visual read, OCR had failed)"
+     },
+     "hp": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "no attack/ability text usable in this OCR pass"
+     },
+     "ability": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "expansion_symbol": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly off the footer by the assistant (manual visual read, OCR had failed)"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Meloetta - XY120 (XY Promos)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    },
    {
     "name": "Magearna",
@@ -3629,7 +3559,53 @@
       }
      },
      "product": "Magearna - XY186"
-    }
+    },
+    "evidence_level": "B",
+    "evidence_level_meaning": "Human Eye Verified — OCR failed; a manual (assistant) visual read succeeded and is exact",
+    "evidence_chain": {
+     "artwork": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly off the card by the assistant (manual visual read, OCR had failed)"
+     },
+     "hp": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "no attack/ability text usable in this OCR pass"
+     },
+     "ability": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "expansion_symbol": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly off the footer by the assistant (manual visual read, OCR had failed)"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Magearna - XY186 (XY Promos)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    },
    {
     "name": "Manaphy",
@@ -3737,7 +3713,53 @@
       }
      },
      "product": "Manaphy"
-    }
+    },
+    "evidence_level": "B",
+    "evidence_level_meaning": "Human Eye Verified — OCR failed; a manual (assistant) visual read succeeded and is exact",
+    "evidence_chain": {
+     "artwork": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "pokemon_name": {
+      "status": "confirmed",
+      "note": "read directly off the card by the assistant (manual visual read, OCR had failed)"
+     },
+     "hp": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "no attack/ability text usable in this OCR pass"
+     },
+     "ability": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "expansion_symbol": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly off the footer by the assistant (manual visual read, OCR had failed)"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "seen_not_itemized",
+      "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Manaphy (XY Promos)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
    }
   ],
   "merged_runs": true,
@@ -3764,96 +3786,66 @@
       "name": "Volcanion EX",
       "set": "XY - Steam Siege",
       "number": "26/114",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/120151.jpg"
      }
     ],
-    "value": {
-     "pid": 120151,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 2.69,
-     "market_php": 156,
-     "sales": [
-      {
-       "date": "2026-07-15",
-       "usd": 1.0,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 2.99,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-15",
-       "usd": 2.75,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 1.87,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 2.09,
-       "condition": "Moderately Played"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived by joining the read number against the local printings index (local index snap) — the number is the evidence, not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "not_checked",
+      "note": "attack-shaped text present in OCR but did not resolve to a unique index match"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "inferred",
+      "note": "OCR read '26/314', which is not a real printing — corrected to '26/114' as the only real printing within edit distance"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Volcanion EX (XY - Steam Siege)"
+     }
+    },
+    "confidence": 20,
+    "confidence_reason": "2/10 evidence-chain steps independently confirmed: language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "180",
+      "do 30 more damage to your opponent's Active",
+      "26/314"
      ],
-     "n_sales": 5,
-     "days_span": 1,
-     "confidence": "HIGH",
-     "confidence_why": "~5.0 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 2.87,
-       "php": 166,
-       "from": "2 real sold"
-      },
-      "Lightly Played": {
-       "usd": 1.44,
-       "php": 83,
-       "from": "2 real sold"
-      },
-      "Moderately Played": {
-       "usd": 2.09,
-       "php": 121,
-       "from": "1 real sold"
-      },
-      "Heavily Played": {
-       "usd": 1.21,
-       "php": 70,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 0.81,
-       "php": 47,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 199,
-       "steal_php": 120
-      },
-      "Lightly Played": {
-       "list_php": 100,
-       "steal_php": 60
-      },
-      "Moderately Played": {
-       "list_php": 145,
-       "steal_php": 87
-      },
-      "Heavily Played": {
-       "list_php": 84,
-       "steal_php": 50
-      },
-      "Damaged": {
-       "list_php": 56,
-       "steal_php": 34
-      }
-     },
-     "product": "Volcanion EX"
+     "why_ocr_failed": "OCR read a number that is not a real catalog printing (misread/blur)",
+     "candidate_search_process": "via=local index snap; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "'26/314' does not exist in the catalog; '26/114' is the only real printing within edit distance",
+     "remaining_uncertainty": "number was corrected, not read — confirm against the physical card's footer before listing"
     }
    },
    {
@@ -3872,96 +3864,68 @@
       "name": "Golem EX",
       "set": "Generations",
       "number": "46/83",
-      "line": "Pokemon"
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/113704.jpg"
      }
     ],
-    "value": {
-     "pid": 113704,
-     "usd_rate": 58.0,
-     "ph_factor": 1.2,
-     "market_usd": 2.61,
-     "market_php": 151,
-     "sales": [
-      {
-       "date": "2026-07-15",
-       "usd": 5.07,
-       "condition": "Lightly Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 1.26,
-       "condition": "Moderately Played"
-      },
-      {
-       "date": "2026-07-14",
-       "usd": 2.89,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-13",
-       "usd": 2.51,
-       "condition": "Near Mint"
-      },
-      {
-       "date": "2026-07-13",
-       "usd": 2.99,
-       "condition": "Lightly Played"
-      }
+    "evidence_level": "C",
+    "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+    "evidence_chain": {
+     "artwork": {
+      "status": "not_checked",
+      "note": "no automated code path visually matches card artwork yet"
+     },
+     "pokemon_name": {
+      "status": "inferred",
+      "note": "derived by joining the read number against the local printings index (local index: number is a printing) — the number is the evidence, not a direct name text read"
+     },
+     "hp": {
+      "status": "not_checked",
+      "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     },
+     "attack_names": {
+      "status": "confirmed",
+      "note": "attack/ability text matched against the 31,908-entry index: 'Golem-EX'"
+     },
+     "ability": {
+      "status": "not_checked",
+      "note": "no automated code path separately extracts/verifies ability text"
+     },
+     "expansion_symbol": {
+      "status": "not_checked",
+      "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     },
+     "card_number": {
+      "status": "confirmed",
+      "note": "read directly from OCR text"
+     },
+     "language": {
+      "status": "confirmed",
+      "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     },
+     "holo_pattern": {
+      "status": "not_checked",
+      "note": "no automated code path detects holo/foil pattern"
+     },
+     "catalog_match": {
+      "status": "confirmed",
+      "note": "exactly one catalog product matches name+number: Golem EX (Generations)"
+     }
+    },
+    "confidence": 40,
+    "confidence_reason": "4/10 evidence-chain steps independently confirmed: attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+    "inference_explanation": {
+     "original_ocr_text": [
+      "M180",
+      "80",
+      "180",
+      "This Pokemon does 60 damage to itself.",
+      "46/83元"
      ],
-     "n_sales": 5,
-     "days_span": 2,
-     "confidence": "HIGH",
-     "confidence_why": "~2.5 sales/day — value is market-proven",
-     "by_condition": {
-      "Near Mint": {
-       "usd": 2.7,
-       "php": 157,
-       "from": "2 real sold"
-      },
-      "Lightly Played": {
-       "usd": 4.03,
-       "php": 234,
-       "from": "2 real sold"
-      },
-      "Moderately Played": {
-       "usd": 1.26,
-       "php": 73,
-       "from": "1 real sold"
-      },
-      "Heavily Played": {
-       "usd": 1.17,
-       "php": 68,
-       "from": "est. % of market"
-      },
-      "Damaged": {
-       "usd": 0.78,
-       "php": 45,
-       "from": "est. % of market"
-      }
-     },
-     "suggest": {
-      "Near Mint": {
-       "list_php": 188,
-       "steal_php": 113
-      },
-      "Lightly Played": {
-       "list_php": 281,
-       "steal_php": 168
-      },
-      "Moderately Played": {
-       "list_php": 88,
-       "steal_php": 53
-      },
-      "Heavily Played": {
-       "list_php": 82,
-       "steal_php": 49
-      },
-      "Damaged": {
-       "list_php": 54,
-       "steal_php": 32
-      }
-     },
-     "product": "Golem EX"
+     "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
+     "candidate_search_process": "via=local index: number is a printing; 1 catalog candidate(s) considered",
+     "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
+     "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
     }
    }
   ],
