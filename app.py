@@ -217,6 +217,28 @@ def valuator_ocr():
     path = os.path.join(UPLOAD_DIR, f"card_{int(time.time())}{ext}")
     f.save(path)
     lines = valuator.ocr_lines(path)
+    # BINDER MODE (V0.9): 3+ distinct real card names in one photo = a
+    # binder page (2x2); 2 names in a LANDSCAPE frame = two cards side by
+    # side (1x2). Each cell runs the full identification stack.
+    import folder_dataset
+    import profile_dataset
+    from PIL import Image as _Img
+    n_names = len(folder_dataset.distinct_names(lines))
+    _im = _Img.open(path)
+    pair = n_names == 2 and _im.width > _im.height
+    if n_names >= 3 or pair:
+        rows, cols = (1, 2) if pair else (2, 2)
+        cards = []
+        for cell in folder_dataset.split_grid(path, UPLOAD_DIR,
+                                              rows=rows, cols=cols):
+            ident = profile_dataset.identify([cell], [valuator.ocr_lines(cell)],
+                                             set())
+            ident.pop("ocr", None)
+            ident.pop("candidates", None)
+            ident["cell"] = "/uploads/" + os.path.basename(cell)
+            cards.append(ident)
+        return jsonify({"multi": True, "cards": cards,
+                        "file": "/uploads/" + os.path.basename(path)})
     name, number = valuator.guess_query(lines)
     if not name and not number:
         # first pass unusable (glare/holo) -> deep scan: zoomed region crops
@@ -235,6 +257,14 @@ def valuator_ocr():
         dx = valuator.dex_names(lines)
         if len(dx) == 1:
             name, via = dx[0], "dex number"
+    if not name:
+        # LAYER E: attack/ability names pin the card ("Victory Ball" only
+        # exists on Victini)
+        aid = valuator.attack_id(lines)
+        if aid:
+            name, via = aid[0], "attack names"
+            if not number and len(aid[1]) == 1:
+                number = aid[1][0]
     if not name and number:
         # TIE-BREAK: tied fingerprint × the number's own catalog matches
         cross = valuator.crosscheck_name(lines, number)
@@ -763,6 +793,27 @@ $('#lightbox').onclick = ()=>{ $('#lightbox').style.display = 'none'; };
 // identification result to the UI and kick off the candidate search
 async function valApplyOcr(d){
   if(d.file) $('#valThumb').dataset.full = d.file;   // server copy, survives refresh
+  if(d.multi){
+    // BINDER MODE: one photo, several cards — tap a card to search it
+    const cards = d.cards || [];
+    $('#valMsg').textContent = '📚 binder photo — ' + cards.length
+      + ' cards read. Tap one to identify/value it:';
+    $('#valCands').innerHTML = cards.map((c,i)=>`
+      <div class="cand" data-q="${escapeHtml(c.query||'')}" data-jp="${c.jp?1:0}"
+           style="cursor:pointer;text-align:center;border:1px solid var(--line);border-radius:8px;padding:8px">
+        <img src="${c.cell||''}" style="width:100%;border-radius:6px" loading="lazy"
+             onerror="this.style.display='none'">
+        <div style="font-size:12px;margin-top:5px">${escapeHtml(c.name||'(unread)')}</div>
+        <div class="muted" style="font-size:11px">#${escapeHtml(c.number||'?')}${c.via?' · '+escapeHtml(c.via):''}</div>
+      </div>`).join('');
+    document.querySelectorAll('#valCands .cand').forEach(el=>el.onclick=()=>{
+      $('#valQuery').value = el.dataset.q;
+      window._jpHint = el.dataset.jp === '1';
+      if(el.dataset.q) valFind();
+      else $('#valMsg').textContent = 'that card did not read — type its name or footer';
+    });
+    return;
+  }
   window._jpHint = !!d.jp;   // unreadable name = non-English card, rank JP first
   $('#valQuery').value = d.query || '';
   // the message always states BOTH what was identified and what's missing,

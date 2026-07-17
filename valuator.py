@@ -225,6 +225,59 @@ def fingerprint_names(lines, limit=5, ties=False):
         conn.close()
 
 
+_ATK_IDX = None
+
+
+def _atk_index():
+    """attack/ability name -> [(card, number)] from the local index."""
+    global _ATK_IDX
+    if _ATK_IDX is None:
+        idx = {}
+        if os.path.exists(FP_DB):
+            conn = sqlite3.connect(FP_DB)
+            try:
+                for a, kind, card, num, s in conn.execute("SELECT * FROM atk"):
+                    idx.setdefault(a, []).append((card, num))
+            except sqlite3.OperationalError:
+                pass                      # index predates the atk table
+            finally:
+                conn.close()
+        _ATK_IDX = idx
+    return _ATK_IDX
+
+
+def attack_id(lines):
+    """LAYER E: attack/ability NAMES -> the card. They are the big readable
+    English text OCR nails even on binder-cell crops, and near-unique per
+    species ("Victory Ball" exists only on Victini). Multiple hits
+    intersect; returns (card_name, [possible numbers]) or None."""
+    idx = _atk_index()
+    if not idx:
+        return None
+    matched = []
+    for ln in lines:
+        t = " ".join(re.sub(r"[^A-Za-z' -]", " ", ln.lower()).split())
+        if len(t) < 6 or " " not in t:    # multi-word names only (v1)
+            continue
+        ent = idx.get(t)
+        if not ent and len(t) >= 8:       # 1 OCR slip ("Soprane Wave")
+            close = [k for k in idx
+                     if abs(len(k) - len(t)) <= 1 and _lev(k, t) <= 1]
+            if len(close) == 1:
+                ent = idx[close[0]]
+        if ent:
+            matched.append(ent)
+    if not matched:
+        return None
+    names = set.intersection(*[{c for c, _ in ent} for ent in matched])
+    if len(names) != 1:
+        return None                       # ambiguous or noisy = no claim
+    nm = names.pop()
+    nums = set.intersection(*[{n for c, n in ent if c == nm}
+                              for ent in matched]) - {""}
+    return nm, sorted(nums)
+
+
 def local_printings(name):
     """All real printings of a card name AND its mechanic variants, from
     the local index ('Scizor' -> Scizor, Scizor-EX, Scizor ex, M Scizor-EX
@@ -464,6 +517,19 @@ def guess_query(lines):
             if m:
                 number = m.group(1) + "/" + m.group(2).upper().replace(" ", "")
                 break
+    if not number:
+        # GALLERY numbering letters BOTH sides ("TG26/TG30", "GG12/GG70").
+        # Both sides share the same prefix — trim OCR glue ("WGG12/GG70")
+        for ln in lines:
+            m = re.search(r"\b([A-Za-z]{1,3})(\d{1,3})\s*/\s*([A-Za-z]{1,3})(\d{1,3})\b", ln)
+            if m:
+                p1, n1, p2, n2 = (m.group(1).upper(), m.group(2),
+                                  m.group(3).upper(), m.group(4))
+                if p1 != p2 and p1.endswith(p2):
+                    p1 = p2
+                if p1 == p2:
+                    number = f"{p1}{n1}/{p2}{n2}"
+                    break
     if not number:
         # relaxed pass: OCR glues rarity glyphs onto the number ('016/173RR'
         # read as '015/1738R') — printed totals are 2-3 digits, trim the rest

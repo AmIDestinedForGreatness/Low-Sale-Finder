@@ -358,6 +358,12 @@ class ValuatorLayerCD(unittest.TestCase):
         self.assertEqual(number, "034/XY-P")
         _, number = valuator.guess_query(["70", "197/SV-P"])
         self.assertEqual(number, "197/SV-P")
+        # gallery numbering letters BOTH sides (training-scrape catch);
+        # OCR glue on the prefix is trimmed via prefix-equality
+        _, number = valuator.guess_query(["Gloria", "TG26/TG30"])
+        self.assertEqual(number, "TG26/TG30")
+        _, number = valuator.guess_query(["Deoxys", "WGG12/GG70"])
+        self.assertEqual(number, "GG12/GG70")
 
     def test_fingerprint_ambiguity_guard(self):
         # live catch: {10,20} named a Chespin promo "Arbok" — tiny generic
@@ -385,6 +391,18 @@ class ValuatorLayerCD(unittest.TestCase):
         name, _ = valuator.guess_query(
             ["P280", "Naganadel&", "Guzzlord", "BASIC", "TAG TEAM"])
         self.assertEqual(name, "Naganadel & Guzzlord-GX")
+
+    def test_layer_e_attack_names(self):
+        # binder-page breakthrough: attack names are big readable English
+        # OCR nails even on cell crops, and near-unique per species
+        nm, nums = valuator.attack_id(["BASIC", "Victini", "Victory Ball", "50"])
+        self.assertEqual(nm, "Victini")
+        self.assertTrue(all(n.startswith("XY") for n in nums))
+        # one OCR slip still matches ("Soprane Wave")
+        nm2, _ = valuator.attack_id(["Soprane Wave", "80"])
+        self.assertEqual(nm2, "Meloetta")
+        # ambiguous/no evidence = no claim
+        self.assertIsNone(valuator.attack_id(["Flip a coin.", "50"]))
 
     def test_local_printings_join(self):
         # lot catches: the local index is COMPLETE where TCGplayer text

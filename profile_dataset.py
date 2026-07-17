@@ -239,8 +239,12 @@ def identify(image_paths, ocr_raw, wm):
             numbers.append(num2)
     name = via = None
     real = [n for n in names if not valuator._SET_RE.fullmatch(n)]
-    if real:      # most SPECIFIC validated read wins: "Pikachu ex" > "Pikachu"
-        name = sorted(real, key=lambda n: (_strong(n), len(n), real.count(n)))[-1]
+    if real:
+        # FREQUENCY first — sellers append the same promo/trailer photo to
+        # every listing ("Mimikyu ex" named 3 different cards because the
+        # vote preferred the LONGER name over the name read on MORE photos)
+        # — then specificity ("Pikachu ex" > "Pikachu"), then length
+        name = sorted(real, key=lambda n: (real.count(n), _strong(n), len(n)))[-1]
     elif names:
         name = names[0]                          # JP setcode-as-name path
     number = None
@@ -264,6 +268,16 @@ def identify(image_paths, ocr_raw, wm):
         dx = valuator.dex_names(merged)
         if len(dx) == 1:
             name, via = dx[0], "dex number"
+    # LAYER E: attack/ability names — determines binder-cell cards whose
+    # footers are below OCR resolution, and can pin the exact printing
+    aid = valuator.attack_id(merged)
+    if aid:
+        if not name:
+            name, via = aid[0], "attack names"
+        if (not number and str(name).lower() in aid[0].lower()
+                and len(aid[1]) == 1):
+            number = aid[1][0]
+            via = via or "attack names"
     if not name and number:
         # TIE-BREAK: tied fingerprint × the number's own catalog matches
         cross = valuator.crosscheck_name(merged, number)
@@ -303,10 +317,18 @@ def identify(image_paths, ocr_raw, wm):
         cands = valuator.search_candidates(query, prefer_jp=prefer_jp)
         if not cands and name:                   # number may be misread
             cands = valuator.search_candidates(str(name), prefer_jp=prefer_jp)
+        # GRADED SLABS: label numbers are region-ambiguous (a Beckett'd
+        # CHINESE Pikachu promo #004/SV-P unique-matched the JAPANESE SV-P
+        # 004 — Dondozo). Never adopt a name from a bare number on a slab.
+        # NB: no trailing \b — grades glue on ("PSA10")
+        graded = any(re.search(r"\b(psa|bgs|cgc|beckett|black label|"
+                               r"gem ?mint|pristine)", ln, re.I)
+                     for ln in merged)
         # promo/JP numbers are near-unique: exactly ONE catalog product with
         # the read number = the card ("197/SV-P" -> Pikachu). Also upgrades
         # a setcode-only name ("sm3" -> Raichu GX). Still eye-gated.
-        if ((not name or valuator._SET_RE.fullmatch(str(name)))
+        if (not graded
+                and (not name or valuator._SET_RE.fullmatch(str(name)))
                 and number and len(cands) == 1
                 and valuator._norm_num(cands[0]["number"]) == valuator._norm_num(str(number))):
             name = cands[0]["name"].split(" - ")[0]
@@ -315,7 +337,7 @@ def identify(image_paths, ocr_raw, wm):
         # they are all the SAME card (Alolan Ninetales GX 22/145 appeared
         # twice; the system claimed nothing). One name in all candidates =
         # the name is determined even without a readable title.
-        elif (not name and number and len(cands) >= 2):
+        elif (not graded and not name and number and len(cands) >= 2):
             bases = {re.sub(r"\s*\(.*\)$", "", cd["name"].split(" - ")[0]).strip()
                      for cd in cands
                      if valuator._norm_num(cd["number"]) == valuator._norm_num(str(number))}
@@ -380,6 +402,7 @@ def identify(image_paths, ocr_raw, wm):
                 number, snapped = fixed, True
     return {"name": name, "number": number, "number_read": number_read,
             "snapped": snapped, "via": via, "jp": jp, "query": query,
+            "graded": bool(query) and graded,
             "watermark_dropped": dropped[:8],
             "candidates": [{"pid": c["pid"], "name": c["name"], "set": c["set"],
                             "number": c["number"], "line": c.get("line", "")}

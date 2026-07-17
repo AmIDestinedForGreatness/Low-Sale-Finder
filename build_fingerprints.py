@@ -56,6 +56,12 @@ def main():
     conn.execute("CREATE TABLE fp (id TEXT PRIMARY KEY, name TEXT, hp INTEGER, "
                  "damages TEXT, subtypes TEXT, setname TEXT, number TEXT, "
                  "rarity TEXT, dex INTEGER)")
+    # LAYER E: attack/ability NAMES — big readable English text that OCR
+    # nails even on binder-cell crops, and near-unique per card
+    conn.execute("DROP TABLE IF EXISTS atk")
+    conn.execute("CREATE TABLE atk (atk TEXT, kind TEXT, card TEXT, "
+                 "number TEXT, setname TEXT)")
+    conn.execute("CREATE INDEX idx_atk ON atk (atk)")
     n = 0
     for fn in card_files:
         try:
@@ -82,6 +88,16 @@ def main():
                          (c.get("id"), c.get("name"), hp, ",".join(dmgs),
                           ",".join(c.get("subtypes") or []), setname,
                           num, c.get("rarity") or "", dex))
+            for a in (c.get("attacks") or []):
+                if a.get("name"):
+                    conn.execute("INSERT INTO atk VALUES (?,?,?,?,?)",
+                                 (a["name"].lower().strip(), "attack",
+                                  c.get("name"), num, setname))
+            for a in (c.get("abilities") or []):
+                if a.get("name"):
+                    conn.execute("INSERT INTO atk VALUES (?,?,?,?,?)",
+                                 (a["name"].lower().strip(), "ability",
+                                  c.get("name"), num, setname))
             n += 1
     conn.commit()
     total = conn.execute("SELECT COUNT(*) FROM fp").fetchone()[0]

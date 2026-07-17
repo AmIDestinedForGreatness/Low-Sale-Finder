@@ -276,3 +276,26 @@ tokens are not set codes. (3) TWO validated names in a LANDSCAPE frame =
 two cards side by side → 1×2 split (tag-teams are portrait). (4) Candidate
 consensus: all number-matching products sharing ONE name = the name.
 **Guards:** `ValuatorLayerCD.test_local_printings_join`
+
+### L29 — attack names identify cards; frequency beats length; slabs are
+### region-ambiguous (2026-07-17 training shift)
+**Mistakes:** a seller's TRAILER photo (same Mimikyu ex shot appended to
+every listing) named 3 different cards — the vote preferred the LONGER
+name over the one read on MORE photos; binder-cell footers sit below OCR
+resolution and names alone tied (Melaeta = Meloetta or Melmetal?); a
+Beckett'd CHINESE Pikachu promo #004/SV-P unique-matched the JAPANESE
+SV-P 004 (Dondozo); TG26/TG30-style gallery numbers had no pattern; my
+own "BINDER -" rename force-quartered a two-card pair on re-run; 5% cell
+overlap bled the neighbor's title into the blurred Weavile cell.
+**Rules:** (1) LAYER E: attack/ability names (31,908 indexed) are big
+readable English text, near-unique per species — exact + 1-slip fuzzy,
+multiple hits intersect, ambiguity claims nothing. (2) Name vote =
+frequency first, then specificity, then length. (3) Slab detected (psa/
+bgs/cgc/beckett…, glued grades count) → never adopt a name from a bare
+number; label numbers are region-ambiguous. (4) Gallery numbering
+letters-both-sides with prefix-equality glue-trimming. (5) Layout
+detection precedes filename hints; duplicate names across cells = bleed,
+keep the stronger evidence. (6) Evidence merged across runs is MARKED as
+merged, never presented as a single-run read.
+**Guards:** `ValuatorLayerCD.test_layer_e_attack_names`,
+`test_promo_letter_footer` (gallery+glue)

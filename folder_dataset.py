@@ -69,8 +69,10 @@ def distinct_names(lines):
     return names
 
 
-def split_grid(path, tmpdir, rows=2, cols=2, pad=0.05):
-    """Binder page -> overlapping cell crops, one card each."""
+def split_grid(path, tmpdir, rows=2, cols=2, pad=0.03):
+    """Binder page -> overlapping cell crops, one card each. Cells are
+    UPSCALED 2x — a quadrant crop halves effective resolution, which is
+    exactly why tiny promo footers (XY117) died in cell OCR."""
     img = Image.open(path)
     w, h = img.size
     cells = []
@@ -83,7 +85,9 @@ def split_grid(path, tmpdir, rows=2, cols=2, pad=0.05):
                    int(min(h, (r + 1) * h / rows + ph)))
             out = os.path.join(tmpdir,
                                f"{os.path.splitext(os.path.basename(path))[0]}_r{r}c{c}.png")
-            img.crop(box).save(out)
+            cell = img.crop(box)
+            cell = cell.resize((cell.width * 2, cell.height * 2), Image.LANCZOS)
+            cell.save(out)
             cells.append(out)
     return cells
 
@@ -149,9 +153,11 @@ def main():
         # 3+ names = binder page (2x2). TWO names in a LANDSCAPE frame =
         # two cards side by side (live catch: a Volcanion EX + Golem EX
         # photo fused Golem's name with Volcanion's number). Tag-team
-        # cards also read 2 names but are portrait — excluded.
-        multi = n_names >= 3 or "binder" in fn.lower()
-        pair = (not multi) and n_names == 2 and land
+        # cards also read 2 names but are portrait — excluded. PAIR is
+        # decided BEFORE the filename hint: a renamed "BINDER - …" pair
+        # photo got force-quartered on a re-run.
+        pair = n_names == 2 and land
+        multi = (not pair) and (n_names >= 3 or "binder" in fn.lower())
         entry = {"file": fn, "rotation": rot,
                  "multi_card": multi or pair, "cards": []}
         if multi or pair:
@@ -166,6 +172,23 @@ def main():
                 entry["cards"].append(ident)
                 print(f"    cell -> {ident.get('name')} #{ident.get('number')} "
                       f"via={ident.get('via')} cands={len(ident.get('candidates', []))}")
+            # BLEED SUPPRESSION: overlap crops can catch the NEIGHBOR's
+            # title band — when two cells claim one name, keep only the
+            # stronger evidence (via/number); the weaker becomes honest-unknown
+            seen_names = {}
+            for c in entry["cards"]:
+                nm = c.get("name")
+                if not nm:
+                    continue
+                score = 2 * bool(c.get("via")) + bool(c.get("number"))
+                if nm in seen_names:
+                    weaker = c if score <= seen_names[nm][1] else seen_names[nm][0]
+                    weaker["name"] = None
+                    weaker["bleed_suspected"] = nm
+                    if c is not weaker:
+                        seen_names[nm] = (c, score)
+                else:
+                    seen_names[nm] = (c, score)
         else:
             ident = identify([upath], [lines], set())
             ident.pop("ocr", None)

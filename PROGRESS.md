@@ -3,7 +3,7 @@
 > "We are nowhere near, but we are closer than where we were yesterday." — 2026-07-16
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
-written lesson (`LESSONS.md`). Current: **51 tests, 27 lessons.**
+written lesson (`LESSONS.md`). Current: **53 tests, 29 lessons.**
 
 ## Version history
 
@@ -17,6 +17,7 @@ written lesson (`LESSONS.md`). Current: **51 tests, 27 lessons.**
 | V0.6 | 7/16 | Build identity badge (#git-sha) + stale-page auto-detector |
 | V0.7 | 7/17 | **The dataset run**: all 20 shop listings identified image-first (19/20). New layers: name vocabulary snap (C), dex number (D), fingerprint ambiguity guard + tie-break, promo footers, watermark defense, `profile_dataset.py` |
 | V0.8 | 7/17 | **Overnight (the overnight lot, 38 cards)**: LINK AS SOURCE on the dashboard (paste a Carousell listing URL → photos fetched → identified); orientation auto-righting; binder-page 2×2 splitting; squashed-form name matching; variant-letter numerators (24a/119); language-claim discipline; identity-strict lot pricing; `folder_dataset.py` |
+| V0.9 | 7/17 | **Training shift**: Layer E attack-name ID (31,908 indexed — the binder breakthrough); local-index join + full collector numbers; mechanic-variant retry; candidate consensus; pair split; BINDER MODE on the dashboard; slab region-ambiguity guard; gallery numbers (TG/GG); 20-listing live training set graded 6 exact/8 partial/0 wrong. Lot final: 39/39 named, 27 priced (₱16,957) |
 
 ## The system (4 always-on processes)
 
