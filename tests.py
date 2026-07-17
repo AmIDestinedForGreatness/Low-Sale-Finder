@@ -10,11 +10,13 @@ Run:  E:\python.exe tests.py     (offline — no network, no Discord, no FB)
 """
 import os
 import sys
+import time
 import unittest
 from unittest import mock
 
 import collision
 import evidence
+import fb_feed
 import pc_price
 import scraper
 import tcg_price
@@ -136,6 +138,163 @@ class TestParseAuction(unittest.TestCase):
         self.assertEqual(a.get("start_bid"), 50)
 
 
+class TestFacebookFeedPace(unittest.TestCase):
+    """7/17 live failure: one monolithic 15-group pass took hours, starving
+    later groups and blocking auction maintenance."""
+
+    def test_blank_marketplace_is_explicitly_disabled(self):
+        targets, state = fb_feed.configured_targets(
+            marketplace_url="",
+            group_urls=["https://www.facebook.com/groups/123"])
+        self.assertIn("Marketplace DISABLED", state)
+        self.assertIn("FB_MARKETPLACE_URL is blank", state)
+        self.assertEqual(len(targets), 1)
+        self.assertEqual(targets[0][2], "FB-GROUP")
+
+    def test_invalid_marketplace_url_is_not_navigated(self):
+        targets, state = fb_feed.configured_targets(
+            marketplace_url="https://example.com/marketplace/pokemon",
+            group_urls=[])
+        self.assertEqual(targets, [])
+        self.assertIn("invalid", state)
+
+    def test_valid_marketplace_url_is_scanned_first(self):
+        url = "https://www.facebook.com/marketplace/manila/search?query=pokemon"
+        targets, state = fb_feed.configured_targets(
+            marketplace_url=url,
+            group_urls=["https://www.facebook.com/groups/123"])
+        self.assertIn("Marketplace ENABLED", state)
+        self.assertEqual(targets[0], (url, fb_feed.MARKETPLACE_JS, "FB-MP"))
+        self.assertEqual(targets[1][2], "FB-GROUP")
+
+    def test_fixed_sale_runs_expensive_valuation_once(self):
+        item = {
+            "url": "https://facebook.test/post/1",
+            "title": "Pikachu 025/165",
+            "body": "Pikachu 025/165 P100",
+        }
+        with mock.patch.object(
+                fb_feed.prices, "market_value",
+                return_value=(500.0, "test-market")) as market_value:
+            result = fb_feed.analyze(item)
+        market_value.assert_called_once()
+        self.assertEqual(result["market"], 500.0)
+
+    def test_collection_budget_stops_pathological_group(self):
+        class Clock:
+            def __init__(self):
+                self.value = 0.0
+
+            def __call__(self):
+                return self.value
+
+        class Anchor:
+            def hover(self, timeout=None):
+                return None
+
+        class Mouse:
+            def wheel(self, _x, _y):
+                return None
+
+        class Page:
+            def __init__(self, clock):
+                self.clock = clock
+                self.url = ""
+                self.mouse = Mouse()
+                self.evaluations = 0
+
+            def goto(self, url, **_kwargs):
+                self.url = url
+
+            def wait_for_timeout(self, milliseconds):
+                self.clock.value += milliseconds / 1000.0
+
+            def query_selector_all(self, _selector):
+                return [Anchor() for _ in range(15)]
+
+            def evaluate(self, _js):
+                self.evaluations += 1
+                return [{"url": f"https://facebook.test/{self.evaluations}"}]
+
+        clock = Clock()
+        page = Page(clock)
+        with mock.patch.object(fb_feed.random, "randint",
+                               side_effect=lambda _low, high: high):
+            items = fb_feed.collect(
+                page, "https://www.facebook.com/groups/123", "ignored",
+                "FB-GROUP", want=20, time_budget_seconds=12, clock=clock)
+        self.assertLess(page.evaluations, 16)
+        self.assertLessEqual(clock.value, 12.001)
+        self.assertGreaterEqual(len(items), 1)
+
+    def test_permalink_hover_never_inherits_long_default_timeout(self):
+        class Clock:
+            def __init__(self):
+                self.value = 0.0
+
+            def __call__(self):
+                return self.value
+
+        class Anchor:
+            def __init__(self, clock, timeouts):
+                self.clock = clock
+                self.timeouts = timeouts
+
+            def hover(self, timeout=None):
+                self.timeouts.append(timeout)
+                self.clock.value += timeout / 1000.0
+
+        class Page:
+            def __init__(self, clock):
+                self.clock = clock
+                self.timeouts = []
+
+            def query_selector_all(self, _selector):
+                return [Anchor(self.clock, self.timeouts) for _ in range(40)]
+
+            def wait_for_timeout(self, milliseconds):
+                self.clock.value += milliseconds / 1000.0
+
+        clock = Clock()
+        page = Page(clock)
+        with mock.patch.object(fb_feed.random, "randint",
+                               side_effect=lambda _low, high: high):
+            fb_feed.hydrate_permalinks(
+                page, max_hovers=40, deadline=4.0, clock=clock,
+                hover_timeout_ms=500)
+        self.assertTrue(page.timeouts)
+        self.assertLessEqual(max(page.timeouts), 500)
+        self.assertLessEqual(clock.value, 4.001)
+
+    def test_auction_maintenance_runs_between_targets(self):
+        events = []
+        targets = [
+            ("https://facebook.test/1", "js", "FB-GROUP"),
+            ("https://facebook.test/2", "js", "FB-GROUP"),
+        ]
+
+        def scan(_conn, _page, target, collection_budget_seconds=None):
+            events.append(("scan", target[0], collection_budget_seconds))
+            return {"sent": 0}
+
+        def maintain(_conn):
+            events.append(("auction-maintenance",))
+
+        fb_feed.scan_targets(
+            object(), object(), targets, collection_budget_seconds=45,
+            scan_target_fn=scan, auction_check_fn=maintain,
+            sleep_fn=lambda seconds: events.append(("pause", seconds)),
+            pause_picker=lambda: 8)
+
+        self.assertEqual(events, [
+            ("scan", "https://facebook.test/1", 45),
+            ("auction-maintenance",),
+            ("pause", 8),
+            ("scan", "https://facebook.test/2", 45),
+            ("auction-maintenance",),
+        ])
+
+
 class TestTcgMatching(unittest.TestCase):
     """The Mega-promo lesson (1c8bd4b, 7/15): never conclude 'data gap' from
     one query phrasing; match promo numbers in FULL."""
@@ -192,6 +351,25 @@ class TestPriceChartingPrecision(unittest.TestCase):
         best = pc_price._pick(rows, "Pokemon Card Staraptor Holo Japanese D&P")
         self.assertIsNotNone(best)
         self.assertEqual(best[0], "Staraptor #26")
+
+    def test_pricecharting_parser_never_regexes_the_whole_page(self):
+        # Live 7/17 CPU runaway: a generic FB sale query returned a large page
+        # whose partial rows kept `_ROW.findall(full_html)` backtracking for
+        # hours. Row-bounded parsing must stay linear on adversarial HTML.
+        incomplete = (
+            '<tr><td class="title"><a href="#">Noise</a></td>' +
+            ("x" * 1800) + "</tr>")
+        valid = (
+            '<tr><td class="title"><a href="/game/pokemon/staraptor">'
+            'Staraptor #26</a></td><td><a href="/console/pokemon-japanese">'
+            'Pokemon Japanese Diamond &amp; Pearl</a></td>'
+            '<td class="used_price"><span>$5.58</span></td></tr>')
+        html = incomplete * 500 + valid
+        started = time.perf_counter()
+        rows = pc_price._parse_rows(html)
+        elapsed = time.perf_counter() - started
+        self.assertEqual(rows[-1][0], "Staraptor #26")
+        self.assertLess(elapsed, 1.0)
 
 
 class TestValuator(unittest.TestCase):
@@ -813,7 +991,8 @@ class TestReauditHandoffEdges(unittest.TestCase):
                "candidates": [{"name": "Coalossal", "number": "117/100",
                                "set": "s3"}]}
         with mock.patch("reaudit.profile_dataset.identify") as identify, \
-             mock.patch("collision._catalog_rows", return_value=[]):
+             mock.patch("collision._catalog_rows", return_value=[]), \
+             mock.patch("reaudit.evidence.log_failure"):
             result = reaudit._identify_with_retry(
                 [], [["Coalossal", "117/100"]], set(), old, "test")
         identify.assert_not_called()

@@ -3,7 +3,7 @@
 > "We are nowhere near, but we are closer than where we were yesterday." — 2026-07-16
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
-written lesson (`LESSONS.md`). Current: **90 tests, 38 lessons.**
+written lesson (`LESSONS.md`). Current: **98 tests, 39 lessons.**
 
 ## Version history
 
@@ -21,6 +21,7 @@ written lesson (`LESSONS.md`). Current: **90 tests, 38 lessons.**
 
 | V0.10 | 7/17 | **Evidence Engine**: governing `DIRECTIVE.md`; A-E levels, 10-step evidence chain, explicit C inference and D/E failure reports, dashboard evidence display, persistent failure database. |
 | V0.11 | 7/17 | **Adversarial verification**: widened cross-print collision analyzer; Evidence Coverage split from provisional Prediction Confidence; falsification block on every result; local-only perceptual-hash ArtworkProvider + honest provider stubs; transactional/resumable two-dataset audit; narrow-photo binder fallback and invalid-number rejection. |
+| V0.11.1 | 7/17 | **Facebook CPU/fairness fix**: replaced catastrophic whole-page PriceCharting regex with bounded row parsing; removed duplicate per-post valuation; added 500ms hover/45s collection caps, auction maintenance between groups, and explicit Marketplace state. One sequential burner browser, no ban-risky parallelism. |
 
 ## The system (4 always-on processes)
 
@@ -29,7 +30,8 @@ written lesson (`LESSONS.md`). Current: **90 tests, 38 lessons.**
    "♻ resurfaced" tag on bumped old posts; mismatch-guarded deal alerts
 2. **FB groups feed** (`fb_feed.py`) — 15 PH TCG groups (headless burner);
    sale/timed-auction/bidding split; auction channel; 10-min end reminders
-   (react-to-track); auto-delete ended auctions
+   (react-to-track); auto-delete ended auctions; bounded fair turns prevent a
+   pathological group from starving the rest or blocking auction maintenance
 3. **Discord bot** (`bot.py`, Pokestop#6681) — react-to-track,
    /dashboard /help /status + owner-only "." commands
 4. **Dashboard** (`app.py`, V0.6) — live status, merged recent list,

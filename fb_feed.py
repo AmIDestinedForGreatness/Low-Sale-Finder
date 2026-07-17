@@ -18,6 +18,7 @@ import re
 import sqlite3
 import sys
 import time
+from urllib.parse import urlparse
 
 import requests
 from playwright.sync_api import sync_playwright
@@ -259,7 +260,27 @@ def parse_price(text):
     return None
 
 
-def hydrate_permalinks(page, max_hovers=40):
+def _remaining_ms(deadline, clock):
+    if deadline is None:
+        return None
+    # Round a positive fraction up so a sub-millisecond remainder still
+    # advances the fake/Playwright clock to the deadline instead of spinning.
+    remaining = (deadline - clock()) * 1000
+    return max(0, int(remaining + 0.999))
+
+
+def _bounded_page_wait(page, low_ms, high_ms, deadline=None,
+                       clock=time.monotonic):
+    wait_ms = random.randint(low_ms, high_ms)
+    remaining = _remaining_ms(deadline, clock)
+    if remaining is not None:
+        wait_ms = min(wait_ms, remaining)
+    if wait_ms > 0:
+        page.wait_for_timeout(wait_ms)
+
+
+def hydrate_permalinks(page, max_hovers=40, deadline=None,
+                       clock=time.monotonic, hover_timeout_ms=None):
     """FB withholds post permalinks until the post is hovered. Hovering the
     anchors in each feed child surfaces the real /posts/<id>/ links."""
     try:
@@ -267,12 +288,24 @@ def hydrate_permalinks(page, max_hovers=40):
     except Exception:
         return
     hovers = 0
+    if hover_timeout_ms is None:
+        hover_timeout_ms = getattr(config, "FB_HOVER_TIMEOUT_MS", 500)
     for a in links:
         if hovers >= max_hovers:
             break
+        if deadline is not None and clock() >= deadline:
+            break
         try:
-            a.hover()
-            page.wait_for_timeout(random.randint(60, 140))
+            remaining = _remaining_ms(deadline, clock)
+            timeout = hover_timeout_ms if remaining is None else min(
+                hover_timeout_ms, remaining)
+            if timeout <= 0:
+                break
+            # ElementHandle.hover otherwise inherits Playwright's long default
+            # timeout; detached/unstable FB anchors multiplied that timeout by
+            # hundreds of hovers and produced the observed multi-hour pass.
+            a.hover(timeout=max(1, timeout))
+            _bounded_page_wait(page, 60, 140, deadline, clock)
             hovers += 1
         except Exception:
             continue
@@ -284,15 +317,29 @@ def human_scroll(page, rounds=4):
         page.wait_for_timeout(random.randint(1200, 3200))
 
 
-def collect(page, url, js, label, want=None):
+def collect(page, url, js, label, want=None, time_budget_seconds=None,
+            clock=time.monotonic):
     """FB virtual-scrolls (off-screen posts are removed from the DOM), so we
     extract incrementally while scrolling and accumulate by URL until we have
-    `want` posts or run out of new ones."""
+    `want` posts, run out of new ones, or hit the per-target browser budget.
+
+    The budget is a fairness guard, not an attempt to make the burner browse
+    faster: a pathological group must yield the one sequential browser so the
+    remaining configured groups and auction maintenance still get a turn.
+    """
     if want is None:
         want = getattr(config, "FB_MAX_POSTS_PER_GROUP", 20)
+    if time_budget_seconds is None:
+        time_budget_seconds = getattr(
+            config, "FB_GROUP_COLLECTION_BUDGET_SECONDS", 45)
+    deadline = None
+    if time_budget_seconds and time_budget_seconds > 0:
+        deadline = clock() + float(time_budget_seconds)
     print(f"[fb] {label}: {url}")
-    page.goto(url, timeout=60000, wait_until="domcontentloaded")
-    page.wait_for_timeout(random.randint(3500, 6000))
+    remaining = _remaining_ms(deadline, clock)
+    goto_timeout = 60000 if remaining is None else max(1000, min(60000, remaining))
+    page.goto(url, timeout=goto_timeout, wait_until="domcontentloaded")
+    _bounded_page_wait(page, 3500, 6000, deadline, clock)
     if "login" in page.url:
         print("  [!] Redirected to login — session expired or checkpointed. Run fb_login.py again.")
         return []
@@ -300,8 +347,13 @@ def collect(page, url, js, label, want=None):
     acc = {}
     stale = 0
     for step in range(16):
+        if deadline is not None and clock() >= deadline:
+            break
         if is_group:
-            hydrate_permalinks(page, max_hovers=15)
+            hydrate_permalinks(page, max_hovers=15, deadline=deadline,
+                               clock=clock)
+        if deadline is not None and clock() >= deadline:
+            break
         try:
             batch = page.evaluate(js)
         except Exception as e:
@@ -314,9 +366,11 @@ def collect(page, url, js, label, want=None):
         if len(acc) >= want or stale >= 3:
             break
         page.mouse.wheel(0, random.randint(2200, 3600))
-        page.wait_for_timeout(random.randint(1400, 2600))
+        _bounded_page_wait(page, 1400, 2600, deadline, clock)
     items = list(acc.values())[:want]
     print(f"  {len(items)} item(s) collected")
+    if deadline is not None and clock() >= deadline:
+        print(f"  [pace] collection budget reached ({time_budget_seconds:.0f}s); yielding to next target")
     return items
 
 
@@ -343,17 +397,10 @@ def analyze(item):
     item["category"] = scraper.classify(body)[0]
     item["distress"] = scraper.distress_terms(body)
     item["loc"], item["near"] = scraper.location_hint(body)
-    # best-effort valuation: only fires for raw, identifiable cards
-    market, label = (None, None)
-    if not item["auction"]:
-        try:
-            market, label = prices.market_value(item.get("title", "") + " " + body)
-        except Exception:
-            market = None
     # value ONLY fixed-price sales. Auctions/claim sales open below market by
     # design (starting bid / dib price), so an "under market" flag there is a
     # false snipe every time — a real auction snipe is only known at the end.
-    market = None
+    market, label = None, None
     if not item["auction"]:
         try:
             market, label = prices.market_value(item.get("title", "") + " " + body)
@@ -488,19 +535,135 @@ def notify(item, source, conn=None):
         print(f"  [discord error] {e}")
 
 
-def run_once(conn):
+def configured_targets(marketplace_url=None, group_urls=None):
+    """Return scan targets plus a user-visible Marketplace state.
+
+    A blank Marketplace URL is an intentional disabled state. An invalid URL
+    is also skipped rather than silently navigating the burner somewhere
+    unintended. Yujin must supply the real region/query URL.
+    """
+    if marketplace_url is None:
+        marketplace_url = getattr(config, "FB_MARKETPLACE_URL", "")
+    if group_urls is None:
+        group_urls = getattr(config, "FB_GROUP_URLS", [])
+
     targets = []
-    mp = getattr(config, "FB_MARKETPLACE_URL", "")
-    if mp:
-        targets.append((mp, MARKETPLACE_JS, "FB-MP"))
-    for g in getattr(config, "FB_GROUP_URLS", []):
+    mp = str(marketplace_url or "").strip()
+    if not mp:
+        marketplace_state = (
+            "[fb] Marketplace DISABLED: FB_MARKETPLACE_URL is blank; "
+            "group feeds only. Set a real region/query URL to enable it.")
+    else:
+        parsed = urlparse(mp)
+        host = (parsed.hostname or "").lower()
+        valid_host = host in {"facebook.com", "www.facebook.com"}
+        clean_path = parsed.path.rstrip("/")
+        valid_path = clean_path == "/marketplace" or clean_path.startswith(
+            "/marketplace/")
+        if parsed.scheme != "https" or not valid_host or not valid_path:
+            marketplace_state = (
+                "[fb] Marketplace DISABLED: FB_MARKETPLACE_URL is invalid; "
+                "expected an https://www.facebook.com/marketplace/... URL.")
+        else:
+            targets.append((mp, MARKETPLACE_JS, "FB-MP"))
+            marketplace_state = f"[fb] Marketplace ENABLED: {mp}"
+
+    for group in group_urls:
         # CHRONOLOGICAL (newest posts) — reliable ~20-item yield and clean
         # post structure. RECENT_ACTIVITY bumped comments into the feed which
         # tanked yield (~1 item) and fragmented multi-card gallery posts.
         # Fresh auctions still appear here when posted (when bidding early
         # matters most); the react-to-track flow handles live bid updates.
-        u = g.rstrip("/") + "/?sorting_setting=CHRONOLOGICAL"
-        targets.append((u, GROUP_JS, "FB-GROUP"))
+        url = str(group).strip()
+        if not url:
+            continue
+        url = url.rstrip("/") + "/?sorting_setting=CHRONOLOGICAL"
+        targets.append((url, GROUP_JS, "FB-GROUP"))
+    return targets, marketplace_state
+
+
+def scan_target(conn, page, target, collection_budget_seconds=None,
+                collect_fn=None):
+    """Collect, filter, and notify for exactly one target."""
+    if collect_fn is None:
+        collect_fn = collect
+    url, js, label = target
+    started = time.monotonic()
+    items = collect_fn(page, url, js, label,
+                       time_budget_seconds=collection_budget_seconds)
+    new = [item for item in items if not seen(conn, item["url"])]
+    kept, dropped = [], 0
+    now = time.time()
+    for item in new:
+        text = item.get("body", "") or item.get("title", "")
+        # drop merch / Pokémon GO / video-game, then deadends/no-price
+        if scraper.is_merch(text) or analyze(item) is None:
+            mark(conn, item["url"])
+            dropped += 1
+            continue
+        # auction channel: only still-available auctions (not ended)
+        if item.get("auction") and item.get("end_ts") and item["end_ts"] < now:
+            mark(conn, item["url"])
+            dropped += 1
+            continue
+        kept.append(item)
+    print(f"  {len(kept)} new" +
+          (f" ({dropped} filtered: merch/no-price/PM-offer)" if dropped else ""))
+    sent = 0
+    for item in kept:
+        if not claim(conn, item["url"]):   # skip if another pass grabbed it
+            continue
+        notify(item, label, conn)
+        sent += 1
+        time.sleep(1.3)
+    elapsed = time.monotonic() - started
+    print(f"  [pace] target complete in {elapsed:.1f}s: "
+          f"{len(items)} collected, {sent} sent")
+    return {"collected": len(items), "sent": sent, "elapsed": elapsed}
+
+
+def scan_targets(conn, page, targets, collection_budget_seconds=None,
+                 scan_target_fn=None, auction_check_fn=None, sleep_fn=None,
+                 pause_picker=None):
+    """Scan sequentially, yielding to auction maintenance after every target.
+
+    Parallel pages would be faster but materially increase burner-account ban
+    risk. This keeps one browser and the existing human-ish inter-page pause.
+    """
+    if scan_target_fn is None:
+        scan_target_fn = scan_target
+    if auction_check_fn is None:
+        auction_check_fn = check_auction_warnings
+    if sleep_fn is None:
+        sleep_fn = time.sleep
+    if pause_picker is None:
+        pause_picker = lambda: random.randint(8, 20)
+
+    results = []
+    for index, target in enumerate(targets):
+        try:
+            result = scan_target_fn(
+                conn, page, target,
+                collection_budget_seconds=collection_budget_seconds)
+            results.append(result)
+        except Exception as error:
+            print(f"  [fb error] {error}")
+            results.append({"error": str(error)})
+        finally:
+            # A multi-hour target pass used to block reminders and cleanup.
+            try:
+                auction_check_fn(conn)
+            except Exception as error:
+                # Maintenance must not become a new way to starve later groups.
+                print(f"  [auction maintenance error] {error}")
+        if index + 1 < len(targets):
+            sleep_fn(pause_picker())  # human-ish pause between pages
+    return results
+
+
+def run_once(conn):
+    targets, marketplace_state = configured_targets()
+    print(marketplace_state)
     if not targets:
         print("Nothing to scan — set FB_MARKETPLACE_URL / FB_GROUP_URLS in config.py")
         return
@@ -512,36 +675,14 @@ def run_once(conn):
             viewport={"width": 1280, "height": 850},
             locale="en-US",
         )
-        page = ctx.pages[0] if ctx.pages else ctx.new_page()
-        for url, js, label in targets:
-            try:
-                items = collect(page, url, js, label)
-            except Exception as e:
-                print(f"  [fb error] {e}")
-                continue
-            new = [i for i in items if not seen(conn, i["url"])]
-            kept, dropped = [], 0
-            now = time.time()
-            for i in new:
-                text = i.get("body", "") or i.get("title", "")
-                # drop merch / Pokémon GO / video-game, then deadends/no-price
-                if scraper.is_merch(text) or analyze(i) is None:
-                    mark(conn, i["url"]); dropped += 1
-                    continue
-                # auction channel: only still-available auctions (not ended)
-                if i.get("auction") and i.get("end_ts") and i["end_ts"] < now:
-                    mark(conn, i["url"]); dropped += 1
-                    continue
-                kept.append(i)
-            print(f"  {len(kept)} new" + (f" ({dropped} filtered: merch/no-price/PM-offer)" if dropped else ""))
-            for i in kept:
-                if not claim(conn, i["url"]):   # skip if another pass grabbed it
-                    continue
-                notify(i, label, conn)
-                time.sleep(1.3)
-            time.sleep(random.randint(8, 20))  # human-ish pause between pages
-        ctx.close()
-    check_auction_warnings(conn)
+        try:
+            page = ctx.pages[0] if ctx.pages else ctx.new_page()
+            scan_targets(
+                conn, page, targets,
+                collection_budget_seconds=getattr(
+                    config, "FB_GROUP_COLLECTION_BUDGET_SECONDS", 45))
+        finally:
+            ctx.close()
 
 
 def check_auction_warnings(conn):
@@ -599,7 +740,10 @@ def main():
         print("Done (single pass).")
         return
     base = getattr(config, "FB_POLL_MINUTES", 45)
-    print(f"Starting FB feed loop — groups ~every {base} min, auction check every 2 min. Ctrl+C to stop.")
+    budget = getattr(config, "FB_GROUP_COLLECTION_BUDGET_SECONDS", 45)
+    print(f"Starting FB feed loop — targets ~every {base} min, "
+          f"{budget}s collection budget each, auction maintenance between targets. "
+          "Ctrl+C to stop.")
     next_scan = 0
     while True:
         now = time.time()

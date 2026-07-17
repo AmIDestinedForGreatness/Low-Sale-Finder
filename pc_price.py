@@ -26,6 +26,34 @@ _ROW = re.compile(
     r'/console/[^"]*"[^>]*>\s*([^<]+?)\s*</a>.*?'
     r'used_price"[^>]*>\s*<span[^>]*>\$([\d,]+\.\d{2})',
     re.S)
+_MAX_HTML_CHARS = 2_000_000
+_MAX_ROW_CHARS = 100_000
+
+
+def _parse_rows(html):
+    """Parse PriceCharting rows without running `_ROW` across a whole page.
+
+    The old whole-document `findall()` could catastrophically backtrack on a
+    large search page that contained many partial title cells but no matching
+    price cell. Bound both the document and each table-row search.
+    """
+    html = (html or "")[:_MAX_HTML_CHARS]
+    lowered = html.lower()
+    rows = []
+    cursor = 0
+    while len(rows) < 500:
+        start = lowered.find("<tr", cursor)
+        if start < 0:
+            break
+        end = lowered.find("</tr>", start)
+        if end < 0:
+            break
+        segment = html[start:min(end + 5, start + _MAX_ROW_CHARS)]
+        match = _ROW.search(segment)
+        if match:
+            rows.append(match.groups())
+        cursor = end + 5
+    return rows
 
 
 def _tokens(s):
@@ -99,7 +127,7 @@ def market_value(title: str):
         try:
             r = requests.get(SEARCH, params={"q": query, "type": "prices"},
                              headers={"User-Agent": UA}, timeout=20)
-            best = _pick(_ROW.findall(r.text), title)
+            best = _pick(_parse_rows(r.text), title)
             if best:
                 usd = float(best[2].replace(",", ""))
                 price = usd * config.USD_TO_LOCAL_RATE

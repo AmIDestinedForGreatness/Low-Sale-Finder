@@ -488,3 +488,26 @@ contain it, but does not exclude mechanic variants that still contain it
 (`Altaria` cannot rule out `M Altaria-EX`). Strip parenthetical product labels
 before identity comparison. **Guards:** partial-name and catalog-annotation
 tests in `TestCollisionEvidenceIntegration`.
+
+### L39 - a human-paced scraper still needs a fairness budget (2026-07-17)
+**Mistake:** all 15 Facebook groups were scanned in one monolithic sequential
+pass. Live `fb_seen` timestamps showed 2.5 hours from group 2 to group 8, while
+PID 2404 accumulated 73,000+ CPU-seconds and starved the dashboard valuator.
+A live `py-spy` attachment found the exact hot frame: a generic stylized FB
+"Pokémart Sale #35" fell through to PriceCharting, where `_ROW.findall()` ran
+a multi-wildcard regex across the entire search-response HTML. It could
+catastrophically backtrack for hours. `analyze()` also called the expensive
+valuation dispatcher twice for each fixed-price post. Because auction
+maintenance ran only after the whole pass, reminders and expired-post cleanup
+were starved too. Blank `FB_MARKETPLACE_URL` was deliberate but looked like a
+silent failure.
+**Rule:** parse PriceCharting HTML one bounded `<tr>` at a time and value each
+post once. Keep one sequential browser and existing jitter (parallel pages
+would raise the disposable account's checkpoint/ban risk), with a 500ms hover
+cap and 45s collection budget as secondary fairness guards. Run auction
+maintenance after every target. A blank/invalid Marketplace URL must print an
+explicit reason; never guess Yujin's region/query URL. Do not implement
+auction-post revisits until historical post changes prove that hypothesis.
+**Guard:** `TestFacebookFeedPace` covers single valuation, collection/hover
+bounds, maintenance, and Marketplace state. The PriceCharting adversarial-HTML
+test enforces row-bounded parsing and a one-second ceiling.
