@@ -10,9 +10,20 @@ autopsied; each became a permanent layer.
 | Metric | at Report 2 | **now** |
 |---|---|---|
 | Cards named | 36/38 | **39/39** (photo set held 39 cards — one photo was a hidden two-card pair) |
-| Exact printings | 28 | **29** |
-| Identity-verified prices | 15 (₱13.4k) | **27 (₱16,957 market / ₱21k+ NM-list)** |
-| Binder cards named | 7/8 | **8/8** (Weavile cracked; Meloetta via attack names) |
+| Exact printings | 28 | **37/39** |
+| Identity-verified prices | 15 (₱13.4k) | **30 (₱22,805 market)** |
+| Binder cards named | 7/8 | **8/8, ALL with exact printings** |
+
+**The binder challenge (his: "I can read the numbers with my eye… you can
+too"):** footer crops were rendered at high zoom and read by the
+assistant's own vision, then constrained against the local index — page 1:
+Victini XY117 · Meloetta XY120 · Magearna XY186 · **Manaphy XY113 (₱2,604!)**;
+page 2 (all Cosmic Eclipse secret character arts): Weavile 238/236 ·
+Excadrill 246/236 · Stoutland 248/236 · Wishiwashi 240/236. The stray
+"240" reads that haunted three runs were Wishiwashi's number bleeding
+across cell borders. Method recorded as `visual read (assistant eye) +
+index constraint` — the machine-OCR path remains the automated layer; the
+vision path is the manual override the dashboard's eye-gate embodies.
 
 New IDs this shift: Mimikyu V 068/172 · Lycanroc-GX 82/181 · Incineroar-GX
 27/149 · Hoopa-GX 96/181 · Zoroark-GX 53/73 · Mew V 069/189 · Pikachu VMAX

@@ -238,6 +238,7 @@ def valuator_ocr():
             ident["cell"] = "/uploads/" + os.path.basename(cell)
             cards.append(ident)
         return jsonify({"multi": True, "cards": cards,
+                        "rows": rows, "cols": cols,
                         "file": "/uploads/" + os.path.basename(path)})
     name, number = valuator.guess_query(lines)
     if not name and not number:
@@ -794,23 +795,43 @@ $('#lightbox').onclick = ()=>{ $('#lightbox').style.display = 'none'; };
 async function valApplyOcr(d){
   if(d.file) $('#valThumb').dataset.full = d.file;   // server copy, survives refresh
   if(d.multi){
-    // BINDER MODE: one photo, several cards — tap a card to search it
+    // BINDER MODE: render results IN THE BINDER'S OWN LAYOUT (his spec) —
+    // each pocket clickable to identify/value, 🔍 zoomable, and the
+    // side-by-side eye-gate compares THAT CELL as "your card"
     const cards = d.cards || [];
-    $('#valMsg').textContent = '📚 binder photo — ' + cards.length
-      + ' cards read. Tap one to identify/value it:';
-    $('#valCands').innerHTML = cards.map((c,i)=>`
-      <div class="cand" data-q="${escapeHtml(c.query||'')}" data-jp="${c.jp?1:0}"
-           style="cursor:pointer;text-align:center;border:1px solid var(--line);border-radius:8px;padding:8px">
-        <img src="${c.cell||''}" style="width:100%;border-radius:6px" loading="lazy"
-             onerror="this.style.display='none'">
-        <div style="font-size:12px;margin-top:5px">${escapeHtml(c.name||'(unread)')}</div>
-        <div class="muted" style="font-size:11px">#${escapeHtml(c.number||'?')}${c.via?' · '+escapeHtml(c.via):''}</div>
-      </div>`).join('');
-    document.querySelectorAll('#valCands .cand').forEach(el=>el.onclick=()=>{
-      $('#valQuery').value = el.dataset.q;
-      window._jpHint = el.dataset.jp === '1';
-      if(el.dataset.q) valFind();
-      else $('#valMsg').textContent = 'that card did not read — type its name or footer';
+    const cols = d.cols || 2;
+    $('#valMsg').textContent = '📒 binder page — ' + cards.length
+      + ' cards. Tap a pocket to identify & value that card; 🔍 zooms it for stamps/edges.';
+    $('#valCands').innerHTML = `
+      <div style="grid-column:1/-1;background:linear-gradient(180deg,#23272f,#1a1d24);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:inset 0 0 30px rgba(0,0,0,.45)">
+        <div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:14px">
+        ${cards.map((c,i)=>`
+          <div class="bcell" data-i="${i}"
+               style="position:relative;background:#14171c;border:1px solid var(--line);border-radius:10px;padding:8px;cursor:pointer;text-align:center;transition:transform .12s"
+               onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
+            <img src="${c.cell||''}" style="width:100%;border-radius:6px" loading="lazy"
+                 onerror="this.style.display='none'">
+            <div style="font-size:12px;margin-top:6px;font-weight:600">${escapeHtml(c.name||'(unread — tap 🔍, then type it)')}</div>
+            <div class="muted" style="font-size:11px">#${escapeHtml(c.number||'?')}${c.via?' · '+escapeHtml(c.via):''}</div>
+            <button class="bzoom" data-img="${c.cell||''}" title="zoom this card"
+              style="position:absolute;top:6px;right:6px;border:none;border-radius:6px;padding:2px 7px;cursor:zoom-in;background:rgba(0,0,0,.55);color:#fff">🔍</button>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    window._binderCards = cards;
+    document.querySelectorAll('.bzoom').forEach(el=>el.onclick=(ev)=>{
+      ev.stopPropagation();
+      $('#lightboxImg').src = el.dataset.img;
+      $('#lightbox').style.display = 'flex';
+    });
+    document.querySelectorAll('.bcell').forEach(el=>el.onclick=()=>{
+      const c = (window._binderCards||[])[+el.dataset.i] || {};
+      // the eye-gate must compare THIS card's crop, not the whole page
+      if(c.cell){ $('#valThumb').src = c.cell; $('#valThumb').dataset.full = c.cell; }
+      window._jpHint = !!c.jp;
+      $('#valQuery').value = c.query || '';
+      if(c.query) valFind();
+      else $('#valMsg').textContent = 'that card did not read — type its name or the footer, then Find card';
     });
     return;
   }

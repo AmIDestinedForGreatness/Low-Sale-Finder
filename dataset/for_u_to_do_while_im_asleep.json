@@ -3097,19 +3097,19 @@
   ],
   "renamed_to": "Zoroark-GX 53-73 English.png"
  },
- "BINDER - Weavile  English, Excadrill  English, Stoutland  English, Wishiwashi  English.jpg": {
+ "BINDER - Weavile 238-236 English, Excadrill 246-236 English, Stoutland 248-236 English, Wishiwashi 240-236 English.jpg": {
   "file": "BINDER - UNIDENTIFIED, Excadrill  English, Stoutland 240-256 English, Wishiwashi  English.jpg",
   "rotation": 0,
   "multi_card": true,
   "cards": [
    {
     "name": "Weavile",
-    "number": null,
+    "number": "238/236",
     "number_read": null,
     "snapped": false,
-    "via": null,
+    "via": "visual read (assistant eye) + index constraint",
     "jp": false,
-    "query": "Weavile",
+    "query": "Weavile 238/236",
     "graded": false,
     "watermark_dropped": [],
     "candidates": [
@@ -3128,24 +3128,24 @@
       "line": "Pokemon"
      },
      {
+      "pid": 157691,
+      "name": "Weavile",
+      "set": "SM - Ultra Prism",
+      "number": "74/156",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 90532,
+      "name": "Weavile",
+      "set": "Secret Wonders",
+      "number": "40/132",
+      "line": "Pokemon"
+     },
+     {
       "pid": 121191,
       "name": "Weavile",
       "set": "XY - Steam Siege",
       "number": "61/114",
-      "line": "Pokemon"
-     },
-     {
-      "pid": 263803,
-      "name": "Weavile",
-      "set": "SWSH09: Brilliant Stars",
-      "number": "087/172",
-      "line": "Pokemon"
-     },
-     {
-      "pid": 560324,
-      "name": "Weavile",
-      "set": "SV: Shrouded Fable",
-      "number": "014/064",
       "line": "Pokemon"
      }
     ],
@@ -3153,15 +3153,29 @@
    },
    {
     "name": "Excadrill",
-    "number": null,
+    "number": "246/236",
     "number_read": null,
     "snapped": false,
-    "via": "attack names",
+    "via": "visual read (assistant eye) + index constraint",
     "jp": false,
-    "query": "Excadrill",
+    "query": "Excadrill 246/236",
     "graded": false,
     "watermark_dropped": [],
     "candidates": [
+     {
+      "pid": 201147,
+      "name": "Excadrill",
+      "set": "SM - Cosmic Eclipse",
+      "number": "115/236",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 642498,
+      "name": "Excadrill ex",
+      "set": "SV: Black Bolt",
+      "number": "046/086",
+      "line": "Pokemon"
+     },
      {
       "pid": 600804,
       "name": "Excadrill",
@@ -3170,25 +3184,11 @@
       "line": "Pokemon Japan"
      },
      {
-      "pid": 589938,
-      "name": "Excadrill",
-      "set": "SV08: Surging Sparks",
-      "number": "109/191",
-      "line": "Pokemon"
-     },
-     {
       "pid": 669327,
       "name": "Excadrill",
       "set": "Start Deck 100 Battle Collection",
       "number": "386/742",
       "line": "Pokemon Japan"
-     },
-     {
-      "pid": 226576,
-      "name": "Excadrill",
-      "set": "SWSH04: Vivid Voltage",
-      "number": "122/185",
-      "line": "Pokemon"
      },
      {
       "pid": 509934,
@@ -3202,56 +3202,77 @@
    },
    {
     "name": "Stoutland",
-    "number": null,
+    "number": "248/236",
     "number_read": "240/250",
     "snapped": false,
-    "via": "name from merged run",
+    "via": "visual read (assistant eye) + index constraint",
     "jp": false,
-    "query": "240/250",
-    "graded": false,
-    "watermark_dropped": [],
-    "candidates": [],
-    "value": null,
-    "note": "number reads 240/25x conflict with Stoutland printings (176/236, 248/236) - likely neighbor bleed; needs eye gate"
-   },
-   {
-    "name": "Wishiwashi",
-    "number": null,
-    "number_read": null,
-    "snapped": false,
-    "via": null,
-    "jp": false,
-    "query": "Wishiwashi",
+    "query": "Stoutland 248/236",
     "graded": false,
     "watermark_dropped": [],
     "candidates": [
      {
-      "pid": 130938,
-      "name": "Wishiwashi GX",
-      "set": "SM - Guardians Rising",
-      "number": "38/145",
+      "pid": 201298,
+      "name": "Stoutland",
+      "set": "SM - Cosmic Eclipse",
+      "number": "176/236",
       "line": "Pokemon"
      },
      {
-      "pid": 573798,
-      "name": "Wishiwashi",
-      "set": "SM2+: Facing a New Trial",
-      "number": "017/049",
+      "pid": 573263,
+      "name": "Stoutland",
+      "set": "SM1S: Collection Sun",
+      "number": "048/060",
       "line": "Pokemon Japan"
      },
      {
-      "pid": 175417,
-      "name": "Wishiwashi",
-      "set": "Dragon Majesty",
-      "number": "31/70",
+      "pid": 246872,
+      "name": "Stoutland",
+      "set": "SWSH07: Evolving Skies",
+      "number": "135/203",
       "line": "Pokemon"
      },
      {
-      "pid": 595654,
+      "pid": 89571,
+      "name": "Stoutland",
+      "set": "Dark Explorers",
+      "number": "88/108",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 89573,
+      "name": "Stoutland",
+      "set": "XY Base Set",
+      "number": "110/146",
+      "line": "Pokemon"
+     }
+    ],
+    "value": null
+   },
+   {
+    "name": "Wishiwashi",
+    "number": "240/236",
+    "number_read": null,
+    "snapped": false,
+    "via": "visual read (assistant eye) + index constraint",
+    "jp": false,
+    "query": "Wishiwashi 240/236",
+    "graded": false,
+    "watermark_dropped": [],
+    "candidates": [
+     {
+      "pid": 573738,
       "name": "Wishiwashi",
-      "set": "SI: Start Deck 100",
-      "number": "113/414",
+      "set": "SM6a: Dragon Storm",
+      "number": "023/053",
       "line": "Pokemon Japan"
+     },
+     {
+      "pid": 246873,
+      "name": "Wishiwashi",
+      "set": "SWSH07: Evolving Skies",
+      "number": "046/203",
+      "line": "Pokemon"
      },
      {
       "pid": 219375,
@@ -3259,43 +3280,57 @@
       "set": "SWSH03: Darkness Ablaze",
       "number": "050/189",
       "line": "Pokemon"
+     },
+     {
+      "pid": 126915,
+      "name": "Wishiwashi",
+      "set": "SM Base Set",
+      "number": "44/149",
+      "line": "Pokemon"
+     },
+     {
+      "pid": 569437,
+      "name": "Wishiwashi",
+      "set": "S7R: Blue Sky Stream",
+      "number": "025/067",
+      "line": "Pokemon Japan"
      }
     ],
     "value": null
    }
   ],
   "merged_runs": true,
-  "renamed_to": "BINDER - Weavile  English, Excadrill  English, Stoutland  English, Wishiwashi  English.jpg"
+  "renamed_to": "BINDER - Weavile 238-236 English, Excadrill 246-236 English, Stoutland 248-236 English, Wishiwashi 240-236 English.jpg"
  },
- "BINDER - Victini  English, Meloetta  English, Magearna  English, Manaphy  English.jpg": {
+ "BINDER - Victini XY117 English, Meloetta XY120 English, Magearna XY186 English, Manaphy XY113 English.jpg": {
   "file": "BINDER - Victini  English, Meloetta  English, Magearna  English, Manaphy  English.jpg",
   "rotation": 0,
   "multi_card": true,
   "cards": [
    {
     "name": "Victini",
-    "number": null,
+    "number": "XY117",
     "number_read": null,
     "snapped": false,
-    "via": null,
+    "via": "visual read (assistant eye) + index constraint",
     "jp": false,
-    "query": "Victini",
+    "query": "Victini XY117",
     "graded": false,
     "watermark_dropped": [],
     "candidates": [
-     {
-      "pid": 451654,
-      "name": "Victini",
-      "set": "SWSH12: Silver Tempest",
-      "number": "023/195",
-      "line": "Pokemon"
-     },
      {
       "pid": 604826,
       "name": "Victini",
       "set": "Master Deck Build Box EX",
       "number": "001/046",
       "line": "Pokemon Japan"
+     },
+     {
+      "pid": 451654,
+      "name": "Victini",
+      "set": "SWSH12: Silver Tempest",
+      "number": "023/195",
+      "line": "Pokemon"
      },
      {
       "pid": 574449,
@@ -3305,17 +3340,17 @@
       "line": "Pokemon Japan"
      },
      {
+      "pid": 542774,
+      "name": "Victini",
+      "set": "SV05: Temporal Forces",
+      "number": "030/162",
+      "line": "Pokemon"
+     },
+     {
       "pid": 566170,
       "name": "Victini",
       "set": "SV5M: Cyber Judge",
       "number": "019/071",
-      "line": "Pokemon Japan"
-     },
-     {
-      "pid": 575029,
-      "name": "Victini",
-      "set": "SM11a: Remix Bout",
-      "number": "012/064",
       "line": "Pokemon Japan"
      }
     ],
@@ -3323,25 +3358,120 @@
    },
    {
     "name": "Meloetta",
-    "number": null,
+    "number": "XY120",
     "number_read": null,
     "snapped": false,
-    "via": "attack names (merged run)",
+    "via": "visual read (assistant eye) + index constraint",
     "jp": false,
-    "query": "",
+    "query": "Meloetta XY120",
     "graded": false,
     "watermark_dropped": [],
-    "candidates": [],
-    "value": null
+    "candidates": [
+     {
+      "pid": 125898,
+      "name": "Meloetta - XY120",
+      "set": "XY Promos",
+      "number": "XY120",
+      "line": "Pokemon"
+     }
+    ],
+    "value": {
+     "pid": 125898,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 25.08,
+     "market_php": 1455,
+     "sales": [
+      {
+       "date": "2026-07-17",
+       "usd": 25.18,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 18.5,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 16.68,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 16.67,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-15",
+       "usd": 17.0,
+       "condition": "Lightly Played"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 2,
+     "confidence": "HIGH",
+     "confidence_why": "~2.5 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 25.18,
+       "php": 1460,
+       "from": "1 real sold"
+      },
+      "Lightly Played": {
+       "usd": 16.84,
+       "php": 977,
+       "from": "4 real sold"
+      },
+      "Moderately Played": {
+       "usd": 15.05,
+       "php": 873,
+       "from": "est. % of market"
+      },
+      "Heavily Played": {
+       "usd": 11.29,
+       "php": 655,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 7.52,
+       "php": 436,
+       "from": "est. % of market"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 1752,
+       "steal_php": 1051
+      },
+      "Lightly Played": {
+       "list_php": 1172,
+       "steal_php": 703
+      },
+      "Moderately Played": {
+       "list_php": 1048,
+       "steal_php": 629
+      },
+      "Heavily Played": {
+       "list_php": 786,
+       "steal_php": 472
+      },
+      "Damaged": {
+       "list_php": 523,
+       "steal_php": 314
+      }
+     },
+     "product": "Meloetta - XY120"
+    }
    },
    {
     "name": "Magearna",
-    "number": null,
+    "number": "XY186",
     "number_read": null,
     "snapped": false,
-    "via": null,
+    "via": "visual read (assistant eye) + index constraint",
     "jp": false,
-    "query": "Magearna",
+    "query": "Magearna XY186",
     "graded": false,
     "watermark_dropped": [],
     "candidates": [
@@ -3351,90 +3481,208 @@
       "set": "XY Promos",
       "number": "XY186",
       "line": "Pokemon"
-     },
-     {
-      "pid": 571949,
-      "name": "Magearna",
-      "set": "S3a: Legendary Heartbeat",
-      "number": "054/076",
-      "line": "Pokemon Japan"
-     },
-     {
-      "pid": 226584,
-      "name": "Magearna",
-      "set": "SWSH04: Vivid Voltage",
-      "number": "128/185",
-      "line": "Pokemon"
-     },
-     {
-      "pid": 623534,
-      "name": "Magearna",
-      "set": "SV09: Journey Together",
-      "number": "107/159",
-      "line": "Pokemon"
-     },
-     {
-      "pid": 574706,
-      "name": "Magearna",
-      "set": "SM8b: GX Ultra Shiny",
-      "number": "087/150",
-      "line": "Pokemon Japan"
      }
     ],
-    "value": null
+    "value": {
+     "pid": 127138,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 30.85,
+     "market_php": 1789,
+     "sales": [
+      {
+       "date": "2026-07-14",
+       "usd": 32.03,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-13",
+       "usd": 23.49,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-12",
+       "usd": 27.0,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-11",
+       "usd": 31.68,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-09",
+       "usd": 30.5,
+       "condition": "Near Mint"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 5,
+     "confidence": "HIGH",
+     "confidence_why": "~1.0 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 30.5,
+       "php": 1769,
+       "from": "5 real sold"
+      },
+      "Lightly Played": {
+       "usd": 24.68,
+       "php": 1431,
+       "from": "est. % of market"
+      },
+      "Moderately Played": {
+       "usd": 18.51,
+       "php": 1074,
+       "from": "est. % of market"
+      },
+      "Heavily Played": {
+       "usd": 13.88,
+       "php": 805,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 9.26,
+       "php": 537,
+       "from": "est. % of market"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 2123,
+       "steal_php": 1274
+      },
+      "Lightly Played": {
+       "list_php": 1717,
+       "steal_php": 1030
+      },
+      "Moderately Played": {
+       "list_php": 1289,
+       "steal_php": 773
+      },
+      "Heavily Played": {
+       "list_php": 966,
+       "steal_php": 580
+      },
+      "Damaged": {
+       "list_php": 644,
+       "steal_php": 387
+      }
+     },
+     "product": "Magearna - XY186"
+    }
    },
    {
     "name": "Manaphy",
-    "number": null,
+    "number": "XY113",
     "number_read": null,
     "snapped": false,
-    "via": null,
+    "via": "visual read (assistant eye) + index constraint",
     "jp": false,
-    "query": "Manaphy",
+    "query": "Manaphy XY113",
     "graded": false,
     "watermark_dropped": [],
     "candidates": [
-     {
-      "pid": 87146,
-      "name": "Manaphy",
-      "set": "Majestic Dawn",
-      "number": "8/100",
-      "line": "Pokemon"
-     },
      {
       "pid": 118861,
       "name": "Manaphy",
       "set": "XY Promos",
       "number": "XY113",
       "line": "Pokemon"
-     },
-     {
-      "pid": 87147,
-      "name": "Manaphy",
-      "set": "POP Series 9",
-      "number": "002/017",
-      "line": "Pokemon"
-     },
-     {
-      "pid": 603769,
-      "name": "Manaphy",
-      "set": "XY5-Bt: Tidal Storm",
-      "number": "033/070",
-      "line": "Pokemon Japan"
-     },
-     {
-      "pid": 588700,
-      "name": "Manaphy",
-      "set": "SV: Ancient Koraidon ex Starter Deck & Build Set",
-      "number": "005/053",
-      "line": "Pokemon Japan"
      }
     ],
-    "value": null
+    "value": {
+     "pid": 118861,
+     "usd_rate": 58.0,
+     "ph_factor": 1.2,
+     "market_usd": 44.9,
+     "market_php": 2604,
+     "sales": [
+      {
+       "date": "2026-07-17",
+       "usd": 33.0,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-16",
+       "usd": 69.75,
+       "condition": "Near Mint"
+      },
+      {
+       "date": "2026-07-13",
+       "usd": 33.79,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-09",
+       "usd": 34.99,
+       "condition": "Lightly Played"
+      },
+      {
+       "date": "2026-07-07",
+       "usd": 34.99,
+       "condition": "Lightly Played"
+      }
+     ],
+     "n_sales": 5,
+     "days_span": 10,
+     "confidence": "HIGH",
+     "confidence_why": "~0.5 sales/day — value is market-proven",
+     "by_condition": {
+      "Near Mint": {
+       "usd": 69.75,
+       "php": 4046,
+       "from": "1 real sold"
+      },
+      "Lightly Played": {
+       "usd": 34.39,
+       "php": 1995,
+       "from": "4 real sold"
+      },
+      "Moderately Played": {
+       "usd": 26.94,
+       "php": 1563,
+       "from": "est. % of market"
+      },
+      "Heavily Played": {
+       "usd": 20.2,
+       "php": 1172,
+       "from": "est. % of market"
+      },
+      "Damaged": {
+       "usd": 13.47,
+       "php": 781,
+       "from": "est. % of market"
+      }
+     },
+     "suggest": {
+      "Near Mint": {
+       "list_php": 4855,
+       "steal_php": 2913
+      },
+      "Lightly Played": {
+       "list_php": 2394,
+       "steal_php": 1436
+      },
+      "Moderately Played": {
+       "list_php": 1876,
+       "steal_php": 1125
+      },
+      "Heavily Played": {
+       "list_php": 1406,
+       "steal_php": 844
+      },
+      "Damaged": {
+       "list_php": 937,
+       "steal_php": 562
+      }
+     },
+     "product": "Manaphy"
+    }
    }
   ],
   "merged_runs": true,
-  "renamed_to": "BINDER - Victini  English, Meloetta  English, Magearna  English, Manaphy  English.jpg"
+  "renamed_to": "BINDER - Victini XY117 English, Meloetta XY120 English, Magearna XY186 English, Manaphy XY113 English.jpg"
  },
  "BINDER - Volcanion-EX 26-114 English, Golem-EX 46-83 English.png": {
   "file": "BINDER - Volcanion 26-114 English, Golem-EX 46-83 English.png",
