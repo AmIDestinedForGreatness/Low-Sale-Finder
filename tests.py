@@ -978,6 +978,13 @@ class TestEvidenceProviders(unittest.TestCase):
         self.assertEqual(result["status"], "not_checked")
         self.assertFalse(result["web_candidates"])
 
+    def test_web_artwork_reads_key_from_local_secrets_vault(self):
+        from providers.web_artwork import _load_vision_key
+        with mock.patch.dict(os.environ, {}, clear=True), \
+             mock.patch("providers.web_artwork.open", mock.mock_open(
+                 read_data="GOOGLE_VISION_API_KEY=from-vault\n"), create=True):
+            self.assertEqual(_load_vision_key(), "from-vault")
+
     def test_web_artwork_cache_avoids_duplicate_calls(self):
         from providers.web_artwork import WebArtworkProvider
         class Client:

@@ -12,6 +12,22 @@ CACHE_PATH = os.path.join(HERE, "dataset", "web_artwork_cache.json")
 USAGE_PATH = os.path.join(HERE, "dataset", "web_artwork_usage.json")
 
 
+def _load_vision_key():
+    """Load the Vision key from the process environment or local secrets vault."""
+    key = os.environ.get("GOOGLE_VISION_API_KEY", "").strip()
+    if key:
+        return key
+    path = os.path.expanduser(r"~/.claude/local-secrets/low-sale-finder.env.local")
+    try:
+        with open(path, encoding="utf-8") as secrets:
+            for line in secrets:
+                if line.startswith("GOOGLE_VISION_API_KEY="):
+                    return line.split("=", 1)[1].strip()
+    except Exception:
+        pass
+    return ""
+
+
 def _key(path):
     stat = os.stat(path)
     phash, _ = _file_hashes(path, stat.st_mtime_ns, stat.st_size)
@@ -48,7 +64,8 @@ class WebArtworkProvider(EvidenceProvider):
                   "status": "not_checked", "match_score": 0.0, "web_candidates": []}
         if not image_path or not os.path.exists(image_path):
             result["confidence_note"] = "input image unavailable; web artwork was not checked"; return result
-        if self.client is None and not os.environ.get("GOOGLE_VISION_API_KEY"):
+        vision_key = _load_vision_key()
+        if self.client is None and not vision_key:
             result["confidence_note"] = "GOOGLE_VISION_API_KEY is absent; web artwork was not checked"; return result
         key = _key(image_path); cache = self._load(self.cache_path, {})
         if key in cache: return cache[key]
@@ -56,7 +73,7 @@ class WebArtworkProvider(EvidenceProvider):
         if client is None:
             try:
                 from google.cloud import vision
-                client = vision.ImageAnnotatorClient(client_options={"api_key": os.environ["GOOGLE_VISION_API_KEY"]})
+                client = vision.ImageAnnotatorClient(client_options={"api_key": vision_key})
             except Exception as exc:
                 result["confidence_note"] = f"Vision client unavailable: {exc}"; return result
         response = client.annotate_image({"image": {"source": {"image_uri": image_path}},
