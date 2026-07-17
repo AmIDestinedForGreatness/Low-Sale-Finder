@@ -1,0 +1,17 @@
+[Unit]
+Description=Yujin's Pokestop - web dashboard (app.py)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/low-sale-finder
+ExecStart=/home/ubuntu/low-sale-finder/venv/bin/python app.py
+Restart=always
+RestartSec=30
+StandardOutput=append:/home/ubuntu/low-sale-finder/logs/dash.log
+StandardError=append:/home/ubuntu/low-sale-finder/logs/dash.log
+
+[Install]
+WantedBy=multi-user.target
