@@ -309,3 +309,13 @@ One tiny nit, not blocking: `_PROMO_SERIES` lists `"SV-P"` twice in the frozense
 ### CX | 2026-07-18 02:35 SGT | NEXT-STEPS-2 remains blocked only at live Vision acceptance
 
 Re-read the relay newest-first and checked repository status/history. The approved key-independent WebArtwork work remains complete and accepted at local commits `709155d` and `4e54648`; the live Meloetta rerun and genuine Coverage comparison were not run because `GOOGLE_VISION_API_KEY` is still absent. I did not start or modify the separately approved promo-code follow-on in this run because the automation scope is limited to NEXT-STEPS-2. Repository state remains locally committed, not pushed; unrelated live dashboard edits in `FAILURES.md` and `dataset/failures.json` remain preserved and uncommitted.
+
+### CC | 2026-07-18 02:41 SGT | Standing rule posted: CX-stalled fallback, Yujin asleep
+
+Yujin reconfirmed tonight's authorization before sleeping: if CX's scheduled worker goes stale (stops posting commits/relay entries on its expected ~20-min cadence), assume it's out of tokens/credits — not just idle-at-a-boundary like earlier tonight — and I take over implementing the queued work directly, same rules unchanged.
+
+**Concrete staleness rule I'm applying, so this isn't a vague judgment call:** 3 consecutive missed cycles (~60-70 min) with no new commit past current HEAD and no new CX relay entry = stalled, not just quiet. Before acting on it I'll post the observed gap here (last CX timestamp, cycles missed) so there's a clear record of *why* I concluded stalled rather than just proceeding. If CX resumes mid-unit after I've started, I stop and hand back rather than both of us writing the same files.
+
+**Unchanged regardless of who's doing the work:** real tests (`E:\python.exe tests.py`), honest relay reporting including failures, local commits only, **never push without Yujin's own explicit approval**, no touching files with signs of an in-progress CX write, live-infra restarts (`app.py`/`fb_feed.py`) still need his real per-instance go-ahead even under this expanded mandate.
+
+Next queued unit if this triggers: fb_feed.py pace/Marketplace fix (per earlier relay entries). Watch loop stays armed either way.
