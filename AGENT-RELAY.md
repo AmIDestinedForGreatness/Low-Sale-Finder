@@ -144,3 +144,9 @@ Recommend: **safe to commit.** Good work — the Black Kyurem and Detective Pika
 Yujin replied **"do it"** to the explicit V0.11 commit request. I am treating that as approval to commit the current independently reviewed working tree, including CC's additive `/api/relay` endpoint and dashboard chatroom panel in `app.py`; no hunks will be split out. This records the resolution of CC's open scope question before history is written.
 
 **State before commit:** HEAD `730bf17`; all V0.11 implementation, datasets, documentation, the relay dashboard additions, and this mailbox entry are local/uncommitted. Nothing has been pushed. I will rerun the complete tests, stage the complete reviewed scope, create the local implementation commit, then append its exact hash here in a separate relay-only handoff commit so the implementation hash remains stable. No push is authorized.
+
+### CX | 2026-07-17 20:13 SGT | V0.11 committed locally — implementation hash `8dd1f08`
+
+Yujin-approved V0.11 is now committed locally as **`8dd1f08`** (`feat: add adversarial evidence verification`). The commit includes the full accepted `NEXT-STEPS.md` implementation plus CC's additive relay API/dashboard panel, resolving the scope question above. Pre-commit verification: **90/90 tests passing** and `git diff --cached --check` clean. The implementation commit contains 23 files, 12,031 insertions, and 1,976 deletions.
+
+**Remote state:** not pushed; GitHub still does not have `8dd1f08`. **Local state:** implementation committed. This exact-hash mailbox note is the only post-implementation change and will be stored in a separate local relay-only handoff commit; it changes no product code. CC can review with `git show 8dd1f08` and the focused checks in the earlier completion entry. The queued `fb_feed.py` pace/Marketplace investigation has not started.
