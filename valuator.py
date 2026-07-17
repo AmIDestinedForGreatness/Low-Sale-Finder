@@ -226,13 +226,18 @@ def fingerprint_names(lines, limit=5, ties=False):
 
 
 _ATK_IDX = None
+_ATK_IDX_NS = None                        # no-space squashed keys
+
+
+def _squash(s):
+    return re.sub(r"[^a-z]", "", s.lower())
 
 
 def _atk_index():
     """attack/ability name -> [(card, number)] from the local index."""
-    global _ATK_IDX
+    global _ATK_IDX, _ATK_IDX_NS
     if _ATK_IDX is None:
-        idx = {}
+        idx, idx_ns = {}, {}
         if os.path.exists(FP_DB):
             conn = sqlite3.connect(FP_DB)
             try:
@@ -242,8 +247,15 @@ def _atk_index():
                 pass                      # index predates the atk table
             finally:
                 conn.close()
-        _ATK_IDX = idx
+            for a in idx:
+                idx_ns.setdefault(_squash(a), []).append(a)
+        _ATK_IDX, _ATK_IDX_NS = idx, idx_ns
     return _ATK_IDX
+
+
+# OCR glues stacked/adjacent attack-name words with NO space ("Soprano
+# Wave" -> "SopranoWave") — camelCase-shaped run of 2+ capitalized words
+_GLUED_RUN = re.compile(r"[A-Z][a-z]{2,}(?:[A-Z][a-z]{2,}){1,3}")
 
 
 def attack_id(lines):
@@ -257,14 +269,32 @@ def attack_id(lines):
     matched = []
     for ln in lines:
         t = " ".join(re.sub(r"[^A-Za-z' -]", " ", ln.lower()).split())
-        if len(t) < 6 or " " not in t:    # multi-word names only (v1)
-            continue
-        ent = idx.get(t)
-        if not ent and len(t) >= 8:       # 1 OCR slip ("Soprane Wave")
-            close = [k for k in idx
-                     if abs(len(k) - len(t)) <= 1 and _lev(k, t) <= 1]
-            if len(close) == 1:
-                ent = idx[close[0]]
+        ent = None
+        if len(t) >= 6 and " " in t:
+            ent = idx.get(t)
+            if not ent and len(t) >= 8:   # 1 OCR slip ("Soprane Wave")
+                close = [k for k in idx
+                         if abs(len(k) - len(t)) <= 1 and _lev(k, t) <= 1]
+                if len(close) == 1:
+                    ent = idx[close[0]]
+        if not ent:
+            # GLUED FORM: binder-cell OCR usually drops the space entirely
+            # ("SopranoWave", "PrismaticWave", "MarineGuidance")
+            for run in _GLUED_RUN.findall(ln):
+                sq = _squash(run)
+                if len(sq) < 8:
+                    continue
+                keys = _ATK_IDX_NS.get(sq)
+                if not keys:
+                    budget = 1 if len(sq) <= 11 else 2
+                    close = [k for k, ks in _ATK_IDX_NS.items()
+                             if abs(len(k) - len(sq)) <= budget
+                             and _lev(k, sq) <= budget]
+                    if len(close) == 1:
+                        keys = _ATK_IDX_NS[close[0]]
+                if keys and len(keys) == 1:
+                    ent = idx[keys[0]]
+                    break
         if ent:
             matched.append(ent)
     if not matched:
@@ -434,7 +464,10 @@ def snap_name(raw):
     variants = {q, stripped} - {""}
     best, best_d, ties = [], 99, 0
     for v in variants:
-        budget = 0 if len(v) <= 4 else (1 if len(v) <= 6 else 2)
+        # OCR on blurry/glare cells drops MULTIPLE letters from short names
+        # ("Meaeta" for "Meloetta" — 2 letters lost, not 1); scale budget by
+        # how much of the word survived rather than a flat length cutoff
+        budget = 0 if len(v) <= 3 else max(1, min(3, (len(v) - 1) // 3))
         for k, canon in vocab.items():
             if not budget or abs(len(k) - len(v)) > budget:
                 continue

@@ -274,10 +274,20 @@ def identify(image_paths, ocr_raw, wm):
     if aid:
         if not name:
             name, via = aid[0], "attack names"
-        if (not number and str(name).lower() in aid[0].lower()
-                and len(aid[1]) == 1):
-            number = aid[1][0]
-            via = via or "attack names"
+        if not number and str(name).lower() in aid[0].lower():
+            cand_nums = aid[1]
+            if len(cand_nums) > 1:
+                # a promo-format token (letters+digits, no slash) among
+                # otherwise-numbered reprints is the ONE the seller is
+                # actually holding when every OTHER card in this same
+                # photo/listing also reads as a promo — safe to prefer
+                # only when it narrows to exactly one
+                promo = [n for n in cand_nums if re.fullmatch(r"[A-Za-z]+\d+", n)]
+                if len(promo) == 1:
+                    cand_nums = promo
+            if len(cand_nums) == 1:
+                number = cand_nums[0]
+                via = via or "attack names"
     if not name and number:
         # TIE-BREAK: tied fingerprint × the number's own catalog matches
         cross = valuator.crosscheck_name(merged, number)
