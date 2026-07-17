@@ -817,6 +817,25 @@ def valuate(pid, ph_factor=1.2):
     out["confidence"] = level
     out["confidence_why"] = why
 
+    # volatility: how much real sold prices actually swing, not a guess —
+    # coefficient of variation (stdev/mean) over the same real USD sales
+    # already captured above. Niche/new cards with few or wildly-spread
+    # sales should read as volatile; a thick, tight sales history reads
+    # stable. Needs >=2 priced sales to say anything at all.
+    priced = [float(s["purchasePrice"]) for s in sales if s.get("purchasePrice")]
+    if len(priced) >= 2 and statistics.mean(priced) > 0:
+        cv = statistics.stdev(priced) / statistics.mean(priced)
+        if cv < 0.15:
+            vol_label, vol_note = "Stable", "recent sales cluster tightly"
+        elif cv < 0.35:
+            vol_label, vol_note = "Moderate", "some real spread in recent sales"
+        else:
+            vol_label, vol_note = "Volatile", "recent sales swing widely — niche/new-set risk"
+        out["volatility"] = {"label": vol_label, "cv": round(cv, 3), "note": vol_note}
+    else:
+        out["volatility"] = {"label": "Unknown", "cv": None,
+                             "note": "not enough real sales yet to judge"}
+
     # per-condition price: REAL sold median when we have it, fallback % of
     # market when we don't (flagged, so the UI can say which is which)
     base = market

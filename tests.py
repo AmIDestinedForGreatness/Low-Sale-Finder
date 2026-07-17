@@ -484,6 +484,36 @@ class TestValuator(unittest.TestCase):
         self.assertEqual(valuator._confidence(5, 14)[0], "MED")
         self.assertEqual(valuator._confidence(3, 300)[0], "LOW")    # thin
 
+    def _valuate_with_sales(self, sales_rows):
+        price_resp = mock.Mock(status_code=200)
+        price_resp.json.return_value = [{"marketPrice": 10.0}]
+        sales_resp = mock.Mock(status_code=200)
+        sales_resp.json.return_value = {"data": sales_rows}
+        with mock.patch("valuator.requests.get", return_value=price_resp), \
+             mock.patch("valuator.requests.post", return_value=sales_resp):
+            return valuator.valuate(12345)
+
+    def test_volatility_tight_sales_is_stable(self):
+        # dashboard ask (Yujin, live use tonight): a niche/new card should
+        # read as volatile, a thick tight sales history should read stable
+        rows = [{"orderDate": f"2026-07-{10+i:02d}", "purchasePrice": 10.0 + i * 0.05,
+                 "condition": "Near Mint"} for i in range(6)]
+        out = self._valuate_with_sales(rows)
+        self.assertEqual(out["volatility"]["label"], "Stable")
+
+    def test_volatility_wide_spread_is_volatile(self):
+        rows = [{"orderDate": "2026-07-10", "purchasePrice": 2.0, "condition": "Damaged"},
+                {"orderDate": "2026-07-12", "purchasePrice": 40.0, "condition": "Near Mint"},
+                {"orderDate": "2026-07-14", "purchasePrice": 5.0, "condition": "Lightly Played"}]
+        out = self._valuate_with_sales(rows)
+        self.assertEqual(out["volatility"]["label"], "Volatile")
+
+    def test_volatility_unknown_when_too_few_sales(self):
+        out = self._valuate_with_sales([{"orderDate": "2026-07-10", "purchasePrice": 5.0,
+                                          "condition": "Near Mint"}])
+        self.assertEqual(out["volatility"]["label"], "Unknown")
+        self.assertIsNone(out["volatility"]["cv"])
+
 
 class ValuatorLayerCD(unittest.TestCase):
     """V0.7 layers, born from the 20-listing dataset run (L21-L25):

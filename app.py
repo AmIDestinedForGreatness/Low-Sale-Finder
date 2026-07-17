@@ -635,6 +635,11 @@ HTML = r"""<!doctype html>
     border-top-color:var(--accent);border-radius:50%;animation:s .7s linear infinite;vertical-align:-2px}
   @keyframes s{to{transform:rotate(360deg)}}
   .hidden{display:none}
+  .pricebar-wrap{display:flex;align-items:flex-end;gap:2px;height:44px;margin-top:10px}
+  .pricebar{flex:1;background:var(--accent);border-radius:3px 3px 0 0;min-height:3px;
+    transition:filter .12s;cursor:default}
+  .pricebar:hover{filter:brightness(1.35)}
+  .vol-badge{font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid;font-weight:700}
   #relayLog{font:12.5px/1.55 var(--mono);background:#04060d;border:1px solid var(--line);
     border-radius:9px;padding:12px;max-height:360px;overflow-y:auto}
   .relay-msg{padding:7px 0;border-bottom:1px solid rgba(42,184,246,.07)}
@@ -1259,12 +1264,29 @@ document.querySelectorAll('.cmp-imgwrap').forEach(w=>{
   };
 });
 
+const VOL_C = {Stable:'var(--green)', Moderate:'#ffb454', Volatile:'var(--red)', Unknown:'var(--muted)'};
+
+function priceBarChart(sales){
+  // oldest -> newest, left to right, so a rising trend reads as rising bars
+  const asc = [...sales].filter(s=>s.usd).sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  if(asc.length < 2) return '';
+  const max = Math.max(...asc.map(s=>+s.usd));
+  const bars = asc.map(s=>{
+    const h = Math.max(8, Math.round((+s.usd / max) * 44));
+    return `<div class="pricebar" style="height:${h}px" title="${escapeHtml(s.date||'')}: $${s.usd} ${escapeHtml(s.condition||'')}"></div>`;
+  }).join('');
+  const trend = asc[asc.length-1].usd >= asc[0].usd ? '▲ up since oldest shown' : '▼ down since oldest shown';
+  return `<div class="muted" style="font-size:11px;margin-top:10px">price trend (real sales, oldest → newest) ${trend}</div>
+    <div class="pricebar-wrap">${bars}</div>`;
+}
+
 async function valPick(pid){
   $('#valResult').innerHTML = '<p class="muted"><span class="spin"></span> pricing from real sales…</p>';
   const v = await (await fetch('/api/valuator/value?pid=' + pid)).json();
   const CONF_C = {HIGH:'var(--green)', MED:'var(--accent)', LOW:'var(--red)'};
   const conds = Object.entries(v.by_condition||{});
   const cd = (window._cands||{})[pid] || {};
+  const vol = v.volatility || {label:'Unknown', note:''};
   $('#valResult').innerHTML = `
     <div style="border:1px solid var(--line);border-radius:10px;padding:14px">
       <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">
@@ -1276,14 +1298,16 @@ async function valPick(pid){
         </div>
       </div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <b>Market ${v.market_php?('₱'+fmt(v.market_php)+' ($'+v.market_usd+')'):'—'}</b>
+        <b>Market ${v.market_php?('₱'+fmt(v.market_php)+' ($'+v.market_usd+' TCGplayer)'):'—'}</b>
         <span class="badge" style="color:${CONF_C[v.confidence]||''}">confidence: ${v.confidence}</span>
+        <span class="vol-badge" style="color:${VOL_C[vol.label]};border-color:${VOL_C[vol.label]}" title="${escapeHtml(vol.note||'')}">${vol.label==='Unknown'?'volatility: unknown':'volatility: '+vol.label}</span>
         <span class="muted" style="font-size:12px">${escapeHtml(v.confidence_why||'')}</span>
       </div>
+      ${priceBarChart(v.sales||[])}
       <table style="width:100%;margin-top:10px;font-size:13px;border-collapse:collapse">
         <tr class="muted"><td>Condition</td><td>Worth</td><td>List (×${v.ph_factor})</td><td>Steal ≤</td><td>Based on</td></tr>
         ${conds.map(([c,x])=>`<tr>
-          <td style="padding:3px 0">${c}</td><td>₱${fmt(x.php)}</td>
+          <td style="padding:3px 0">${c}</td><td>₱${fmt(x.php)} <span class="muted">($${x.usd})</span></td>
           <td>₱${fmt(v.suggest[c].list_php)}</td><td>₱${fmt(v.suggest[c].steal_php)}</td>
           <td class="muted">${x.from}</td></tr>`).join('')}
       </table>
