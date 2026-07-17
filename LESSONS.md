@@ -3,7 +3,11 @@
 Every entry is a real mistake that happened in production, the rule it taught,
 and the test that now guards it. **The rule: no bug is "fixed" until its
 lesson is encoded here AND in `tests.py`.** That's how the system compounds —
-each error makes it permanently smarter, not temporarily patched. **30 lessons.**
+each error makes it permanently smarter, not temporarily patched. **31 lessons.**
+
+**Governing standard as of L31: `DIRECTIVE.md`.** Every lesson from here on
+must classify its card(s) by Evidence Level (A-E), not a bare confidence %,
+and every "couldn't identify" must be a Required Failure Report, not a shrug.
 
 Run the guard suite: `E:\python.exe tests.py`
 
@@ -337,3 +341,50 @@ the plain `/api/valuator/search` route doesn't carry it.
 **Guard:** manual live verification (documented in this session; the API
 call is non-deterministic enough that a hardcoded regression test would be
 flaky — the structural fix is what's covered, not one exact card's result).
+
+### L31 — "Confidence %" hid inference; replaced with Evidence Levels + explicit failure reports (2026-07-17)
+**Problem:** the system reported cards like `M Manectric-EX 024a/119 — 90%`
+and `Snorlax XY179 — snapped`. The number is CORRECT (verified: it's the
+only real printing within 1 edit of the misread), but the output presented
+it identically to a card whose number was read letter-for-letter off the
+card. A confidence percentage collapsed two different epistemic states
+(directly observed vs. logically forced) into one indistinguishable number.
+**Cause:** the identification pipeline tracks `via` (`"local index snap"`,
+`"unique number match"`, `"visual read (assistant eye)"`, `null`) but the
+user-facing output never surfaced it — only a rounded percentage did.
+**Solution — adopted `DIRECTIVE.md` as governing standard, replacing 0-100%
+confidence with 5 Evidence Levels:**
+- **A — Verified:** every feature (artwork, HP, attacks, ability, set
+  symbol, number, language, holo) directly read. Zero inference.
+- **B — Human Eye Verified:** OCR failed; assistant's manual visual read
+  succeeded and is exact (`via: "visual read (assistant eye)"`).
+- **C — Catalog Forced:** OCR got a fragment; exactly one catalog candidate
+  fits it (`via` contains `"snap"`, `"unique number match"`,
+  `"local index"`, `"number-variant match"`, `"attack names"`,
+  `"fingerprint"`). Must state the forcing logic, not just the number.
+- **D — Partial:** name known, printing not. Never final.
+- **E — Unknown:** insufficient evidence; triggers the Required Failure
+  Report (which feature is missing, would another angle/OCR pass/UV/less
+  glare/different language DB/a scan instead of a photo solve it).
+**Retroactively applied** to the two live datasets as the first real test
+(see chat log 2026-07-17): 5 lot cards + 2 shop cards graded **B** (Victini,
+Meloetta, Magearna, Manaphy, Weavile/Excadrill/Stoutland/Wishiwashi binder
+pages; Coalossal, Rota's Mime Jr.); 3 lot cards graded **C** with the
+forcing logic now stated explicitly (M Manectric-EX 024a/119, Snorlax
+XY179, Volcanion-EX 26/114 — each is literally the directive's own
+worked example of what NOT to present bare). The rest of the pre-directive
+dataset (52 cards) is graded provisionally **A/C by `via`-field proxy only**
+— it predates evidence-chain logging, so a full per-feature re-audit
+(artwork/HP/attack/ability/set-symbol/language/holo, not just name+number)
+has NOT been run on it yet. That full retroactive audit is open work,
+not assumed done.
+**Detect automatically next time:** any card whose `via` is non-null but
+whose output doesn't carry an Evidence Level tag is a Rule-1 violation —
+silent inference. `tests.py` should assert every `identify()` result
+includes an `evidence_level` key before this is considered closed in code
+(not yet built — currently DIRECTIVE.md + this entry are documentation-only;
+the pipeline itself does not emit Evidence Levels yet).
+**Guard:** none yet — this is the open item. Next build step: add
+`evidence_level` + `evidence_chain` fields to `identify()`'s output schema
+in `profile_dataset.py`/`folder_dataset.py`, surface them on the dashboard,
+and write `tests.py` assertions that reject any result missing them.
