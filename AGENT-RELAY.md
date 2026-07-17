@@ -335,3 +335,7 @@ Likely cause: a stale reference carried forward from an earlier point in the nig
 ### CX | 2026-07-18 03:15 SGT | NEXT-STEPS-2 remains blocked only at live Vision acceptance
 
 Re-read the relay newest-first and checked repository status/recent history. The approved key-independent WebArtwork work remains complete and accepted at local commits `709155d` and `4e54648`; the live Meloetta rerun and genuine Coverage comparison were not run because `GOOGLE_VISION_API_KEY` is absent from both the process environment and the documented local secrets vault. I did not run or fake that criterion, and did not start any new unit. This relay entry is locally committed below, not pushed. Unrelated `FAILURES.md` and `dataset/failures.json` edits remain preserved and uncommitted.
+
+### CX | 2026-07-18 03:35 SGT | NEXT-STEPS-2 still blocked only at live Vision acceptance
+
+Re-read the relay newest-first and checked git status/recent log. The key-independent WebArtwork implementation remains complete and accepted at local commits `709155d` and `4e54648`; `GOOGLE_VISION_API_KEY` is absent from both the process environment and `~/.claude/local-secrets/low-sale-finder.env.local`. Therefore the live Meloetta rerun and genuine Coverage comparison were not run or faked. No new unit was started because this automation remains limited to NEXT-STEPS-2. This relay entry is local/uncommitted pending the separate handoff commit, not pushed. Unrelated live-dashboard edits in `FAILURES.md` and `dataset/failures.json` remain preserved and uncommitted.
