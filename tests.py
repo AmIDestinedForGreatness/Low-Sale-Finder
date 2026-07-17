@@ -576,6 +576,15 @@ class ValuatorLayerCD(unittest.TestCase):
         _, number = valuator.guess_query(["Deoxys", "WGG12/GG70"])
         self.assertEqual(number, "GG12/GG70")
 
+    def test_promo_series_ocr_correction(self):
+        self.assertEqual(valuator.snap_promo_number("032/EP-P"), "032/DP-P")
+        self.assertEqual(valuator.snap_promo_number("032/DP-P"), "032/DP-P")
+        response = mock.Mock()
+        response.json.return_value = {"results": []}
+        with mock.patch("valuator.requests.post", return_value=response) as post:
+            valuator.search_candidates("Croagunk 032/EP-P")
+        self.assertEqual(post.call_args.kwargs["json"]["query"], "Croagunk")
+
     def test_fingerprint_ambiguity_guard(self):
         # live catch: {10,20} named a Chespin promo "Arbok" — tiny generic
         # profiles with no corroboration must not claim an identity

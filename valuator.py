@@ -43,6 +43,12 @@ _NOISE = re.compile(
 _NUM_RE = re.compile(r"\b(\d{1,3})\s*/\s*(\d{1,3})\b|"
                      r"\b((?:XY|SM|SWSH|BW|HGSS|SVP?)\d{1,3}[A-Za-z]?)\b", re.I)
 
+# Real promo series suffixes are a small, closed vocabulary.  OCR can turn
+# DP-P into EP-P; correcting only an edit-distance-1 suffix keeps the query
+# narrow while avoiding broad name-only fallback searches.
+_PROMO_SERIES = frozenset({"DP-P", "HGSS-P", "BW-P", "XY-P", "SM-P",
+                           "SWSH-P", "S-P", "SV-P", "SV-P"})
+
 
 _RAPID = None
 
@@ -627,6 +633,20 @@ def guess_query(lines):
     return name, number
 
 
+def snap_promo_number(number):
+    """Correct a one-edit OCR error in a known promo series suffix."""
+    if not number:
+        return number
+    m = re.fullmatch(r"(\d{1,3})/([A-Za-z]{1,4}-P)", number.strip(), re.I)
+    if not m:
+        return number
+    raw = m.group(2).upper()
+    if raw in _PROMO_SERIES:
+        return f"{m.group(1)}/{raw}"
+    close = [series for series in _PROMO_SERIES if _lev(raw, series) == 1]
+    return f"{m.group(1)}/{close[0]}" if len(close) == 1 else number
+
+
 def _norm_num(n):
     """'016/173' -> '16/173' (leading zeros differ between printings/OCR)."""
     parts = (n or "").lower().replace(" ", "").split("/")
@@ -665,7 +685,12 @@ def search_candidates(query, size=12, prefer_jp=False):
     """TCGplayer candidates for the picker grid (image = user's eyes).
     TCGplayer's search returns nothing when the collector number is in the
     query text — so search by NAME only, then rank number-matches first."""
+    query = re.sub(
+        r"(?<!\d)(\d{1,3})\s*/\s*([A-Za-z]{1,4}-P)\b",
+        lambda m: snap_promo_number(f"{m.group(1)}/{m.group(2)}"), query,
+        flags=re.I)
     m = (re.search(r"\b\d{1,3}[a-z]?\s*/\s*\d{1,3}\b", query, re.I)
+         or re.search(r"\b\d{1,3}\s*/\s*[A-Za-z]{1,4}-P\b", query, re.I)
          or _NUM_RE.search(query))
     number = (m.group(0).replace(" ", "") if m else "").lower()
     if _SET_RE.search(query) and number and "/" in number:
