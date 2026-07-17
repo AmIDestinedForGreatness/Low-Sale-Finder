@@ -619,12 +619,17 @@ HTML = r"""<!doctype html>
       <button class="btn-primary" id="valFromUrl">From link</button>
     </div>
     <div id="valQueryRow" class="hidden" style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <img id="valThumb" style="height:64px;border-radius:6px" alt="">
+      <img id="valThumb" style="height:56px;border-radius:6px" alt="">
       <input type="text" id="valQuery" placeholder="card name + number" style="flex:1;min-width:200px">
       <button class="btn-primary" id="valSearch">Find card</button>
+      <button id="valClear" title="remove uploaded images and reset everything"
+              style="background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:7px 12px;cursor:pointer">✕ Clear</button>
       <span id="valMsg" class="muted"></span>
     </div>
-    <div id="valCands" style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px"></div>
+    <!-- uploaded images live HERE and persist until ✕ Clear — search results
+         render below in #valCands and never touch this container -->
+    <div id="valBinder" style="margin-top:12px"></div>
+    <div id="valCands" style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px"></div>
     <div id="valResult" style="margin-top:12px"></div>
   </section>
 
@@ -802,19 +807,22 @@ async function valApplyOcr(d){
     const cols = d.cols || 2;
     $('#valMsg').textContent = '📒 binder page — ' + cards.length
       + ' cards. Tap a pocket to identify & value that card; 🔍 zooms it for stamps/edges.';
-    $('#valCands').innerHTML = `
-      <div style="grid-column:1/-1;background:linear-gradient(180deg,#23272f,#1a1d24);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:inset 0 0 30px rgba(0,0,0,.45)">
-        <div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:14px">
+    // COMPACT (his fix list #1): capped width, ~55% smaller pockets — the
+    // page must fit a normal monitor at 100% zoom. Renders into #valBinder
+    // (fix #2): searches never touch it; only ✕ Clear removes it.
+    $('#valBinder').innerHTML = `
+      <div style="max-width:${cols === 1 ? 240 : 480}px;background:linear-gradient(180deg,#23272f,#1a1d24);border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:inset 0 0 24px rgba(0,0,0,.45)">
+        <div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:10px">
         ${cards.map((c,i)=>`
           <div class="bcell" data-i="${i}"
-               style="position:relative;background:#14171c;border:1px solid var(--line);border-radius:10px;padding:8px;cursor:pointer;text-align:center;transition:transform .12s"
-               onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
-            <img src="${c.cell||''}" style="width:100%;border-radius:6px" loading="lazy"
+               style="position:relative;background:#14171c;border:1px solid var(--line);border-radius:9px;padding:6px;cursor:pointer;text-align:center;transition:transform .12s"
+               onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+            <img src="${c.cell||''}" style="width:100%;max-height:200px;object-fit:contain;border-radius:5px" loading="lazy"
                  onerror="this.style.display='none'">
-            <div style="font-size:12px;margin-top:6px;font-weight:600">${escapeHtml(c.name||'(unread — tap 🔍, then type it)')}</div>
-            <div class="muted" style="font-size:11px">#${escapeHtml(c.number||'?')}${c.via?' · '+escapeHtml(c.via):''}</div>
+            <div style="font-size:11px;margin-top:4px;font-weight:600">${escapeHtml(c.name||'(unread — tap 🔍, then type it)')}</div>
+            <div class="muted" style="font-size:10px">#${escapeHtml(c.number||'?')}${c.via?' · '+escapeHtml(c.via):''}</div>
             <button class="bzoom" data-img="${c.cell||''}" title="zoom this card"
-              style="position:absolute;top:6px;right:6px;border:none;border-radius:6px;padding:2px 7px;cursor:zoom-in;background:rgba(0,0,0,.55);color:#fff">🔍</button>
+              style="position:absolute;top:4px;right:4px;border:none;border-radius:6px;padding:1px 6px;cursor:zoom-in;background:rgba(0,0,0,.55);color:#fff;font-size:12px">🔍</button>
           </div>`).join('')}
         </div>
       </div>`;
@@ -825,7 +833,9 @@ async function valApplyOcr(d){
       $('#lightbox').style.display = 'flex';
     });
     document.querySelectorAll('.bcell').forEach(el=>el.onclick=()=>{
+      if(window._valBusy) return;              // fix #5: no mid-search starts
       const c = (window._binderCards||[])[+el.dataset.i] || {};
+      valResetSearch();                        // fix #4: clean search state
       // the eye-gate must compare THIS card's crop, not the whole page
       if(c.cell){ $('#valThumb').src = c.cell; $('#valThumb').dataset.full = c.cell; }
       window._jpHint = !!c.jp;
@@ -856,11 +866,36 @@ async function valApplyOcr(d){
   if(d.query) await valFind();
 }
 
+// fix #4: every NEW search starts from a clean slate — but NEVER touches
+// the uploaded images (#valThumb / #valBinder); those are ✕ Clear-only
+function valResetSearch(){
+  $('#valQuery').value = '';
+  $('#valCands').innerHTML = '';
+  $('#valResult').innerHTML = '';
+  $('#valMsg').textContent = '';
+  window._cands = {};
+}
+
+// fix #3: the ONLY thing that removes uploaded images
+function valClearAll(){
+  valResetSearch();
+  $('#valBinder').innerHTML = '';
+  $('#valThumb').src = ''; $('#valThumb').removeAttribute('src');
+  delete $('#valThumb').dataset.full;
+  $('#valQueryRow').classList.add('hidden');
+  $('#valUrl').value = '';
+  cf.value = '';                              // same file re-uploadable
+  dz.style.borderColor = 'var(--line)';       // reset drag state
+  window._binderCards = null; window._jpHint = false;
+}
+$('#valClear').onclick = valClearAll;
+
 async function valUpload(file){
+  if(window._valBusy) return;
   $('#valQueryRow').classList.remove('hidden');
+  valResetSearch();
   $('#valThumb').src = URL.createObjectURL(file);
   $('#valMsg').innerHTML = '<span class="spin"></span> reading card…';
-  $('#valCands').innerHTML = ''; $('#valResult').innerHTML = '';
   valBusy(true);
   const fd = new FormData(); fd.append('photo', file);
   try{
@@ -873,10 +908,11 @@ async function valUpload(file){
 // LINK AS SOURCE (his 7/17 request): paste a Carousell listing link —
 // the system pulls the listing's photos itself, then the same stack runs
 async function valFromUrl(){
+  if(window._valBusy) return;
   const url = $('#valUrl').value.trim();
   if(!/^https?:\/\//.test(url)){ $('#valMsg').textContent = 'paste a full link (https://…)'; return; }
   $('#valQueryRow').classList.remove('hidden');
-  $('#valCands').innerHTML = ''; $('#valResult').innerHTML = '';
+  valResetSearch();
   valBusy(true);
   $('#valMsg').innerHTML = '<span class="spin"></span> fetching listing photos + reading (can take ~30s)…';
   try{
@@ -921,15 +957,22 @@ async function valFind(){
     </div>`).join('');
   document.querySelectorAll('.cand').forEach(el=>el.onclick=()=>valConfirm(+el.dataset.pid));
 }
-$('#valSearch').onclick = valFind;
-$('#valQuery').onkeydown = e=>{ if(e.key==='Enter') valFind(); };
+// fixes #5/#6: user-initiated triggers are hard-blocked while processing
+$('#valSearch').onclick = ()=>{ if(!window._valBusy) valFind(); };
+$('#valQuery').onkeydown = e=>{ if(e.key==='Enter' && !window._valBusy) valFind(); };
 
-// searching state: lock the box so typing can't interrupt a running search
+// searching state: lock everything so a second search can't start, and
+// SAY WHY on hover instead of looking broken (fix #6)
+const BUSY_TIP = 'Please wait. Card identification is currently in progress. '
+  + 'Searching is temporarily disabled until processing is complete.';
 function valBusy(b){
-  $('#valQuery').disabled = b;
-  $('#valSearch').disabled = b;
-  $('#valUrl').disabled = b;
-  $('#valFromUrl').disabled = b;
+  window._valBusy = b;
+  for(const id of ['valQuery','valSearch','valUrl','valFromUrl']){
+    const el = $('#'+id);
+    el.disabled = b;
+    if(b) el.title = BUSY_TIP;
+    else el.removeAttribute('title');
+  }
 }
 
 // language-aware full display name ("Japanese Mega Manectric ex")
