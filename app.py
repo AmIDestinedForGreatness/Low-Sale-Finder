@@ -226,18 +226,24 @@ def valuator_ocr():
     n_names = len(folder_dataset.distinct_names(lines))
     _im = _Img.open(path)
     pair = n_names == 2 and _im.width > _im.height
-    if n_names >= 3 or pair:
+    probe_cells, probe_ocr = [], []
+    if (not pair and n_names < 3
+            and folder_dataset.should_probe_grid(_im.width, _im.height, n_names)):
+        probe_cells, probe_ocr = folder_dataset.probe_grid(path, UPLOAD_DIR)
+    if n_names >= 3 or pair or probe_cells:
         rows, cols = (1, 2) if pair else (2, 2)
         cards = []
-        for cell in folder_dataset.split_grid(path, UPLOAD_DIR,
-                                              rows=rows, cols=cols):
-            ident = profile_dataset.identify([cell], [valuator.ocr_lines(cell)],
+        cells = probe_cells or folder_dataset.split_grid(
+            path, UPLOAD_DIR, rows=rows, cols=cols)
+        cell_ocr = probe_ocr or [valuator.ocr_lines(cell) for cell in cells]
+        for cell, cell_lines in zip(cells, cell_ocr):
+            ident = profile_dataset.identify([cell], [cell_lines],
                                              set())
             ident.pop("ocr", None)
             # keep candidates when the printing is AMBIGUOUS (no number) —
             # that's exactly when the eye-gate needs them; drop them once
             # a card is fully pinned, where they're just dead weight
-            if ident.get("number"):
+            if ident.get("evidence_level") in ("A", "B"):
                 ident.pop("candidates", None)
             ident["cell"] = "/uploads/" + os.path.basename(cell)
             cards.append(ident)
@@ -251,6 +257,7 @@ def valuator_ocr():
         if deep:
             lines = lines + [ln for ln in deep if ln not in lines]
             name, number = valuator.guess_query(lines)
+    name_read = name
     via = None
     aid = None
     if not name:
@@ -305,7 +312,8 @@ def valuator_ocr():
     graded = any(re.search(r"\b(psa|bgs|cgc|beckett|black label|"
                            r"gem ?mint|pristine)", ln, re.I) for ln in lines)
     result = {"query": (name + " " + (number or "")).strip(),
-              "name": name, "number": number, "number_read": number_read,
+              "name": name, "name_read": name_read,
+              "number": number, "number_read": number_read,
               "snapped": snapped, "lines": lines[:12],
               "via": via, "jp": jp, "graded": bool(name or number) and graded,
               "candidates": cands[:6],
@@ -314,7 +322,8 @@ def valuator_ocr():
     # Level + chain. This route has its own inline identification logic
     # (doesn't call profile_dataset.identify()) so it builds evidence here too.
     import evidence
-    result.update(evidence.build_evidence(result, lines, aid))
+    result.update(evidence.build_evidence(result, lines, aid,
+                                          image_paths=[path]))
     evidence.log_failure(result)
     return jsonify(result)
 
@@ -464,6 +473,42 @@ def webhook_test():
     except Exception as e:
         return jsonify({"error": f"Couldn't reach Discord: {e}"}), 400
 
+RELAY_PATH = os.path.join(os.path.dirname(__file__), "AGENT-RELAY.md")
+
+
+def _parse_relay():
+    """AGENT-RELAY.md entries look like:
+      ### CC | 2026-07-17 15:45 SGT | relayed by Marvin
+      <body...>
+    Split on '### ' headers; '|'-separated header fields are who/when/note."""
+    try:
+        with open(RELAY_PATH, encoding="utf-8") as f:
+            text = f.read()
+    except Exception:
+        return []
+    entries = []
+    for i, part in enumerate(re.split(r"(?m)^### ", text)[1:]):
+        lines = part.split("\n")
+        header = [p.strip() for p in lines[0].split("|")]
+        who = (header[0] if header else "?") or "?"
+        when = header[1] if len(header) > 1 else ""
+        note = header[2] if len(header) > 2 else ""
+        body = "\n".join(lines[1:]).strip()
+        entries.append({"i": i, "who": who, "when": when, "note": note, "body": body})
+    return entries
+
+
+@app.route("/api/relay")
+def relay():
+    """Live feed for the dashboard's CC<->Codex chatroom panel."""
+    entries = _parse_relay()
+    try:
+        mtime = os.path.getmtime(RELAY_PATH)
+    except Exception:
+        mtime = 0
+    return jsonify({"entries": entries, "mtime": mtime})
+
+
 @app.route("/api/scrape", methods=["POST"])
 def scrape():
     if _job["running"]:
@@ -590,6 +635,21 @@ HTML = r"""<!doctype html>
     border-top-color:var(--accent);border-radius:50%;animation:s .7s linear infinite;vertical-align:-2px}
   @keyframes s{to{transform:rotate(360deg)}}
   .hidden{display:none}
+  #relayLog{font:12.5px/1.55 var(--mono);background:#04060d;border:1px solid var(--line);
+    border-radius:9px;padding:12px;max-height:360px;overflow-y:auto}
+  .relay-msg{padding:7px 0;border-bottom:1px solid rgba(42,184,246,.07)}
+  .relay-msg:last-child{border-bottom:none}
+  .relay-head{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .relay-who{font-weight:800;letter-spacing:.04em}
+  .relay-who.cc{color:var(--accent)}
+  .relay-who.cx{color:#ffb454}
+  .relay-who.other{color:var(--green)}
+  .relay-when{color:var(--muted);font-size:11px}
+  .relay-note{color:var(--muted);font-size:11px;font-style:italic}
+  .relay-body{color:var(--ink);white-space:pre-wrap;margin-top:3px;word-break:break-word}
+  .relay-body code{background:rgba(42,184,246,.1);border-radius:4px;padding:0 4px}
+  #relayDot{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block;margin-right:6px}
+  #relayDot.live{background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s ease-in-out infinite}
 </style></head>
 <body>
 <main>
@@ -704,6 +764,16 @@ HTML = r"""<!doctype html>
     </div>
   </section>
 
+  <section class="card">
+    <h2>CC ⇄ Codex relay</h2>
+    <p class="muted" style="margin:0 0 12px">
+      <span id="relayDot"></span><span id="relayState">checking…</span> — live view of
+      <code style="background:rgba(42,184,246,.1);border-radius:4px;padding:0 4px">AGENT-RELAY.md</code>,
+      the shared handoff log between Claude Code and Codex on this repo.
+    </p>
+    <div id="relayLog"><p class="muted">loading…</p></div>
+  </section>
+
 </main>
 <script>
 const $ = s => document.querySelector(s);
@@ -798,6 +868,53 @@ async function loadFeedStatus(){
   }catch(e){}
 }
 setInterval(loadFeedStatus, 5000); loadFeedStatus();
+
+// ── CC <-> Codex relay chatroom ──
+function relayFmt(body){
+  // trusted local file content (not user input) -> light markdown only,
+  // still escaped first so a stray '<' in code/paths can't break the page
+  let h = escapeHtml(body);
+  h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
+  h = h.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+  return h;
+}
+function relayWhoClass(who){
+  const w = (who||'').trim().toUpperCase();
+  if(w === 'CC') return 'cc';
+  if(w === 'CX') return 'cx';
+  return 'other';
+}
+let relaySig = '';
+async function loadRelay(){
+  try{
+    const r = await (await fetch('/api/relay')).json();
+    const dot = $('#relayDot'), state = $('#relayState');
+    const entries = r.entries || [];
+    dot.className = entries.length ? 'live' : '';
+    state.textContent = r.mtime
+      ? entries.length + ' messages · last update ' + new Date(r.mtime*1000).toLocaleTimeString('en-PH',{timeZone:'Asia/Manila',hour:'numeric',minute:'2-digit',second:'2-digit',hour12:true})
+      : 'AGENT-RELAY.md not found yet';
+    const sig = r.mtime + ':' + entries.length;
+    if(sig === relaySig) return;   // avoid nuking scroll position on unchanged polls
+    relaySig = sig;
+    const log = $('#relayLog');
+    const wasNearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 40;
+    log.innerHTML = entries.length ? entries.map(e => `
+      <div class="relay-msg">
+        <div class="relay-head">
+          <span class="relay-who ${relayWhoClass(e.who)}">${escapeHtml(e.who)}</span>
+          <span class="relay-when">${escapeHtml(e.when)}</span>
+          ${e.note ? `<span class="relay-note">${escapeHtml(e.note)}</span>` : ''}
+        </div>
+        <div class="relay-body">${relayFmt(e.body)}</div>
+      </div>`).join('') : '<p class="muted">no relay entries yet.</p>';
+    if(wasNearBottom) log.scrollTop = log.scrollHeight;
+  }catch(e){
+    $('#relayState').textContent = 'offline';
+    $('#relayDot').className = '';
+  }
+}
+setInterval(loadRelay, 6000); loadRelay();
 
 // ── card valuator ──
 const dz = $('#dropZone'), cf = $('#cardFile');
@@ -973,12 +1090,14 @@ $('#valUrl').onkeydown = e=>{ if(e.key==='Enter') valFromUrl(); };
 // "Users should never need to inspect logs to understand why a card was
 // classified" — this is the whole reason this function exists.
 const EV_COLOR = {A:'#3ddc84', B:'#5b9cff', C:'#e8a33d', D:'#ff8a3d', E:'#ff5c5c'};
-const EV_MARK  = {confirmed:'✓', inferred:'≈', failed:'✗', seen_not_itemized:'~', not_checked:'·'};
-const EV_MARKCOLOR = {confirmed:'#3ddc84', inferred:'#e8a33d', failed:'#ff5c5c', seen_not_itemized:'#5b9cff', not_checked:'#666'};
+const EV_MARK  = {confirmed:'✓', inferred:'≈', failed:'✗', seen_not_itemized:'~', not_verified:'?', not_checked:'·'};
+const EV_MARKCOLOR = {confirmed:'#3ddc84', inferred:'#e8a33d', failed:'#ff5c5c', seen_not_itemized:'#5b9cff', not_verified:'#8f98a8', not_checked:'#666'};
 function evidenceBadge(d, compact){
   if(!d || !d.evidence_level) return '';
   const color = EV_COLOR[d.evidence_level] || '#888';
-  const badge = `<span title="${escapeHtml(d.evidence_level_meaning||'')}" style="display:inline-flex;align-items:center;gap:4px;background:${color}22;border:1px solid ${color};color:${color};border-radius:999px;padding:1px 8px;font-size:11px;font-weight:700;letter-spacing:.02em;white-space:nowrap">Level ${d.evidence_level} · ${d.confidence}%</span>`;
+  const coverage = Number.isFinite(+d.evidence_coverage) ? +d.evidence_coverage : 0;
+  const prediction = Number.isFinite(+d.provisional_prediction_confidence) ? +d.provisional_prediction_confidence : 0;
+  const badge = `<span title="${escapeHtml(d.evidence_level_meaning||'')}" style="display:inline-flex;align-items:center;gap:4px;background:${color}22;border:1px solid ${color};color:${color};border-radius:999px;padding:1px 8px;font-size:11px;font-weight:700;letter-spacing:.02em;white-space:nowrap">Level ${d.evidence_level} · coverage ${coverage}% · provisional prediction ${prediction}%</span>`;
   if(compact) return badge;
   const chain = d.evidence_chain || {};
   const chainRows = Object.keys(chain).map(k=>{
@@ -1003,6 +1122,17 @@ function evidenceBadge(d, compact){
       + `<b>Missing:</b> ${escapeHtml(fr.missing_feature||'')}<br>`
       + `<b>Blocked by:</b> ${escapeHtml(fr.blocking_evidence||'')}<br>`
       + (helps.length ? `<b>Would help:</b> ${escapeHtml(helps.join(', '))}` : '') + `</div>`;
+  }
+  const collision = d.collision_analysis || {};
+  const adversarial = d.adversarial_validation || {};
+  const strongest = adversarial.strongest_alternative;
+  extra += `<div style="margin-top:6px;font-size:11px" class="muted">`
+    + `<b>Collision search:</b> ${escapeHtml(collision.collision_status||'not run')} — ${escapeHtml(collision.reason||'')}<br>`
+    + `<b>Strongest alternative:</b> ${strongest ? escapeHtml((strongest.name||'?')+' #'+(strongest.number||'?')+' ('+(strongest.set||'?')+')') : 'none found'}<br>`
+    + `<b>What would overturn this:</b> ${escapeHtml(adversarial.what_would_overturn_this||'')}</div>`;
+  const factors = d.provisional_prediction_confidence_factors || [];
+  if(factors.length){
+    extra += `<div style="margin-top:6px;font-size:11px" class="muted"><b>Provisional prediction factors:</b><br>${factors.map(escapeHtml).join('<br>')}</div>`;
   }
   return `<details style="border:1px solid var(--line);border-radius:8px;padding:6px 10px">
     <summary style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px">${badge}

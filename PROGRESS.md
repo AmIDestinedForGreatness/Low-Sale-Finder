@@ -3,7 +3,7 @@
 > "We are nowhere near, but we are closer than where we were yesterday." — 2026-07-16
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
-written lesson (`LESSONS.md`). Current: **53 tests, 29 lessons.**
+written lesson (`LESSONS.md`). Current: **90 tests, 38 lessons.**
 
 ## Version history
 
@@ -18,6 +18,9 @@ written lesson (`LESSONS.md`). Current: **53 tests, 29 lessons.**
 | V0.7 | 7/17 | **The dataset run**: all 20 shop listings identified image-first (19/20). New layers: name vocabulary snap (C), dex number (D), fingerprint ambiguity guard + tie-break, promo footers, watermark defense, `profile_dataset.py` |
 | V0.8 | 7/17 | **Overnight (the overnight lot, 38 cards)**: LINK AS SOURCE on the dashboard (paste a Carousell listing URL → photos fetched → identified); orientation auto-righting; binder-page 2×2 splitting; squashed-form name matching; variant-letter numerators (24a/119); language-claim discipline; identity-strict lot pricing; `folder_dataset.py` |
 | V0.9 | 7/17 | **Training shift**: Layer E attack-name ID (31,908 indexed — the binder breakthrough); local-index join + full collector numbers; mechanic-variant retry; candidate consensus; pair split; BINDER MODE on the dashboard; slab region-ambiguity guard; gallery numbers (TG/GG); 20-listing live training set graded 6 exact/8 partial/0 wrong. Lot final: 39/39 named, 27 priced (₱16,957) |
+
+| V0.10 | 7/17 | **Evidence Engine**: governing `DIRECTIVE.md`; A-E levels, 10-step evidence chain, explicit C inference and D/E failure reports, dashboard evidence display, persistent failure database. |
+| V0.11 | 7/17 | **Adversarial verification**: widened cross-print collision analyzer; Evidence Coverage split from provisional Prediction Confidence; falsification block on every result; local-only perceptual-hash ArtworkProvider + honest provider stubs; transactional/resumable two-dataset audit; narrow-photo binder fallback and invalid-number rejection. |
 
 ## The system (4 always-on processes)
 
@@ -61,6 +64,13 @@ Photo in → exact printing out:
     click-zoom with level slider, stamps/1st-ed check. **The user's eye is
     the final identification authority.**
 
+11. **Adversarial collision search** - same/normalized/suffix/one-slip
+    collector numbers and similar names are searched across the full local
+    catalog before a level is assigned; unresolved printings are downgraded.
+12. **Evidence fusion** - 10-dimension Coverage and provisional rules-based
+    Prediction Confidence are separate; every score lists its factors and
+    every result states the strongest alternative and overturn condition.
+
 ## The dataset (`dataset/carousell_profile.json` + `profile_dataset.py`)
 
 His task (7/16): identify all 20 shop listings from IMAGES ONLY — titles
@@ -94,6 +104,10 @@ Carousell listings: 19/20 (Raichu GX Korean = no public data anywhere).
 - Korean cards: no public price data — ×0.65 JP heuristic unvalidated
 - fingerprints.sqlite needs a rebuild when new sets release
   (`build_fingerprints.py`)
+- Local perceptual artwork matching only works when an independent reference
+  photo already exists on disk; HP/ability/set-symbol/holo remain honest stubs.
+- Low-resolution 2x2 binder uploads now auto-detect, but four deep crop passes
+  can take roughly three minutes on this machine.
 
 ## Roadmap
 

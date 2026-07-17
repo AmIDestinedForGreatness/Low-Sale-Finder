@@ -69,6 +69,32 @@ def distinct_names(lines):
     return names
 
 
+def should_probe_grid(width, height, distinct_name_count):
+    """Whether a portrait upload deserves a bounded 2x2 binder probe.
+
+    A phone photo of a binder can be too low-resolution for whole-image OCR
+    to read three names. The observed failure was 720x1280: four real cards,
+    one bad footer read, and zero whole-image names. Ordinary single-card
+    photos are materially wider, so the narrow portrait ratio keeps this
+    fallback from quadrupling OCR work for every upload.
+    """
+    return (distinct_name_count < 3 and height > width
+            and width / max(height, 1) <= 0.68)
+
+
+def probe_grid(path, tmpdir, ocr_reader=None):
+    """Split/inspect a likely 2x2 page; require evidence in 3+ cells."""
+    reader = ocr_reader or valuator.ocr_lines
+    cells = split_grid(path, tmpdir, rows=2, cols=2)
+    ocr_groups = [reader(cell) for cell in cells]
+    signals = 0
+    for lines in ocr_groups:
+        name, number = valuator.guess_query(lines)
+        if name or number or distinct_names(lines):
+            signals += 1
+    return (cells, ocr_groups) if signals >= 3 else ([], [])
+
+
 def split_grid(path, tmpdir, rows=2, cols=2, pad=0.03):
     """Binder page -> overlapping cell crops, one card each. Cells are
     UPSCALED 2x — a quadrant crop halves effective resolution, which is

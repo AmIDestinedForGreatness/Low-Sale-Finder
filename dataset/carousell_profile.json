@@ -98,6 +98,7 @@
   ],
   "ident": {
    "name": "Pikachu ex",
+   "name_read": "Pikachu ex",
    "number": "063/193",
    "number_read": "063/193",
    "snapped": false,
@@ -209,51 +210,174 @@
     }
    ],
    "evidence_level": "A",
-   "evidence_level_meaning": "Verified — name and number both read directly, uniquely matched, no forcing/inference",
+   "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L00_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 497474,
+       "name": "Pikachu ex",
+       "set": "SV02: Paldea Evolved",
+       "number": "063/193",
+       "line": "Pokemon",
+       "img": "https://product-images.tcgplayer.com/497474.jpg"
+      }
+     }
     },
     "pokemon_name": {
      "status": "confirmed",
-     "note": "read directly from OCR text on the card"
+     "note": "read directly from OCR text before downstream catalog refinement"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "confirmed",
-     "note": "attack/ability text matched against the 31,908-entry index: 'Pikachu ex'"
+     "note": "attack/ability text resolved through the local index to 'Pikachu ex'"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
      "note": "read directly from OCR text"
     },
     "language": {
-     "status": "confirmed",
-     "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     "status": "inferred",
+     "note": "English/unspecified is a default after no positive JP/KR marker was found"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: Pikachu ex (SV02: Paldea Evolved)"
+     "note": "catalog agrees with name+number: Pikachu ex (SV02: Paldea Evolved); uniqueness alone is not proof"
     }
    },
-   "confidence": 50,
-   "confidence_reason": "5/10 evidence-chain steps independently confirmed: pokemon_name, attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
+   "evidence_coverage": 50,
+   "evidence_coverage_reason": "5/10 dimensions independently confirmed: artwork, pokemon_name, attack_names, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 89,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+28 card name directly read",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 497474,
+     "name": "Pikachu ex",
+     "set": "SV02: Paldea Evolved",
+     "number": "063/193",
+     "line": "Pokemon",
+     "img": "https://product-images.tcgplayer.com/497474.jpg",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [
+     {
+      "id": "sv2-62",
+      "name": "Pikachu",
+      "hp": 70,
+      "damages": "30",
+      "subtypes": "Basic",
+      "set": "sv2",
+      "number": "62/193",
+      "rarity": "Common",
+      "source": "local_fingerprint_catalog",
+      "collision_basis": [
+       "similar_card_name",
+       "one_ocr_substitution_from_card_number"
+      ],
+      "collision_conflicts": [
+       "set"
+      ],
+      "number_relation": "ocr_substitution",
+      "name_similarity": 0.824,
+      "excluded_by": "directly-read name fragment excludes this product"
+     }
+    ],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 3 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "A",
+    "search_performed": true,
+    "catalog_rows_examined": 3,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": true,
+     "name_read": "Pikachu ex",
+     "name_via": null,
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": {
+     "id": "sv2-62",
+     "name": "Pikachu",
+     "hp": 70,
+     "damages": "30",
+     "subtypes": "Basic",
+     "set": "sv2",
+     "number": "62/193",
+     "rarity": "Common",
+     "source": "local_fingerprint_catalog",
+     "collision_basis": [
+      "similar_card_name",
+      "one_ocr_substitution_from_card_number"
+     ],
+     "collision_conflicts": [
+      "set"
+     ],
+     "number_relation": "ocr_substitution",
+     "name_similarity": 0.824,
+     "excluded_by": "directly-read name fragment excludes this product"
+    },
+    "evidence_supporting_alternative": [
+     "similar_card_name",
+     "one_ocr_substitution_from_card_number"
+    ],
+    "evidence_excluding_alternative": [
+     "directly-read name fragment excludes this product"
+    ],
+    "could_ocr_substitution_explain_alt": true,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 3 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   }
   },
   "verify": {
    "title": "Pokemon Card Pikachu ex 063/193 Pokemon Paldea Evolved",
@@ -357,6 +481,7 @@
   ],
   "ident": {
    "name": "Charizard",
+   "name_read": "Charizard",
    "number": "006/165",
    "number_read": "006/165",
    "snapped": false,
@@ -464,65 +589,206 @@
      ]
     }
    ],
-   "evidence_level": "C",
-   "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+   "evidence_level": "D",
+   "evidence_level_meaning": "Partial/Ambiguous - exact printing is not established",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "not_verified",
+     "note": "no independent local reference image exists for any candidate; no match was guessed",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 0.0,
+      "matched_reference": null,
+      "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "not_verified"
+     }
     },
     "pokemon_name": {
      "status": "confirmed",
-     "note": "read directly from OCR text on the card"
+     "note": "read directly from OCR text before downstream catalog refinement"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "confirmed",
-     "note": "attack/ability text matched against the 31,908-entry index: 'Charizard ex'"
+     "note": "attack/ability text resolved through the local index to 'Charizard ex'"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
      "note": "read directly from OCR text"
     },
     "language": {
-     "status": "confirmed",
-     "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     "status": "inferred",
+     "note": "English/unspecified is a default after no positive JP/KR marker was found"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
-     "status": "not_checked",
-     "note": "1 candidate(s) returned, none carry an exact number match"
+     "status": "confirmed",
+     "note": "local catalog agrees with name+number: Charizard (ecard1); uniqueness alone is not proof"
     }
    },
-   "confidence": 40,
-   "confidence_reason": "4/10 evidence-chain steps independently confirmed: pokemon_name, attack_names, card_number, language. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
-   "inference_explanation": {
-    "original_ocr_text": [
-     "STAGE2",
-     "330?",
-     "2026",
-     "330",
-     "60+",
-     "does 10omoredamage."
+   "evidence_coverage": 40,
+   "evidence_coverage_reason": "4/10 dimensions independently confirmed: pokemon_name, attack_names, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 36,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+28 card name directly read",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "-35 competing printings remain unresolved",
+    "+0 artwork unavailable/not verified (no prediction penalty)"
+   ],
+   "collision_analysis": {
+    "collision_status": "confirmed",
+    "selected_candidate": {
+     "id": "ecard1-6",
+     "name": "Charizard",
+     "hp": 120,
+     "damages": "120",
+     "subtypes": "Stage 2",
+     "set": "ecard1",
+     "number": "6/165",
+     "rarity": "Rare Holo",
+     "source": "local_fingerprint_catalog"
+    },
+    "candidate_count": 2,
+    "competing_candidates": [
+     {
+      "id": "sv3pt5-6",
+      "name": "Charizard ex",
+      "hp": 330,
+      "damages": "60+,330",
+      "subtypes": "Stage 2,ex",
+      "set": "sv3pt5",
+      "number": "6/165",
+      "rarity": "Double Rare",
+      "source": "local_fingerprint_catalog",
+      "collision_basis": [
+       "similar_card_name",
+       "card_number"
+      ],
+      "collision_conflicts": [
+       "set"
+      ],
+      "number_relation": "exact",
+      "name_similarity": 0.857,
+      "unresolved_reason": "name and collector-number evidence overlap"
+     }
     ],
-    "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
-    "candidate_search_process": "via=None; 1 catalog candidate(s) considered",
-    "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via None",
-    "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
+    "alternatives_tested": [
+     {
+      "pid": 614370,
+      "name": "Charizard",
+      "set": "McDonald's Promos 2024",
+      "number": "001/015",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/614370.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number",
+       "set"
+      ],
+      "number_relation": "different",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     }
+    ],
+    "evidence_shared": [
+     "card_number",
+     "similar_card_name"
+    ],
+    "evidence_conflicts": [
+     "set"
+    ],
+    "evidence_missing": [
+     "artwork",
+     "expansion_symbol",
+     "language"
+    ],
+    "reason": "1 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.",
+    "recommended_evidence_level": "D",
+    "search_performed": true,
+    "catalog_rows_examined": 3,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": true,
+     "name_read": "Charizard",
+     "name_via": null,
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": {
+     "id": "sv3pt5-6",
+     "name": "Charizard ex",
+     "hp": 330,
+     "damages": "60+,330",
+     "subtypes": "Stage 2,ex",
+     "set": "sv3pt5",
+     "number": "6/165",
+     "rarity": "Double Rare",
+     "source": "local_fingerprint_catalog",
+     "collision_basis": [
+      "similar_card_name",
+      "card_number"
+     ],
+     "collision_conflicts": [
+      "set"
+     ],
+     "number_relation": "exact",
+     "name_similarity": 0.857,
+     "unresolved_reason": "name and collector-number evidence overlap"
+    },
+    "evidence_supporting_alternative": [
+     "similar_card_name",
+     "card_number"
+    ],
+    "evidence_excluding_alternative": [
+     "set"
+    ],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "Directly read one of: artwork, expansion_symbol, language",
+    "alternative_search_result": "1 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   },
+   "failure_report": {
+    "missing_feature": "distinguishing evidence between competing printings",
+    "would_another_image_angle_help": true,
+    "would_different_ocr_pass_help": false,
+    "would_removing_glare_help": true,
+    "would_different_language_db_help": true,
+    "would_scan_instead_of_photo_help": true,
+    "blocking_evidence": "1 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions."
    }
   },
   "verify": {
@@ -641,6 +907,7 @@
   ],
   "ident": {
    "name": "Lillie's Clefairy ex",
+   "name_read": "Lillie's Clefairy ex",
    "number": "173/159",
    "number_read": "173/159",
    "snapped": false,
@@ -759,51 +1026,127 @@
     }
    ],
    "evidence_level": "A",
-   "evidence_level_meaning": "Verified — name and number both read directly, uniquely matched, no forcing/inference",
+   "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L02_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 623600,
+       "name": "Lillie's Clefairy ex - 173/159",
+       "set": "SV09: Journey Together",
+       "number": "173/159",
+       "line": "Pokemon",
+       "img": "https://product-images.tcgplayer.com/623600.jpg"
+      }
+     }
     },
     "pokemon_name": {
      "status": "confirmed",
-     "note": "read directly from OCR text on the card"
+     "note": "read directly from OCR text before downstream catalog refinement"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "confirmed",
-     "note": "attack/ability text matched against the 31,908-entry index: 'Lillie's Clefairy ex'"
+     "note": "attack/ability text resolved through the local index to 'Lillie's Clefairy ex'"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
      "note": "read directly from OCR text"
     },
     "language": {
-     "status": "confirmed",
-     "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     "status": "inferred",
+     "note": "English/unspecified is a default after no positive JP/KR marker was found"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: Lillie's Clefairy ex - 173/159 (SV09: Journey Together)"
+     "note": "catalog agrees with name+number: Lillie's Clefairy ex - 173/159 (SV09: Journey Together); uniqueness alone is not proof"
     }
    },
-   "confidence": 50,
-   "confidence_reason": "5/10 evidence-chain steps independently confirmed: pokemon_name, attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
+   "evidence_coverage": 50,
+   "evidence_coverage_reason": "5/10 dimensions independently confirmed: artwork, pokemon_name, attack_names, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 89,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+28 card name directly read",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 623600,
+     "name": "Lillie's Clefairy ex - 173/159",
+     "set": "SV09: Journey Together",
+     "number": "173/159",
+     "line": "Pokemon",
+     "img": "https://product-images.tcgplayer.com/623600.jpg",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 2 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "A",
+    "search_performed": true,
+    "catalog_rows_examined": 2,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": true,
+     "name_read": "Lillie's Clefairy ex",
+     "name_via": null,
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": null,
+    "evidence_supporting_alternative": [],
+    "evidence_excluding_alternative": [],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 2 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   }
   },
   "verify": {
    "title": "Pokemon Card Lillie's Clefairy ex 173/159 Journey Together Full art",
@@ -973,31 +1316,47 @@
     }
    ],
    "evidence_level": "C",
-   "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+   "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L03_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 647251,
+       "name": "Mega Manectric ex - 077/063",
+       "set": "m1S: Mega Symphonia",
+       "number": "077/063",
+       "line": "Pokemon Japan",
+       "img": "https://product-images.tcgplayer.com/647251.jpg"
+      }
+     }
     },
     "pokemon_name": {
      "status": "inferred",
-     "note": "derived from an attack-damage fingerprint matching exactly one species — not a direct name text read"
+     "note": "name derived from an attack/damage fingerprint, not name text"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "not_checked",
-     "note": "attack-shaped text present in OCR but did not resolve to a unique index match"
+     "note": "attack-shaped OCR text did not resolve to a unique indexed match"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
@@ -1005,32 +1364,92 @@
     },
     "language": {
      "status": "inferred",
-     "note": "language claim follows from the identification path (attack fingerprint), not a directly read language marker"
+     "note": "language follows from identification route 'attack fingerprint', not a read marker"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: Mega Manectric ex - 077/063 (m1S: Mega Symphonia)"
+     "note": "catalog agrees with name+number: Mega Manectric ex - 077/063 (m1S: Mega Symphonia); uniqueness alone is not proof"
     }
    },
-   "confidence": 20,
-   "confidence_reason": "2/10 evidence-chain steps independently confirmed: card_number, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+   "evidence_coverage": 30,
+   "evidence_coverage_reason": "3/10 dimensions independently confirmed: artwork, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 73,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+12 card name inferred from structured evidence",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 647251,
+     "name": "Mega Manectric ex - 077/063",
+     "set": "m1S: Mega Symphonia",
+     "number": "077/063",
+     "line": "Pokemon Japan",
+     "img": "https://product-images.tcgplayer.com/647251.jpg",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "C",
+    "search_performed": true,
+    "catalog_rows_examined": 1,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": false,
+     "name_read": null,
+     "name_via": "attack fingerprint",
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": null,
+    "evidence_supporting_alternative": [],
+    "evidence_excluding_alternative": [],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   },
    "inference_explanation": {
     "original_ocr_text": [
      "1道化",
      "@X330",
      "2026",
      "术X330",
-     "330",
-     "120"
+     "2026",
+     "330"
     ],
-    "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
-    "candidate_search_process": "via=attack fingerprint; 1 catalog candidate(s) considered",
-    "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via attack fingerprint",
-    "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
+    "why_ocr_failed": "OCR did not directly establish every field needed for an exact printing",
+    "candidate_search_process": "via=attack fingerprint; 1 API candidate(s); 1 widened rows examined",
+    "why_only_one_candidate_remained": "the available fragments resolved via attack fingerprint; adversarial search: Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "remaining_uncertainty": "identity still depends on inference rather than every field being read"
    }
   },
   "verify": {
@@ -1175,31 +1594,47 @@
     }
    ],
    "evidence_level": "C",
-   "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+   "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L04_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 601939,
+       "name": "Chespin - 034/XY-P",
+       "set": "XY-P: XY Promos",
+       "number": "034/XY-P",
+       "line": "Pokemon Japan",
+       "img": "https://product-images.tcgplayer.com/601939.jpg"
+      }
+     }
     },
     "pokemon_name": {
      "status": "inferred",
-     "note": "derived from a National Dex number (JP vintage cards print no Latin name) — a species ID, not a name text read"
+     "note": "name derived from a National Dex number, not name text"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "not_checked",
-     "note": "no attack/ability text usable in this OCR pass"
+     "note": "no attack/ability text was usable in this OCR pass"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
@@ -1207,32 +1642,138 @@
     },
     "language": {
      "status": "confirmed",
-     "note": "positive JP evidence: JP-style promo footer format (…/XY-P) or direct visual read"
+     "note": "positive JP evidence: printed promo format or a direct visual read"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: Chespin - 034/XY-P (XY-P: XY Promos)"
+     "note": "catalog agrees with name+number: Chespin - 034/XY-P (XY-P: XY Promos); uniqueness alone is not proof"
     }
    },
-   "confidence": 30,
-   "confidence_reason": "3/10 evidence-chain steps independently confirmed: card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+   "evidence_coverage": 40,
+   "evidence_coverage_reason": "4/10 dimensions independently confirmed: artwork, card_number, language, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 73,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+12 card name inferred from structured evidence",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 601939,
+     "name": "Chespin - 034/XY-P",
+     "set": "XY-P: XY Promos",
+     "number": "034/XY-P",
+     "line": "Pokemon Japan",
+     "img": "https://product-images.tcgplayer.com/601939.jpg",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [
+     {
+      "id": "xyp-XY34",
+      "name": "Metagross-EX",
+      "hp": 180,
+      "damages": "20,50x",
+      "subtypes": "Basic,EX",
+      "set": "xyp",
+      "number": "XY34",
+      "rarity": "Promo",
+      "source": "local_fingerprint_catalog",
+      "collision_basis": [
+       "normalized_card_number"
+      ],
+      "collision_conflicts": [
+       "card_name",
+       "set"
+      ],
+      "number_relation": "normalized_variant",
+      "name_similarity": 0.211,
+      "excluded_by": "independent dex number evidence excludes this product"
+     }
+    ],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 2 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "C",
+    "search_performed": true,
+    "catalog_rows_examined": 2,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": false,
+     "name_read": null,
+     "name_via": "dex number",
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": true,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": {
+     "id": "xyp-XY34",
+     "name": "Metagross-EX",
+     "hp": 180,
+     "damages": "20,50x",
+     "subtypes": "Basic,EX",
+     "set": "xyp",
+     "number": "XY34",
+     "rarity": "Promo",
+     "source": "local_fingerprint_catalog",
+     "collision_basis": [
+      "normalized_card_number"
+     ],
+     "collision_conflicts": [
+      "card_name",
+      "set"
+     ],
+     "number_relation": "normalized_variant",
+     "name_similarity": 0.211,
+     "excluded_by": "independent dex number evidence excludes this product"
+    },
+    "evidence_supporting_alternative": [
+     "normalized_card_number"
+    ],
+    "evidence_excluding_alternative": [
+     "independent dex number evidence excludes this product"
+    ],
+    "could_ocr_substitution_explain_alt": true,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 2 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   },
    "inference_explanation": {
     "original_ocr_text": [
      "MP60",
      "2026",
      "HP60",
-     "全国网座NO650L办0水久天高去04m重支90kg",
-     "10",
-     "20"
+     "2026",
+     "MP60",
+     "全国网座NO650L办0水久天高去04m重支90kg"
     ],
-    "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
-    "candidate_search_process": "via=dex number; 1 catalog candidate(s) considered",
-    "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via dex number",
-    "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
+    "why_ocr_failed": "OCR did not directly establish every field needed for an exact printing",
+    "candidate_search_process": "via=dex number; 1 API candidate(s); 2 widened rows examined",
+    "why_only_one_candidate_remained": "the available fragments resolved via dex number; adversarial search: Adversarial search tested 2 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "remaining_uncertainty": "identity still depends on inference rather than every field being read"
    }
   },
   "verify": {
@@ -1350,6 +1891,7 @@
   ],
   "ident": {
    "name": "M Camerupt-EX",
+   "name_read": "M Camerupt-EX",
    "number": "XY198a",
    "number_read": "XY198a",
    "snapped": false,
@@ -1480,52 +2022,215 @@
      ]
     }
    ],
-   "evidence_level": "A",
-   "evidence_level_meaning": "Verified — name and number both read directly, uniquely matched, no forcing/inference",
+   "evidence_level": "C",
+   "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L05_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 148345,
+       "name": "M Camerupt EX - XY198a",
+       "set": "Alternate Art Promos",
+       "number": "XY198a",
+       "line": "Pokemon",
+       "img": "https://product-images.tcgplayer.com/148345.jpg"
+      }
+     }
     },
     "pokemon_name": {
      "status": "confirmed",
-     "note": "read directly from OCR text on the card"
+     "note": "read directly from OCR text before downstream catalog refinement"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "confirmed",
-     "note": "attack/ability text matched against the 31,908-entry index: 'M Camerupt-EX'"
+     "note": "attack/ability text resolved through the local index to 'M Camerupt-EX'"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
      "note": "read directly from OCR text"
     },
     "language": {
-     "status": "confirmed",
-     "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     "status": "inferred",
+     "note": "English/unspecified is a default after no positive JP/KR marker was found"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: M Camerupt EX - XY198a (Alternate Art Promos)"
+     "note": "catalog agrees with name+number: M Camerupt EX - XY198a (Alternate Art Promos); uniqueness alone is not proof"
     }
    },
-   "confidence": 50,
-   "confidence_reason": "5/10 evidence-chain steps independently confirmed: pokemon_name, attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
+   "evidence_coverage": 50,
+   "evidence_coverage_reason": "5/10 dimensions independently confirmed: artwork, pokemon_name, attack_names, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 59,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+28 card name directly read",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "-12 an OCR-neighbor alternative remains possible",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "possible",
+    "selected_candidate": {
+     "pid": 148345,
+     "name": "M Camerupt EX - XY198a",
+     "set": "Alternate Art Promos",
+     "number": "XY198a",
+     "line": "Pokemon",
+     "img": "https://product-images.tcgplayer.com/148345.jpg",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 3,
+    "competing_candidates": [
+     {
+      "pid": 129898,
+      "name": "M Camerupt EX - XY198",
+      "set": "XY Promos",
+      "number": "XY198",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/129898.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name",
+       "normalized_card_number"
+      ],
+      "collision_conflicts": [
+       "set"
+      ],
+      "number_relation": "normalized_variant",
+      "name_similarity": 1.0,
+      "unresolved_reason": "name and collector-number evidence overlap"
+     },
+     {
+      "id": "xyp-XY198",
+      "name": "M Camerupt-EX",
+      "hp": 230,
+      "damages": "120+",
+      "subtypes": "MEGA,EX",
+      "set": "xyp",
+      "number": "XY198",
+      "rarity": "Promo",
+      "source": "local_fingerprint_catalog",
+      "collision_basis": [
+       "card_name",
+       "normalized_card_number"
+      ],
+      "collision_conflicts": [
+       "set"
+      ],
+      "number_relation": "normalized_variant",
+      "name_similarity": 1.0,
+      "unresolved_reason": "name and collector-number evidence overlap"
+     }
+    ],
+    "alternatives_tested": [],
+    "evidence_shared": [
+     "card_name",
+     "normalized_card_number"
+    ],
+    "evidence_conflicts": [
+     "set"
+    ],
+    "evidence_missing": [
+     "artwork",
+     "expansion_symbol",
+     "language"
+    ],
+    "reason": "2 plausible OCR-neighbor printing(s) remain; more direct visual evidence is required for Level A.",
+    "recommended_evidence_level": "C",
+    "search_performed": true,
+    "catalog_rows_examined": 4,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": true,
+     "name_read": "M Camerupt-EX",
+     "name_via": null,
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": {
+     "pid": 129898,
+     "name": "M Camerupt EX - XY198",
+     "set": "XY Promos",
+     "number": "XY198",
+     "line": "Pokemon",
+     "img": "https://product-images.tcgplayer.com/129898.jpg",
+     "source": "existing_candidates",
+     "collision_basis": [
+      "card_name",
+      "normalized_card_number"
+     ],
+     "collision_conflicts": [
+      "set"
+     ],
+     "number_relation": "normalized_variant",
+     "name_similarity": 1.0,
+     "unresolved_reason": "name and collector-number evidence overlap"
+    },
+    "evidence_supporting_alternative": [
+     "card_name",
+     "normalized_card_number"
+    ],
+    "evidence_excluding_alternative": [
+     "set"
+    ],
+    "could_ocr_substitution_explain_alt": true,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "Directly read one of: artwork, expansion_symbol, language",
+    "alternative_search_result": "2 plausible OCR-neighbor printing(s) remain; more direct visual evidence is required for Level A.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   },
+   "inference_explanation": {
+    "original_ocr_text": [
+     "HP230",
+     "2025",
+     "C20179ko",
+     "￥230",
+     "When1of yourPokemon",
+     "120+"
+    ],
+    "why_ocr_failed": "OCR did not directly establish every field needed for an exact printing",
+    "candidate_search_process": "via=None; 2 API candidate(s); 4 widened rows examined",
+    "why_only_one_candidate_remained": "2 plausible OCR-neighbor printing(s) remain; more direct visual evidence is required for Level A.",
+    "remaining_uncertainty": "directly read the missing distinguishing evidence before listing"
+   }
   },
   "verify": {
    "title": "Pokemon Card Mega Camerupt Full art XY198a Promo",
@@ -1703,31 +2408,47 @@
     }
    ],
    "evidence_level": "C",
-   "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+   "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L06_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 587919,
+       "name": "Pikachu - 197/SV-P",
+       "set": "SV-P Promotional Cards",
+       "number": "197/SV-P",
+       "line": "Pokemon Japan",
+       "img": "https://product-images.tcgplayer.com/587919.jpg"
+      }
+     }
     },
     "pokemon_name": {
      "status": "inferred",
-     "note": "derived from a National Dex number (JP vintage cards print no Latin name) — a species ID, not a name text read"
+     "note": "name derived from a National Dex number, not name text"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "not_checked",
-     "note": "attack-shaped text present in OCR but did not resolve to a unique index match"
+     "note": "attack-shaped OCR text did not resolve to a unique indexed match"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
@@ -1735,32 +2456,92 @@
     },
     "language": {
      "status": "confirmed",
-     "note": "positive JP evidence: JP-style promo footer format (…/XY-P) or direct visual read"
+     "note": "positive JP evidence: printed promo format or a direct visual read"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: Pikachu - 197/SV-P (SV-P Promotional Cards)"
+     "note": "catalog agrees with name+number: Pikachu - 197/SV-P (SV-P Promotional Cards); uniqueness alone is not proof"
     }
    },
-   "confidence": 30,
-   "confidence_reason": "3/10 evidence-chain steps independently confirmed: card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+   "evidence_coverage": 40,
+   "evidence_coverage_reason": "4/10 dimensions independently confirmed: artwork, card_number, language, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 73,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+12 card name inferred from structured evidence",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 587919,
+     "name": "Pikachu - 197/SV-P",
+     "set": "SV-P Promotional Cards",
+     "number": "197/SV-P",
+     "line": "Pokemon Japan",
+     "img": "https://product-images.tcgplayer.com/587919.jpg",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "C",
+    "search_performed": true,
+    "catalog_rows_examined": 1,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": false,
+     "name_read": null,
+     "name_via": "dex number",
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": true,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": null,
+    "evidence_supporting_alternative": [],
+    "evidence_excluding_alternative": [],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   },
    "inference_explanation": {
     "original_ocr_text": [
      "70",
      "2026",
+     "70",
+     "2026",
      "700",
-     "全国网建NO.0025",
-     "高：0.4m：6.0kg",
-     "30+"
+     "全国网建NO.0025"
     ],
-    "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
-    "candidate_search_process": "via=dex number; 1 catalog candidate(s) considered",
-    "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via dex number",
-    "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
+    "why_ocr_failed": "OCR did not directly establish every field needed for an exact printing",
+    "candidate_search_process": "via=dex number; 1 API candidate(s); 1 widened rows examined",
+    "why_only_one_candidate_remained": "the available fragments resolved via dex number; adversarial search: Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "remaining_uncertainty": "identity still depends on inference rather than every field being read"
    }
   },
   "verify": {
@@ -1933,51 +2714,125 @@
    ],
    "note": "footer eye-read: S3 117/100 UR (JP Infinity Zone) — set code was the missing OCR piece (tiny stylized glyph on gold, angled)",
    "evidence_level": "B",
-   "evidence_level_meaning": "Human Eye Verified — OCR failed; a manual (assistant) visual read succeeded and is exact",
+   "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
    "evidence_chain": {
     "artwork": {
-     "status": "seen_not_itemized",
-     "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L07_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 568823,
+       "name": "Coalossal",
+       "set": "S3: Infinity Zone",
+       "number": "117/100",
+       "line": "Pokemon Japan"
+      }
+     }
     },
     "pokemon_name": {
      "status": "confirmed",
-     "note": "read directly off the card by the assistant (manual visual read, OCR had failed)"
+     "note": "read directly from the card by a human eye after OCR failed"
     },
     "hp": {
      "status": "seen_not_itemized",
-     "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     "note": "a human inspected the photo for name/number but did not separately itemize this feature"
     },
     "attack_names": {
      "status": "not_checked",
-     "note": "attack-shaped text present in OCR but did not resolve to a unique index match"
+     "note": "attack-shaped OCR text did not resolve to a unique indexed match"
     },
     "ability": {
      "status": "seen_not_itemized",
-     "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     "note": "a human inspected the photo for name/number but did not separately itemize this feature"
     },
     "expansion_symbol": {
      "status": "seen_not_itemized",
-     "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     "note": "a human inspected the photo for name/number but did not separately itemize this feature"
     },
     "card_number": {
      "status": "confirmed",
-     "note": "read directly off the footer by the assistant (manual visual read, OCR had failed)"
+     "note": "read directly from the footer by a human eye after OCR failed"
     },
     "language": {
-     "status": "confirmed",
-     "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     "status": "inferred",
+     "note": "English/unspecified is a default after no positive JP/KR marker was found"
     },
     "holo_pattern": {
      "status": "seen_not_itemized",
-     "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     "note": "a human inspected the photo for name/number but did not separately itemize this feature"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: Coalossal (S3: Infinity Zone)"
+     "note": "catalog agrees with name+number: Coalossal (S3: Infinity Zone); uniqueness alone is not proof"
     }
    },
-   "confidence": 40,
-   "confidence_reason": "4/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
+   "evidence_coverage": 40,
+   "evidence_coverage_reason": "4/10 dimensions independently confirmed: artwork, pokemon_name, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 89,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+28 card name directly read",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 568823,
+     "name": "Coalossal",
+     "set": "S3: Infinity Zone",
+     "number": "117/100",
+     "line": "Pokemon Japan",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "A",
+    "search_performed": true,
+    "catalog_rows_examined": 1,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": true,
+     "name_read": null,
+     "name_via": "visual read (assistant eye)",
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": null,
+    "evidence_supporting_alternative": [],
+    "evidence_excluding_alternative": [],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   }
   }
  },
  {
@@ -2085,6 +2940,7 @@
   ],
   "ident": {
    "name": "Staraptor",
+   "name_read": null,
    "number": null,
    "number_read": null,
    "snapped": false,
@@ -2105,6 +2961,14 @@
      "img": "https://product-images.tcgplayer.com/604118.jpg"
     },
     {
+     "pid": 602315,
+     "name": "Staraptor",
+     "set": "BW8: Thunder Knuckle",
+     "number": "045/051",
+     "line": "Pokemon Japan",
+     "img": "https://product-images.tcgplayer.com/602315.jpg"
+    },
+    {
      "pid": 567182,
      "name": "Staraptor",
      "set": "SV1S: Scarlet ex",
@@ -2113,28 +2977,20 @@
      "img": "https://product-images.tcgplayer.com/567182.jpg"
     },
     {
-     "pid": 568790,
+     "pid": 219355,
      "name": "Staraptor",
-     "set": "S3: Infinity Zone",
-     "number": "084/100",
-     "line": "Pokemon Japan",
-     "img": "https://product-images.tcgplayer.com/568790.jpg"
-    },
-    {
-     "pid": 608222,
-     "name": "Staraptor",
-     "set": "Intense Fight in the Destroyed Sky",
-     "number": "077/092",
-     "line": "Pokemon Japan",
-     "img": "https://product-images.tcgplayer.com/608222.jpg"
-    },
-    {
-     "pid": 488040,
-     "name": "Staraptor",
-     "set": "SV01: Scarlet & Violet Base Set",
-     "number": "150/198",
+     "set": "SWSH03: Darkness Ablaze",
+     "number": "147/189",
      "line": "Pokemon",
-     "img": "https://product-images.tcgplayer.com/488040.jpg"
+     "img": "https://product-images.tcgplayer.com/219355.jpg"
+    },
+    {
+     "pid": 149108,
+     "name": "Staraptor",
+     "set": "SM - Crimson Invasion",
+     "number": "83/111",
+     "line": "Pokemon",
+     "img": "https://product-images.tcgplayer.com/149108.jpg"
     },
     {
      "pid": 263844,
@@ -2243,31 +3099,39 @@
     }
    ],
    "evidence_level": "D",
-   "evidence_level_meaning": "Partial — identity (name) known, printing (exact number) not established",
+   "evidence_level_meaning": "Partial/Ambiguous - exact printing is not established",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "not_verified",
+     "note": "no independent local reference image exists for any candidate; no match was guessed",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 0.0,
+      "matched_reference": null,
+      "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "not_verified"
+     }
     },
     "pokemon_name": {
      "status": "inferred",
-     "note": "derived from a National Dex number (JP vintage cards print no Latin name) — a species ID, not a name text read"
+     "note": "name derived from a National Dex number, not name text"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "not_checked",
-     "note": "attack-shaped text present in OCR but did not resolve to a unique index match"
+     "note": "attack-shaped OCR text did not resolve to a unique indexed match"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "failed",
@@ -2275,19 +3139,199 @@
     },
     "language": {
      "status": "inferred",
-     "note": "language claim follows from the identification path (dex number), not a directly read language marker"
+     "note": "language follows from identification route 'dex number', not a read marker"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "not_checked",
-     "note": "6 candidate(s) returned but no number to narrow against — identity is a partial (name-only) match"
+     "note": "6 candidate(s) returned but no number was available to identify an exact printing"
     }
    },
-   "confidence": 0,
-   "confidence_reason": "0/10 evidence-chain steps independently confirmed: . No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+   "evidence_coverage": 0,
+   "evidence_coverage_reason": "0/10 dimensions independently confirmed: none. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 35,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+12 card name inferred from structured evidence",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork unavailable/not verified (no prediction penalty)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": null,
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [
+     {
+      "pid": 604118,
+      "name": "Staraptor",
+      "set": "XY8-Br: Red Flash",
+      "number": "053/059",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/604118.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number"
+      ],
+      "number_relation": "missing",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     },
+     {
+      "pid": 602315,
+      "name": "Staraptor",
+      "set": "BW8: Thunder Knuckle",
+      "number": "045/051",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/602315.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number"
+      ],
+      "number_relation": "missing",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     },
+     {
+      "pid": 567182,
+      "name": "Staraptor",
+      "set": "SV1S: Scarlet ex",
+      "number": "065/078",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/567182.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number"
+      ],
+      "number_relation": "missing",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     },
+     {
+      "pid": 219355,
+      "name": "Staraptor",
+      "set": "SWSH03: Darkness Ablaze",
+      "number": "147/189",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/219355.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number"
+      ],
+      "number_relation": "missing",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     },
+     {
+      "pid": 149108,
+      "name": "Staraptor",
+      "set": "SM - Crimson Invasion",
+      "number": "83/111",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/149108.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number"
+      ],
+      "number_relation": "missing",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     },
+     {
+      "pid": 263844,
+      "name": "Staraptor",
+      "set": "SWSH09: Brilliant Stars",
+      "number": "119/172",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/263844.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number"
+      ],
+      "number_relation": "missing",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     }
+    ],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 6 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "D",
+    "search_performed": true,
+    "catalog_rows_examined": 6,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": false,
+     "name_read": null,
+     "name_via": "dex number",
+     "name_independent_of_number": true,
+     "number_direct": false,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": {
+     "pid": 604118,
+     "name": "Staraptor",
+     "set": "XY8-Br: Red Flash",
+     "number": "053/059",
+     "line": "Pokemon Japan",
+     "img": "https://product-images.tcgplayer.com/604118.jpg",
+     "source": "existing_candidates",
+     "collision_basis": [
+      "card_name"
+     ],
+     "collision_conflicts": [
+      "card_number"
+     ],
+     "number_relation": "missing",
+     "name_similarity": 1.0,
+     "excluded_by": "available direct evidence"
+    },
+    "evidence_supporting_alternative": [
+     "card_name"
+    ],
+    "evidence_excluding_alternative": [
+     "available direct evidence"
+    ],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 6 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   },
    "failure_report": {
     "missing_feature": "card number / exact printing",
     "would_another_image_angle_help": true,
@@ -2295,7 +3339,7 @@
     "would_removing_glare_help": true,
     "would_different_language_db_help": false,
     "would_scan_instead_of_photo_help": true,
-    "blocking_evidence": "text present but no name-shaped or number-shaped fragment resolved"
+    "blocking_evidence": "text exists but no complete name/number evidence resolved"
    }
   },
   "verify": {
@@ -2456,31 +3500,47 @@
     }
    ],
    "evidence_level": "C",
-   "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+   "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L09_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 613414,
+       "name": "Combusken - 065/PCG-P",
+       "set": "PCG-P Promotional cards",
+       "number": "065/PCG-P",
+       "line": "Pokemon Japan",
+       "img": "https://product-images.tcgplayer.com/613414.jpg"
+      }
+     }
     },
     "pokemon_name": {
      "status": "inferred",
-     "note": "name derived because exactly one/only matching catalog product(s) share the read number (unique number match)"
+     "note": "name derived from the read number's catalog membership"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "not_checked",
-     "note": "no attack/ability text usable in this OCR pass"
+     "note": "no attack/ability text was usable in this OCR pass"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
@@ -2488,32 +3548,92 @@
     },
     "language": {
      "status": "confirmed",
-     "note": "positive JP evidence: JP-style promo footer format (…/XY-P) or direct visual read"
+     "note": "positive JP evidence: printed promo format or a direct visual read"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: Combusken - 065/PCG-P (PCG-P Promotional cards)"
+     "note": "catalog agrees with name+number: Combusken - 065/PCG-P (PCG-P Promotional cards); uniqueness alone is not proof"
     }
    },
-   "confidence": 30,
-   "confidence_reason": "3/10 evidence-chain steps independently confirmed: card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+   "evidence_coverage": 40,
+   "evidence_coverage_reason": "4/10 dimensions independently confirmed: artwork, card_number, language, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 73,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+12 card name inferred from structured evidence",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 613414,
+     "name": "Combusken - 065/PCG-P",
+     "set": "PCG-P Promotional cards",
+     "number": "065/PCG-P",
+     "line": "Pokemon Japan",
+     "img": "https://product-images.tcgplayer.com/613414.jpg",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "C",
+    "search_performed": true,
+    "catalog_rows_examined": 1,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": false,
+     "name_read": null,
+     "name_via": "unique number match",
+     "name_independent_of_number": false,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": true,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": null,
+    "evidence_supporting_alternative": [],
+    "evidence_excluding_alternative": [],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   },
    "inference_explanation": {
     "original_ocr_text": [
      "HP70W",
      "2026",
+     "HP70W",
+     "2026",
      "HP7O",
-     "手毛5進化",
-     "10",
-     "50"
+     "手毛5進化"
     ],
-    "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
-    "candidate_search_process": "via=unique number match; 1 catalog candidate(s) considered",
-    "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via unique number match",
-    "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
+    "why_ocr_failed": "OCR did not directly establish every field needed for an exact printing",
+    "candidate_search_process": "via=unique number match; 1 API candidate(s); 1 widened rows examined",
+    "why_only_one_candidate_remained": "the available fragments resolved via unique number match; adversarial search: Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "remaining_uncertainty": "identity still depends on inference rather than every field being read"
    }
   },
   "verify": {
@@ -2696,31 +3816,47 @@
     }
    ],
    "evidence_level": "C",
-   "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+   "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 97.8%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 0.9781,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L10_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 97.8%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 613269,
+       "name": "Combee - 081/DP-P",
+       "set": "DP-P Promotional cards",
+       "number": "081/DP-P",
+       "line": "Pokemon Japan",
+       "img": "https://product-images.tcgplayer.com/613269.jpg"
+      }
+     }
     },
     "pokemon_name": {
      "status": "inferred",
-     "note": "derived from a National Dex number (JP vintage cards print no Latin name) — a species ID, not a name text read"
+     "note": "name derived from a National Dex number, not name text"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "not_checked",
-     "note": "no attack/ability text usable in this OCR pass"
+     "note": "no attack/ability text was usable in this OCR pass"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
@@ -2728,19 +3864,79 @@
     },
     "language": {
      "status": "confirmed",
-     "note": "positive JP evidence: JP-style promo footer format (…/XY-P) or direct visual read"
+     "note": "positive JP evidence: printed promo format or a direct visual read"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: Combee - 081/DP-P (DP-P Promotional cards)"
+     "note": "catalog agrees with name+number: Combee - 081/DP-P (DP-P Promotional cards); uniqueness alone is not proof"
     }
    },
-   "confidence": 30,
-   "confidence_reason": "3/10 evidence-chain steps independently confirmed: card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+   "evidence_coverage": 40,
+   "evidence_coverage_reason": "4/10 dimensions independently confirmed: artwork, card_number, language, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 73,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+12 card name inferred from structured evidence",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 613269,
+     "name": "Combee - 081/DP-P",
+     "set": "DP-P Promotional cards",
+     "number": "081/DP-P",
+     "line": "Pokemon Japan",
+     "img": "https://product-images.tcgplayer.com/613269.jpg",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "C",
+    "search_performed": true,
+    "catalog_rows_examined": 1,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": false,
+     "name_read": null,
+     "name_via": "dex number",
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": true,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": null,
+    "evidence_supporting_alternative": [],
+    "evidence_excluding_alternative": [],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   },
    "inference_explanation": {
     "original_ocr_text": [
      "LV.6",
@@ -2748,12 +3944,12 @@
      "2026",
      "Lv.6",
      "Hp500",
-     "三八二—V6"
+     "2026"
     ],
-    "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
-    "candidate_search_process": "via=dex number; 1 catalog candidate(s) considered",
-    "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via dex number",
-    "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
+    "why_ocr_failed": "OCR did not directly establish every field needed for an exact printing",
+    "candidate_search_process": "via=dex number; 1 API candidate(s); 1 widened rows examined",
+    "why_only_one_candidate_remained": "the available fragments resolved via dex number; adversarial search: Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "remaining_uncertainty": "identity still depends on inference rather than every field being read"
    }
   },
   "verify": {
@@ -2910,51 +4106,166 @@
    ],
    "note": "footer eye-read: (c)2005, black promo star, 086/PCG-P — silver micro-text on metallic border at angle, below machine-OCR contrast",
    "evidence_level": "B",
-   "evidence_level_meaning": "Human Eye Verified — OCR failed; a manual (assistant) visual read succeeded and is exact",
+   "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
    "evidence_chain": {
     "artwork": {
-     "status": "seen_not_itemized",
-     "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L11_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 613497,
+       "name": "Rota's Mime Jr. - 086/PCG-P",
+       "set": "PCG-P Promotional cards",
+       "number": "086/PCG-P",
+       "line": "Pokemon Japan"
+      }
+     }
     },
     "pokemon_name": {
      "status": "confirmed",
-     "note": "read directly off the card by the assistant (manual visual read, OCR had failed)"
+     "note": "read directly from the card by a human eye after OCR failed"
     },
     "hp": {
      "status": "seen_not_itemized",
-     "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     "note": "a human inspected the photo for name/number but did not separately itemize this feature"
     },
     "attack_names": {
      "status": "not_checked",
-     "note": "no attack/ability text usable in this OCR pass"
+     "note": "no attack/ability text was usable in this OCR pass"
     },
     "ability": {
      "status": "seen_not_itemized",
-     "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     "note": "a human inspected the photo for name/number but did not separately itemize this feature"
     },
     "expansion_symbol": {
      "status": "seen_not_itemized",
-     "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     "note": "a human inspected the photo for name/number but did not separately itemize this feature"
     },
     "card_number": {
      "status": "confirmed",
-     "note": "read directly off the footer by the assistant (manual visual read, OCR had failed)"
+     "note": "read directly from the footer by a human eye after OCR failed"
     },
     "language": {
-     "status": "confirmed",
-     "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     "status": "inferred",
+     "note": "English/unspecified is a default after no positive JP/KR marker was found"
     },
     "holo_pattern": {
      "status": "seen_not_itemized",
-     "note": "the assistant looked directly at this photo to confirm name/number, but did not separately itemize this feature — re-check explicitly if this card is contested"
+     "note": "a human inspected the photo for name/number but did not separately itemize this feature"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: Rota's Mime Jr. - 086/PCG-P (PCG-P Promotional cards)"
+     "note": "catalog agrees with name+number: Rota's Mime Jr. - 086/PCG-P (PCG-P Promotional cards); uniqueness alone is not proof"
     }
    },
-   "confidence": 40,
-   "confidence_reason": "4/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
+   "evidence_coverage": 40,
+   "evidence_coverage_reason": "4/10 dimensions independently confirmed: artwork, pokemon_name, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 89,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+28 card name directly read",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 613497,
+     "name": "Rota's Mime Jr. - 086/PCG-P",
+     "set": "PCG-P Promotional cards",
+     "number": "086/PCG-P",
+     "line": "Pokemon Japan",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [
+     {
+      "pid": 613498,
+      "name": "Rota's Mime Jr. - 097/PCG-P",
+      "set": "PCG-P Promotional cards",
+      "number": "097/PCG-P",
+      "line": "Pokemon Japan",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name",
+       "set"
+      ],
+      "collision_conflicts": [
+       "card_number"
+      ],
+      "number_relation": "different",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     }
+    ],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 3 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "A",
+    "search_performed": true,
+    "catalog_rows_examined": 3,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": true,
+     "name_read": null,
+     "name_via": "visual read (assistant eye)",
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": {
+     "pid": 613498,
+     "name": "Rota's Mime Jr. - 097/PCG-P",
+     "set": "PCG-P Promotional cards",
+     "number": "097/PCG-P",
+     "line": "Pokemon Japan",
+     "source": "existing_candidates",
+     "collision_basis": [
+      "card_name",
+      "set"
+     ],
+     "collision_conflicts": [
+      "card_number"
+     ],
+     "number_relation": "different",
+     "name_similarity": 1.0,
+     "excluded_by": "available direct evidence"
+    },
+    "evidence_supporting_alternative": [
+     "card_name",
+     "set"
+    ],
+    "evidence_excluding_alternative": [
+     "available direct evidence"
+    ],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 3 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   }
   }
  },
  {
@@ -3135,31 +4446,47 @@
     }
    ],
    "evidence_level": "C",
-   "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+   "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L12_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 613270,
+       "name": "Croagunk - 032/DP-P",
+       "set": "DP-P Promotional cards",
+       "number": "032/DP-P",
+       "line": "Pokemon Japan",
+       "img": "https://product-images.tcgplayer.com/613270.jpg"
+      }
+     }
     },
     "pokemon_name": {
      "status": "inferred",
-     "note": "derived from a National Dex number (JP vintage cards print no Latin name) — a species ID, not a name text read"
+     "note": "name derived from a National Dex number, not name text"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "not_checked",
-     "note": "no attack/ability text usable in this OCR pass"
+     "note": "no attack/ability text was usable in this OCR pass"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
@@ -3167,19 +4494,79 @@
     },
     "language": {
      "status": "confirmed",
-     "note": "positive JP evidence: JP-style promo footer format (…/XY-P) or direct visual read"
+     "note": "positive JP evidence: printed promo format or a direct visual read"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: Croagunk - 032/DP-P (DP-P Promotional cards)"
+     "note": "catalog agrees with name+number: Croagunk - 032/DP-P (DP-P Promotional cards); uniqueness alone is not proof"
     }
    },
-   "confidence": 30,
-   "confidence_reason": "3/10 evidence-chain steps independently confirmed: card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+   "evidence_coverage": 40,
+   "evidence_coverage_reason": "4/10 dimensions independently confirmed: artwork, card_number, language, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 73,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+12 card name inferred from structured evidence",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 613270,
+     "name": "Croagunk - 032/DP-P",
+     "set": "DP-P Promotional cards",
+     "number": "032/DP-P",
+     "line": "Pokemon Japan",
+     "img": "https://product-images.tcgplayer.com/613270.jpg",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "C",
+    "search_performed": true,
+    "catalog_rows_examined": 1,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": false,
+     "name_read": null,
+     "name_via": "dex number",
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": true,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": null,
+    "evidence_supporting_alternative": [],
+    "evidence_excluding_alternative": [],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   },
    "inference_explanation": {
     "original_ocr_text": [
      "17",
@@ -3189,10 +4576,10 @@
      "NO.453七<3送毛高之：0.7m重达：23.0kg",
      "1回投才毛5、次の相手の番、相手"
     ],
-    "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
-    "candidate_search_process": "via=dex number; 1 catalog candidate(s) considered",
-    "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via dex number",
-    "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
+    "why_ocr_failed": "OCR did not directly establish every field needed for an exact printing",
+    "candidate_search_process": "via=dex number; 1 API candidate(s); 1 widened rows examined",
+    "why_only_one_candidate_remained": "the available fragments resolved via dex number; adversarial search: Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "remaining_uncertainty": "identity still depends on inference rather than every field being read"
    }
   },
   "verify": {
@@ -3280,6 +4667,7 @@
   ],
   "ident": {
    "name": "Weakness Policy",
+   "name_read": "Weakness Policy",
    "number": "164/160",
    "number_read": "164/160",
    "snapped": false,
@@ -3382,51 +4770,119 @@
     }
    ],
    "evidence_level": "A",
-   "evidence_level_meaning": "Verified — name and number both read directly, uniquely matched, no forcing/inference",
+   "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "not_verified",
+     "note": "no independent local reference image exists for any candidate; no match was guessed",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 0.0,
+      "matched_reference": null,
+      "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "not_verified"
+     }
     },
     "pokemon_name": {
      "status": "confirmed",
-     "note": "read directly from OCR text on the card"
+     "note": "read directly from OCR text before downstream catalog refinement"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "not_checked",
-     "note": "attack-shaped text present in OCR but did not resolve to a unique index match"
+     "note": "attack-shaped OCR text did not resolve to a unique indexed match"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
      "note": "read directly from OCR text"
     },
     "language": {
-     "status": "confirmed",
-     "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     "status": "inferred",
+     "note": "English/unspecified is a default after no positive JP/KR marker was found"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: Weakness Policy (164 Secret Rare) (XY - Primal Clash)"
+     "note": "catalog agrees with name+number: Weakness Policy (164 Secret Rare) (XY - Primal Clash); uniqueness alone is not proof"
     }
    },
-   "confidence": 40,
-   "confidence_reason": "4/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
+   "evidence_coverage": 30,
+   "evidence_coverage_reason": "3/10 dimensions independently confirmed: pokemon_name, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 89,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+28 card name directly read",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork unavailable/not verified (no prediction penalty)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 96062,
+     "name": "Weakness Policy (164 Secret Rare)",
+     "set": "XY - Primal Clash",
+     "number": "164/160",
+     "line": "Pokemon",
+     "img": "https://product-images.tcgplayer.com/96062.jpg",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 2 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "A",
+    "search_performed": true,
+    "catalog_rows_examined": 2,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": true,
+     "name_read": "Weakness Policy",
+     "name_via": null,
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": null,
+    "evidence_supporting_alternative": [],
+    "evidence_excluding_alternative": [],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 2 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   }
   },
   "verify": {
    "title": "Pokemon Card Weakness Policy Secret Rare Trainer 164/160 Primal Clash",
@@ -3491,6 +4947,7 @@
   ],
   "ident": {
    "name": "Raichu GX",
+   "name_read": "sm3",
    "number": "079/072",
    "number_read": "079/072",
    "snapped": false,
@@ -3571,31 +5028,47 @@
     }
    ],
    "evidence_level": "C",
-   "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+   "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L14_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 573993,
+       "name": "Raichu GX - 079/072",
+       "set": "SM3+: Shining Legends",
+       "number": "079/072",
+       "line": "Pokemon Japan",
+       "img": "https://product-images.tcgplayer.com/573993.jpg"
+      }
+     }
     },
     "pokemon_name": {
      "status": "inferred",
-     "note": "name derived because exactly one/only matching catalog product(s) share the read number (unique number match)"
+     "note": "OCR directly read 'sm3', then catalog logic refined the identity to 'Raichu GX'"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "not_checked",
-     "note": "attack-shaped text present in OCR but did not resolve to a unique index match"
+     "note": "attack-shaped OCR text did not resolve to a unique indexed match"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
@@ -3603,19 +5076,79 @@
     },
     "language": {
      "status": "inferred",
-     "note": "language claim follows from the identification path (unique number match), not a directly read language marker"
+     "note": "language follows from identification route 'unique number match', not a read marker"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: Raichu GX - 079/072 (SM3+: Shining Legends)"
+     "note": "catalog agrees with name+number: Raichu GX - 079/072 (SM3+: Shining Legends); uniqueness alone is not proof"
     }
    },
-   "confidence": 20,
-   "confidence_reason": "2/10 evidence-chain steps independently confirmed: card_number, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+   "evidence_coverage": 30,
+   "evidence_coverage_reason": "3/10 dimensions independently confirmed: artwork, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 73,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+12 card name inferred from structured evidence",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 573993,
+     "name": "Raichu GX - 079/072",
+     "set": "SM3+: Shining Legends",
+     "number": "079/072",
+     "line": "Pokemon Japan",
+     "img": "https://product-images.tcgplayer.com/573993.jpg",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "C",
+    "search_performed": true,
+    "catalog_rows_examined": 1,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": false,
+     "name_read": "sm3",
+     "name_via": "unique number match",
+     "name_independent_of_number": false,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": null,
+    "evidence_supporting_alternative": [],
+    "evidence_excluding_alternative": [],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   },
    "inference_explanation": {
     "original_ocr_text": [
      "HP210",
@@ -3625,10 +5158,10 @@
      "160",
      "120"
     ],
-    "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
-    "candidate_search_process": "via=unique number match; 1 catalog candidate(s) considered",
-    "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via unique number match",
-    "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
+    "why_ocr_failed": "OCR did not directly establish every field needed for an exact printing",
+    "candidate_search_process": "via=unique number match; 1 API candidate(s); 1 widened rows examined",
+    "why_only_one_candidate_remained": "the available fragments resolved via unique number match; adversarial search: Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "remaining_uncertainty": "identity still depends on inference rather than every field being read"
    }
   },
   "verify": {
@@ -3733,6 +5266,7 @@
   ],
   "ident": {
    "name": "M Tyranitar-EX",
+   "name_read": "M Tyranitar-EX",
    "number": "43/98",
    "number_read": "13/98",
    "snapped": true,
@@ -3842,51 +5376,216 @@
     }
    ],
    "evidence_level": "C",
-   "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+   "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L15_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 100625,
+       "name": "M Tyranitar EX",
+       "set": "XY - Ancient Origins",
+       "number": "43/98",
+       "line": "Pokemon",
+       "img": "https://product-images.tcgplayer.com/100625.jpg"
+      }
+     }
     },
     "pokemon_name": {
-     "status": "inferred",
-     "note": "derived by joining the read number against the local printings index (local index snap) — the number is the evidence, not a direct name text read"
+     "status": "confirmed",
+     "note": "read directly from OCR text before downstream catalog refinement"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "confirmed",
-     "note": "attack/ability text matched against the 31,908-entry index: 'M Tyranitar-EX'"
+     "note": "attack/ability text resolved through the local index to 'M Tyranitar-EX'"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "inferred",
-     "note": "OCR read '13/98', which is not a real printing — corrected to '43/98' as the only real printing within edit distance"
+     "note": "OCR read '13/98', which was corrected to '43/98' by a unique edit-distance catalog constraint"
     },
     "language": {
-     "status": "confirmed",
-     "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     "status": "inferred",
+     "note": "English/unspecified is a default after no positive JP/KR marker was found"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: M Tyranitar EX (XY - Ancient Origins)"
+     "note": "catalog agrees with name+number: M Tyranitar EX (XY - Ancient Origins); uniqueness alone is not proof"
     }
    },
-   "confidence": 30,
-   "confidence_reason": "3/10 evidence-chain steps independently confirmed: attack_names, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+   "evidence_coverage": 40,
+   "evidence_coverage_reason": "4/10 dimensions independently confirmed: artwork, pokemon_name, attack_names, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 57,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+28 card name directly read",
+    "+10 collector number inferred/corrected",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "-12 number was corrected rather than read",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 100625,
+     "name": "M Tyranitar EX",
+     "set": "XY - Ancient Origins",
+     "number": "43/98",
+     "line": "Pokemon",
+     "img": "https://product-images.tcgplayer.com/100625.jpg",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [
+     {
+      "id": "bw2-43",
+      "name": "Gothita",
+      "hp": 60,
+      "damages": "20x",
+      "subtypes": "Basic",
+      "set": "bw2",
+      "number": "43/98",
+      "rarity": "Common",
+      "source": "local_fingerprint_catalog",
+      "collision_basis": [
+       "card_number"
+      ],
+      "collision_conflicts": [
+       "card_name",
+       "set"
+      ],
+      "number_relation": "exact",
+      "name_similarity": 0.381,
+      "excluded_by": "directly-read name fragment excludes this product"
+     },
+     {
+      "id": "xy7-42",
+      "name": "Tyranitar-EX",
+      "hp": 180,
+      "damages": "60,130",
+      "subtypes": "Basic,EX",
+      "set": "xy7",
+      "number": "42/98",
+      "rarity": "Rare Holo EX",
+      "source": "local_fingerprint_catalog",
+      "collision_basis": [
+       "similar_card_name",
+       "one_ocr_substitution_from_card_number"
+      ],
+      "collision_conflicts": [
+       "set"
+      ],
+      "number_relation": "ocr_substitution",
+      "name_similarity": 0.923,
+      "excluded_by": "directly-read name fragment excludes this product"
+     },
+     {
+      "id": "pgo-43",
+      "name": "Tyranitar",
+      "hp": 180,
+      "damages": "10x,180",
+      "subtypes": "Stage 2",
+      "set": "pgo",
+      "number": "43/78",
+      "rarity": "Rare Holo",
+      "source": "local_fingerprint_catalog",
+      "collision_basis": [
+       "similar_card_name",
+       "one_ocr_substitution_from_card_number"
+      ],
+      "collision_conflicts": [
+       "set"
+      ],
+      "number_relation": "ocr_substitution",
+      "name_similarity": 0.783,
+      "excluded_by": "directly-read name fragment excludes this product"
+     }
+    ],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 5 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "C",
+    "search_performed": true,
+    "catalog_rows_examined": 5,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": true,
+     "name_read": "M Tyranitar-EX",
+     "name_via": "local index snap",
+     "name_independent_of_number": true,
+     "number_direct": false,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": {
+     "id": "bw2-43",
+     "name": "Gothita",
+     "hp": 60,
+     "damages": "20x",
+     "subtypes": "Basic",
+     "set": "bw2",
+     "number": "43/98",
+     "rarity": "Common",
+     "source": "local_fingerprint_catalog",
+     "collision_basis": [
+      "card_number"
+     ],
+     "collision_conflicts": [
+      "card_name",
+      "set"
+     ],
+     "number_relation": "exact",
+     "name_similarity": 0.381,
+     "excluded_by": "directly-read name fragment excludes this product"
+    },
+    "evidence_supporting_alternative": [
+     "card_number"
+    ],
+    "evidence_excluding_alternative": [
+     "directly-read name fragment excludes this product"
+    ],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 5 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   },
    "inference_explanation": {
     "original_ocr_text": [
      "2025",
@@ -3896,10 +5595,10 @@
      "×2",
      "￥B6/EA"
     ],
-    "why_ocr_failed": "OCR read a number that is not a real catalog printing (misread/blur)",
-    "candidate_search_process": "via=local index snap; 1 catalog candidate(s) considered",
-    "why_only_one_candidate_remained": "'13/98' does not exist in the catalog; '43/98' is the only real printing within edit distance",
-    "remaining_uncertainty": "number was corrected, not read — confirm against the physical card's footer before listing"
+    "why_ocr_failed": "OCR read a number that is not a real catalog printing",
+    "candidate_search_process": "via=local index snap; 1 API candidate(s); 5 widened rows examined",
+    "why_only_one_candidate_remained": "'13/98' was corrected to '43/98' as the unique nearby real printing; collision search then ran",
+    "remaining_uncertainty": "identity still depends on inference rather than every field being read"
    }
   },
   "verify": {
@@ -4022,6 +5721,7 @@
   ],
   "ident": {
    "name": "M Beedrill-EX",
+   "name_read": "M Beedrill-EX",
    "number": "XY158",
    "number_read": "XY158",
    "snapped": false,
@@ -4141,51 +5841,174 @@
     }
    ],
    "evidence_level": "A",
-   "evidence_level_meaning": "Verified — name and number both read directly, uniquely matched, no forcing/inference",
+   "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L16_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 125566,
+       "name": "M Beedrill EX",
+       "set": "XY Promos",
+       "number": "XY158",
+       "line": "Pokemon",
+       "img": "https://product-images.tcgplayer.com/125566.jpg"
+      }
+     }
     },
     "pokemon_name": {
      "status": "confirmed",
-     "note": "read directly from OCR text on the card"
+     "note": "read directly from OCR text before downstream catalog refinement"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "confirmed",
-     "note": "attack/ability text matched against the 31,908-entry index: 'M Beedrill-EX'"
+     "note": "attack/ability text resolved through the local index to 'M Beedrill-EX'"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
      "note": "read directly from OCR text"
     },
     "language": {
-     "status": "confirmed",
-     "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     "status": "inferred",
+     "note": "English/unspecified is a default after no positive JP/KR marker was found"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: M Beedrill EX (XY Promos)"
+     "note": "catalog agrees with name+number: M Beedrill EX (XY Promos); uniqueness alone is not proof"
     }
    },
-   "confidence": 50,
-   "confidence_reason": "5/10 evidence-chain steps independently confirmed: pokemon_name, attack_names, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
+   "evidence_coverage": 50,
+   "evidence_coverage_reason": "5/10 dimensions independently confirmed: artwork, pokemon_name, attack_names, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 89,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+28 card name directly read",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 125566,
+     "name": "M Beedrill EX",
+     "set": "XY Promos",
+     "number": "XY158",
+     "line": "Pokemon",
+     "img": "https://product-images.tcgplayer.com/125566.jpg",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [
+     {
+      "id": "xyp-XY157",
+      "name": "Beedrill-EX",
+      "hp": 160,
+      "damages": "40x",
+      "subtypes": "Basic,EX",
+      "set": "xyp",
+      "number": "XY157",
+      "rarity": "Promo",
+      "source": "local_fingerprint_catalog",
+      "collision_basis": [
+       "similar_card_name",
+       "one_ocr_substitution_from_card_number"
+      ],
+      "collision_conflicts": [
+       "set"
+      ],
+      "number_relation": "ocr_substitution",
+      "name_similarity": 0.917,
+      "excluded_by": "directly-read name fragment excludes this product"
+     }
+    ],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 3 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "A",
+    "search_performed": true,
+    "catalog_rows_examined": 3,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": true,
+     "name_read": "M Beedrill-EX",
+     "name_via": null,
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": {
+     "id": "xyp-XY157",
+     "name": "Beedrill-EX",
+     "hp": 160,
+     "damages": "40x",
+     "subtypes": "Basic,EX",
+     "set": "xyp",
+     "number": "XY157",
+     "rarity": "Promo",
+     "source": "local_fingerprint_catalog",
+     "collision_basis": [
+      "similar_card_name",
+      "one_ocr_substitution_from_card_number"
+     ],
+     "collision_conflicts": [
+      "set"
+     ],
+     "number_relation": "ocr_substitution",
+     "name_similarity": 0.917,
+     "excluded_by": "directly-read name fragment excludes this product"
+    },
+    "evidence_supporting_alternative": [
+     "similar_card_name",
+     "one_ocr_substitution_from_card_number"
+    ],
+    "evidence_excluding_alternative": [
+     "directly-read name fragment excludes this product"
+    ],
+    "could_ocr_substitution_explain_alt": true,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 3 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   }
   },
   "verify": {
    "title": "Pokemon Card Mega Beedrill XY158 Promo",
@@ -4397,32 +6220,40 @@
      ]
     }
    ],
-   "evidence_level": "C",
-   "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+   "evidence_level": "D",
+   "evidence_level_meaning": "Partial/Ambiguous - exact printing is not established",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "not_verified",
+     "note": "no independent local reference image exists for any candidate; no match was guessed",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 0.0,
+      "matched_reference": null,
+      "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "not_verified"
+     }
     },
     "pokemon_name": {
      "status": "inferred",
-     "note": "derived by crossing a tied fingerprint against the read number's own catalog matches"
+     "note": "name derived by crossing a tied fingerprint with number matches"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "not_checked",
-     "note": "attack-shaped text present in OCR but did not resolve to a unique index match"
+     "note": "attack-shaped OCR text did not resolve to a unique indexed match"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
@@ -4430,32 +6261,154 @@
     },
     "language": {
      "status": "inferred",
-     "note": "language claim follows from the identification path (fingerprint × number), not a directly read language marker"
+     "note": "language follows from identification route 'fingerprint × number', not a read marker"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "not_checked",
-     "note": "6 candidate(s) returned, none carry an exact number match"
+     "note": "6 candidate(s) returned; none exactly match the number"
     }
    },
-   "confidence": 10,
-   "confidence_reason": "1/10 evidence-chain steps independently confirmed: card_number. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
-   "inference_explanation": {
-    "original_ocr_text": [
-     "180",
-     "202S",
-     "60",
-     "150",
-     "2025",
-     "P180"
+   "evidence_coverage": 10,
+   "evidence_coverage_reason": "1/10 dimensions independently confirmed: card_number. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 49,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+12 card name inferred from structured evidence",
+    "+30 collector number directly read",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork unavailable/not verified (no prediction penalty)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": null,
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [
+     {
+      "pid": 589874,
+      "name": "Black Kyurem ex - 048/191",
+      "set": "SV08: Surging Sparks",
+      "number": "048/191",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/589874.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number"
+      ],
+      "number_relation": "different",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     },
+     {
+      "pid": 604951,
+      "name": "Black Kyurem EX",
+      "set": "BKB: Black Kyurem-EX Battle Strength Deck",
+      "number": "008/018",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/604951.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number"
+      ],
+      "number_relation": "different",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     },
+     {
+      "pid": 579393,
+      "name": "Black Kyurem ex - 011/064",
+      "set": "SV7a: Paradise Dragona",
+      "number": "011/064",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/579393.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number"
+      ],
+      "number_relation": "different",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     }
     ],
-    "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
-    "candidate_search_process": "via=fingerprint × number; 6 catalog candidate(s) considered",
-    "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via fingerprint × number",
-    "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 6 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "C",
+    "search_performed": true,
+    "catalog_rows_examined": 6,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": false,
+     "name_read": null,
+     "name_via": "fingerprint × number",
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": {
+     "pid": 589874,
+     "name": "Black Kyurem ex - 048/191",
+     "set": "SV08: Surging Sparks",
+     "number": "048/191",
+     "line": "Pokemon",
+     "img": "https://product-images.tcgplayer.com/589874.jpg",
+     "source": "existing_candidates",
+     "collision_basis": [
+      "card_name"
+     ],
+     "collision_conflicts": [
+      "card_number"
+     ],
+     "number_relation": "different",
+     "name_similarity": 1.0,
+     "excluded_by": "available direct evidence"
+    },
+    "evidence_supporting_alternative": [
+     "card_name"
+    ],
+    "evidence_excluding_alternative": [
+     "available direct evidence"
+    ],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 6 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   },
+   "failure_report": {
+    "missing_feature": "an exact catalog product matching the read name and number",
+    "would_another_image_angle_help": true,
+    "would_different_ocr_pass_help": true,
+    "would_removing_glare_help": true,
+    "would_different_language_db_help": false,
+    "would_scan_instead_of_photo_help": true,
+    "blocking_evidence": "no exact API or local catalog product corroborates Black Kyurem-EX #045/059; the footer may be misread or the local catalog incomplete"
    }
   },
   "verify": {
@@ -4730,65 +6683,338 @@
      ]
     }
    ],
+   "name_read": "Hydreigon",
    "evidence_level": "C",
-   "evidence_level_meaning": "Catalog Forced — OCR incomplete or number corrected; exactly one catalog candidate fits",
+   "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "not_verified",
+     "note": "no independent local reference image exists for any candidate; no match was guessed",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 0.0,
+      "matched_reference": null,
+      "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "not_verified"
+     }
     },
     "pokemon_name": {
      "status": "inferred",
-     "note": "derived by joining the read number against the local printings index (local index: number is a printing) — the number is the evidence, not a direct name text read"
+     "note": "OCR directly read 'Hydreigon', then catalog logic refined the identity to 'Hydreigon-EX'"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "confirmed",
-     "note": "attack/ability text matched against the 31,908-entry index: 'Hydreigon-EX'"
+     "note": "attack/ability text resolved through the local index to 'Hydreigon-EX'"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
      "note": "read directly from OCR text"
     },
     "language": {
-     "status": "confirmed",
-     "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     "status": "inferred",
+     "note": "English/unspecified is a default after no positive JP/KR marker was found"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
-     "status": "not_checked",
-     "note": "6 candidate(s) returned, none carry an exact number match"
+     "status": "confirmed",
+     "note": "local catalog agrees with name+number: Hydreigon-EX (xy6); uniqueness alone is not proof"
     }
    },
-   "confidence": 30,
-   "confidence_reason": "3/10 evidence-chain steps independently confirmed: attack_names, card_number, language. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification.",
+   "evidence_coverage": 30,
+   "evidence_coverage_reason": "3/10 dimensions independently confirmed: attack_names, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 73,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+12 card name inferred from structured evidence",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork unavailable/not verified (no prediction penalty)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "id": "xy6-103",
+     "name": "Hydreigon-EX",
+     "hp": 180,
+     "damages": "80",
+     "subtypes": "Basic,EX",
+     "set": "xy6",
+     "number": "103/108",
+     "rarity": "Rare Ultra",
+     "source": "local_fingerprint_catalog"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [
+     {
+      "id": "bw5-103",
+      "name": "Entei-EX",
+      "hp": 180,
+      "damages": "30,90",
+      "subtypes": "Basic,EX",
+      "set": "bw5",
+      "number": "103/108",
+      "rarity": "Rare Ultra",
+      "source": "local_fingerprint_catalog",
+      "collision_basis": [
+       "card_number"
+      ],
+      "collision_conflicts": [
+       "card_name",
+       "set"
+      ],
+      "number_relation": "exact",
+      "name_similarity": 0.5,
+      "excluded_by": "directly-read name fragment excludes this product"
+     },
+     {
+      "id": "xy12-103",
+      "name": "Mewtwo-EX",
+      "hp": 180,
+      "damages": "110",
+      "subtypes": "Basic,EX",
+      "set": "xy12",
+      "number": "103/108",
+      "rarity": "Rare Ultra",
+      "source": "local_fingerprint_catalog",
+      "collision_basis": [
+       "card_number"
+      ],
+      "collision_conflicts": [
+       "card_name",
+       "set"
+      ],
+      "number_relation": "exact",
+      "name_similarity": 0.476,
+      "excluded_by": "directly-read name fragment excludes this product"
+     },
+     {
+      "id": "ex16-103",
+      "name": "Grass Energy",
+      "hp": null,
+      "damages": "",
+      "subtypes": "Basic",
+      "set": "ex16",
+      "number": "103/108",
+      "rarity": "Rare Holo",
+      "source": "local_fingerprint_catalog",
+      "collision_basis": [
+       "card_number"
+      ],
+      "collision_conflicts": [
+       "card_name",
+       "set"
+      ],
+      "number_relation": "exact",
+      "name_similarity": 0.25,
+      "excluded_by": "directly-read name fragment excludes this product"
+     },
+     {
+      "pid": 98098,
+      "name": "Hydreigon EX",
+      "set": "XY - Roaring Skies",
+      "number": "62/108",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/98098.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number",
+       "set"
+      ],
+      "number_relation": "different",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     },
+     {
+      "pid": 589965,
+      "name": "Hydreigon ex - 119/191",
+      "set": "SV08: Surging Sparks",
+      "number": "119/191",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/589965.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number",
+       "set"
+      ],
+      "number_relation": "different",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     },
+     {
+      "pid": 589966,
+      "name": "Hydreigon ex - 223/191",
+      "set": "SV08: Surging Sparks",
+      "number": "223/191",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/589966.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number",
+       "set"
+      ],
+      "number_relation": "different",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     },
+     {
+      "pid": 636716,
+      "name": "Hydreigon ex - 163/086",
+      "set": "SV11W: White Flare",
+      "number": "163/086",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/636716.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number",
+       "set"
+      ],
+      "number_relation": "different",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     },
+     {
+      "pid": 603838,
+      "name": "Hydreigon EX - 050/078",
+      "set": "XY6: Emerald Break",
+      "number": "050/078",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/603838.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number",
+       "set"
+      ],
+      "number_relation": "different",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     },
+     {
+      "pid": 603839,
+      "name": "Hydreigon EX - 084/078",
+      "set": "XY6: Emerald Break",
+      "number": "084/078",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/603839.jpg",
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number",
+       "set"
+      ],
+      "number_relation": "different",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     }
+    ],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 10 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "C",
+    "search_performed": true,
+    "catalog_rows_examined": 10,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": false,
+     "name_read": "Hydreigon",
+     "name_via": "local index: number is a printing",
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": {
+     "id": "bw5-103",
+     "name": "Entei-EX",
+     "hp": 180,
+     "damages": "30,90",
+     "subtypes": "Basic,EX",
+     "set": "bw5",
+     "number": "103/108",
+     "rarity": "Rare Ultra",
+     "source": "local_fingerprint_catalog",
+     "collision_basis": [
+      "card_number"
+     ],
+     "collision_conflicts": [
+      "card_name",
+      "set"
+     ],
+     "number_relation": "exact",
+     "name_similarity": 0.5,
+     "excluded_by": "directly-read name fragment excludes this product"
+    },
+    "evidence_supporting_alternative": [
+     "card_number"
+    ],
+    "evidence_excluding_alternative": [
+     "directly-read name fragment excludes this product"
+    ],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 10 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   },
    "inference_explanation": {
     "original_ocr_text": [
      "p180",
      "2025",
      "180",
-     "80",
-     "youropponenttakes2:Prire",
-     "103/108"
+     "2025",
+     "p180",
+     "80"
     ],
-    "why_ocr_failed": "OCR could not resolve a full name/number pair on its own; a downstream layer forced the identity",
-    "candidate_search_process": "via=local index: number is a printing; 6 catalog candidate(s) considered",
-    "why_only_one_candidate_remained": "the read fragment(s) matched exactly one catalog entry via local index: number is a printing",
-    "remaining_uncertainty": "identity was forced by elimination, not by directly reading every field — artwork/holo unconfirmed"
+    "why_ocr_failed": "OCR did not directly establish every field needed for an exact printing",
+    "candidate_search_process": "via=local index: number is a printing; 6 API candidate(s); 10 widened rows examined",
+    "why_only_one_candidate_remained": "the available fragments resolved via local index: number is a printing; adversarial search: Adversarial search tested 10 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "remaining_uncertainty": "identity still depends on inference rather than every field being read"
    }
   },
   "verify": {
@@ -4949,6 +7175,7 @@
   ],
   "ident": {
    "name": "Naganadel & Guzzlord-GX",
+   "name_read": "Naganadel & Guzzlord-GX",
    "number": "158/236",
    "number_read": "158/236",
    "snapped": false,
@@ -5077,51 +7304,173 @@
     }
    ],
    "evidence_level": "A",
-   "evidence_level_meaning": "Verified — name and number both read directly, uniquely matched, no forcing/inference",
+   "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
    "evidence_chain": {
     "artwork": {
-     "status": "not_checked",
-     "note": "no automated code path visually matches card artwork yet"
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+     "provider_result": {
+      "provider": "ArtworkProvider:perceptual_hash",
+      "dimension": "artwork",
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L19_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "pid": 201208,
+       "name": "Naganadel & Guzzlord GX",
+       "set": "SM - Cosmic Eclipse",
+       "number": "158/236",
+       "line": "Pokemon",
+       "img": "https://product-images.tcgplayer.com/201208.jpg"
+      }
+     }
     },
     "pokemon_name": {
      "status": "confirmed",
-     "note": "read directly from OCR text on the card"
+     "note": "read directly from OCR text before downstream catalog refinement"
     },
     "hp": {
      "status": "not_checked",
-     "note": "OCR does not structurally parse an HP value (only attack DAMAGE numbers, for fingerprinting)"
+     "note": "HPProvider is an honest stub; no structured HP verification ran"
     },
     "attack_names": {
      "status": "not_checked",
-     "note": "attack-shaped text present in OCR but did not resolve to a unique index match"
+     "note": "attack-shaped OCR text did not resolve to a unique indexed match"
     },
     "ability": {
      "status": "not_checked",
-     "note": "no automated code path separately extracts/verifies ability text"
+     "note": "AbilityProvider is an honest stub; no structured ability verification ran"
     },
     "expansion_symbol": {
      "status": "not_checked",
-     "note": "set is inferred from the matched catalog product's metadata, not from visually reading the printed expansion symbol"
+     "note": "ExpansionProvider is an honest stub; the printed set symbol was not read"
     },
     "card_number": {
      "status": "confirmed",
      "note": "read directly from OCR text"
     },
     "language": {
-     "status": "confirmed",
-     "note": "no positive Japanese/Korean evidence found (JP set code, JP promo footer, or JP-only ID path) — defaults to English/unspecified per the 'language is a claim' rule"
+     "status": "inferred",
+     "note": "English/unspecified is a default after no positive JP/KR marker was found"
     },
     "holo_pattern": {
      "status": "not_checked",
-     "note": "no automated code path detects holo/foil pattern"
+     "note": "HoloProvider is an honest stub; no foil-pattern verification ran"
     },
     "catalog_match": {
      "status": "confirmed",
-     "note": "exactly one catalog product matches name+number: Naganadel & Guzzlord GX (SM - Cosmic Eclipse)"
+     "note": "catalog agrees with name+number: Naganadel & Guzzlord GX (SM - Cosmic Eclipse); uniqueness alone is not proof"
     }
    },
-   "confidence": 40,
-   "confidence_reason": "4/10 evidence-chain steps independently confirmed: pokemon_name, card_number, language, catalog_match. No chain step counts toward confidence unless it was actually checked — artwork/HP/ability/expansion-symbol/holo-pattern have no automated code path yet, so they never contribute even on a Level A identification."
+   "evidence_coverage": 40,
+   "evidence_coverage_reason": "4/10 dimensions independently confirmed: artwork, pokemon_name, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "provisional_prediction_confidence": 89,
+   "provisional_prediction_confidence_factors": [
+    "+5 candidate proposed",
+    "+28 card name directly read",
+    "+30 collector number directly read",
+    "+8 catalog agrees with name+number (not proof by itself)",
+    "+18 adversarial search found no plausible competitor",
+    "+0 artwork matched a local reference (coverage only)"
+   ],
+   "collision_analysis": {
+    "collision_status": "none",
+    "selected_candidate": {
+     "pid": 201208,
+     "name": "Naganadel & Guzzlord GX",
+     "set": "SM - Cosmic Eclipse",
+     "number": "158/236",
+     "line": "Pokemon",
+     "img": "https://product-images.tcgplayer.com/201208.jpg",
+     "source": "existing_candidates"
+    },
+    "candidate_count": 1,
+    "competing_candidates": [],
+    "alternatives_tested": [
+     {
+      "id": "sm11-158",
+      "name": "Noibat",
+      "hp": 60,
+      "damages": "50",
+      "subtypes": "Basic",
+      "set": "sm11",
+      "number": "158/236",
+      "rarity": "Common",
+      "source": "local_fingerprint_catalog",
+      "collision_basis": [
+       "card_number"
+      ],
+      "collision_conflicts": [
+       "card_name",
+       "set"
+      ],
+      "number_relation": "exact",
+      "name_similarity": 0.138,
+      "excluded_by": "directly-read name fragment excludes this product"
+     }
+    ],
+    "evidence_shared": [],
+    "evidence_conflicts": [],
+    "evidence_missing": [],
+    "reason": "Adversarial search tested 3 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "recommended_evidence_level": "A",
+    "search_performed": true,
+    "catalog_rows_examined": 3,
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ],
+    "input_context": {
+     "name_direct": true,
+     "name_read": "Naganadel & Guzzlord-GX",
+     "name_via": null,
+     "name_independent_of_number": true,
+     "number_direct": true,
+     "set_direct": false,
+     "language_direct": false,
+     "card_type": null,
+     "attacks_considered": [],
+     "abilities_considered": []
+    }
+   },
+   "adversarial_validation": {
+    "strongest_alternative": {
+     "id": "sm11-158",
+     "name": "Noibat",
+     "hp": 60,
+     "damages": "50",
+     "subtypes": "Basic",
+     "set": "sm11",
+     "number": "158/236",
+     "rarity": "Common",
+     "source": "local_fingerprint_catalog",
+     "collision_basis": [
+      "card_number"
+     ],
+     "collision_conflicts": [
+      "card_name",
+      "set"
+     ],
+     "number_relation": "exact",
+     "name_similarity": 0.138,
+     "excluded_by": "directly-read name fragment excludes this product"
+    },
+    "evidence_supporting_alternative": [
+     "card_number"
+    ],
+    "evidence_excluding_alternative": [
+     "directly-read name fragment excludes this product"
+    ],
+    "could_ocr_substitution_explain_alt": false,
+    "could_collision_be_undetected": true,
+    "what_would_overturn_this": "A higher-resolution footer, set/language marker, or independent artwork reference that conflicts with the selected printing",
+    "alternative_search_result": "Adversarial search tested 3 catalog row(s); no plausible competing printing survived the direct evidence.",
+    "search_limitations": [
+     "local catalog may not contain every regional or newly released printing",
+     "artwork/holo authenticity is outside collision search"
+    ]
+   }
   },
   "verify": {
    "title": "Pokemon Card Naganadel & Guzzlord GX Tag Team 158/236 Cosmic Eclipse",

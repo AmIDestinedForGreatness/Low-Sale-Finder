@@ -6,7 +6,13 @@ This file exists because Yujin flagged a session-limit risk mid-spec — if
 work stops here, this is the FULL accepted spec to resume from, not a
 summary. Do not re-derive it from chat; it's all here.
 
-## Status: NOT YET BUILT. This is the accepted spec, verbatim intent.
+## Status: IMPLEMENTED LOCALLY AS V0.11.0; UNCOMMITTED/UNPUSHED
+
+Implementation, regression suite, dashboard wiring, and both live re-audits
+are complete in the working tree. Awaiting Yujin's commit sign-off and CC's
+architectural review. The accepted specification below is preserved as the
+completion contract; see `dataset/REPORT-5-collision-evidence.md` and the
+newest `AGENT-RELAY.md` entry for verified results.
 
 Yujin's decision on the two open questions from V0.10.0's report:
 1. **Cross-print collision check: build now, zero-cost, this iteration.**

@@ -414,3 +414,77 @@ stopped background job's Python child survived and raced the corrected
 re-run on the same JSON, interleaving stale watermark-less results with
 good ones. Verify the actual saved state, never the log line.
 **Guard:** `test_attack_number_needs_single_printing` (tests.py).
+
+### L33 - catalog uniqueness is not contradiction search (2026-07-17)
+**Mistake:** the first evidence engine graded a picked catalog product without
+searching for real printings that could fit the same OCR. Mega Camerupt
+`XY198a` had `XY198` suffix neighbors; M Mewtwo `63/162` had `64/162` one
+OCR slip away; identical collector numbers exist across unrelated sets.
+**Rule:** before A/B/C, independently widen by exact/normalized/promo/suffix/
+one-slip number plus name anchors and try to disprove the chosen printing.
+Multiple unresolved exact-number products are D; OCR-neighbor alternatives
+are C; A requires that the search ran and survived. Every result stores the
+strongest alternative, exclusions, limitations, and overturn condition.
+**Guards:** `TestCandidateCollisionAnalyzer` and
+`TestCollisionEvidenceIntegration`.
+
+### L34 - Coverage is not Confidence; absent providers are not negative evidence (2026-07-17)
+**Mistake:** `confidence` was literally confirmed evidence steps divided by
+ten. It measured how many providers ran, not how likely the selected printing
+was. An unimplemented holo detector therefore looked like evidence against a
+correct card.
+**Rule:** `evidence_coverage` is the confirmed-dimension count;
+`provisional_prediction_confidence` is a separate transparent rules score
+driven by direct reads, catalog agreement, collision results, snaps, and slab
+risk. Missing HP/ability/set-symbol/holo providers affect Coverage only.
+Artwork perceptual hash is local-only, bounded, and adds Coverage but +0 to
+prediction until calibrated. **Guards:** `TestEvidenceProviders`.
+
+### L35 - re-audits are transactions; old evidence must not become stale truth (2026-07-17)
+**Mistakes:** a stopped audit could leave only one dataset migrated; a renamed
+lot image broke path lookup; fresh OCR temporarily lost the plainly visible
+Blastoise `22/108` and Manectric `024a/119`; cached inferred `Pikachu` tried to
+override a fresh direct read of `Detective Pikachu`; durable eye-read cards
+wasted minutes repeating deep OCR before restoring the same result.
+**Rules:** checkpoint after each card, write datasets only after both finish,
+rebuild failures atomically, resolve current/renamed/legacy paths, preserve an
+exact human read as B, reuse a cached-number inference only when the exact
+number repeats, and force live identification when fresh direct name text
+conflicts or refines the old inference. Reports compare against committed
+baseline and separately show identity and level changes.
+**Guards:** `TestReauditHandoffEdges`.
+
+### L36 - a valid-looking footer is not a real printing (2026-07-17)
+**Mistake:** the supplied 2x2 binder photo OCR'd Stoutland `248/236` as the
+syntactically plausible `240/250`. With no exact catalog product, the engine
+still left it at C. That is not catalog forcing; exact printing is unproven.
+**Rule:** outside a human eye read, no exact API or widened-local catalog
+product means D even when the string looks like a collector number. A local
+exact product can corroborate the catalog step, but uniqueness alone never
+proves the decision. **Guards:**
+`test_valid_looking_non_catalog_footer_stays_partial` and
+`test_exact_local_catalog_product_corroborates_without_api_candidate`.
+
+### L37 - whole-image OCR failure does not mean a phone photo holds one card (2026-07-17)
+**Mistake:** dashboard binder mode required 3 readable whole-image names. The
+real 720x1280 Weavile/Excadrill/Stoutland/Wishiwashi photo produced zero names
+and one bad footer, so four cards rendered as one Level-E result even though
+the existing crop pipeline could name every pocket.
+**Rule:** for a narrow portrait with fewer than three whole-image names, run
+one bounded 2x2 probe and enter binder mode only when 3+ cells contain direct
+name/number evidence. This avoids treating every tall single card as a binder.
+Keep unresolved candidates; only A/B pockets may discard them.
+**Guard:** `TestBinderDashboardFallback` plus live upload of the supplied photo
+(`multi=True`, four correct names; ~186s remains a performance limit).
+
+### L38 - direct partial name text is independent evidence, but only within its scope (2026-07-17)
+**Mistake:** `Mew` refined to `Mew V`, `Hydreigon` refined to
+`Hydreigon-EX`, and `Zoroark` refined to `Zoroark-GX` were treated as if the
+names came entirely from their numbers. Unrelated Wyrdeer/Hop/same-number
+cards survived as false collisions. Separately, catalog display text such as
+`Altaria EX (Full Art)` collided with `Altaria-EX`, its own product.
+**Rule:** a directly read species fragment excludes candidates that cannot
+contain it, but does not exclude mechanic variants that still contain it
+(`Altaria` cannot rule out `M Altaria-EX`). Strip parenthetical product labels
+before identity comparison. **Guards:** partial-name and catalog-annotation
+tests in `TestCollisionEvidenceIntegration`.

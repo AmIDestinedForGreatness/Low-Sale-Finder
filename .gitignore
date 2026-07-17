@@ -11,6 +11,7 @@ grails.json
 card_index.sqlite
 
 uploads/
+.tmp/
 fingerprints.sqlite
 fp_data.zip
 dataset/images/

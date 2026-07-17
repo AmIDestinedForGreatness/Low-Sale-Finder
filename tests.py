@@ -1,4 +1,4 @@
-"""
+r"""
 tests.py — the system's permanent memory of its own mistakes.
 
 Every case here exists because something REAL went wrong in the feed and got
@@ -11,7 +11,9 @@ Run:  E:\python.exe tests.py     (offline — no network, no Discord, no FB)
 import os
 import sys
 import unittest
+from unittest import mock
 
+import collision
 import evidence
 import pc_price
 import scraper
@@ -467,7 +469,10 @@ class TestEvidence(unittest.TestCase):
                             candidates=[{"pid": 1, "name": "Pikachu ex", "set": "Paldea Evolved",
                                         "number": "063/193"}])
         ev = evidence.build_evidence(ident, ["Pikachu ex", "063/193"], None)
-        for field in ("evidence_level", "evidence_chain", "confidence", "confidence_reason"):
+        for field in ("evidence_level", "evidence_chain", "evidence_coverage",
+                      "evidence_coverage_reason", "provisional_prediction_confidence",
+                      "provisional_prediction_confidence_factors",
+                      "collision_analysis", "adversarial_validation"):
             self.assertIn(field, ev)
         self.assertEqual(set(ev["evidence_chain"]), set(evidence.CHAIN_STEPS))
         self.assertIn(ev["evidence_level"], evidence.LEVELS)
@@ -527,35 +532,396 @@ class TestEvidence(unittest.TestCase):
         ev = evidence.build_evidence(ident, ["PSA 10", "004/SV-P"], None)
         self.assertNotEqual(ev["evidence_level"], "A")
 
-    def test_confidence_never_counts_an_unchecked_step(self):
+    def test_coverage_never_counts_an_unchecked_step(self):
         ident = self._ident(name="Pikachu ex", number="063/193",
                             candidates=[{"pid": 1, "name": "Pikachu ex", "set": "Paldea Evolved",
                                         "number": "063/193"}])
         ev = evidence.build_evidence(ident, ["Pikachu ex", "063/193"], None)
         confirmed = sum(1 for s in evidence.CHAIN_STEPS
                         if ev["evidence_chain"][s]["status"] == "confirmed")
-        self.assertEqual(ev["confidence"], round(100 * confirmed / len(evidence.CHAIN_STEPS)))
-        self.assertLess(ev["confidence"], 100)   # 5 dims are structurally unchecked
+        self.assertEqual(ev["evidence_coverage"],
+                         round(100 * confirmed / len(evidence.CHAIN_STEPS)))
+        self.assertLess(ev["evidence_coverage"], 100)
+        self.assertNotIn("confidence", ev)  # the old mislabeled field must stay gone
 
     def test_log_failure_skips_level_a_but_seeds_structural_gap(self):
-        # redirect to a scratch file — this must never mutate the real
-        # dataset/failures.json as a side effect of running the test suite
-        import tempfile
-        real_json, real_md = evidence.FAILURES_JSON, evidence.FAILURES_MD
-        tmpdir = tempfile.mkdtemp(prefix="failures_test_")
-        evidence.FAILURES_JSON = os.path.join(tmpdir, "failures.json")
-        evidence.FAILURES_MD = os.path.join(tmpdir, "FAILURES.md")
-        try:
+        # Capture the write in memory; tests never touch the real database.
+        database = {}
+        with mock.patch("evidence._load_failures", return_value=database), \
+             mock.patch("evidence._save_failures") as save:
             ident = self._ident(name="Pikachu ex", number="063/193",
                                 candidates=[{"pid": 1, "name": "Pikachu ex", "set": "Paldea Evolved",
                                             "number": "063/193"}])
             ident.update(evidence.build_evidence(ident, ["Pikachu ex", "063/193"], None))
             evidence.log_failure(ident)
-            db_after = evidence._load_failures()
+            db_after = save.call_args.args[0]
             self.assertIn(evidence._STRUCTURAL_GAP_ID, db_after)
             self.assertNotIn(evidence._card_key(ident), db_after)  # Level A -> no per-card record
-        finally:
-            evidence.FAILURES_JSON, evidence.FAILURES_MD = real_json, real_md
+
+
+class TestCandidateCollisionAnalyzer(unittest.TestCase):
+    """The adversarial stage must try to disprove a printing before A/B/C."""
+
+    def _run(self, name="Testmon ex", number="010/100", candidates=None,
+             rows=None, name_status="confirmed", number_status="confirmed"):
+        context = {"status": "inferred", "name_status": name_status,
+                   "number_status": number_status, "explicit": False,
+                   "jp": False}
+        with mock.patch("collision._catalog_rows", return_value=rows or []):
+            return collision.analyze(
+                name, number, collision.norm_number(number), context,
+                {"status": "not_checked"}, None, [], [], candidates or [])
+
+    def test_clean_candidate_can_remain_level_a(self):
+        candidate = {"pid": 1, "name": "Testmon ex", "number": "010/100",
+                     "set": "Only Set"}
+        result = self._run(candidates=[candidate])
+        self.assertEqual(result["collision_status"], "none")
+        self.assertEqual(result["recommended_evidence_level"], "A")
+        self.assertTrue(result["search_performed"])
+        self.assertIn("no plausible", result["reason"])
+
+    def test_same_name_number_across_sets_is_confirmed_collision(self):
+        candidates = [
+            {"pid": 1, "name": "Testmon ex", "number": "010/100", "set": "Set A"},
+            {"pid": 2, "name": "Testmon ex", "number": "010/100", "set": "Set B"},
+        ]
+        result = self._run(candidates=candidates)
+        self.assertEqual(result["collision_status"], "confirmed")
+        self.assertEqual(result["recommended_evidence_level"], "D")
+        self.assertEqual(result["competing_candidates"][0]["set"], "Set B")
+        self.assertIn("expansion_symbol", result["evidence_missing"])
+
+    def test_valid_ocr_number_one_edit_from_wrong_real_product_is_possible(self):
+        candidates = [
+            {"pid": 1, "name": "Testmon ex", "number": "010/100", "set": "Set A"},
+            {"pid": 2, "name": "Testmon ex", "number": "018/100", "set": "Set A"},
+        ]
+        result = self._run(candidates=candidates)
+        self.assertEqual(result["collision_status"], "possible")
+        self.assertEqual(result["recommended_evidence_level"], "C")
+        self.assertEqual(result["competing_candidates"][0]["number_relation"],
+                         "ocr_substitution")
+
+    def test_direct_name_excludes_unrelated_same_number_but_records_test(self):
+        candidates = [
+            {"pid": 1, "name": "Testmon ex", "number": "010/100", "set": "Set A"},
+            {"pid": 2, "name": "Othermon", "number": "010/100", "set": "Set Z"},
+        ]
+        result = self._run(candidates=candidates)
+        self.assertEqual(result["collision_status"], "none")
+        self.assertEqual(result["alternatives_tested"][0]["name"], "Othermon")
+        self.assertIn("directly-read name", result["alternatives_tested"][0]["excluded_by"])
+
+    def test_inferred_name_cannot_exclude_same_number_other_language(self):
+        candidates = [
+            {"pid": 1, "name": "Testmon ex", "number": "010/100",
+             "set": "English Set", "line": "Pokemon"},
+            {"pid": 2, "name": "Othermon", "number": "010/100",
+             "set": "Japanese Set", "line": "Pokemon Japan"},
+        ]
+        result = self._run(candidates=candidates, name_status="inferred")
+        self.assertEqual(result["collision_status"], "confirmed")
+        self.assertEqual(result["recommended_evidence_level"], "D")
+
+    def test_promo_leading_zero_and_suffix_variants_are_searched(self):
+        self.assertEqual(collision.number_relation("XY117", "117/XY-P"),
+                         "normalized_variant")
+        self.assertEqual(collision.number_relation("010/100", "10/100"), "exact")
+        self.assertEqual(collision.number_relation("024a/119", "24/119"),
+                         "normalized_variant")
+
+    def test_previous_attack_preference_cases_are_adversarially_exposed(self):
+        for name, number, old_wrong in (
+                ("Incineroar", "27/149", "SM38"),
+                ("Mimikyu V", "068/172", "TG16")):
+            candidates = [
+                {"pid": 1, "name": name, "number": number, "set": "actual"},
+                {"pid": 2, "name": name, "number": old_wrong, "set": "old heuristic"},
+            ]
+            result = self._run(name=name, number=number, candidates=candidates)
+            tested = result["alternatives_tested"]
+            self.assertTrue(any(c["number"] == old_wrong for c in tested), name)
+
+
+class TestCollisionEvidenceIntegration(unittest.TestCase):
+    def _ident(self, candidates, **changes):
+        base = {"name": "Testmon ex", "number": "010/100",
+                "number_read": "010/100", "snapped": False, "via": None,
+                "jp": False, "query": "Testmon ex 010/100", "graded": False,
+                "candidates": candidates}
+        base.update(changes)
+        return base
+
+    def test_multiple_candidates_land_level_d_not_silent_pick(self):
+        candidates = [
+            {"pid": 1, "name": "Testmon ex", "number": "010/100", "set": "A"},
+            {"pid": 2, "name": "Testmon ex", "number": "010/100", "set": "B"},
+        ]
+        with mock.patch("collision._catalog_rows", return_value=[]):
+            result = evidence.build_evidence(self._ident(candidates),
+                                             ["Testmon ex", "010/100"])
+        self.assertEqual(result["evidence_level"], "D")
+        self.assertEqual(result["collision_analysis"]["collision_status"], "confirmed")
+        self.assertIsNotNone(result["adversarial_validation"]["strongest_alternative"])
+
+    def test_preserved_direct_name_excludes_unrelated_same_number(self):
+        candidates = [
+            {"pid": 1, "name": "Testmon ex", "number": "010/100", "set": "A"},
+            {"pid": 2, "name": "Othermon", "number": "010/100", "set": "B"},
+        ]
+        ident = self._ident(candidates, name_read="Testmon ex",
+                            via="local index: number is a printing")
+        with mock.patch("collision._catalog_rows", return_value=[]):
+            result = evidence.build_evidence(ident, ["Testmon ex", "010/100"])
+        self.assertEqual(result["collision_analysis"]["collision_status"], "none")
+        self.assertNotEqual(result["evidence_level"], "D")
+        excluded = result["collision_analysis"]["alternatives_tested"]
+        self.assertTrue(any(c["name"] == "Othermon" for c in excluded))
+
+    def test_partial_direct_name_excludes_unrelated_same_number(self):
+        # Live re-audit catch: OCR read ``Mew`` and the catalog refined it to
+        # ``Mew V``. The direct fragment still excludes Wyrdeer at the same
+        # number, even though the mechanic suffix remains inferred.
+        candidates = [
+            {"pid": 1, "name": "Mew V", "number": "069/189", "set": "A"},
+            {"pid": 2, "name": "Wyrdeer", "number": "069/189", "set": "B"},
+        ]
+        ident = self._ident(candidates, name="Mew V", name_read="Mew",
+                            number="069/189", number_read="069/189",
+                            via="local index: number is a printing")
+        with mock.patch("collision._catalog_rows", return_value=[]):
+            result = evidence.build_evidence(ident, ["Mew", "069/189"])
+        self.assertEqual(result["collision_analysis"]["collision_status"], "none")
+        self.assertEqual(result["evidence_level"], "C")
+
+    def test_partial_name_does_not_exclude_a_real_mechanic_variant(self):
+        candidates = [
+            {"pid": 1, "name": "Altaria EX (Full Art)",
+             "number": "123/124", "set": "A"},
+            {"pid": 2, "name": "M Altaria-EX", "number": "121/124", "set": "A"},
+        ]
+        ident = self._ident(candidates, name="Altaria-EX", name_read="Altaria",
+                            number="123/124", number_read="123/124",
+                            via="local index: number is a printing")
+        with mock.patch("collision._catalog_rows", return_value=[]):
+            result = evidence.build_evidence(ident, ["Altaria", "123/124"])
+        self.assertEqual(result["collision_analysis"]["collision_status"], "possible")
+        self.assertEqual(result["evidence_level"], "C")
+        self.assertTrue(any(c["name"] == "M Altaria-EX"
+                            for c in result["collision_analysis"]["competing_candidates"]))
+
+    def test_catalog_display_annotation_is_not_a_self_collision(self):
+        candidates = [
+            {"pid": 1, "name": "Altaria-EX", "number": "123/124", "set": "A"},
+            {"pid": 2, "name": "Altaria EX (Full Art)",
+             "number": "123/124", "set": "A"},
+        ]
+        context = {"status": "inferred", "name_status": "confirmed",
+                   "number_status": "confirmed", "explicit": False, "jp": False}
+        with mock.patch("collision._catalog_rows", return_value=[]):
+            result = collision.analyze(
+                "Altaria-EX", "123/124", "123/124", context,
+                {"status": "not_checked"}, None, [], [], candidates)
+        self.assertEqual(result["collision_status"], "none")
+
+    def test_graded_slab_region_collision_runs_through_general_analyzer(self):
+        candidates = [
+            {"pid": 1, "name": "Pikachu", "number": "004/SV-P",
+             "set": "Chinese promo", "line": "Pokemon"},
+            {"pid": 2, "name": "Pikachu", "number": "004/SV-P",
+             "set": "Japanese promo", "line": "Pokemon Japan"},
+        ]
+        ident = self._ident(candidates, name="Pikachu", number="004/SV-P",
+                            number_read="004/SV-P", graded=True)
+        with mock.patch("collision._catalog_rows", return_value=[]):
+            result = evidence.build_evidence(ident, ["BGS 10", "004/SV-P"])
+        self.assertEqual(result["collision_analysis"]["collision_status"], "confirmed")
+        self.assertEqual(result["evidence_level"], "D")
+
+    def test_every_decision_contains_falsification_block_even_when_clean(self):
+        candidates = [{"pid": 1, "name": "Testmon ex", "number": "010/100",
+                       "set": "Only Set"}]
+        with mock.patch("collision._catalog_rows", return_value=[]):
+            result = evidence.build_evidence(self._ident(candidates),
+                                             ["Testmon ex", "010/100"])
+        self.assertEqual(result["evidence_level"], "A")
+        for field in ("strongest_alternative", "evidence_supporting_alternative",
+                      "evidence_excluding_alternative",
+                      "could_ocr_substitution_explain_alt",
+                      "could_collision_be_undetected", "what_would_overturn_this"):
+            self.assertIn(field, result["adversarial_validation"])
+
+
+class TestEvidenceProviders(unittest.TestCase):
+    def _ident(self):
+        return {"name": "Testmon ex", "number": "010/100",
+                "number_read": "010/100", "snapped": False, "via": None,
+                "jp": False, "query": "Testmon ex 010/100", "graded": False,
+                "candidates": [{"pid": 1, "name": "Testmon ex",
+                                "number": "010/100", "set": "Only Set"}]}
+
+    def test_artwork_match_raises_coverage_but_not_prediction_confidence(self):
+        image, reference = "synthetic-input.png", "synthetic-reference.png"
+        with mock.patch("providers.artwork.os.path.exists", return_value=True), \
+             mock.patch("providers.artwork._hash_similarity", return_value=1.0), \
+             mock.patch("collision._catalog_rows", return_value=[]):
+            baseline = evidence.build_evidence(self._ident(),
+                                               ["Testmon ex", "010/100"])
+            matched = evidence.build_evidence(
+                self._ident(), ["Testmon ex", "010/100"], image_paths=[image],
+                provider_context={"reference_images": [reference]})
+        self.assertEqual(matched["evidence_chain"]["artwork"]["status"], "confirmed")
+        self.assertEqual(matched["evidence_coverage"], baseline["evidence_coverage"] + 10)
+        self.assertEqual(matched["provisional_prediction_confidence"],
+                         baseline["provisional_prediction_confidence"])
+
+    def test_no_reference_is_not_verified_never_guessed(self):
+        image = "synthetic-input.png"
+        with mock.patch("providers.artwork.os.path.exists", return_value=True), \
+             mock.patch("providers.artwork._dataset_references", return_value={}), \
+             mock.patch("collision._catalog_rows", return_value=[]):
+            result = evidence.build_evidence(
+                self._ident(), ["Testmon ex", "010/100"], image_paths=[image])
+        art = result["evidence_chain"]["artwork"]
+        self.assertEqual(art["status"], "not_verified")
+        self.assertIsNone(art["provider_result"]["matched_reference"])
+
+    def test_future_provider_stubs_are_honest(self):
+        from providers import AbilityProvider, ExpansionProvider, HoloProvider, HPProvider
+        for provider in (HPProvider(), AbilityProvider(), ExpansionProvider(), HoloProvider()):
+            self.assertEqual(provider.verify(None, [], {})["status"], "not_checked")
+
+
+class TestReauditHandoffEdges(unittest.TestCase):
+    def test_lot_path_resolves_renamed_file_before_legacy_name(self):
+        import reaudit
+        row = {"file": "Eevee VMAX  English.png",
+               "renamed_to": "Eevee VMAX SWSH087 English.png"}
+        with mock.patch("reaudit.os.path.exists",
+                        side_effect=lambda path: path.endswith("SWSH087 English.png")):
+            path = reaudit._lot_image(row, "missing-key.png")
+        self.assertTrue(path.endswith("Eevee VMAX SWSH087 English.png"))
+
+    def test_durable_eye_read_skips_expensive_automated_reidentification(self):
+        import reaudit
+        old = {"name": "Coalossal", "name_read": "Coalossal",
+               "number": "117/100", "number_read": "117/100",
+               "via": "visual read (assistant eye)", "snapped": False,
+               "jp": True, "graded": False,
+               "confidence": 50, "confidence_reason": "legacy",
+               "candidates": [{"name": "Coalossal", "number": "117/100",
+                               "set": "s3"}]}
+        with mock.patch("reaudit.profile_dataset.identify") as identify, \
+             mock.patch("collision._catalog_rows", return_value=[]):
+            result = reaudit._identify_with_retry(
+                [], [["Coalossal", "117/100"]], set(), old, "test")
+        identify.assert_not_called()
+        self.assertEqual(result["evidence_level"], "B")
+        self.assertNotIn("confidence", result)
+        self.assertNotIn("confidence_reason", result)
+
+    def test_cached_exact_number_reuses_transparent_inference(self):
+        import reaudit
+        old = {"name": "Combusken", "name_read": None,
+               "number": "065/PCG-P", "number_read": "065/PCG-P",
+               "via": "unique number match", "snapped": False,
+               "jp": True, "graded": False,
+               "candidates": [{"name": "Combusken", "number": "065/PCG-P",
+                               "set": "PCG Promo"}]}
+        with mock.patch("reaudit.profile_dataset.identify") as identify, \
+             mock.patch("collision._catalog_rows", return_value=[]):
+            result = reaudit._identify_with_retry(
+                [], [["065/PCG-P"]], set(), old, "test")
+        identify.assert_not_called()
+        self.assertEqual(result["evidence_level"], "C")
+        self.assertEqual(result["number_read"], "065/PCG-P")
+
+    def test_cached_number_keeps_a_compatible_direct_name_fragment(self):
+        import reaudit
+        old = {"name": "Zoroark-GX", "name_read": None,
+               "number": "53/73", "number_read": "53/73",
+               "via": "local index: number is a printing", "snapped": False,
+               "jp": False, "graded": False,
+               "candidates": [{"name": "Zoroark GX", "number": "53/73",
+                               "set": "Shining Legends"}]}
+        rows = [{"id": "hop", "name": "Hop", "number": "53/73",
+                 "set": "swsh35"}]
+        with mock.patch("reaudit.profile_dataset.identify") as identify, \
+             mock.patch("collision._catalog_rows", return_value=rows):
+            result = reaudit._identify_with_retry(
+                [], [["Zoroark", "53/73"]], set(), old, "test")
+        identify.assert_not_called()
+        self.assertEqual(result["name_read"], "Zoroark")
+        self.assertEqual(result["collision_analysis"]["collision_status"], "none")
+        self.assertEqual(result["evidence_level"], "C")
+
+    def test_fresh_more_specific_name_overrides_committed_inference(self):
+        import reaudit
+        old = {"name": "Pikachu", "name_read": None,
+               "number": "10/18", "number_read": "10/18",
+               "via": "dex number", "snapped": False, "jp": False,
+               "graded": False, "candidates": []}
+        replacement = {"name": "Detective Pikachu",
+                       "name_read": "Detective Pikachu", "number": "10/18",
+                       "number_read": "10/18", "via": None,
+                       "candidates": [{"name": "Detective Pikachu",
+                                       "number": "10/18", "set": "Detective"}]}
+        with mock.patch("reaudit.profile_dataset.identify",
+                        return_value=replacement) as identify:
+            result = reaudit._identify_with_retry(
+                [], [["Detective Pikachu", "10/18"]], set(), old, "test")
+        identify.assert_called_once()
+        self.assertEqual(result["name"], "Detective Pikachu")
+
+
+class TestBinderDashboardFallback(unittest.TestCase):
+    def test_narrow_four_card_photo_gets_bounded_grid_probe(self):
+        import folder_dataset
+        self.assertTrue(folder_dataset.should_probe_grid(720, 1280, 0))
+        self.assertFalse(folder_dataset.should_probe_grid(965, 1280, 0))
+
+        groups = [["Weavile"], ["Excadrill"], ["Stoutland"], ["Wishiwashi"]]
+        with mock.patch("folder_dataset.split_grid",
+                        return_value=["c0", "c1", "c2", "c3"]):
+            cells, ocr = folder_dataset.probe_grid(
+                "binder.jpg", ".", ocr_reader=lambda cell: groups[int(cell[-1])])
+        self.assertEqual(cells, ["c0", "c1", "c2", "c3"])
+        self.assertEqual(len(ocr), 4)
+
+    def test_valid_looking_non_catalog_footer_stays_partial(self):
+        # Live dashboard catch from the supplied binder: Stoutland 248/236
+        # was OCR'd as 240/250. A syntactically valid number is not a printing
+        # unless an exact catalog product corroborates it.
+        ident = {"name": "Stoutland", "name_read": "Stoutland",
+                 "number": "240/250", "number_read": "240/250",
+                 "snapped": False, "via": "attack names", "jp": False,
+                 "graded": False, "candidates": []}
+        rows = [{"id": "real", "name": "Stoutland", "number": "248/236",
+                 "set": "sm12"}]
+        with mock.patch("collision._catalog_rows", return_value=rows):
+            result = evidence.build_evidence(
+                ident, ["Stoutland", "240/250"], ("Stoutland", ["248/236"]))
+        self.assertEqual(result["evidence_level"], "D")
+        self.assertEqual(result["evidence_chain"]["catalog_match"]["status"],
+                         "not_checked")
+        self.assertIn("exact catalog product",
+                      result["failure_report"]["missing_feature"])
+        self.assertIn("no exact API or local catalog product",
+                      result["failure_report"]["blocking_evidence"])
+
+    def test_exact_local_catalog_product_corroborates_without_api_candidate(self):
+        ident = {"name": "Testmon ex", "name_read": "Testmon ex",
+                 "number": "010/100", "number_read": "010/100",
+                 "snapped": False, "via": None, "jp": False,
+                 "graded": False, "candidates": []}
+        rows = [{"id": "real", "name": "Testmon ex", "number": "010/100",
+                 "set": "only"}]
+        with mock.patch("collision._catalog_rows", return_value=rows):
+            result = evidence.build_evidence(ident, ["Testmon ex", "010/100"])
+        self.assertEqual(result["evidence_chain"]["catalog_match"]["status"],
+                         "confirmed")
+        self.assertEqual(result["evidence_level"], "A")
 
 
 if __name__ == "__main__":

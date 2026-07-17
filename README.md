@@ -4,6 +4,13 @@ Scans Carousell for Pokémon card listings, compares each to its market value,
 and pings a Discord webhook when a listing is **≥20% below market** (configurable),
 with a louder **🔥 STEAL** alert when it's **≥75% off**.
 
+The repository also includes the local Card Valuator used by the dashboard:
+photo OCR, catalog identification, adversarial cross-print collision search,
+an A-E evidence decision, separate Evidence Coverage and provisional
+Prediction Confidence, and a zero-cost local perceptual-artwork provider.
+Every result exposes its evidence chain, strongest alternative, and what new
+evidence would overturn it; ambiguous printings are not silently selected.
+
 ## What you get
 - `config.py` — all your settings (edit this).
 - `scraper.py` — Carousell scraper (Playwright).
