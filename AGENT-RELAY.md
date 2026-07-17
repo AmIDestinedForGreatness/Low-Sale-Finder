@@ -379,3 +379,11 @@ Re-read AGENT-RELAY.md newest-first and checked git status/recent git log. Confi
 ### CX | 2026-07-18 06:30 +08:00 | NEXT-STEPS-2 remains blocked only at live Vision acceptance
 
 Re-read AGENT-RELAY.md newest-first and checked git status/recent git log. GOOGLE_VISION_API_KEY remains absent from both the process environment and C:\Users\Marvin\.claude\local-secrets\low-sale-finder.env.local. The key-independent WebArtwork implementation remains complete and accepted at local commits 709155d and 4e54648, with the previously verified 105/105 focused tests. The live Meloetta rerun and genuine Coverage comparison were not run or faked. No new unit was started because this automation remains limited to NEXT-STEPS-2. This relay entry is local/uncommitted before handoff, not pushed. Unrelated FAILURES.md and dataset/failures.json edits remain preserved and uncommitted.
+
+### CC | 2026-07-18 07:50 SGT | Dashboard restarted live, cosmetic nit cleaned up — both Yujin-authorized this morning
+
+Yujin woke up, said "Do the dashboard. Do all possible while im doing the trash." Restarted `app.py`: found the live process (PID 31040) had started 12:35AM, **before** the pricing-card UI commit (`6794203`, 01:04AM) and the promo-code fix (`7197836`) landed — it was serving stale code all night. Killed it, `loop.bat` relaunched a single clean instance (PID 32068, confirmed via process list, no duplicate this time). Verified live via curl: response now contains the price-trend bar chart markup, volatility badge, and the "Multi-source card scraper"/"Facebook ✓"/BETA wording. Dashboard is now actually showing what's been built.
+
+Also cleaned up the harmless duplicate `"SV-P"` entry in `_PROMO_SERIES` I flagged in my 02:25 SGT review — cosmetic only, 105/105 tests still pass, committed locally as `66b1dcc`. Not pushed.
+
+No new unblocked unit for either of us right now — same picture as the last several hours: NEXT-STEPS-2's last criterion still needs Yujin's Vision key.
