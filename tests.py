@@ -330,27 +330,28 @@ class TestPriceChartingPrecision(unittest.TestCase):
     Lucario priced as a P22k booster box, plushies priced at P846 —
     both from generic-token matching."""
 
-    BOX = [("Pokemon Booster Box", "Pokemon Sealed", "380.00")]
+    BOX = [("/game/box", "Pokemon Booster Box", "Pokemon Sealed", "380.00")]
 
     def test_toy_with_box_never_matches_booster_box(self):
         t = "FS pokemon with box na 200 nalang, sagot ko na bubble wrap"
         self.assertIsNone(pc_price._pick(self.BOX, t))
 
     def test_plush_sale_title_matches_nothing(self):
-        rows = [("Pikachu", "Pokemon Promo", "5.00")] + self.BOX
+        rows = [("/game/pikachu", "Pikachu", "Pokemon Promo", "5.00")] + self.BOX
         self.assertIsNone(pc_price._pick(rows, "Paubos Sale!! Price starts at 250!!"))
 
     def test_combee_never_gets_combusken_price(self):
         # the original dup-mismatch: overlap lived in the console text
-        rows = [("Combusken #65", "Pokemon Meiji Promo", "3.95")]
+        rows = [("/game/combusken", "Combusken #65", "Pokemon Meiji Promo", "3.95")]
         self.assertIsNone(
             pc_price._pick(rows, "Pokemon Card Combee 081/DP-P Vintage Meiji"))
 
     def test_real_card_still_matches(self):
-        rows = [("Staraptor #26", "Pokemon Japanese Diamond & Pearl", "5.58")]
+        rows = [("/game/pokemon/staraptor", "Staraptor #26", "Pokemon Japanese Diamond & Pearl", "5.58")]
         best = pc_price._pick(rows, "Pokemon Card Staraptor Holo Japanese D&P")
         self.assertIsNotNone(best)
-        self.assertEqual(best[0], "Staraptor #26")
+        self.assertEqual(best[1], "Staraptor #26")
+        self.assertEqual(best[0], "/game/pokemon/staraptor")
 
     def test_pricecharting_parser_never_regexes_the_whole_page(self):
         # Live 7/17 CPU runaway: a generic FB sale query returned a large page
@@ -368,7 +369,7 @@ class TestPriceChartingPrecision(unittest.TestCase):
         started = time.perf_counter()
         rows = pc_price._parse_rows(html)
         elapsed = time.perf_counter() - started
-        self.assertEqual(rows[-1][0], "Staraptor #26")
+        self.assertEqual(rows[-1][1], "Staraptor #26")
         self.assertLess(elapsed, 1.0)
 
 
@@ -500,6 +501,20 @@ class TestValuator(unittest.TestCase):
                  "condition": "Near Mint"} for i in range(6)]
         out = self._valuate_with_sales(rows)
         self.assertEqual(out["volatility"]["label"], "Stable")
+
+    def test_market_price_uses_tcgplayer_market_not_highest_condition(self):
+        rows = [{"marketPrice": 19.34}, {"marketPrice": 44.90}]
+        out = self._valuate_with_sales([])
+        # Re-run with the two-condition response to guard against reverting to
+        # the old max-across-conditions behavior.
+        price_resp = mock.Mock(status_code=200)
+        price_resp.json.return_value = rows
+        sales_resp = mock.Mock(status_code=200)
+        sales_resp.json.return_value = {"data": []}
+        with mock.patch("valuator.requests.get", return_value=price_resp), \
+             mock.patch("valuator.requests.post", return_value=sales_resp):
+            out = valuator.valuate(12345)
+        self.assertEqual(out["market_usd"], 19.34)
 
     def test_volatility_wide_spread_is_volatile(self):
         rows = [{"orderDate": "2026-07-10", "purchasePrice": 2.0, "condition": "Damaged"},
@@ -666,6 +681,22 @@ class TestL32AttackNumberAdoption(unittest.TestCase):
     def test_empty_is_none(self):
         import profile_dataset
         self.assertIsNone(profile_dataset.adopt_attack_number([]))
+
+
+class TestProfileDatasetSerialization(unittest.TestCase):
+    def test_identify_preserves_renderer_fields_from_search_candidates(self):
+        import profile_dataset
+        candidate = {"pid": 7, "name": "Testmon", "set": "Test Set",
+                     "number": "010/100", "line": "Pokemon", "img": "card.png",
+                     "url": "https://tcgplayer.example/card/7", "market": 12.5}
+        with mock.patch("valuator.guess_query", return_value=("Testmon", "010/100")), \
+             mock.patch("valuator.search_candidates", return_value=[candidate]), \
+             mock.patch("valuator.ocr_deep", return_value=[]), \
+             mock.patch("evidence.build_evidence", return_value={}), \
+             mock.patch("evidence.log_failure"):
+            result = profile_dataset.identify(["card.png"], [["Testmon", "010/100"]], set())
+        self.assertEqual(result["candidates"][0]["url"], candidate["url"])
+        self.assertEqual(result["candidates"][0]["market"], candidate["market"])
 
 
 class TestEvidence(unittest.TestCase):

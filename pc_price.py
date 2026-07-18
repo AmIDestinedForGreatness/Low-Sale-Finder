@@ -22,7 +22,7 @@ _STOP = re.compile(r"\b(pokemon|pokemom|card|tcg|holo|full ?art|fullart|secret|"
 # one search-result row -> (product name, set/console, ungraded price).
 # NB: PriceCharting uses absolute URLs and puts the name in <td class="title">.
 _ROW = re.compile(
-    r'<td class="title">\s*<a [^>]*>\s*([^<]+?)\s*</a>.*?'
+    r'<td class="title">\s*<a [^>]*href="([^"]+)"[^>]*>\s*([^<]+?)\s*</a>.*?'
     r'/console/[^"]*"[^>]*>\s*([^<]+?)\s*</a>.*?'
     r'used_price"[^>]*>\s*<span[^>]*>\$([\d,]+\.\d{2})',
     re.S)
@@ -88,14 +88,14 @@ def _pick(rows, title):
     if not want:
         return None                      # nothing identifying to match on
     best, best_score = None, 0
-    for name, console, usd in rows:
+    for url, name, console, usd in rows:
         name_hit = _specific(_tokens(name)) & want
         if not name_hit:
             continue
         score = (len(name_hit) * 10
                  + len(_tokens(name + " " + console) & _tokens(title)))
         if score > best_score:
-            best, best_score = (name, console, usd), score
+            best, best_score = (url, name, console, usd), score
     return best
 
 
@@ -129,9 +129,12 @@ def market_value(title: str):
                              headers={"User-Agent": UA}, timeout=20)
             best = _pick(_parse_rows(r.text), title)
             if best:
-                usd = float(best[2].replace(",", ""))
+                usd = float(best[3].replace(",", ""))
                 price = usd * config.USD_TO_LOCAL_RATE
-                label = f"pc:{best[0]} [{best[1]}] (${usd})"
+                product_url = best[0]
+                if product_url.startswith("/"):
+                    product_url = "https://www.pricecharting.com" + product_url
+                label = f"pc:{best[1]} [{best[2]}] (${usd})|url:{product_url}"
         except Exception as e:
             print(f"  [pricecharting error] {e}")
 

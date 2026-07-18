@@ -799,14 +799,17 @@ def valuate(pid, ph_factor=1.2):
     rate = getattr(config, "USD_TO_LOCAL_RATE", 58)
     out = {"pid": pid, "usd_rate": rate, "ph_factor": ph_factor}
 
-    # market price (highest printing marketPrice, same rule as tcg_price)
+    # TCGplayer's marketPrice is condition-specific.  Use the first usable
+    # market value returned for the product rather than presenting the highest
+    # condition ceiling as the product's market price.
     market = None
     try:
         r = requests.get(PRICE.format(int(pid)), headers={"User-Agent": UA}, timeout=15)
         for p in r.json():
             m = p.get("marketPrice")
-            if m and (market is None or m > market):
+            if m:
                 market = m
+                break
     except Exception:
         pass
     out["market_usd"] = market

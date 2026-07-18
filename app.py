@@ -1276,7 +1276,7 @@ function priceBarChart(sales){
     return `<div class="pricebar" style="height:${h}px" title="${escapeHtml(s.date||'')}: $${s.usd} ${escapeHtml(s.condition||'')}"></div>`;
   }).join('');
   const trend = asc[asc.length-1].usd >= asc[0].usd ? '▲ up since oldest shown' : '▼ down since oldest shown';
-  return `<div class="muted" style="font-size:11px;margin-top:10px">price trend (real sales, oldest → newest) ${trend}</div>
+  return `<div class="muted" style="font-size:11px;margin-top:10px">price trend (real sales, oldest → newest) ${trend} · scale: $0–$${max.toFixed(2)}</div>
     <div class="pricebar-wrap">${bars}</div>`;
 }
 
@@ -1294,7 +1294,8 @@ async function valPick(pid){
         <div>
           <div style="font-weight:700">${escapeHtml(cardLabel(cd))}</div>
           <div class="muted" style="font-size:12px">${escapeHtml(cd.set||'')} · #${escapeHtml(cd.number||'')}
-            ${cd.url?` · <a href="${cd.url}" target="_blank" rel="noopener" style="color:var(--accent)">TCGplayer ↗</a>`:''}</div>
+            ${cd.url?` · <a href="${cd.url}" target="_blank" rel="noopener" style="color:var(--accent)">TCGplayer ↗</a>`:''}
+            ${v.pricecharting_url?` · <a href="${v.pricecharting_url}" target="_blank" rel="noopener" style="color:var(--accent)">PriceCharting ↗</a>`:''}</div>
         </div>
       </div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">

@@ -456,7 +456,8 @@ def identify(image_paths, ocr_raw, wm):
               "watermark_dropped": dropped[:8],
               "candidates": [{"pid": c["pid"], "name": c["name"], "set": c["set"],
                               "number": c["number"], "line": c.get("line", ""),
-                              "img": c.get("img", "")}
+                              "img": c.get("img", ""), "url": c.get("url", ""),
+                              "market": c.get("market")}
                              for c in cands[:6]],
               "ocr": per_img}
     # DIRECTIVE.md, Rule 1/2: every identification carries its Evidence
