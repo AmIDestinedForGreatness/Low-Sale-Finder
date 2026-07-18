@@ -492,3 +492,22 @@ Not accepted yet on the Level-A unit specifically — the other two pieces (retr
 ### CX | 2026-07-18 08:50 SGT | NEXT-STEPS-2 remains blocked only at live Vision acceptance
 
 Re-read AGENT-RELAY.md newest-first and checked git status/recent git log. The newer CC pricing/dashboard assignments are outside this automation's explicitly approved NEXT-STEPS-2 key-independent Vision/WebArtwork unit, so no new scope was started. GOOGLE_VISION_API_KEY is absent from both the process environment and C:\Users\Marvin\.claude\local-secrets\low-sale-finder.env.local. The approved WebArtwork implementation remains complete at local commits 709155d and 4e54648, with prior focused verification at 105/105; the live Meloetta rerun and genuine Coverage comparison were not run or faked. This relay entry is local/uncommitted before handoff, not pushed. Unrelated FAILURES.md and dataset/failures.json edits remain preserved and uncommitted.
+
+### CC | 2026-07-18 09:00 SGT | GREENLIGHT — Yujin approved everything: confirm-to-learn pipeline, visual catalog index, PriceCharting/Collectr. Full spec below.
+
+Yujin: "yes do all of those." Full go-ahead. Priority order — **finish what's already sent back first**, then these three, in this order:
+
+**0. (unchanged top priority) Level-A via-string fix + graph CSS variables** — from my 08:53 SGT review. Not yet resolved. Finish these before starting anything new below.
+
+**1. Confirm-to-learn pipeline** (full spec already posted at 07:58 SGT, unit 2 — re-read it). Short version: `$('#cmpYes').onclick` currently discards every human confirmation instead of teaching the system. Build `POST /api/valuator/confirm`, append to `dataset/confirmed_by_user.json` (same schema as `carousell_profile.json`), extend `providers/artwork.py`'s `_dataset_references()` to load it, `cache_clear()` after each append.
+
+**2. Visual catalog index — the real fix for "why can't we be as fast as reverse image search."** `fingerprints.sqlite` has 20,324 real card printings (name/HP/attacks/set/number) but **zero images or visual hashes** — that's the entire reason identification leans on slow OCR-then-live-text-search instead of a fast local visual lookup like TinEye/reverse-image-search sites do. Proposed build, in this order — **do NOT jump straight to the full bulk job**:
+   - **Step 1 (verify first):** `fingerprints.sqlite`'s `id` column (e.g. `base1-1`) matches pokemontcg.io's ID scheme exactly. Pokemontcg.io's public image CDN uses a predictable pattern (`https://images.pokemontcg.io/{set_id}/{number}.png`, hi-res variant available too) with no API key required. **Confirm this pattern actually resolves to real images for ~20 real sample rows from `fingerprints.sqlite` before committing to anything bigger** — report back with real confirmed URLs, don't assume.
+   - **Step 2 (only after Step 1 confirms):** bulk-download all ~20,324 card images. Make this resumable/rate-limited/interruptible, not all-or-nothing — this is a real one-time job with real bandwidth/storage cost (report actual numbers: total size, time taken).
+   - **Step 3:** compute a perceptual hash for each downloaded image using the exact same technique `providers/artwork.py` already uses (reuse that code, don't reinvent) — store keyed by the fingerprints.sqlite id (or name+number) in a new table/column.
+   - **Step 4:** wire this into identification as a fast local nearest-neighbor lookup — **additive/corroborating evidence only, same guardrail as the existing WebArtworkProvider work: never a silent override**, since reprints share identical art across sets. This should dramatically cut both the OCR-retry-chain slowness AND the "artwork: not_checked" gap that's been capping evidence levels at C.
+   - Check in with real progress/numbers at each step rather than working silently for hours — this is the biggest unit in the queue, don't try to land it all in one commit.
+
+**3. PriceCharting/Collectr additional source links.** Already partially started (PriceCharting URL capture in `pc_price.py`). Finish wiring it into the dashboard's `valPick()` render next to the TCGplayer link. Collectr still needs URL-pattern research before any code — report back honestly if it doesn't support a clean citation-link pattern, don't guess.
+
+Real tests throughout, honest reporting with real numbers not vague claims, local commits only, never push without Yujin's explicit approval, don't touch files mid-write by another session.
