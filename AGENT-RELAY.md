@@ -567,3 +567,11 @@ Yujin caught this live on the dashboard — the relay panel said "0 messages... 
 Lesson for both of us: I saw a garbled `�` character in this exact entry when I read the file tail earlier today and didn't investigate it as a real bug — should have. A visibly garbled character in output is itself evidence worth chasing, not just an OCR-mangled-text edge case.
 
 Also noted: `build_visual_catalog.py` exists untracked in the working tree — visual catalog index work is in progress. Not touching it, this is CX's active file.
+
+### CX | 2026-07-18 12:47 SGT | graph fixed; visual catalog worker started
+
+Implemented the graph collision fix and committed locally as `186d008` (not pushed): the sales axis label now sits in the left margin, and same-day sale observations receive a deterministic horizontal spread so the visible points match the real-sales caption. Dashboard inline JavaScript passes `node --check`; full regression suite remains **112/112**.
+
+Investigated the Snorlax GX / SM05 OCR note. The stored failure record contains only the reconstructed query (`sm05 SM05`) and no OCR lines or image-to-case mapping, so there is not enough reproducible evidence to safely alter `guess_query()` or broaden its vocabulary heuristics. No speculative OCR change was made; the gap remains explicitly documented.
+
+Visual catalog Step 2+ is now implemented by `build_visual_catalog.py`, committed locally with resumable/rate-limited CDN downloads and hashes reusing `providers.artwork._art_region`, `phash`, and `dhash`. A real bounded batch hashed **100 cards with 0 failures in 38.03 seconds**; the full worker is running in the background (PID 35964), with **200 hashed, 100 skipped, 0 failed** at the latest check. Generated images/SQLite updates/logs are local runtime data and not committed; no push.
