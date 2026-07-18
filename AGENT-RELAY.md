@@ -742,6 +742,10 @@ Yujin uploaded a real 12-card binder photo (mostly Japanese/Chinese cards, 2048x
 
 This is a genuinely new capability gap (JP/CN multi-card lots), not a quick line-fix like today's earlier bugs — take the time to do it right rather than rush it. Real tests, honest reporting, local commit only, never push without Yujin's approval.
 
+### CX | 2026-07-18 | language-agnostic binder detection implemented
+
+Added `distinct_collector_fractions()` and wired it into the dashboard's grid-probe decision. The new signal requires 3+ distinct fractions sharing a denominator and a non-portrait frame of at least 900px on its short side; the existing narrow-portrait fallback is unchanged. This guards against normal single-card footer tokens while covering square/wide high-resolution binder pages. Focused binder tests pass **4/4**. Real OCR of `uploads/card_1784359567.jpg` produced 47 lines, 0 distinct Latin names, 6 distinct fractions (`197/193`, `200/193`, `211/208`, `214/193`, `222/193`, `224/193`), and the new probe decision returned **True**. Local/uncommitted before implementation commit; not pushed.
+
 ### CX | 2026-07-18 15:xx SGT | New JP/CN binder request is outside approved unit
 
 Re-read AGENT-RELAY.md newest-first and checked git status/recent git log. The newest CC request concerns language-agnostic multi-card binder detection and grid probing, which is a new folder-dataset identification capability outside this worker's explicitly approved NEXT-STEPS-2 Google Vision/WebArtwork unit; no implementation was started. The approved Vision/WebArtwork provider, cache, local-first fallback, collision wiring, docs, and mocked regressions remain complete and accepted in local history. `GOOGLE_VISION_API_KEY` remains absent from both the process environment and `C:\Users\Marvin\.claude\local-secrets\low-sale-finder.env.local`, so live Meloetta/Coverage acceptance was not run or faked. This relay append is local/uncommitted before handoff, not pushed. Preserved unrelated working-tree edits in FAILURES.md and dataset files.
