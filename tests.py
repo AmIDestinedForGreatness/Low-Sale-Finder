@@ -1082,6 +1082,77 @@ class TestEvidenceProviders(unittest.TestCase):
         self.assertEqual(art["status"], "not_verified")
         self.assertIsNone(art["provider_result"]["matched_reference"])
 
+    def test_partial_visual_catalog_corroborates_existing_candidate_only(self):
+        from providers.visual_catalog import VisualCatalogProvider
+        rows = [
+            ("set-1", "Testmon ex", "set", "10/100", "ref.png",
+             "0000000000000000", "0000000000000000"),
+            ("set-2", "Othermon", "set", "11/100", "other.png",
+             "ffffffffffffffff", "ffffffffffffffff"),
+        ]
+        provider = VisualCatalogProvider(max_distance=9)
+        with mock.patch("providers.visual_catalog.os.path.exists", return_value=True), \
+             mock.patch("providers.visual_catalog.os.stat",
+                        return_value=mock.Mock(st_mtime_ns=1, st_size=2)), \
+             mock.patch("providers.visual_catalog._file_hashes",
+                        return_value=("0000000000000000", "0000000000000000")), \
+             mock.patch.object(provider, "_indexed_rows", return_value=rows):
+            result = provider.verify(
+                "card.png", [{"name": "Testmon ex", "number": "010/100"}], {})
+        self.assertEqual(result["status"], "matched")
+        self.assertEqual(result["matched_catalog"]["id"], "set-1")
+        self.assertEqual(result["hash_distance"], 0)
+
+    def test_partial_visual_catalog_unindexed_candidate_is_not_checked(self):
+        from providers.visual_catalog import VisualCatalogProvider
+        rows = [("set-2", "Othermon", "set", "11/100", "other.png",
+                 "0000000000000000", "0000000000000000")]
+        provider = VisualCatalogProvider()
+        with mock.patch("providers.visual_catalog.os.path.exists", return_value=True), \
+             mock.patch.object(provider, "_indexed_rows", return_value=rows), \
+             mock.patch("providers.visual_catalog._file_hashes") as hashes:
+            result = provider.verify(
+                "card.png", [{"name": "Testmon ex", "number": "010/100"}], {})
+        self.assertEqual(result["status"], "not_checked")
+        hashes.assert_not_called()
+
+    def test_partial_visual_catalog_never_overrides_text_candidate(self):
+        from providers.visual_catalog import VisualCatalogProvider
+        rows = [
+            ("set-1", "Testmon ex", "set", "10/100", "ref.png",
+             "ffffffffffffffff", "ffffffffffffffff"),
+            ("set-2", "Othermon", "set", "11/100", "other.png",
+             "0000000000000000", "0000000000000000"),
+        ]
+        provider = VisualCatalogProvider(max_distance=9)
+        with mock.patch("providers.visual_catalog.os.path.exists", return_value=True), \
+             mock.patch("providers.visual_catalog.os.stat",
+                        return_value=mock.Mock(st_mtime_ns=1, st_size=2)), \
+             mock.patch("providers.visual_catalog._file_hashes",
+                        return_value=("0000000000000000", "0000000000000000")), \
+             mock.patch.object(provider, "_indexed_rows", return_value=rows):
+            result = provider.verify(
+                "card.png", [{"name": "Testmon ex", "number": "010/100"}], {})
+        self.assertEqual(result["status"], "no_match")
+        self.assertEqual(result["matched_candidate"]["name"], "Testmon ex")
+        self.assertNotIn("web_candidates", result)
+
+    def test_evidence_uses_visual_catalog_as_coverage_only(self):
+        visual = {"provider": "VisualCatalogProvider:partial_perceptual_index",
+                  "dimension": "artwork", "status": "matched",
+                  "match_score": 1.0, "confidence_note": "catalog corroborated"}
+        with mock.patch("providers.artwork.os.path.exists", return_value=True), \
+             mock.patch("providers.artwork._dataset_references", return_value={}), \
+             mock.patch("providers.VisualCatalogProvider.verify", return_value=visual), \
+             mock.patch("collision._catalog_rows", return_value=[]):
+            baseline = evidence.build_evidence(self._ident(), ["Testmon ex", "010/100"])
+            matched = evidence.build_evidence(
+                self._ident(), ["Testmon ex", "010/100"], image_paths=["card.png"])
+        self.assertEqual(matched["evidence_chain"]["artwork"]["status"], "confirmed")
+        self.assertEqual(matched["evidence_coverage"], baseline["evidence_coverage"] + 10)
+        self.assertEqual(matched["provisional_prediction_confidence"],
+                         baseline["provisional_prediction_confidence"])
+
     def test_confirmed_reference_is_seen_after_dataset_cache_clear(self):
         from providers import artwork
         image = "confirmed-reference.png"

@@ -173,10 +173,27 @@ def _artwork_evidence(image_paths, candidates, provider_context):
     if matched:
         return max(matched, key=lambda r: r.get("match_score", 0))
     tested = [r for r in results if r.get("status") == "no_match"]
-    if tested:
-        return max(tested, key=lambda r: r.get("match_score", 0))
-    local = results[0]
-    if local.get("status") in ("not_verified", "no_match"):
+    local = (max(tested, key=lambda r: r.get("match_score", 0))
+             if tested else results[0])
+    # The partial visual index is local and read-only. It may corroborate only
+    # candidates already proposed by text; it never contributes candidates to
+    # collision analysis and therefore cannot silently override identity.
+    try:
+        from providers import VisualCatalogProvider
+        visual_results = [VisualCatalogProvider().verify(
+            path, candidates, provider_context or {})
+            for path in list(image_paths)[:2] if path]
+        visual_matches = [r for r in visual_results if r.get("status") == "matched"]
+        if visual_matches:
+            return max(visual_matches, key=lambda r: r.get("match_score", 0))
+        visual_tested = [r for r in visual_results if r.get("status") == "no_match"]
+        if visual_tested and local.get("status") not in ("no_match", "matched"):
+            local = max(visual_tested, key=lambda r: r.get("match_score", 0))
+        elif visual_results and local.get("status") not in ("no_match", "matched"):
+            local = visual_results[0]
+    except Exception as exc:
+        local["visual_catalog_error"] = str(exc)
+    if local.get("status") in ("not_checked", "not_verified", "no_match"):
         try:
             from providers import WebArtworkProvider
             web = WebArtworkProvider().verify(image_paths[0], candidates, provider_context or {})
@@ -282,7 +299,11 @@ def build_evidence(ident, merged_lines, aid=None, image_paths=None,
             chain[dimension]["note"] = (
                 "a human inspected the photo for name/number but did not separately itemize this feature")
 
-    artwork_result = _artwork_evidence(image_paths, ident.get("candidates") or [],
+    artwork_candidates = list(ident.get("candidates") or [])
+    if name and number:
+        artwork_candidates.append({"name": name, "number": number,
+                                   "set": ident.get("set")})
+    artwork_result = _artwork_evidence(image_paths, artwork_candidates,
                                        provider_context)
     if artwork_result.get("status") == "matched":
         chain["artwork"] = {"status": "confirmed",
