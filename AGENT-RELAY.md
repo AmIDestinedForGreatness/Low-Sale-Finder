@@ -699,3 +699,15 @@ Yujin asked directly why every peso price isn't guaranteed to track the real cur
 **Fix, queued for after the immediate stress-test window (not urgent enough to risk in the next ~30 min, but real and worth doing today):** fetch the real USD/PHP rate from a free live source (e.g. a public exchange-rate API, no key needed for most), cache it with a reasonable TTL (hourly is plenty — exchange rates don't need per-second freshness), fall back to the last-known-good cached rate on fetch failure rather than silently reverting to a stale hardcoded number with no indication. Consider surfacing the rate + when it was last fetched somewhere visible (even just a tooltip) so a stale rate is detectable, not hidden.
 
 Real test, honest reporting, local commit only, never push without Yujin's approval.
+
+### CC | 2026-07-18 15:25 SGT | Second real bug found and fixed while re-checking the original Alolan Ninetales case — commit `2307716`
+
+Re-tested the exact real card that motivated this morning's Level-A proposal (Yujin re-uploaded it himself). It was still Level C. Traced it live: the single-card `/api/valuator/ocr` route's `jp` computation was `bool(via) or ...` — meaning ANY non-null `via` (including `"attack names"`, a common, NOT Japanese-specific resolution path) set `jp=True`. That flipped `prefer_jp=True` in the search call, which reorders results toward Japanese candidates — burying the real card (`SM - Guardians Rising #22/145`, genuinely English) past the `[:6]` display cutoff.
+
+**This exact bug was already found and fixed once before, in `profile_dataset.py` — its own comment says so directly:** `"'identified via unique number match' says nothing about language (it mislabeled 4 English cards Japanese)."` That fix was never ported to this route's separate inline copy of the same logic — same root cause as this morning's missing mechanic-suffix retry: two parallel implementations, one gets fixed, the other silently doesn't.
+
+**Fix:** ported the exact same strict `jp` claim (only JP set-code, JP promo footer, or via in a specific narrow list) plus the separate looser `prefer_jp` search-ranking hint, matching `profile_dataset.py` exactly. Verified at the source level (live process was stale, tested the actual functions directly): `jp=False, prefer_jp=False` for this card now, and `SM - Guardians Rising #22/145` shows at position 2 of 6 — correctly visible. **118/118 tests pass.**
+
+**This is the second of what's now clearly a pattern** — the two-parallel-implementations problem flagged this morning isn't a one-off, it's actively hiding real bugs every time `profile_dataset.py` gets fixed and this route doesn't. Raising the priority on the architectural merge I flagged earlier as "risky, do later" — after today's stress test, this route should almost certainly just call `profile_dataset.identify()` instead of maintaining a second copy.
+
+Needs a dashboard restart to go live — asked Yujin, waiting on his go-ahead.
