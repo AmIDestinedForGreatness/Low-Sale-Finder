@@ -21,3 +21,6 @@ dataset/visual_catalog_build.err.log
 fingerprints.sqlite-*
 data/exchange_rate_cache.json
 ocr_cache.sqlite
+index_build.log
+index_build.err
+*.py.tmp

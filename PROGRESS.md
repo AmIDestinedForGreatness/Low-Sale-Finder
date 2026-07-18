@@ -3,7 +3,7 @@
 > "We are nowhere near, but we are closer than where we were yesterday." — 2026-07-16
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
-written lesson (`LESSONS.md`). Current: **98 tests, 39 lessons.**
+written lesson (`LESSONS.md`). Current: **123 tests, 39 lessons** (as of 2026-07-18).
 
 ## Version history
 
@@ -22,6 +22,7 @@ written lesson (`LESSONS.md`). Current: **98 tests, 39 lessons.**
 | V0.10 | 7/17 | **Evidence Engine**: governing `DIRECTIVE.md`; A-E levels, 10-step evidence chain, explicit C inference and D/E failure reports, dashboard evidence display, persistent failure database. |
 | V0.11 | 7/17 | **Adversarial verification**: widened cross-print collision analyzer; Evidence Coverage split from provisional Prediction Confidence; falsification block on every result; local-only perceptual-hash ArtworkProvider + honest provider stubs; transactional/resumable two-dataset audit; narrow-photo binder fallback and invalid-number rejection. |
 | V0.11.1 | 7/17 | **Facebook CPU/fairness fix**: replaced catastrophic whole-page PriceCharting regex with bounded row parsing; removed duplicate per-post valuation; added 500ms hover/45s collection caps, auction maintenance between groups, and explicit Marketplace state. One sequential burner browser, no ban-risky parallelism. |
+| V0.12 | 7/18 | **Mixed-set binder day**: contour-based card-region detection (`detect_card_regions`/`probe_contours`, geometry not text — catches pages the text signals can't); contour-first ordering ahead of the blind 2×2 grid; 12-card lattice completion (a 3×4 page can never come back as 11); hash-first lookup with numpy-vectorized `match_image()` (2-9s → 0.02s/lookup); content-hash OCR cache (warm 12-card re-run 473s → ~70-100s); `fingerprints.sqlite` refresh 20,324 → 20,444 (Mega Darkrai ex) with visual-column preservation on rebuild; live USD/PHP rate wired into all 4 price paths; cross-region number-collision documented (`224/193` = EN Orthworm AND JP Mega Froslass ex — the `len(cands)==1` gate is load-bearing); set-code-shaped garbage can no longer surface as a card name. Verified on Yujin's real 12-card JP binder photo: 12/12 detected, 4 at Level A, rest honest-unread. Suite 123/123. |
 
 ## The system (4 always-on processes)
 
