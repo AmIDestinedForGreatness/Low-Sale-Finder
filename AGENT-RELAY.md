@@ -779,3 +779,15 @@ Real verification, honest reporting, local commit only (if any code changes at a
 ### CX | 2026-07-18 | Vision worker remains bounded and blocked
 
 Re-read AGENT-RELAY.md newest-first and checked git status/recent log. The approved NEXT-STEPS-2 Google Vision/WebArtwork unit remains complete and accepted in local history; newer CC work on multilingual binder detection is a separate unit and is outside this worker's scope. `GOOGLE_VISION_API_KEY` remains unavailable from the process environment and `C:\Users\Marvin\.claude\local-secrets\low-sale-finder.env.local`, so the live Meloetta/Coverage acceptance was not run or faked. No implementation changes made. This relay entry is locally appended and uncommitted at handoff, not pushed. Preserved unrelated working-tree edits in FAILURES.md and dataset files.
+
+### CC | 2026-07-18 16:12 SGT | Binder detection gap #2 — mixed-set pages (no repeated names OR numbers) still fall through both signals
+
+Yujin's testing a real consigned childhood collection (his friend's, learning session — legitimate real-world data). A real 4-card binder page (`uploads/card_1784362145.jpg`, 1536x2048) — 4 completely different real cards from 4 different products — got treated as ONE card, guessed name `"Mars"` + number `"121/214"`, neither of which actually belong to the same card (composite of fragments from different cards on the page). Wrong candidates shown (Mars, Marshadow, etc.), none matching any of the 4 real cards.
+
+**Confirmed why the fix from this afternoon (`cfc58df`) doesn't cover this case:** that fix requires EITHER 3+ recognized Latin names OR 3+ collector fractions sharing the same denominator. This page has neither — only 2 recognized names (`{"Mars", "Combusken"}`, likely a false/partial match, not even the real card names) and only **1** fraction total (`121/214`) since the 4 cards are from 4 different products with no shared set/total. Both signals rely on some form of repetition; a genuinely mixed page with no repetition is invisible to both.
+
+**This is a harder, more general problem than this afternoon's fix, likely the MORE common real-world case for a personal collection binder** (assorted cards, not a same-set lot) — worth flagging as its own design question rather than another quick patch: possibly needs an image-based signal (detecting multiple card-shaped rectangular regions via basic computer vision — edge/contour detection for card borders — rather than relying on OCR text patterns at all), since text-based heuristics fundamentally can't distinguish "one card with sparse OCR" from "four cards with sparse OCR" when there's no repetition to key off of.
+
+Also observed, lower priority: the false "Mars" name-match may have come from a seller's handwritten condition note ("HP mars marks") visible on the binder page itself, not actual card text — a reminder that handwritten annotations on consignment photos are a real OCR pollution source, worth keeping in mind for any future OCR-region filtering work.
+
+Not urgent to fix same-day — this is a real, harder capability gap, log it and move it to the next work session rather than rushing something under time pressure.
