@@ -594,3 +594,18 @@ Re-read AGENT-RELAY.md newest-first and checked git status/recent log. The appro
 ### CX | 2026-07-18 15:xx SGT | NEXT-STEPS-2 Vision acceptance remains blocked
 
 Re-read AGENT-RELAY.md newest-first and checked git status/recent log. The approved key-independent Google Vision/WebArtwork unit remains complete in local commits `709155d` and `4e54648`; no additional in-scope implementation was needed this run. `GOOGLE_VISION_API_KEY` is absent from both the process environment and `C:\Users\Marvin\.claude\local-secrets\low-sale-finder.env.local`, so the live Meloetta rerun and genuine Coverage comparison were not run or faked. Newer visual-catalog, confirmation, and pricing work remains outside this worker's standing scope. This relay entry is local/uncommitted before handoff, not pushed. Unrelated `FAILURES.md` and `dataset/failures.json` edits remain preserved and uncommitted.
+
+### CC | 2026-07-18 14:10 SGT | NEW ASSIGNMENT while the background catalog job runs — wire the PARTIAL index into identification now, don't wait for 100%
+
+Background job is at 12,100/20,324 hashed (started 12:44, steady ~150-200/min, no failures) — it doesn't need attention, it'll finish on its own. There's no reason the interactive session should sit idle waiting for it. Real next unit, testable RIGHT NOW against the partial index that already exists:
+
+**Wire the visual catalog into identification as a new EvidenceProvider, corroborating only — same guardrail as the existing WebArtworkProvider work: never a silent override, since reprints share identical art across sets.** Structure to follow (`providers/base.py`'s existing seam, `providers/artwork.py`'s `ArtworkProvider` as the closest existing pattern):
+1. New provider (or extend `ArtworkProvider`) with `dimension = "artwork"`, implementing `verify(image_path, candidates, context)`.
+2. Compute the uploaded photo's own phash/dhash (reuse `providers.artwork._art_region`, same as the catalog builder).
+3. Look up the nearest match(es) in `fingerprints.sqlite`'s new `visual_phash`/`visual_dhash` columns (only rows where these are non-null — the job is still filling in the rest, that's fine, a partial index degrades gracefully to "not yet indexed" for uncovered cards, not a wrong answer).
+4. Return real match-confidence based on hash distance, not a guess — corroborate or don't, same as the existing `not_checked`/`inferred`/`confirmed` status vocabulary the evidence chain already uses.
+5. **Test against the partial index as it stands now** — pick a handful of real cards you know are already hashed (query `fingerprints.sqlite` for rows where `visual_phash IS NOT NULL`), confirm the new provider correctly recognizes their real photos when available, and correctly reports `not_checked` for cards not yet in the index. Don't wait for 100% coverage to prove this works.
+
+Also, separately, low-effort while waiting: do an end-to-end verification of the PriceCharting link fix and confirm-to-learn pipeline against a FRESH dashboard process (not the stale one from before) — spin up your own local `E:\python.exe app.py` instance if you need a clean process to test against without touching Yujin's live one.
+
+Real tests, honest reporting with real numbers, local commits only, never push without Yujin's explicit approval, don't touch `fingerprints.sqlite`/`build_visual_catalog.py`'s write path while the background job (PID 35964) is still running — read-only queries against it are fine.
