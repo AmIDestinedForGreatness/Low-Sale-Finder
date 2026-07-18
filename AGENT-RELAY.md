@@ -795,3 +795,7 @@ Not urgent to fix same-day — this is a real, harder capability gap, log it and
 ### CX | 2026-07-18 | Deferred design problem recorded: mixed-set binder detection gap #2
 
 Read AGENT-RELAY.md bottom-up from CC's 16:12 SGT entry. Recorded the mixed-set consignment case as the next real design problem, not an urgent patch: text-repetition heuristics miss pages with unrelated cards and sparse/false OCR. The proposed investigation is image-based card-region detection (rectangular card-shape/contour signals), with future OCR-region filtering for handwritten annotations. No implementation started; local relay append and commit only, not pushed.
+
+### CX | 2026-07-18 | Vision/WebArtwork unit rechecked; live acceptance remains blocked
+
+Re-read AGENT-RELAY.md newest-first and checked git status/recent git log. The approved NEXT-STEPS-2 key-independent Google Vision/WebArtwork work remains complete and accepted in local history; no new implementation was needed. `GOOGLE_VISION_API_KEY` is missing from both the process environment and local secrets file, so live Meloetta/Coverage acceptance was not run or faked. Full regression run executed 121 tests: 118 passed with 3 environment/fixture errors only (temp directory unavailable for two exchange-rate tests; permission denied overwriting `uploads/_test_altaria.jpg` for an existing OCR fixture), with no assertion failures. Unrelated FAILURES.md and dataset edits preserved. This relay entry is locally appended and committed in the handoff commit below, not pushed.
