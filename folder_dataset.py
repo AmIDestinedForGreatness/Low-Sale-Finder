@@ -153,6 +153,42 @@ def detect_card_regions(path):
 
     if len(kept) < 2:
         return []
+
+    # GRID COMPLETION: a card whose light borders blend into a light
+    # background (live catch: a pale tent-artwork JP card on a white desk,
+    # 2026-07-18) breaks into non-card-shaped contour fragments and gets
+    # filtered out — but when the OTHER cards form a clear row/column
+    # lattice, the missing slot's position is fully determined by the grid
+    # geometry. Synthesize a box for any empty lattice intersection instead
+    # of silently dropping that card (a 12-card page must never come back
+    # as 11). Single-card photos never form a >=2x2 lattice, so this can't
+    # create false splits.
+    def _cluster(vals, tol):
+        groups = []
+        for v in sorted(vals):
+            if groups and v - groups[-1][-1] <= tol:
+                groups[-1].append(v)
+            else:
+                groups.append([v])
+        return [sum(g) / len(g) for g in groups]
+
+    med_w = sorted(b[2] for b in kept)[len(kept) // 2]
+    med_h = sorted(b[3] for b in kept)[len(kept) // 2]
+    col_xs = _cluster([b[0] + b[2] / 2 for b in kept], med_w * 0.5)
+    row_ys = _cluster([b[1] + b[3] / 2 for b in kept], med_h * 0.5)
+    if len(col_xs) >= 2 and len(row_ys) >= 2 \
+            and len(col_xs) * len(row_ys) > len(kept):
+        for cy in row_ys:
+            for cx in col_xs:
+                occupied = any(abs(b[0] + b[2] / 2 - cx) <= med_w * 0.5
+                               and abs(b[1] + b[3] / 2 - cy) <= med_h * 0.5
+                               for b in kept)
+                if not occupied:
+                    x = int(max(0, cx - med_w / 2))
+                    y = int(max(0, cy - med_h / 2))
+                    kept.append((x, y, int(min(med_w, w - x)),
+                                 int(min(med_h, h - y)), int(med_w * med_h)))
+
     kept.sort(key=lambda b: (round(b[1] / (h * 0.15)), b[0]))  # reading order
     return [b[:4] for b in kept]
 
