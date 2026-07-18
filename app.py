@@ -250,7 +250,17 @@ def valuator_ocr():
         probe_cells, probe_ocr = folder_dataset.probe_grid(path, UPLOAD_DIR)
     if n_names >= 3 or pair or probe_cells:
         if contour_probe:
-            cols = 2 if len(probe_cells) > 1 else 1
+            # Render results in the page's REAL layout: the widest detected
+            # row is the column count (a 3x4 binder page shows as 4 wide,
+            # not squeezed into a tall 2-column strip).
+            boxes = folder_dataset.detect_card_regions(path)
+            cols = 2
+            if boxes:
+                bands = {}
+                for (bx, by, bw, bh) in boxes:
+                    band = round(by / (_im.height * 0.15))
+                    bands[band] = bands.get(band, 0) + 1
+                cols = max(2, max(bands.values()))
             rows = -(-len(probe_cells) // cols)
         else:
             rows, cols = (1, 2) if pair else (2, 2)
@@ -1054,7 +1064,7 @@ async function valApplyOcr(d){
     // page must fit a normal monitor at 100% zoom. Renders into #valBinder
     // (fix #2): searches never touch it; only ✕ Clear removes it.
     $('#valBinder').innerHTML = `
-      <div style="max-width:${cols === 1 ? 240 : 480}px;background:linear-gradient(180deg,#23272f,#1a1d24);border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:inset 0 0 24px rgba(0,0,0,.45)">
+      <div style="max-width:${Math.min(Math.max(cols,1)*240,980)}px;background:linear-gradient(180deg,#23272f,#1a1d24);border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:inset 0 0 24px rgba(0,0,0,.45)">
         <div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:10px">
         ${cards.map((c,i)=>`
           <div class="bcell" data-i="${i}"
