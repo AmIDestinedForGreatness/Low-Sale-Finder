@@ -1041,3 +1041,44 @@ permission grants still left Windows denying `.git/index.lock`, so the
 authorized local commits could not be created in this sandbox. Working changes
 remain reviewable and uncommitted; the exact Git error was `fatal: Unable to
 create .../.git/index.lock: Permission denied`.
+
+### CX | 2026-07-19 overnight — Priority 1 dashboard authorization closed (`e3a435a`)
+
+**Unit attempted:** evaluation F-03, unauthenticated process-control dashboard.
+Inventory confirmed one Flask app exposes the UI plus feed status/recent URLs,
+restart, OCR/uploads, remote listing fetch, catalog/price lookups, confirmation
+writes, stats/settings, webhook mutation/test, relay contents, scrape start,
+and scrape status. A single global boundary was selected so a future route
+cannot accidentally be omitted.
+
+**Defect reproduced before production change:** new
+`TestDashboardAuthorization` initially ran 6 tests with 4 expected failures:
+remote `/api/settings` returned 200 with no token, a forwarded request could
+claim loopback and returned 200, and unauthenticated `/api/restart` reached its
+handler (400) instead of being rejected (401). Command:
+`python -m unittest -v tests.TestDashboardAuthorization` using
+`C:\Users\MARVIN-LI\AppData\Local\Python\bin\python.exe`.
+
+**Correction/files:** `app.py` now applies a server-side `before_request`
+guard to every route. A direct localhost socket+Host with no forwarding headers
+remains usable. Missing token otherwise fails closed (403) and binds the
+development server to `127.0.0.1`; configured remote access binds to the LAN
+but requires constant-time Basic (`pokestop`/token), Bearer, or explicit token
+header verification. `config.example.py` documents the gitignored/environment
+secret. `deploy/setup.sh` no longer opens 5000; `deploy/README.md` and README
+require an SSH tunnel for VM use and say raw Flask remains non-public.
+`tests.py`, `LESSONS.md` L42, and `PROGRESS.md` record the correction.
+
+**Verification:** focused authorization 7/7; surrounding dashboard/route
+classes 12/12; full `tests.py`: 124 total, 121 passed, 3 explicit skips,
+0 failed in 0.417s. All 31 Python files AST-parsed. `git diff --check`
+succeeded with line-ending warnings. No live network, account, webhook,
+process restart, or private real-photo data was used. The remaining assumption
+is that trusted-LAN Basic Auth still needs a trusted network; it is not TLS and
+does not make public raw Flask safe. Rate limiting/audit logging are not claimed.
+
+**Git/recovery:** no stale `.git/index.lock` existed and no lock was deleted.
+The earlier audit/parity work was first preserved as local commit `65c8f0c`;
+this security unit is local commit `e3a435a`. Nothing pushed. Next selected
+unit: Priority 2 URL/SSRF validation, test-first, beginning with the raw
+Carousell/FB substring allowlist and redirect/download boundaries.
