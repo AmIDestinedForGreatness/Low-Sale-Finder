@@ -35,7 +35,7 @@ separately.
 | `HASH-FIRST-NEXT.md` | Perspective-warp unit: code/synthetic tests complete; real-photo/catalog acceptance still pending |
 | `docs/CLAUDE-CODE-AGENT-EVALUATION.md` | 2026-07-19 independent code, evidence, safety, and agent-work evaluation |
 | `AGENT-RELAY.md` | Chronological work log between CC (Claude Code) and CX (Codex). Read bottom-up |
-| `LESSONS.md` | 42 permanent lessons — every closed mistake, L1–L42 |
+| `LESSONS.md` | 43 permanent lessons — every closed mistake, L1–L43 |
 | `FAILURES.md` | Per-card failure database (auto-maintained; every non-Level-A ID gets a record) |
 | `VISION.md` | Product vision / where this is going |
 | `docs/archive/` | Completed unit specs, kept for their acceptance criteria |
@@ -47,7 +47,7 @@ separately.
 - **Never push without Yujin's explicit instruction.**
 - Every closed mistake becomes a permanent test in `tests.py` + a lesson in
   `LESSONS.md`. Nothing fails twice.
-- Full suite must stay green: `python tests.py` (124 total: 121 passed,
+- Full suite must stay green: `python tests.py` (132 total: 129 passed,
   3 explicit skips, 0 failed on this checkout as of 2026-07-19; see
   `PROGRESS.md` for environment limits).
 
@@ -62,6 +62,12 @@ and use browser Basic Auth with username `pokestop` and the token as password.
 Do not expose raw port 5000 to the internet. On a remote VM, keep it closed and
 use the SSH tunnel in `deploy/README.md`. The server ignores forwarding headers
 for its localhost exception so a proxy assertion cannot silently grant access.
+
+User-entered listing/search URLs are HTTPS-only and restricted to parsed
+Carousell/Facebook host boundaries with public-DNS checks. Scraped image
+downloads revalidate redirects and enforce a byte budget. This is defense in
+depth, not a claim of DNS-rebinding-proof transport or a general-purpose URL
+fetcher; keep the dashboard on a trusted/private network.
 
 ## Per-machine setup notes
 

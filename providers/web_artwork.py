@@ -76,7 +76,16 @@ class WebArtworkProvider(EvidenceProvider):
                 client = vision.ImageAnnotatorClient(client_options={"api_key": vision_key})
             except Exception as exc:
                 result["confidence_note"] = f"Vision client unavailable: {exc}"; return result
-        response = client.annotate_image({"image": {"source": {"image_uri": image_path}},
+        try:
+            with open(image_path, "rb") as image_file:
+                image_content = image_file.read(12_000_001)
+        except OSError as exc:
+            result["confidence_note"] = f"input image could not be read: {exc}"
+            return result
+        if len(image_content) > 12_000_000:
+            result["confidence_note"] = "input image exceeded the 12 MB Vision budget"
+            return result
+        response = client.annotate_image({"image": {"content": image_content},
                                           "features": [{"type": "WEB_DETECTION"}]})
         if isinstance(response, dict):
             web = response.get("web_detection", {})

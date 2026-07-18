@@ -10,6 +10,7 @@ Run:  E:\python.exe tests.py     (offline — no network, no Discord, no FB)
 """
 import base64
 import os
+import socket
 import sys
 import time
 import tempfile
@@ -19,6 +20,7 @@ from unittest import mock
 import collision
 import evidence
 import fb_feed
+import network_safety
 import pc_price
 import scraper
 import tcg_price
@@ -1230,8 +1232,10 @@ class TestEvidenceProviders(unittest.TestCase):
         from providers.web_artwork import WebArtworkProvider
         class Client:
             calls = 0
+            last_request = None
             def annotate_image(self, request):
                 self.calls += 1
+                self.last_request = request
                 return {"web_detection": {"pages_with_matching_images": [
                     {"page_title": "Testmon ex 010/100", "url": "https://example.test"}]}}
         client = Client()
@@ -1242,6 +1246,8 @@ class TestEvidenceProviders(unittest.TestCase):
         with mock.patch("providers.web_artwork.os.path.exists", return_value=True), \
              mock.patch("providers.web_artwork.os.stat", return_value=mock.Mock(st_mtime_ns=1, st_size=2)), \
              mock.patch("providers.web_artwork._file_hashes", return_value=("same", "same")), \
+             mock.patch("providers.web_artwork.open",
+                        mock.mock_open(read_data=b"image bytes"), create=True), \
              mock.patch.object(WebArtworkProvider, "_load", side_effect=load), \
              mock.patch.object(WebArtworkProvider, "_save", side_effect=save), \
              mock.patch.dict(os.environ, {}, clear=True):
@@ -1250,6 +1256,7 @@ class TestEvidenceProviders(unittest.TestCase):
         self.assertEqual(first["status"], "matched")
         self.assertEqual(second["status"], "matched")
         self.assertEqual(client.calls, 1)
+        self.assertEqual(client.last_request["image"], {"content": b"image bytes"})
 
 
 class TestReauditHandoffEdges(unittest.TestCase):
@@ -1541,6 +1548,147 @@ class TestDashboardAuthorization(unittest.TestCase):
                 "/api/restart", json={"target": "not-a-process"},
                 environ_base={"REMOTE_ADDR": "198.51.100.24"})
         self.assertEqual(response.status_code, 401)
+
+
+class TestUrlSafety(unittest.TestCase):
+    """User-entered search/listing URLs must not become arbitrary server or
+    browser fetches merely because an allowed brand appears somewhere in the
+    raw text."""
+
+    @staticmethod
+    def _dns(*addresses):
+        def resolve(host, port, type=0):
+            return [(socket.AF_INET6 if ":" in address else socket.AF_INET,
+                     socket.SOCK_STREAM, 6, "", (address, port))
+                    for address in addresses]
+        return resolve
+
+    def test_scraper_rejects_arbitrary_url_query(self):
+        with self.assertRaises(ValueError):
+            scraper.build_url("http://127.0.0.1:5000/api/settings")
+
+    def test_valuator_allowlist_uses_the_parsed_hostname(self):
+        import app as dashboard_app
+        dashboard_app.app.config["TESTING"] = True
+        client = dashboard_app.app.test_client()
+        deceptive = "https://attacker.example/forward?to=facebook.com"
+        with mock.patch("profile_dataset.scrape_listing_page",
+                        return_value={"images": []}) as scrape:
+            response = client.post("/api/valuator/from_url",
+                                   json={"url": deceptive})
+        self.assertEqual(response.status_code, 400)
+        scrape.assert_not_called()
+
+    def test_marketplace_url_requires_https_no_credentials_and_exact_host(self):
+        public_dns = self._dns("93.184.216.34")
+        valid = network_safety.validate_marketplace_url(
+            "https://www.carousell.ph/p/example-123", resolver=public_dns)
+        self.assertEqual(valid, "https://www.carousell.ph/p/example-123")
+        unsafe = (
+            "http://www.carousell.ph/p/example-123",
+            "https://user:pass@www.carousell.ph/p/example-123",
+            "https://www.carousell.ph:8443/p/example-123",
+            "https://www.carousell.ph.attacker.example/p/example-123",
+            "file:///etc/passwd",
+        )
+        for url in unsafe:
+            with self.subTest(url=url), self.assertRaises(network_safety.UnsafeUrl):
+                network_safety.validate_marketplace_url(url, resolver=public_dns)
+
+    def test_every_dns_answer_must_be_globally_routable(self):
+        for addresses in (("127.0.0.1",), ("169.254.169.254",),
+                          ("10.1.2.3",), ("93.184.216.34", "192.168.1.5")):
+            with self.subTest(addresses=addresses), \
+                 self.assertRaises(network_safety.UnsafeUrl):
+                network_safety.validate_marketplace_url(
+                    "https://www.facebook.com/groups/123",
+                    resolver=self._dns(*addresses))
+
+    def test_existing_configured_marketplace_urls_remain_allowed(self):
+        urls = list(getattr(__import__("config"), "CAROUSELL_CATEGORY_URLS", []))
+        urls += list(getattr(__import__("config"), "FB_GROUP_URLS", []))
+        marketplace = getattr(__import__("config"), "FB_MARKETPLACE_URL", "")
+        if marketplace:
+            urls.append(marketplace)
+        self.assertTrue(urls)
+        for url in urls:
+            with self.subTest(url=url):
+                self.assertEqual(
+                    network_safety.validate_marketplace_url(
+                        url, resolver=self._dns("93.184.216.34")),
+                    url)
+
+    def test_image_fetch_revalidates_redirect_before_second_request(self):
+        calls = []
+
+        class Redirect:
+            status_code = 302
+            headers = {"Location": "https://169.254.169.254/latest/meta-data"}
+            content = b""
+            def close(self):
+                pass
+
+        def requester(url, **kwargs):
+            calls.append((url, kwargs))
+            return Redirect()
+
+        def resolver(host, port, type=0):
+            address = "93.184.216.34" if host == "media.karousell.com" else host
+            return self._dns(address)(host, port, type)
+
+        with self.assertRaises(network_safety.UnsafeUrl):
+            network_safety.fetch_public_bytes(
+                "https://media.karousell.com/card.jpg",
+                resolver=resolver, requester=requester)
+        self.assertEqual(len(calls), 1)
+        self.assertFalse(calls[0][1]["allow_redirects"])
+
+    def test_bounded_public_fetch_returns_bytes_without_automatic_redirects(self):
+        calls = []
+
+        class Response:
+            status_code = 200
+            headers = {"Content-Length": "10"}
+            def iter_content(self, chunk_size):
+                yield b"card-bytes"
+            def close(self):
+                pass
+
+        def requester(url, **kwargs):
+            calls.append(kwargs)
+            return Response()
+
+        result = network_safety.fetch_public_bytes(
+            "https://media.karousell.com/card.jpg",
+            resolver=self._dns("93.184.216.34"), requester=requester)
+        self.assertEqual(result.content, b"card-bytes")
+        self.assertFalse(calls[0]["allow_redirects"])
+        self.assertTrue(calls[0]["stream"])
+
+    def test_playwright_guard_aborts_disallowed_top_level_redirect(self):
+        frame = object()
+
+        class Request:
+            url = "https://www.facebook.com.attacker.example/internal"
+            def is_navigation_request(self):
+                return True
+
+        request = Request()
+        request.frame = frame
+
+        class Route:
+            aborted = False
+            continued = False
+            def abort(self, reason):
+                self.aborted = reason == "blockedbyclient"
+            def continue_(self):
+                self.continued = True
+
+        route = Route()
+        route.request = request
+        network_safety.guard_marketplace_navigation(route, frame)
+        self.assertTrue(route.aborted)
+        self.assertFalse(route.continued)
 
 
 class TestValuatorOcrRoute(unittest.TestCase):

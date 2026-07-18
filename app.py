@@ -29,6 +29,7 @@ from flask import Flask, request, jsonify, Response, send_file
 import config
 import exchange_rate
 import engine
+import network_safety
 import valuator
 from version import VERSION
 
@@ -470,10 +471,10 @@ def valuator_from_url():
     the listing's photos itself and runs the full identification stack
     (multi-photo evidence merge, same as the dataset pipeline)."""
     url = ((request.get_json(silent=True) or {}).get("url") or "").strip()
-    if not re.match(r"https?://", url):
-        return jsonify({"error": "not a link"}), 400
-    if not re.search(r"(carousell|facebook\.com|fb\.com|fb\.watch)", url):
-        return jsonify({"error": "Carousell / FB links only (for now)"}), 400
+    try:
+        url = network_safety.validate_marketplace_url(url)
+    except network_safety.UnsafeUrl:
+        return jsonify({"error": "unsafe or unsupported Carousell / FB link"}), 400
     try:
         import profile_dataset
         page = profile_dataset.scrape_listing_page(url)
@@ -488,8 +489,9 @@ def valuator_from_url():
     stamp, paths = int(time.time()), []
     for n, u in enumerate(imgs[:6]):
         try:
-            r = requests.get(profile_dataset._fullsize(u), timeout=30,
-                             headers={"User-Agent": profile_dataset.UA})
+            r = network_safety.fetch_public_bytes(
+                profile_dataset._fullsize(u), timeout=30,
+                headers={"User-Agent": profile_dataset.UA})
             if r.status_code == 200 and len(r.content) > 4000:
                 p = os.path.join(UPLOAD_DIR, f"link_{stamp}_{n}.jpg")
                 with open(p, "wb") as f:

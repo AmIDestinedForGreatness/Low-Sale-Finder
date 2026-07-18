@@ -8,9 +8,9 @@ import os
 import sqlite3
 from functools import lru_cache
 
-import requests
 from PIL import Image
 import imagehash
+import network_safety
 
 INDEX_PATH = os.path.join(os.path.dirname(__file__), "card_index.sqlite")
 # max combined (phash+dhash) hamming distance to accept a match. Tighter =
@@ -40,7 +40,9 @@ def identify(image):
         return None
     if isinstance(image, str):
         try:
-            r = requests.get(image, timeout=30); r.raise_for_status()
+            r = network_safety.fetch_public_bytes(image, timeout=30)
+            if r.status_code < 200 or r.status_code >= 300:
+                return None
             image = Image.open(io.BytesIO(r.content)).convert("RGB")
         except Exception:
             return None

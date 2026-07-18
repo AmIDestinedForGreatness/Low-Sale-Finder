@@ -12,6 +12,7 @@ import urllib.parse
 from playwright.sync_api import sync_playwright
 
 import config
+import network_safety
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
@@ -188,7 +189,7 @@ def posted_epoch(posted: str):
 def build_url(query: str) -> str:
     query = query.strip()
     if query.lower().startswith("http://") or query.lower().startswith("https://"):
-        return query
+        return network_safety.validate_marketplace_url(query)
     q = urllib.parse.quote(query)
     base = f"https://www.carousell.{config.CAROUSELL_COUNTRY}/search/{q}"
     # sort by newest so we catch fresh listings first
@@ -272,14 +273,18 @@ def extract_listings(page):
 def search(query: str):
     """Returns a list of listing dicts: {url, title, price, price_text}."""
     url = build_url(query)
+    network_safety.validate_marketplace_url(url)
     results = []
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=config.HEADLESS)
         ctx = browser.new_context(user_agent=UA, viewport={"width": 1366, "height": 900},
-                                  locale="en-US")
+                                  locale="en-US", service_workers="block")
         page = ctx.new_page()
+        page.route("**/*", lambda route: network_safety.guard_marketplace_navigation(
+            route, page.main_frame))
         try:
             page.goto(url, timeout=45000, wait_until="domcontentloaded")
+            network_safety.validate_marketplace_url(page.url)
             # let listings render / lazy-load
             page.wait_for_timeout(4000)
             for _ in range(3):  # scroll to load more

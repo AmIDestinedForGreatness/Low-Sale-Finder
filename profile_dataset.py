@@ -20,7 +20,7 @@ import sys
 import time
 import urllib.parse
 
-import requests
+import network_safety
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
@@ -31,15 +31,19 @@ IMG_DIR = os.path.join(DATASET_DIR, "images")
 # ── phase 1: scrape the profile ────────────────────────────────────────
 def scrape_profile(url):
     """All listings on a seller profile: url, title, price_text, status."""
+    url = network_safety.validate_marketplace_url(url)
     from playwright.sync_api import sync_playwright
     listings = []
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         ctx = browser.new_context(user_agent=UA,
                                   viewport={"width": 1366, "height": 900},
-                                  locale="en-US")
+                                  locale="en-US", service_workers="block")
         page = ctx.new_page()
+        page.route("**/*", lambda route: network_safety.guard_marketplace_navigation(
+            route, page.main_frame))
         page.goto(url, timeout=60000, wait_until="domcontentloaded")
+        network_safety.validate_marketplace_url(page.url)
         page.wait_for_timeout(4000)
         for _ in range(6):                    # profiles paginate on scroll
             page.mouse.wheel(0, 4000)
@@ -75,14 +79,18 @@ def scrape_profile(url):
 
 def scrape_listing_page(url):
     """Open one product page: full title, description, ALL product images."""
+    url = network_safety.validate_marketplace_url(url)
     from playwright.sync_api import sync_playwright
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         ctx = browser.new_context(user_agent=UA,
                                   viewport={"width": 1366, "height": 900},
-                                  locale="en-US")
+                                  locale="en-US", service_workers="block")
         page = ctx.new_page()
+        page.route("**/*", lambda route: network_safety.guard_marketplace_navigation(
+            route, page.main_frame))
         page.goto(url, timeout=60000, wait_until="domcontentloaded")
+        network_safety.validate_marketplace_url(page.url)
         page.wait_for_timeout(3500)
         js = r"""
         () => {
@@ -124,7 +132,8 @@ def download_images(listing_idx, urls, prefix=""):
     seen_size = set()
     for n, u in enumerate(urls[:6]):
         try:
-            r = requests.get(_fullsize(u), headers={"User-Agent": UA}, timeout=30)
+            r = network_safety.fetch_public_bytes(
+                _fullsize(u), headers={"User-Agent": UA}, timeout=30)
             if r.status_code != 200 or len(r.content) < 4000:
                 continue
             if len(r.content) in seen_size:      # og:image dup of gallery img

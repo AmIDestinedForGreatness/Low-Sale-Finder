@@ -552,3 +552,20 @@ public internet and use a private SSH tunnel for the VM dashboard.
 **Guard:** `TestDashboardAuthorization` covers missing/wrong/valid credentials,
 direct loopback, forwarded-loopback rejection, safe binding, and mutation
 rejection before the handler runs.
+
+### L43 - a brand substring is not a network boundary (2026-07-19)
+**Mistake:** the listing-link route accepted any raw string containing
+`facebook.com`/`carousell`, while dashboard scrape queries could pass any
+absolute URL straight to Playwright. Scraped image URLs followed automatic
+redirects, and Google Vision was given a local Windows path as a remote URI.
+**Rule:** parse before fetching: HTTPS only, no embedded credentials or custom
+ports, exact allowed marketplace domain boundaries, and every DNS answer must
+be globally routable. Revalidate redirects before following them, bound image
+bytes, guard top-level browser navigations, and send local image bytes to a
+remote API. This reduces the demonstrated SSRF surface but does not claim
+DNS-rebinding-proof connection pinning or validation of every browser
+subresource.
+**Guards:** `TestUrlSafety` covers arbitrary/deceptive URLs, existing configured
+fixtures, credentials/schemes/ports, private/link-local/mixed DNS, redirect
+revalidation, bounded manual fetch behavior, and Playwright aborts;
+`test_web_artwork_cache_avoids_duplicate_calls` proves Vision receives bytes.

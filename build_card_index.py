@@ -19,6 +19,7 @@ from PIL import Image
 import imagehash
 
 import config
+import network_safety
 
 API = "https://api.pokemontcg.io/v2/cards"
 INDEX_PATH = "card_index.sqlite"
@@ -72,7 +73,9 @@ def build(set_ids=None):
             if not url:
                 continue
             try:
-                ir = requests.get(url, timeout=30); ir.raise_for_status()
+                ir = network_safety.fetch_public_bytes(url, timeout=30)
+                if ir.status_code < 200 or ir.status_code >= 300:
+                    continue
                 img = Image.open(io.BytesIO(ir.content)).convert("RGB")
             except Exception:
                 continue

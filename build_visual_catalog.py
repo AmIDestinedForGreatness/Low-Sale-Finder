@@ -10,6 +10,7 @@ import sqlite3
 import time
 
 import requests
+import network_safety
 
 from providers.artwork import _art_region
 
@@ -67,8 +68,10 @@ def main():
         if not os.path.exists(path):
             url = URL.format(set_id=set_id, number=number.split("/")[0])
             try:
-                response = session.get(url, timeout=args.timeout)
-                response.raise_for_status()
+                response = network_safety.fetch_public_bytes(
+                    url, timeout=args.timeout, requester=session.get)
+                if response.status_code < 200 or response.status_code >= 300:
+                    raise ValueError(f"CDN returned HTTP {response.status_code}")
                 if not response.headers.get("content-type", "").lower().startswith("image/"):
                     raise ValueError("CDN response was not an image")
                 with open(path, "wb") as handle:

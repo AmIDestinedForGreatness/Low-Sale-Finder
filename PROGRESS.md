@@ -4,7 +4,7 @@
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
 written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
-**124 total tests: 121 passed, 3 explicitly skipped, 0 failed; 42 lessons**
+**132 total tests: 129 passed, 3 explicitly skipped, 0 failed; 43 lessons**
 (2026-07-19).
 
 ## 2026-07-19 independent Codex audit
@@ -15,7 +15,7 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
   the canonical dataset path had already fixed that failure class.
 - Isolated the Flask regressions from production uploads/failure logging and
   replaced a machine-dependent warp/hash skip with deterministic regions/quads.
-- Full deterministic suite: **124 total, 121 passed, 3 skips, 0 failed**.
+- Full deterministic suite: **132 total, 129 passed, 3 skips, 0 failed**.
   Offline scraper/parser replay:
   **40/40**. All 31 Python files and the inline dashboard JavaScript parse.
 - **Still unverified here:** real-photo perspective-warp/hash hit rate, route
@@ -29,6 +29,13 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
   remote requests require constant-time Basic/Bearer verification. One global
   guard covers all read/mutation routes. Oracle instructions now keep port
   5000 closed and use an SSH tunnel. Seven focused tests pass.
+- URL/SSRF correction: dashboard listing links and absolute scrape queries now
+  require parsed HTTPS marketplace hosts and globally routable DNS. Scraped
+  image/build URLs use bounded manual-redirect fetches that revalidate each
+  destination; Playwright top-level navigation redirects are guarded with
+  service workers disabled. WebArtwork sends bounded local bytes, not a local
+  path as `image_uri`. Eight URL tests pass. Residual DNS-rebinding and browser
+  subresource limits are documented rather than called solved.
 
 ## Version history
 
