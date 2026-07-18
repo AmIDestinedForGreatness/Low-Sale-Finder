@@ -15,3 +15,7 @@ uploads/
 fingerprints.sqlite
 fp_data.zip
 dataset/images/
+dataset/visual_catalog/
+dataset/visual_catalog_build.log
+dataset/visual_catalog_build.err.log
+fingerprints.sqlite-*
