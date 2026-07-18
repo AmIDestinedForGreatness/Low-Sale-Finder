@@ -725,3 +725,19 @@ Implemented the 15:20 assignment locally: added a keyless `open.er-api.com` USD/
 ### CX | 2026-07-18 | live exchange API check blocked by proxy
 
 Attempted a real request to `https://open.er-api.com/v6/latest/USD`; the configured proxy refused the connection, so no live rate was claimed. Mocked cache/fallback tests remain 2/2. Implementation `aef02e7` and relay handoff `5a1acd8` are local, not pushed.
+
+### CC | 2026-07-18 15:35 SGT | REAL STRUCTURAL GAP — multi-card binder detection is Latin-script-only, misses JP/CN lots entirely
+
+Yujin uploaded a real 12-card binder photo (mostly Japanese/Chinese cards, 2048x2048, `uploads/card_1784359567.jpg`) — the dashboard treated it as ONE card and searched a random fraction ("222/193") plucked out of the OCR soup, returning garbage (Level E, unrelated candidates). Not a stress test, just his own probing — he's extending to 5PM given this is a real problem.
+
+**Root cause, fully traced:** `folder_dataset.distinct_names()` (the function that decides "is this a multi-card photo," needs 3+ distinct names) strips every non-Latin character before matching against the name vocabulary: `re.sub(r"[^A-Za-z' .&-]", " ", ln)`. Japanese/Chinese card names (`克雷色利亚`, `治愈之舞`, etc.) vanish entirely, so it found **zero names** on a photo with 12 real cards. Since `n_names < 3`, binder mode never triggered. The one fallback that doesn't need name-recognition, `should_probe_grid()`, only fires for narrow PORTRAIT photos (`height > width and width/height <= 0.68`) — built for a specific earlier case (4 cards, 720x1280 phone photo). This photo is a roughly-square 4x3 grid, a different shape entirely, so that fallback doesn't cover it either. Two separate gaps compounding on the same real photo.
+
+**A real, language-agnostic signal already exists in the same OCR text and just isn't being used:** counted distinct collector-number fractions (`\d{1,3}\s*/\s*193` pattern) in this exact photo's OCR — **8 different values** (197/193, 200/193, 201/193, 202/193, 204/193, 214/193, 222/193, 224/193). Digits are script-independent; this works regardless of language. That's a strong, checkable "multiple distinct cards are present" signal that the current detection ignores entirely.
+
+**Proposed fix, needs real implementation + testing, not a rush job:**
+1. Add a second, language-agnostic multi-card signal alongside `distinct_names()`: count distinct collector-number-shaped fractions (`NNN/MMM` patterns) across the whole-image OCR. 3+ distinct fractions sharing a plausible common total (or just 3+ distinct fractions generally) is real evidence of multiple cards, independent of what language the names are in.
+2. Extend (or add a parallel path to) `should_probe_grid()` so it isn't gated on narrow-portrait aspect ratio alone — a roughly-square or wide grid with this number-diversity signal should also probe.
+3. **Careful about false positives** — a single card's own footer sometimes has more than one number-shaped token (a promo code plus a set total, a grading slab number, etc.). Test against real single-card cases from the existing dataset to make sure this doesn't accidentally fragment legitimate single-card uploads into a false binder split. Use the existing `dataset/images` test corpus for this, not just the new failing case.
+4. Real regression test using this exact photo (`uploads/card_1784359567.jpg`, still on disk) — should detect multiple cards and attempt a grid split, not necessarily requiring perfect identification of all 12, but at minimum correctly recognizing "this is not one card."
+
+This is a genuinely new capability gap (JP/CN multi-card lots), not a quick line-fix like today's earlier bugs — take the time to do it right rather than rush it. Real tests, honest reporting, local commit only, never push without Yujin's approval.
