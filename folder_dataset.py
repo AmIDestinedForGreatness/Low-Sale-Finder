@@ -23,6 +23,8 @@ import sys
 import tempfile
 import time
 
+import cv2
+import numpy as np
 from PIL import Image
 
 import valuator
@@ -30,6 +32,10 @@ from profile_dataset import identify
 
 EXTS = (".png", ".jpg", ".jpeg", ".webp", ".bmp")
 _FRACTION_RE = re.compile(r"(?<!\d)(\d{1,3})\s*/\s*(\d{1,3})(?!\d)")
+
+# Real Pokemon card ratio is 63mm x 88mm (~0.716); allow slop for perspective/
+# crop noise, portrait or its landscape inverse.
+_CARD_AR_RANGE = ((0.55, 0.85), (1.15, 1.85))
 
 
 def _evidence_score(lines):
@@ -74,6 +80,134 @@ def distinct_collector_fractions(lines):
     """Return OCR collector fractions, preserving only distinct values."""
     return {(int(a), int(b)) for ln in lines for a, b in _FRACTION_RE.findall(ln)
             if int(b) >= 10}
+
+
+def _iou(a, b):
+    ax, ay, aw, ah = a[:4]
+    bx, by, bw, bh = b[:4]
+    ix1, iy1 = max(ax, bx), max(ay, by)
+    ix2, iy2 = min(ax + aw, bx + bw), min(ay + ah, by + bh)
+    iw, ih = max(0, ix2 - ix1), max(0, iy2 - iy1)
+    inter = iw * ih
+    union = aw * ah + bw * bh - inter
+    return inter / union if union else 0.0
+
+
+def detect_card_regions(path):
+    """Find card-shaped rectangles by edge/contour detection, for pages where
+    the cards AREN'T a clean grid (mixed-set consignment binders: different
+    products, different sizes, no shared name/number repetition for the
+    text-based signals in should_probe_grid to key off). Real cards have a
+    fixed ~0.716 aspect ratio regardless of language or set, so this signal
+    is language- and content-agnostic — it only looks at shape.
+
+    Returns boxes in reading order (top-to-bottom, then left-to-right), or
+    [] if fewer than 2 plausible card shapes are found.
+    """
+    img = cv2.imread(path)
+    if img is None:
+        return []
+    h, w = img.shape[:2]
+    img_area = h * w
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    edges = cv2.Canny(blur, 40, 120)
+    edges = cv2.dilate(edges, np.ones((5, 5), np.uint8), iterations=2)
+    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    boxes = []
+    for c in contours:
+        x, y, cw, ch = cv2.boundingRect(c)
+        area = cw * ch
+        if area < img_area * 0.03 or area > img_area * 0.5:
+            continue          # too small to be a whole card / too big (the page itself)
+        ar = cw / max(ch, 1)
+        if not any(lo <= ar <= hi for lo, hi in _CARD_AR_RANGE):
+            continue
+        boxes.append((x, y, cw, ch, area))
+
+    # NON-MAX SUPPRESSION: a card's outer border and its inner artwork frame
+    # are nested, highly-overlapping contours from the SAME card, not two
+    # cards — keep only the larger of any pair that overlaps heavily.
+    boxes.sort(key=lambda b: -b[4])
+    kept = []
+    for b in boxes:
+        if all(_iou(b, k) < 0.3 for k in kept):
+            kept.append(b)
+
+    # SIZE CONSISTENCY: real multi-card layouts have similarly-sized cards
+    # (same rough distance-from-camera); a stray unrelated contour (a
+    # thumbnail, a price tag) is usually a very different size.
+    if len(kept) >= 2:
+        areas = sorted(b[4] for b in kept)
+        median = areas[len(areas) // 2]
+        kept = [b for b in kept if 0.5 <= b[4] / median <= 2.0]
+
+    if len(kept) < 2:
+        return []
+    kept.sort(key=lambda b: (round(b[1] / (h * 0.15)), b[0]))  # reading order
+    return [b[:4] for b in kept]
+
+
+def probe_contours(path, tmpdir, ocr_reader=None, pad=0.06):
+    """Like probe_grid(), but crops the ACTUAL detected card regions instead
+    of a blind 2x2 quadrant split — for pages where cards aren't evenly
+    gridded (mixed sizes/products). Requires evidence in a strong majority
+    of cells before accepting the split, same philosophy as probe_grid()."""
+    boxes = detect_card_regions(path)
+    if not boxes:
+        return [], []
+    reader = ocr_reader or valuator.ocr_lines
+    img = Image.open(path)
+    w, h = img.size
+    cells = []
+    for i, (x, y, cw, ch) in enumerate(boxes):
+        px, py = cw * pad, ch * pad
+        box = (int(max(0, x - px)), int(max(0, y - py)),
+               int(min(w, x + cw + px)), int(min(h, y + ch + py)))
+        out = os.path.join(tmpdir,
+                           f"{os.path.splitext(os.path.basename(path))[0]}_box{i}.png")
+        cell = img.crop(box)
+        # split_grid()'s blind quadrant crop halves both dimensions, so its
+        # unconditional 2x upscale just restores native resolution. A
+        # detected card region is already near-native size (it IS one
+        # card, not a quarter of the page) — blindly 2x-ing it on top made
+        # OCR run on an image bigger than the whole original photo (~230s/
+        # upload). But skipping upscale entirely lost a real identification
+        # (Mr. Mime GX went from a confirmed number match to nothing) — small
+        # printed text still benefits from some upsampling. Split the
+        # difference: cap the target short side well under the original
+        # photo's resolution instead of blindly doubling it.
+        target = 900
+        if min(cell.width, cell.height) < target:
+            scale = target / max(1, min(cell.width, cell.height))
+            cell = cell.resize((int(cell.width * scale), int(cell.height * scale)),
+                               Image.LANCZOS)
+        cell.save(out)
+        cells.append(out)
+    # Cells are independent — RapidOCR's onnxruntime inference releases the
+    # GIL during its C++ compute, so threading gives real wall-clock
+    # parallelism on this OCR-bound path instead of running 4 full OCR
+    # passes back to back.
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=min(4, len(cells))) as pool:
+        ocr_groups = list(pool.map(reader, cells))
+    signals = 0
+    for lines in ocr_groups:
+        name, number = valuator.guess_query(lines)
+        # detected-contour crops are tighter than blind grid quadrants, so a
+        # card's name is often unreadable (glare/JP/holo) even though its
+        # attack/ability text and damage numbers are perfectly legible —
+        # check the same fingerprint layers identify() itself relies on
+        # before writing off a cell as "no evidence".
+        if (name or number or distinct_names(lines)
+                or valuator.fingerprint_names(lines)
+                or valuator.attack_id(lines)):
+            signals += 1
+    # majority, not unanimous — a real card can still have a bad OCR read
+    if signals >= max(2, -(-len(cells) * 3 // 4)):   # ceil(0.75 * N), floor 2
+        return cells, ocr_groups
+    return [], []
 
 
 def should_probe_grid(width, height, distinct_name_count, number_fractions=None):

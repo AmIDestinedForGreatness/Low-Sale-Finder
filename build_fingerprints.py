@@ -52,10 +52,26 @@ def main():
             totals[s.get("id")] = s.get("printedTotal")
 
     conn = sqlite3.connect(DB)
+    # Preserve visual_* columns (perceptual-hash catalog, ~2hrs to build) across
+    # a refresh: stash the old fp table's visual data keyed by id, rebuild fp
+    # fresh from upstream, then restore whatever visual data still matches.
+    visual_backup = {}
+    has_old_fp = conn.execute(
+        "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='fp'"
+    ).fetchone()[0]
+    if has_old_fp:
+        try:
+            for row in conn.execute(
+                    "SELECT id, visual_path, visual_phash, visual_dhash FROM fp "
+                    "WHERE visual_phash IS NOT NULL"):
+                visual_backup[row[0]] = row[1:]
+        except sqlite3.OperationalError:
+            pass  # old schema had no visual_* columns yet
     conn.execute("DROP TABLE IF EXISTS fp")
     conn.execute("CREATE TABLE fp (id TEXT PRIMARY KEY, name TEXT, hp INTEGER, "
                  "damages TEXT, subtypes TEXT, setname TEXT, number TEXT, "
-                 "rarity TEXT, dex INTEGER)")
+                 "rarity TEXT, dex INTEGER, visual_path TEXT, visual_phash TEXT, "
+                 "visual_dhash TEXT)")
     # LAYER E: attack/ability NAMES — big readable English text that OCR
     # nails even on binder-cell crops, and near-unique per card
     conn.execute("DROP TABLE IF EXISTS atk")
@@ -84,10 +100,11 @@ def main():
             total = totals.get(setname)
             if num.isdigit() and total:
                 num = f"{num}/{total}"     # full collector number
-            conn.execute("INSERT OR REPLACE INTO fp VALUES (?,?,?,?,?,?,?,?,?)",
+            vpath, vphash, vdhash = visual_backup.get(c.get("id"), (None, None, None))
+            conn.execute("INSERT OR REPLACE INTO fp VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
                          (c.get("id"), c.get("name"), hp, ",".join(dmgs),
                           ",".join(c.get("subtypes") or []), setname,
-                          num, c.get("rarity") or "", dex))
+                          num, c.get("rarity") or "", dex, vpath, vphash, vdhash))
             for a in (c.get("attacks") or []):
                 if a.get("name"):
                     conn.execute("INSERT INTO atk VALUES (?,?,?,?,?)",

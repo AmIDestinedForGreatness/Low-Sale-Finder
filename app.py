@@ -230,12 +230,27 @@ def valuator_ocr():
     _im = _Img.open(path)
     pair = n_names == 2 and _im.width > _im.height
     probe_cells, probe_ocr = [], []
+    contour_probe = False
     if (not pair and n_names < 3
             and folder_dataset.should_probe_grid(_im.width, _im.height, n_names,
                                                  n_numbers)):
         probe_cells, probe_ocr = folder_dataset.probe_grid(path, UPLOAD_DIR)
+    if (not pair and n_names < 3 and not probe_cells
+            and min(_im.width, _im.height) >= 900):
+        # MIXED-SET FALLBACK: neither the name-repetition nor the shared-
+        # fraction signal fired (a page of unrelated cards from different
+        # products has neither), but the page may still hold several real
+        # cards laid out unevenly. Card shape itself is language- and
+        # content-agnostic, so try detecting actual card-shaped regions
+        # before giving up and treating the page as one card.
+        probe_cells, probe_ocr = folder_dataset.probe_contours(path, UPLOAD_DIR)
+        contour_probe = bool(probe_cells)
     if n_names >= 3 or pair or probe_cells:
-        rows, cols = (1, 2) if pair else (2, 2)
+        if contour_probe:
+            cols = 2 if len(probe_cells) > 1 else 1
+            rows = -(-len(probe_cells) // cols)
+        else:
+            rows, cols = (1, 2) if pair else (2, 2)
         cards = []
         cells = probe_cells or folder_dataset.split_grid(
             path, UPLOAD_DIR, rows=rows, cols=cols)
