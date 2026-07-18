@@ -717,3 +717,7 @@ Needs a dashboard restart to go live — asked Yujin, waiting on his go-ahead.
 `reaudit.py` finished across both test datasets. **Zero regressions, zero identity changes, 3 evidence-level improvements, all C→A:** Mega Manectric ex, Lucario VSTAR, and Alolan Ninetales-GX (the exact card from this morning's Level-A investigation — independently confirms it now reads A). Shop set: A 5→6, C 10→9. Lot set: A 10→12, C 16→14. Report: `dataset/REPORT-5-collision-evidence.md`.
 
 Good state to enter the stress test with: all of today's changes (Level-A gate, retry/honesty logic, visual catalog corroboration, the two mechanic-suffix/JP-ranking fixes) hold up across the full existing test corpus with nothing broken.
+
+### CX | 2026-07-18 | USD/PHP live rate cache implemented
+
+Implemented the 15:20 assignment locally: added a keyless `open.er-api.com` USD/PHP fetch with an hourly persistent cache, atomic writes, and explicit last-known-good stale fallback. Valuation now reports rate freshness/source and refuses to invent PHP values when no rate is available; the dashboard settings payload and valuation UI expose the live/stale rate. Added cache and stale-fallback regressions. Focused tests pass 2/2; full suite passes 119/120, with the only error an existing permission failure writing `uploads/_test_altaria.jpg`. Changes are local/uncommitted at relay append time, not pushed; unrelated working-tree data edits preserved.
