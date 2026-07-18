@@ -957,3 +957,30 @@ Yujin pulled the repo fresh on Mom's PC tonight (`C:\Users\MARVIN-LI\Downloads\L
 - **Side-effect found, worth a future look (not changed tonight):** running `tests.py` on a machine without the fingerprint DB appended a near-duplicate Altaria record to `FAILURES.md`/`dataset/failures.json` (same card, different name normalization when identification runs data-blind). Reverted before committing. Tests mutating the live failure DB is worth isolating eventually — flagged, not redesigned mid-cleanup.
 
 Committed and PUSHED — push is on Yujin's explicit instruction tonight ("make sure that the pushed checkpoint... is the latest"; cleanup canonical for both machines). Personal PC should `git pull` before its next session.
+
+### CC | 2026-07-19 1:04AM [Mom's PC] — HASH-FIRST-NEXT implemented: perspective-warp before hashing. Synthetic-verified; REAL-PHOTO/CATALOG ACCEPTANCE STILL PENDING (data files don't exist on this machine)
+
+Implemented the spec in `HASH-FIRST-NEXT.md` while Yujin sleeps, per his instruction ("read everything, improve while I sleep, check first, then instruct Codex if needed"). Did NOT hand this to Codex — it's a focused, well-spec'd single-file change with clear acceptance criteria, exactly the kind of unit I can execute directly without needing a second worker.
+
+**What was built, in `folder_dataset.py`:**
+1. `_order_corners()` — sorts 4 arbitrary points into TL/TR/BR/BL via sum/diff, the standard document-scanner ordering. Needed so the perspective warp never mirrors or twists the card.
+2. `_contour_quad()` — `cv2.approxPolyDP` at 2% of perimeter for a clean 4-point fit; falls back to `cv2.minAreaRect` box points when approx doesn't reduce to exactly 4 points, per spec.
+3. `warp_card()` — `cv2.getPerspectiveTransform` + `warpPerspective` to a canonical 630x880 (63:88 real card ratio) flat rectangle. Detects sideways quads (width > height in the source quad) and rotates the warped output to portrait — the NolanAmblard "phone scanner" step, applied to our own contour detections.
+4. `detect_card_regions()` now optionally returns quads alongside boxes (`with_quads=True`) — **default unchanged, so both `app.py` call sites needed zero changes.** Contour-found quads come from `_contour_quad()`; lattice-completion synthesized boxes (the 12/12 fix from yesterday) get `None` — no contour exists for those, so they fall through to a flat axis-aligned "warp" (still canonical-sized, still gets a fair hash attempt) built inline in `probe_contours()`.
+5. `probe_contours()` is now genuinely hash-first: per cell, try **warped -> warped rotated 180° (binder cards can be upside down; the warp can't know which way is up) -> the raw padded crop (preserves whatever the old code could already hit)** against the catalog before OCR. Only misses-on-all-three pay OCR. Match gates (`max_distance`/`nearest_slack`) untouched, per spec rule 5 — did not loosen anything to force hits.
+
+**Verification status — honest split, per DIRECTIVE.md:**
+- **Geometry correctness: verified, synthetically.** 4 new tests in `tests.py` (`TestCardWarp`): corner-ordering from shuffled input; a card warped into a scene via a KNOWN homography then warped back out, checked corner-by-corner by color (proves no mirror/twist bug, not just "code runs"); sideways-quad-to-portrait shape check; and an end-to-end `probe_contours()` wiring test with a mocked catalog proving hash hits genuinely skip OCR (asserts zero OCR calls when the warp variant matches). All 4 pass. Full suite: **115/116** (the 1 failure is the pre-existing fingerprint-data-dependent test, unrelated, expected on this machine — see cleanup entry above).
+- **Real-photo/catalog acceptance: NOT DONE, and I'm not claiming it is.** `fingerprints.sqlite` and `uploads/` don't exist on Mom's PC (gitignored, Personal-PC-only per the cleanup entry above) — `HASH-FIRST-NEXT.md`'s actual acceptance criteria (warped-hash hit-rate on `uploads/card_1784372012.jpg`, before/after timing through the real Flask route, `reaudit.py` with no time cap) **require Personal PC's data and cannot be faked or skipped here.**
+
+**What I did instead to still make real progress tonight, honestly reported:** built the geometry correctly and proved it correct with synthetic ground-truth (known-answer tests, not just "it didn't crash"), and confirmed zero regression risk to the existing code paths (backward-compatible signatures, full suite green apart from the known data gap). This is real, verifiable work — but it is NOT the same as knowing whether warping actually raises the catalog hit-rate on the real hard photo. That number is unknown until this runs where the data lives.
+
+**Next session on Personal PC, in order:**
+1. `git pull` (this commit + the cleanup commit, `01f8be1` and this one)
+2. Run `python tests.py` — should be 122/122 or better (116 local + whatever the fingerprint-dependent tests add back once data exists)
+3. Run `probe_contours()` on `uploads/card_1784372012.jpg` directly, report warped-hash hit/miss per cell at what distance vs the documented all-miss baseline
+4. Time the real Flask route on the same photo, cold cache, before/after vs the ~167-239s baseline range already on record
+5. `reaudit.py` with no time cap
+6. If hits are still rare: sample 2-3 warped-vs-raw-crop distances (spec's fallback ask) to tell alignment-gap from catalog-coverage-gap (739 cards in the `images.pokemontcg.io` 404 gap can't hash-match regardless of warp quality)
+
+Local commit only, not pushed — per the repo's own stated working agreement (never push without Yujin's explicit instruction), and because this unit's real acceptance is still open.

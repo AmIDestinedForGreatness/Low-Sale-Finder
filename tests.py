@@ -1495,6 +1495,129 @@ class TestValuatorOcrRoute(unittest.TestCase):
                             for c in d.get("candidates") or []))
 
 
+class TestCardWarp(unittest.TestCase):
+    """HASH-FIRST-NEXT unit (2026-07-19, built on Mom's PC): perspective-warp
+    detected card quads to flat canonical rectangles before hashing. The
+    catalog hashes come from clean flat scans; hashing tilted noisy crops
+    against them was why every cell on the real 12-card page missed and paid
+    the full OCR cost. These tests are synthetic (no fingerprints.sqlite
+    needed) — the real-photo/catalog acceptance runs on the machine that has
+    the data."""
+
+    def _flat_card(self):
+        """630x880 synthetic card with distinct corner colors so a warp that
+        mirrors/rotates/mis-orders corners is caught by color position."""
+        import numpy as np
+        card = np.full((880, 630, 3), 40, dtype=np.uint8)
+        card[:200, :200] = (0, 0, 255)      # TL red (BGR)
+        card[:200, -200:] = (0, 255, 0)     # TR green
+        card[-200:, -200:] = (255, 0, 0)    # BR blue
+        card[-200:, :200] = (0, 255, 255)   # BL yellow
+        return card
+
+    def test_order_corners_from_shuffled_input(self):
+        import folder_dataset
+        import numpy as np
+        quad = [(500, 100), (80, 90), (90, 700), (520, 720)]  # shuffled
+        ordered = folder_dataset._order_corners(quad)
+        self.assertTrue((ordered[0] == np.array([80, 90])).all())     # TL
+        self.assertTrue((ordered[1] == np.array([500, 100])).all())   # TR
+        self.assertTrue((ordered[2] == np.array([520, 720])).all())   # BR
+        self.assertTrue((ordered[3] == np.array([90, 700])).all())    # BL
+
+    def test_warp_recovers_tilted_card(self):
+        """Place the synthetic card tilted into a larger scene via a known
+        homography, then warp_card() it back out — every corner color must
+        land in its original position."""
+        import cv2
+        import folder_dataset
+        import numpy as np
+        card = self._flat_card()
+        scene = np.full((1600, 1200, 3), 15, dtype=np.uint8)
+        # A visibly tilted (but convex, card-like) quad in scene coords
+        quad = np.array([[300, 260], [820, 330], [770, 1120], [240, 1010]],
+                        dtype=np.float32)
+        src = np.array([[0, 0], [629, 0], [629, 879], [0, 879]],
+                       dtype=np.float32)
+        m = cv2.getPerspectiveTransform(src, quad)
+        cv2.warpPerspective(card, m, (1200, 1600), dst=scene,
+                            borderMode=cv2.BORDER_TRANSPARENT)
+        flat = folder_dataset.warp_card(scene, quad)
+        self.assertEqual(flat.shape[:2], (880, 630))
+
+        def dominant(region):
+            return tuple(int(c) for c in region.reshape(-1, 3).mean(axis=0))
+
+        tl = dominant(flat[40:160, 40:160])
+        tr = dominant(flat[40:160, -160:-40])
+        br = dominant(flat[-160:-40, -160:-40])
+        bl = dominant(flat[-160:-40, 40:160])
+        self.assertGreater(tl[2], 180, f"TL should be red, got {tl}")
+        self.assertGreater(tr[1], 180, f"TR should be green, got {tr}")
+        self.assertGreater(br[0], 180, f"BR should be blue, got {br}")
+        self.assertGreater(bl[1], 180, f"BL should be yellow(G), got {bl}")
+        self.assertGreater(bl[2], 180, f"BL should be yellow(R), got {bl}")
+
+    def test_sideways_quad_warps_to_portrait(self):
+        """A landscape quad (card lying sideways) must still come out
+        630x880 portrait — orientation ambiguity is covered by the 180°
+        retry variant, but the frame itself must always be portrait."""
+        import folder_dataset
+        import numpy as np
+        scene = np.full((1200, 1600, 3), 20, dtype=np.uint8)
+        quad = np.array([[200, 300], [1080, 320], [1070, 940], [190, 920]],
+                        dtype=np.float32)
+        flat = folder_dataset.warp_card(scene, quad)
+        self.assertEqual(flat.shape[:2], (880, 630))
+
+    def test_probe_contours_hash_hit_skips_ocr(self):
+        """Wiring test with a mocked catalog: when the WARPED variant hits,
+        that cell must not pay any OCR cost and must carry the catalog
+        identity. Also proves warp variants are generated and tried first
+        (the mock only accepts _warp paths, never the raw crop)."""
+        import cv2
+        import folder_dataset
+        import numpy as np
+        import tempfile as _tf
+
+        scene = np.full((1600, 1200, 3), 15, dtype=np.uint8)
+        card = self._flat_card()
+        # Two upright side-by-side "cards" so detect_card_regions finds a
+        # plausible 2-card layout (aspect ~0.716 each).
+        for x0 in (60, 640):
+            scene[200:900, x0:x0 + 500] = cv2.resize(card, (500, 700))
+        with _tf.TemporaryDirectory() as td:
+            photo = os.path.join(td, "two_cards.png")
+            cv2.imwrite(photo, scene)
+            boxes = folder_dataset.detect_card_regions(photo)
+            if len(boxes) < 2:
+                self.skipTest("synthetic scene did not yield 2 regions")
+
+            ocr_calls = []
+
+            def fake_reader(p):
+                ocr_calls.append(p)
+                return []
+
+            def fake_match(self_, image_path):
+                if "_warp" in os.path.basename(image_path) \
+                        and "_r180" not in os.path.basename(image_path):
+                    return {"id": "sv1-1", "name": "Sprigatito",
+                            "number": "001/198", "distance": 2.0}
+                return None
+
+            with mock.patch("providers.visual_catalog.VisualCatalogProvider"
+                            ".match_image", fake_match):
+                cells, groups = folder_dataset.probe_contours(
+                    photo, td, ocr_reader=fake_reader)
+            self.assertTrue(cells, "hash-hit cells must accept the split")
+            self.assertEqual(ocr_calls, [],
+                             "every cell hash-hit on the warp variant; no "
+                             "cell may pay OCR")
+            for g in groups:
+                self.assertIn("Sprigatito", g)
+
+
 if __name__ == "__main__":
     result = unittest.main(exit=False, verbosity=1).result
     n = result.testsRun

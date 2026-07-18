@@ -93,7 +93,62 @@ def _iou(a, b):
     return inter / union if union else 0.0
 
 
-def detect_card_regions(path):
+def _order_corners(pts):
+    """Order 4 points as top-left, top-right, bottom-right, bottom-left.
+    (x+y) is smallest at TL / largest at BR; (x-y) is largest at TR /
+    smallest at BL. Standard document-scanner ordering, needed so the
+    perspective warp never mirrors or twists the card."""
+    pts = np.asarray(pts, dtype=np.float32).reshape(4, 2)
+    s = pts.sum(axis=1)
+    d = (pts[:, 0] - pts[:, 1])
+    return np.array([pts[np.argmin(s)], pts[np.argmax(d)],
+                     pts[np.argmax(s)], pts[np.argmin(d)]], dtype=np.float32)
+
+
+def _contour_quad(contour):
+    """Best-effort 4-corner fit for a card contour: approxPolyDP at ~2% of
+    perimeter (clean rectangle fit) with cv2.minAreaRect box points as the
+    fallback when the polygon doesn't reduce to exactly 4 points."""
+    peri = cv2.arcLength(contour, True)
+    approx = cv2.approxPolyDP(contour, 0.02 * peri, True)
+    if len(approx) == 4:
+        return approx.reshape(4, 2).astype(np.float32)
+    return cv2.boxPoints(cv2.minAreaRect(contour)).astype(np.float32)
+
+
+# Real card is 63x88mm; 630x880 keeps the true aspect ratio at a resolution
+# comparable to the catalog's reference scans.
+_WARP_SIZE = (630, 880)
+
+
+def warp_card(image_bgr, quad, size=_WARP_SIZE):
+    """Perspective-flatten a detected card quadrilateral to a canonical
+    portrait rectangle — the NolanAmblard 'document scanner' step. The
+    catalog's hashes came from clean flat reference scans; hashing a tilted
+    noisy crop against them misses, hashing the flattened card can hit.
+
+    A landscape quad (card lying sideways in the photo) is warped to
+    landscape then rotated 90° — which of the two 90° directions is correct
+    is unknowable from geometry alone, so callers must treat the 180°
+    rotation of the result as a fallback variant (probe_contours does)."""
+    quad = _order_corners(quad)
+    tl, tr, br, bl = quad
+    qw = (np.linalg.norm(tr - tl) + np.linalg.norm(br - bl)) / 2
+    qh = (np.linalg.norm(bl - tl) + np.linalg.norm(br - tr)) / 2
+    w, h = size
+    if qw > qh:  # card is sideways in the photo
+        dst = np.array([[0, 0], [h - 1, 0], [h - 1, w - 1], [0, w - 1]],
+                       dtype=np.float32)
+        m = cv2.getPerspectiveTransform(quad, dst)
+        flat = cv2.warpPerspective(image_bgr, m, (h, w))
+        return cv2.rotate(flat, cv2.ROTATE_90_CLOCKWISE)
+    dst = np.array([[0, 0], [w - 1, 0], [w - 1, h - 1], [0, h - 1]],
+                   dtype=np.float32)
+    m = cv2.getPerspectiveTransform(quad, dst)
+    return cv2.warpPerspective(image_bgr, m, (w, h))
+
+
+def detect_card_regions(path, with_quads=False):
     """Find card-shaped rectangles by edge/contour detection, for pages where
     the cards AREN'T a clean grid (mixed-set consignment binders: different
     products, different sizes, no shared name/number repetition for the
@@ -102,11 +157,14 @@ def detect_card_regions(path):
     is language- and content-agnostic — it only looks at shape.
 
     Returns boxes in reading order (top-to-bottom, then left-to-right), or
-    [] if fewer than 2 plausible card shapes are found.
+    [] if fewer than 2 plausible card shapes are found. With
+    ``with_quads=True`` returns ``(boxes, quads)`` where each quad is the
+    detected 4-corner outline in original-image coordinates (``None`` for
+    boxes synthesized by grid completion — those have no contour).
     """
     img = cv2.imread(path)
     if img is None:
-        return []
+        return ([], []) if with_quads else []
     h, w = img.shape[:2]
     img_area = h * w
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -132,7 +190,7 @@ def detect_card_regions(path):
         ar = cw / max(ch, 1)
         if not any(lo <= ar <= hi for lo, hi in _CARD_AR_RANGE):
             continue
-        boxes.append((x, y, cw, ch, area))
+        boxes.append((x, y, cw, ch, area, _contour_quad(c)))
 
     # NON-MAX SUPPRESSION: a card's outer border and its inner artwork frame
     # are nested, highly-overlapping contours from the SAME card, not two
@@ -187,9 +245,12 @@ def detect_card_regions(path):
                     x = int(max(0, cx - med_w / 2))
                     y = int(max(0, cy - med_h / 2))
                     kept.append((x, y, int(min(med_w, w - x)),
-                                 int(min(med_h, h - y)), int(med_w * med_h)))
+                                 int(min(med_h, h - y)), int(med_w * med_h),
+                                 None))  # synthesized: no contour, no quad
 
     kept.sort(key=lambda b: (round(b[1] / (h * 0.15)), b[0]))  # reading order
+    if with_quads:
+        return [b[:4] for b in kept], [b[5] for b in kept]
     return [b[:4] for b in kept]
 
 
@@ -197,17 +258,48 @@ def probe_contours(path, tmpdir, ocr_reader=None, pad=0.06):
     """Like probe_grid(), but crops the ACTUAL detected card regions instead
     of a blind 2x2 quadrant split — for pages where cards aren't evenly
     gridded (mixed sizes/products). Requires evidence in a strong majority
-    of cells before accepting the split, same philosophy as probe_grid()."""
-    boxes = detect_card_regions(path)
+    of cells before accepting the split, same philosophy as probe_grid().
+
+    HASH-FIRST with perspective normalization (HASH-FIRST-NEXT.md,
+    2026-07-19): each detected quad is perspective-warped to a flat
+    canonical 630x880 card (the NolanAmblard scanner step) and looked up in
+    the visual catalog BEFORE any OCR — variants tried per cell:
+    warped -> warped rotated 180° (binder cards can be upside down; the
+    warp itself can't know which way is up for sideways cards) -> the raw
+    padded crop (preserves any hit the pre-warp code could produce). Only
+    cells that miss all three pay the OCR cost. Match gates are unchanged
+    (max_distance/nearest_slack) — a false identification is worse than a
+    slow one."""
+    boxes, quads = detect_card_regions(path, with_quads=True)
     if not boxes:
         return [], []
     reader = ocr_reader or valuator.ocr_lines
     from providers.visual_catalog import VisualCatalogProvider
     visual_catalog = VisualCatalogProvider()
+    cv_img = cv2.imread(path)
     img = Image.open(path)
     w, h = img.size
     cells = []
+    warp_variants = []   # per cell: list of (variant_name, path) to hash-try
+    stem = os.path.splitext(os.path.basename(path))[0]
     for i, (x, y, cw, ch) in enumerate(boxes):
+        quad = quads[i]
+        if quad is None and cv_img is not None:
+            # Synthesized lattice box (grid completion) — no contour to
+            # warp, but a flat axis-aligned "warp" is still a clean crop at
+            # canonical size, so the hash path gets a fair shot.
+            quad = np.array([[x, y], [x + cw, y], [x + cw, y + ch],
+                             [x, y + ch]], dtype=np.float32)
+        variants = []
+        if cv_img is not None and quad is not None:
+            flat = warp_card(cv_img, quad)
+            wp = os.path.join(tmpdir, f"{stem}_warp{i}.png")
+            cv2.imwrite(wp, flat)
+            variants.append(("warp", wp))
+            wp180 = os.path.join(tmpdir, f"{stem}_warp{i}_r180.png")
+            cv2.imwrite(wp180, cv2.rotate(flat, cv2.ROTATE_180))
+            variants.append(("warp180", wp180))
+        warp_variants.append(variants)
         px, py = cw * pad, ch * pad
         box = (int(max(0, x - px)), int(max(0, y - py)),
                int(min(w, x + cw + px)), int(min(h, y + ch + py)))
@@ -235,7 +327,15 @@ def probe_contours(path, tmpdir, ocr_reader=None, pad=0.06):
     # GIL during its C++ compute, so threading gives real wall-clock
     # parallelism on this OCR-bound path instead of running 4 full OCR
     # passes back to back.
-    hash_matches = [visual_catalog.match_image(cell) for cell in cells]
+    hash_matches = []
+    for i, cell in enumerate(cells):
+        match = None
+        for variant, vpath in warp_variants[i] + [("raw", cell)]:
+            match = visual_catalog.match_image(vpath)
+            if match is not None:
+                match["matched_via"] = variant
+                break
+        hash_matches.append(match)
     ocr_indices = [i for i, match in enumerate(hash_matches) if match is None]
     ocr_groups = [None] * len(cells)
     from concurrent.futures import ThreadPoolExecutor
