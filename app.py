@@ -11,6 +11,8 @@ Endpoints:
   POST /api/watchlist/run -> scrape every watchlist item with its own threshold
 """
 import datetime
+import hmac
+import ipaddress
 import json
 import os
 import re
@@ -18,6 +20,7 @@ import socket
 import sqlite3
 import threading
 import time
+from urllib.parse import urlsplit
 
 import requests
 
@@ -100,6 +103,76 @@ def _watchdog():
         time.sleep(60)
 
 app = Flask(__name__)
+
+
+def _dashboard_auth_token():
+    """Return the local secret without exposing it through an endpoint.
+
+    Environment wins for service deployments; config.py remains the convenient
+    gitignored option on the owner's Windows machine. An empty value is not an
+    open-access mode: it means direct loopback only.
+    """
+    return (os.environ.get("DASHBOARD_AUTH_TOKEN", "").strip()
+            or str(getattr(config, "DASHBOARD_AUTH_TOKEN", "") or "").strip())
+
+
+def _dashboard_bind_host():
+    """Do not listen beyond localhost unless remote auth was configured."""
+    return "0.0.0.0" if _dashboard_auth_token() else "127.0.0.1"
+
+
+def _direct_loopback_request():
+    """Recognize only a direct localhost request, not a proxy assertion."""
+    if any(request.headers.get(name) for name in
+           ("Forwarded", "X-Forwarded-For", "X-Real-IP")):
+        return False
+    try:
+        peer = ipaddress.ip_address(str(request.remote_addr or ""))
+        if getattr(peer, "ipv4_mapped", None):
+            peer = peer.ipv4_mapped
+    except ValueError:
+        return False
+    host = (urlsplit("//" + str(request.host or "")).hostname or "").lower()
+    if host == "localhost":
+        host_is_loopback = True
+    else:
+        try:
+            host_ip = ipaddress.ip_address(host)
+            if getattr(host_ip, "ipv4_mapped", None):
+                host_ip = host_ip.ipv4_mapped
+            host_is_loopback = host_ip.is_loopback
+        except ValueError:
+            host_is_loopback = False
+    return peer.is_loopback and host_is_loopback
+
+
+def _presented_dashboard_token():
+    header = str(request.headers.get("Authorization") or "")
+    scheme, _, value = header.partition(" ")
+    if scheme.lower() == "bearer":
+        return value.strip()
+    auth = request.authorization
+    if (auth and str(auth.type).lower() == "basic"
+            and auth.username == "pokestop"):
+        return str(auth.password or "")
+    return str(request.headers.get("X-Pokestop-Token") or "").strip()
+
+
+@app.before_request
+def _require_dashboard_authorization():
+    """Protect every current and future route with one fail-closed boundary."""
+    if _direct_loopback_request():
+        return None
+    expected = _dashboard_auth_token()
+    if not expected:
+        return jsonify({"error": "remote dashboard access is disabled"}), 403
+    supplied = _presented_dashboard_token()
+    if supplied and hmac.compare_digest(supplied, expected):
+        return None
+    response = jsonify({"error": "dashboard authentication required"})
+    response.status_code = 401
+    response.headers["WWW-Authenticate"] = 'Basic realm="Pokestop", charset="UTF-8"'
+    return response
 
 # ── shared state for the async scrape (single job at a time) ──────────
 _job = {"running": False, "log": [], "deals": [], "label": ""}
@@ -1491,7 +1564,10 @@ loadSettings();
 
 if __name__ == "__main__":
     threading.Thread(target=_watchdog, daemon=True).start()
+    bind_host = _dashboard_bind_host()
     print("Dashboard running at  http://127.0.0.1:5000")
-    print(f"Phone (same WiFi):    http://{_lan_ip()}:5000")
-    # 0.0.0.0 exposes the dashboard on the local network (phone access).
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    if bind_host == "0.0.0.0":
+        print(f"Authenticated LAN:    http://{_lan_ip()}:5000")
+    else:
+        print("Remote access:        disabled (set DASHBOARD_AUTH_TOKEN to enable)")
+    app.run(host=bind_host, port=5000, debug=False)

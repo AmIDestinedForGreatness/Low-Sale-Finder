@@ -15,15 +15,16 @@ Order of operations
 2. Attach a public IP to the instance (deferred at creation time - do this
    from the instance's own page: Attached VNICs -> the VNIC -> assign a
    public IP).
-3. Add an Ingress Rule for TCP port 5000 on the VCN's Security List (for the
-   dashboard) and for TCP port 22 (SSH - usually open by default).
+3. Keep TCP port 5000 closed in both the VCN Security List and the VM firewall.
+   Only TCP port 22 (SSH) needs public ingress. Access the dashboard through
+   the SSH tunnel described below; do not expose the raw Flask server.
 4. SSH in: `ssh -i <private key path> ubuntu@<public ip>`
 5. Copy the repo over (scp or git clone - the repo isn't public, so scp from
    this machine is simplest: `scp -r -i <key> C:\Users\Marvin\low-sale-finder
    ubuntu@<ip>:/home/ubuntu/`). Exclude `venv/`, `__pycache__/`, and anything
    already gitignored - those get rebuilt on the VM.
 6. Run `bash deploy/setup.sh` on the VM (installs Python, Playwright +
-   Chromium, the systemd unit files, opens the VM's own firewall for :5000).
+   Chromium and the systemd unit files; it deliberately does not open :5000).
 7. Move secrets over (see below) - setup.sh does NOT do this, it's manual on
    purpose, secrets never belong in a script or in git.
 8. `sudo systemctl enable --now pokestop-feed pokestop-fb pokestop-bot pokestop-dash`
@@ -32,6 +33,24 @@ Order of operations
    it working until a real webhook fires.
 10. Only once (9) is confirmed stable: stop `run_sniper.bat`'s Startup entry
     on this PC so it stops double-running the same feeds from two places.
+
+Dashboard access (private by default)
+-------------------------------------
+With no `DASHBOARD_AUTH_TOKEN`, `app.py` binds to `127.0.0.1` and accepts only
+direct loopback requests. From the owner's computer, create a private tunnel:
+
+`ssh -L 5000:127.0.0.1:5000 -i <private key path> ubuntu@<public ip>`
+
+Then open `http://127.0.0.1:5000`. Keep the SSH session open while using the
+dashboard. This needs no port-5000 ingress rule and sends dashboard traffic
+inside SSH.
+
+For trusted-LAN access only, set a long random `DASHBOARD_AUTH_TOKEN` in the
+gitignored `config.py` or service environment. The server then listens on the
+LAN and the browser uses HTTP Basic Auth: username `pokestop`, password equal
+to the token. Basic Auth over plain HTTP is not sufficient for public internet
+deployment; public access still requires a TLS/authenticating reverse proxy and
+a separate deployment review.
 
 Secrets that must move, and how
 --------------------------------

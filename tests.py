@@ -8,6 +8,7 @@ this suite screaming. Pair each test with its entry in LESSONS.md.
 
 Run:  E:\python.exe tests.py     (offline — no network, no Discord, no FB)
 """
+import base64
 import os
 import sys
 import time
@@ -1447,6 +1448,99 @@ class TestExchangeRate(unittest.TestCase):
                     os.remove(exchange_rate.CACHE_PATH)
                 except FileNotFoundError:
                     pass
+
+
+class TestDashboardAuthorization(unittest.TestCase):
+    """The LAN dashboard owns process control, outbound fetches, private
+    uploads, and mutable learning/config state. A reachable socket must not
+    imply authority."""
+
+    def setUp(self):
+        import app as dashboard_app
+        dashboard_app.app.config["TESTING"] = True
+        self.dashboard_app = dashboard_app
+        self.client = dashboard_app.app.test_client()
+
+    def _remote_get(self, path, headers=None):
+        return self.client.get(
+            path, headers=headers or {},
+            environ_base={"REMOTE_ADDR": "198.51.100.24"})
+
+    def test_remote_access_defaults_closed_when_token_is_missing(self):
+        with mock.patch.object(self.dashboard_app.config,
+                               "DASHBOARD_AUTH_TOKEN", "", create=True), \
+             mock.patch.dict(os.environ, {"DASHBOARD_AUTH_TOKEN": ""}):
+            response = self._remote_get("/api/settings")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.get_json()["error"],
+                         "remote dashboard access is disabled")
+
+    def test_configured_remote_access_requires_valid_server_side_token(self):
+        with mock.patch.object(self.dashboard_app.config,
+                               "DASHBOARD_AUTH_TOKEN", "correct-horse", create=True), \
+             mock.patch.dict(os.environ, {"DASHBOARD_AUTH_TOKEN": ""}):
+            missing = self._remote_get("/api/settings")
+            wrong = self._remote_get(
+                "/api/settings",
+                headers={"Authorization": "Bearer wrong-battery"})
+        self.assertEqual(missing.status_code, 401)
+        self.assertEqual(wrong.status_code, 401)
+        self.assertIn("Basic", missing.headers.get("WWW-Authenticate", ""))
+
+    def test_basic_or_bearer_token_authorizes_remote_dashboard(self):
+        basic = base64.b64encode(b"pokestop:correct-horse").decode("ascii")
+        with mock.patch.object(self.dashboard_app.config,
+                               "DASHBOARD_AUTH_TOKEN", "correct-horse", create=True), \
+             mock.patch.dict(os.environ, {"DASHBOARD_AUTH_TOKEN": ""}):
+            via_basic = self._remote_get(
+                "/api/settings", headers={"Authorization": f"Basic {basic}"})
+            via_bearer = self._remote_get(
+                "/api/settings",
+                headers={"Authorization": "Bearer correct-horse"})
+        self.assertEqual(via_basic.status_code, 200)
+        self.assertEqual(via_bearer.status_code, 200)
+
+    def test_direct_loopback_remains_usable_without_a_token(self):
+        with mock.patch.object(self.dashboard_app.config,
+                               "DASHBOARD_AUTH_TOKEN", "", create=True), \
+             mock.patch.dict(os.environ, {"DASHBOARD_AUTH_TOKEN": ""}):
+            response = self.client.get(
+                "/api/settings",
+                headers={"Host": "127.0.0.1:5000"},
+                environ_base={"REMOTE_ADDR": "127.0.0.1"})
+        self.assertEqual(response.status_code, 200)
+
+    def test_missing_token_also_limits_the_server_bind_to_loopback(self):
+        with mock.patch.object(self.dashboard_app.config,
+                               "DASHBOARD_AUTH_TOKEN", "", create=True), \
+             mock.patch.dict(os.environ, {"DASHBOARD_AUTH_TOKEN": ""}):
+            local_bind = self.dashboard_app._dashboard_bind_host()
+        with mock.patch.object(self.dashboard_app.config,
+                               "DASHBOARD_AUTH_TOKEN", "correct-horse", create=True), \
+             mock.patch.dict(os.environ, {"DASHBOARD_AUTH_TOKEN": ""}):
+            authenticated_bind = self.dashboard_app._dashboard_bind_host()
+        self.assertEqual(local_bind, "127.0.0.1")
+        self.assertEqual(authenticated_bind, "0.0.0.0")
+
+    def test_forwarded_request_cannot_claim_loopback_default(self):
+        with mock.patch.object(self.dashboard_app.config,
+                               "DASHBOARD_AUTH_TOKEN", "", create=True), \
+             mock.patch.dict(os.environ, {"DASHBOARD_AUTH_TOKEN": ""}):
+            response = self.client.get(
+                "/api/settings",
+                headers={"Host": "127.0.0.1:5000",
+                         "X-Forwarded-For": "198.51.100.24"},
+                environ_base={"REMOTE_ADDR": "127.0.0.1"})
+        self.assertEqual(response.status_code, 403)
+
+    def test_mutating_route_is_rejected_before_handler_runs(self):
+        with mock.patch.object(self.dashboard_app.config,
+                               "DASHBOARD_AUTH_TOKEN", "correct-horse", create=True), \
+             mock.patch.dict(os.environ, {"DASHBOARD_AUTH_TOKEN": ""}):
+            response = self.client.post(
+                "/api/restart", json={"target": "not-a-process"},
+                environ_base={"REMOTE_ADDR": "198.51.100.24"})
+        self.assertEqual(response.status_code, 401)
 
 
 class TestValuatorOcrRoute(unittest.TestCase):

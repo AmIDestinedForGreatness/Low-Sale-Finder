@@ -537,3 +537,18 @@ live/catalog checks separate and report them as pending when their assets are
 absent.
 **Guards:** isolated `TestValuatorOcrRoute` fixtures and deterministic
 `TestCardWarp.test_probe_contours_hash_hit_skips_ocr` regions/quads.
+
+### L42 - a reachable dashboard socket is not authority (2026-07-19)
+**Mistake:** the dashboard listened on every interface and treated network
+reachability as permission. Any reachable client could inspect private state,
+start a scrape or outbound fetch, write confirmation/config data, send a
+webhook test, or kill a process. The deployment notes also opened raw port
+5000 to the internet.
+**Rule:** enforce one server-side, fail-closed boundary across every route.
+With no secret configured, bind to and accept direct loopback only; forwarding
+headers never prove locality. Remote trusted-LAN access requires a configured
+secret and constant-time Basic/Bearer verification. Keep raw Flask off the
+public internet and use a private SSH tunnel for the VM dashboard.
+**Guard:** `TestDashboardAuthorization` covers missing/wrong/valid credentials,
+direct loopback, forwarded-loopback rejection, safe binding, and mutation
+rejection before the handler runs.

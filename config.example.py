@@ -110,6 +110,13 @@ FB_AUCTION_WARN_MINUTES = 10
 # ─────────────────────────────────────────────────────────────────────
 # RUNTIME
 # ─────────────────────────────────────────────────────────────────────
+# Empty is the safe default: the dashboard binds to and accepts direct
+# localhost requests only. For phone/LAN access, set a long random value in
+# gitignored config.py or the DASHBOARD_AUTH_TOKEN environment variable, then
+# sign in with browser Basic Auth using username "pokestop" and this token as
+# the password. A token does not replace TLS for internet-facing deployment.
+DASHBOARD_AUTH_TOKEN = ""
+
 POLL_INTERVAL_MINUTES = 10      # how often to re-scan
 HEADLESS = True                 # set False to watch the browser (useful first run / debugging)
 SEEN_DB_PATH = "seen.sqlite"    # tracks already-alerted listings so you aren't spammed

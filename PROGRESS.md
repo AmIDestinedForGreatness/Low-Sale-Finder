@@ -4,7 +4,7 @@
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
 written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
-**117 total tests: 114 passed, 3 explicitly skipped, 0 failed; 41 lessons**
+**124 total tests: 121 passed, 3 explicitly skipped, 0 failed; 42 lessons**
 (2026-07-19).
 
 ## 2026-07-19 independent Codex audit
@@ -15,15 +15,20 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
   the canonical dataset path had already fixed that failure class.
 - Isolated the Flask regressions from production uploads/failure logging and
   replaced a machine-dependent warp/hash skip with deterministic regions/quads.
-- Full deterministic suite: **117 total, 114 passed, 3 skips, 0 failed**.
+- Full deterministic suite: **124 total, 121 passed, 3 skips, 0 failed**.
   Offline scraper/parser replay:
   **40/40**. All 31 Python files and the inline dashboard JavaScript parse.
 - **Still unverified here:** real-photo perspective-warp/hash hit rate, route
   timing, and reaudit. This checkout has no `fingerprints.sqlite` and no
   `dataset/images`; synthetic wiring is not real-photo acceptance.
-- Public deployment remains blocked pending authentication/input hardening:
-  the dashboard binds `0.0.0.0:5000` and exposes unauthenticated mutation and
-  process-control routes.
+- Public deployment remains blocked pending input/transport hardening: the
+  authorization boundary is now closed, but raw Flask still must not be
+  internet-exposed and URL/upload hardening is the next security unit.
+- Dashboard authorization correction: without `DASHBOARD_AUTH_TOKEN` the
+  server binds to `127.0.0.1` and accepts direct loopback only; with a token,
+  remote requests require constant-time Basic/Bearer verification. One global
+  guard covers all read/mutation routes. Oracle instructions now keep port
+  5000 closed and use an SSH tunnel. Seven focused tests pass.
 
 ## Version history
 
