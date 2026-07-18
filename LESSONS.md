@@ -630,3 +630,18 @@ paths to temporary directories and run the real storage behavior there.
 `test_production_snapshot_detects_content_and_file_set_changes` proves changed
 and created files are reported; the complete 142-test run passed its module
 teardown with no corpus difference.
+
+### L48 - caught socket errors do not make a test suite offline (2026-07-19)
+**Mistake:** authorized settings-route tests and one valuation test depended on
+the machine's exchange-rate cache. When it was stale, they attempted
+`open.er-api.com`; application fallback caught the socket denial, so all tests
+still passed and the live dependency was easy to miss.
+**Rule:** default deterministic tests must reject and record both Requests calls
+and raw socket `connect`/`connect_ex`. Module teardown must fail on any attempt,
+even if production code catches the injected exception. Patch the dependency
+at the test's decision boundary with explicit deterministic data. Credentialed
+or live integration tests require deliberate `POKESTOP_TEST_ALLOW_NETWORK=1`;
+never silently inherit network permission from the machine.
+**Guard:** `test_network_attempt_recorder_survives_a_caught_exception` proves
+the recorder outlives a caught error. With the rate fixtures added, the full
+143-test run completes with no recorded real network attempt.

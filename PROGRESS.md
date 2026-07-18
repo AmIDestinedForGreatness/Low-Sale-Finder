@@ -4,7 +4,7 @@
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
 written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
-**142 total tests: 139 passed, 3 explicitly skipped, 0 failed; 47 lessons**
+**143 total tests: 140 passed, 3 explicitly skipped, 0 failed; 48 lessons**
 (2026-07-19).
 
 ## 2026-07-19 independent Codex audit
@@ -15,7 +15,7 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
   the canonical dataset path had already fixed that failure class.
 - Isolated the Flask regressions from production uploads/failure logging and
   replaced a machine-dependent warp/hash skip with deterministic regions/quads.
-- Full suite: **142 total, 139 passed, 3 skips, 0 failed**.
+- Full deterministic/offline suite: **143 total, 140 passed, 3 skips, 0 failed**.
   Offline scraper/parser replay:
   **40/40**. All 33 Python files and the inline dashboard JavaScript parse.
 - **Still unverified here:** real-photo perspective-warp/hash hit rate, route
@@ -60,9 +60,15 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
 - Test-corpus guard: module setup/teardown hashes `FAILURES.md` plus the complete
   top-level `dataset/*.json` file set. Any changed, created, or deleted learning
   record now fails even a focused test run without requiring a clean source
-  tree or reading private upload contents. The full 142-test run left this
-  corpus unchanged. That run did expose real exchange-rate connection attempts
-  when the machine cache was stale; a no-network test boundary remains next.
+  tree or reading private upload contents. The full suite leaves this corpus
+  unchanged.
+- Offline test boundary: module setup blocks and records Requests plus raw
+  socket `connect`/`connect_ex`; teardown fails even when application fallback
+  catches the injected error. It exposed three settings-route calls and one
+  valuation call that inherited stale exchange-rate cache behavior. Those
+  tests now inject deterministic rate data. Live integration requires explicit
+  `POKESTOP_TEST_ALLOW_NETWORK=1`; the default 143-test suite makes no recorded
+  in-process Python network attempt.
 
 ## Version history
 

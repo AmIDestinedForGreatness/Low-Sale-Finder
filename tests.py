@@ -19,6 +19,7 @@ import sys
 import time
 import tempfile
 import threading
+import traceback
 import unittest
 from unittest import mock
 
@@ -36,6 +37,23 @@ from fb_feed import parse_price, parse_end_time, parse_auction
 
 _REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 _PRODUCTION_STATE_BASELINE = None
+_UNEXPECTED_NETWORK_CALLS = []
+_NETWORK_PATCHERS = []
+
+
+class UnexpectedTestNetwork(RuntimeError):
+    pass
+
+
+def _reject_test_network(calls, kind, *args, **kwargs):
+    target = repr(args[:3] or {
+        key: kwargs[key] for key in ("method", "url", "address")
+        if key in kwargs})
+    detail = (f"{kind} {target}\n"
+              + "".join(traceback.format_stack(limit=10)[:-1]))
+    calls.append(detail)
+    raise UnexpectedTestNetwork(
+        f"test suite forbids real network access ({kind} {target})")
 
 
 def _snapshot_production_state(root=_REPO_ROOT):
@@ -78,15 +96,45 @@ def _production_state_changes(before, after):
 def setUpModule():
     global _PRODUCTION_STATE_BASELINE
     _PRODUCTION_STATE_BASELINE = _snapshot_production_state()
+    _UNEXPECTED_NETWORK_CALLS.clear()
+    if os.environ.get("POKESTOP_TEST_ALLOW_NETWORK") != "1":
+        _NETWORK_PATCHERS.extend([
+            mock.patch(
+                "requests.sessions.Session.request",
+                side_effect=lambda *args, **kwargs: _reject_test_network(
+                    _UNEXPECTED_NETWORK_CALLS, "requests", *args, **kwargs)),
+            mock.patch.object(
+                socket.socket, "connect",
+                side_effect=lambda *args, **kwargs: _reject_test_network(
+                    _UNEXPECTED_NETWORK_CALLS, "socket.connect", *args,
+                    **kwargs)),
+            mock.patch.object(
+                socket.socket, "connect_ex",
+                side_effect=lambda *args, **kwargs: _reject_test_network(
+                    _UNEXPECTED_NETWORK_CALLS, "socket.connect_ex", *args,
+                    **kwargs)),
+        ])
+        for patcher in _NETWORK_PATCHERS:
+            patcher.start()
 
 
 def tearDownModule():
     changes = _production_state_changes(
         _PRODUCTION_STATE_BASELINE or {}, _snapshot_production_state())
+    network_calls = list(_UNEXPECTED_NETWORK_CALLS)
+    for patcher in reversed(_NETWORK_PATCHERS):
+        patcher.stop()
+    _NETWORK_PATCHERS.clear()
+    problems = []
     if changes:
-        raise AssertionError(
-            "tests changed the production learning/data corpus: "
-            + ", ".join(changes))
+        problems.append("tests changed the production learning/data corpus: "
+                        + ", ".join(changes))
+    if network_calls:
+        problems.append(
+            "tests attempted real network access without "
+            "POKESTOP_TEST_ALLOW_NETWORK=1:\n" + "\n".join(network_calls))
+    if problems:
+        raise AssertionError("\n".join(problems))
 
 
 class TestClassify(unittest.TestCase):
@@ -600,7 +648,11 @@ class TestValuator(unittest.TestCase):
         sales_resp = mock.Mock(status_code=200)
         sales_resp.json.return_value = {"data": []}
         with mock.patch("valuator.requests.get", return_value=price_resp), \
-             mock.patch("valuator.requests.post", return_value=sales_resp):
+             mock.patch("valuator.requests.post", return_value=sales_resp), \
+             mock.patch("valuator.exchange_rate.get_usd_to_php_rate",
+                        return_value={"rate": 58.0, "fetched_at": 10000,
+                                      "stale": False, "source": "test",
+                                      "error": None}):
             out = valuator.valuate(12345)
         self.assertEqual(out["market_usd"], 19.34)
 
@@ -964,6 +1016,15 @@ class TestStateDurability(unittest.TestCase):
                 before, _snapshot_production_state(root))
         self.assertEqual(changes,
                          ["FAILURES.md (changed)", "dataset/new.json (created)"])
+
+    def test_network_attempt_recorder_survives_a_caught_exception(self):
+        calls = []
+        with self.assertRaises(UnexpectedTestNetwork):
+            _reject_test_network(calls, "requests", "GET",
+                                 "https://example.invalid")
+        self.assertEqual(len(calls), 1)
+        self.assertIn("requests", calls[0])
+        self.assertIn("example.invalid", calls[0])
 
 
 class TestEvidence(unittest.TestCase):
@@ -1686,6 +1747,12 @@ class TestDashboardAuthorization(unittest.TestCase):
         dashboard_app.app.config["TESTING"] = True
         self.dashboard_app = dashboard_app
         self.client = dashboard_app.app.test_client()
+        rate_patcher = mock.patch.object(
+            dashboard_app.exchange_rate, "get_usd_to_php_rate",
+            return_value={"rate": 58.0, "fetched_at": 10000,
+                          "stale": False, "source": "test", "error": None})
+        rate_patcher.start()
+        self.addCleanup(rate_patcher.stop)
 
     def _remote_get(self, path, headers=None):
         return self.client.get(

@@ -35,7 +35,7 @@ separately.
 | `HASH-FIRST-NEXT.md` | Perspective-warp unit: code/synthetic tests complete; real-photo/catalog acceptance still pending |
 | `docs/CLAUDE-CODE-AGENT-EVALUATION.md` | 2026-07-19 independent code, evidence, safety, and agent-work evaluation |
 | `AGENT-RELAY.md` | Chronological work log between CC (Claude Code) and CX (Codex). Read bottom-up |
-| `LESSONS.md` | 47 permanent lessons — every closed mistake, L1–L47 |
+| `LESSONS.md` | 48 permanent lessons — every closed mistake, L1–L48 |
 | `FAILURES.md` | Per-card failure database (auto-maintained; every non-Level-A ID gets a record) |
 | `VISION.md` | Product vision / where this is going |
 | `docs/archive/` | Completed unit specs, kept for their acceptance criteria |
@@ -47,7 +47,7 @@ separately.
 - **Never push without Yujin's explicit instruction.**
 - Every closed mistake becomes a permanent test in `tests.py` + a lesson in
   `LESSONS.md`. Nothing fails twice.
-- Full suite must stay green: `python tests.py` (142 total: 139 passed,
+- Full suite must stay green: `python tests.py` (143 total: 140 passed,
   3 explicit skips, 0 failed on this checkout as of 2026-07-19; see
   `PROGRESS.md` for environment limits).
 
@@ -83,6 +83,10 @@ to every JSON/SQLite writer; see F-10 in the evaluation and `PROGRESS.md`.
 The test module snapshots `FAILURES.md` and every top-level `dataset/*.json`
 before and after a run. A content/file-set change fails the suite, while source
 edits and private upload contents stay outside this guard.
+
+Deterministic tests also block Requests and in-process socket connections and
+fail at module teardown even when application fallback catches the error. Live
+integration tests must opt in explicitly with `POKESTOP_TEST_ALLOW_NETWORK=1`.
 
 ## Per-machine setup notes
 

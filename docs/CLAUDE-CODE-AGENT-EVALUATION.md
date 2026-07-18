@@ -252,6 +252,14 @@ source tree. A dedicated regression proves changed/created detection, and the 14
 suite left the corpus unchanged. Private upload contents are deliberately not hashed, so
 an explicit upload-directory invariant remains open rather than being implied.
 
+The same module boundary now records and rejects Requests plus raw socket
+`connect`/`connect_ex`, failing teardown even if application code catches the injected
+exception. It exposed live exchange-rate attempts in three authorization-route calls and
+one valuation test; all four now inject deterministic rates. The default 143-test run has
+no recorded in-process Python network attempt. Live integration is explicit via
+`POKESTOP_TEST_ALLOW_NETWORK=1`; subprocess/external-tool networking is not claimed to be
+intercepted by this Python boundary.
+
 ### F-03 — Critical — Operations/security: public unauthenticated control plane
 
 **Evidence.** `app.py:1497` binds `0.0.0.0:5000`. `deploy/README.md:18` and
