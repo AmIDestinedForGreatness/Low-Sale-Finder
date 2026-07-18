@@ -1214,3 +1214,44 @@ real-photo acceptance is still blocked by absent private assets. Local commit
 JSON durability: trace confirmation/failure writers, reproduce one lost-update
 or crash-corruption case in an isolated store, and centralize only the proven
 write seam with atomic replacement/process locking.
+
+### CX | 2026-07-19 overnight — first mutable-state seam made thread/process/crash safe (`c243a2a`)
+
+**Unit attempted:** evaluation F-10's confirmation/failure JSON seam. Trace
+confirmed `evidence.log_failure()` and `/api/valuator/confirm` each performed an
+unlocked JSON read-modify-write. Failure logging then rewrote tracked
+`FAILURES.md` from its caller's private snapshot. `rebuild_failures()` used the
+same direct write. `profile_dataset.py`, `reaudit.py`, exchange/cache writers,
+and SQLite policy were inventoried but deliberately left outside this unit.
+
+**Defect reproduced before production change:** two temporary-file failure-log
+threads were synchronized immediately after reading the same empty snapshot.
+The first run produced malformed JSON (`JSONDecodeError: Extra data`); after
+tightening the harness to the repository read seam, the deterministic failure
+was last-writer-wins: expected Alpha and Beta, but final JSON was missing Beta.
+No production dataset or upload path was touched.
+
+**Correction/files:** new `state_store.py` holds a per-absolute-path thread lock
+and an advisory one-byte Windows/POSIX process lock across load, mutation, flush,
+fsync, and same-directory `os.replace`. Persistent lock files are ignored rather
+than unsafely deleted; abandoned temp files are ignored and normal exceptions
+clean them. Failure logging, failure rebuilds, atomic generated Markdown, and
+dashboard confirmations now use the shared primitive. `.gitignore`, four
+isolated regressions, L46, README/PROGRESS, and evaluation F-10 were updated.
+
+**Verification:** `TestStateDurability` 4/4: simultaneous failure logs preserve
+both records and matching Markdown; two separate Python processes preserve
+both list mutations on this Windows machine; injected failure immediately
+before replace leaves the old complete JSON and no temp; two confirmation-route
+records persist. Focused durability/evidence/auth set 23/23. Full `tests.py`:
+141 total, 138 passed, 3 explicit asset-dependent skips, 0 failed in 0.976s.
+All 33 Python files AST-parsed, all four tracked dataset JSON files parsed, and
+`git diff --check` succeeded with only line-ending notices.
+
+**Honest residuals/Git/next:** this is not a general persistence migration.
+Other JSON writers, schema migrations, multi-process SQLite WAL/busy-timeout
+policy, and kill-during-fsync testing remain open. Local commit `c243a2a`;
+nothing pushed. Priority 4 remains asset-blocked. Next selected safe unit is
+evaluation F-02's production-state isolation guard: prove a full deterministic
+test run cannot change the tracked failure/data corpus, without requiring the
+working tree to start clean or hashing private upload contents.
