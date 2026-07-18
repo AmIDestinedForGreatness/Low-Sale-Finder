@@ -1463,36 +1463,75 @@ class TestValuatorOcrRoute(unittest.TestCase):
         import app as dashboard_app
         dashboard_app.app.config["TESTING"] = True
         client = dashboard_app.app.test_client()
-        with mock.patch.object(
-                __import__("valuator"), "ocr_lines",
-                return_value=["Altaria", "Powerful Gain", "Shining Wind", "123/124"]):
-            photo_path = os.path.join(dashboard_app.UPLOAD_DIR, "_test_altaria.jpg")
-            os.makedirs(dashboard_app.UPLOAD_DIR, exist_ok=True)
+        with tempfile.TemporaryDirectory() as upload_dir, \
+             mock.patch.object(dashboard_app, "UPLOAD_DIR", upload_dir), \
+             mock.patch.object(
+                 __import__("valuator"), "ocr_lines",
+                 return_value=["Altaria", "Powerful Gain", "Shining Wind", "123/124"]), \
+             mock.patch("folder_dataset.distinct_names", return_value={"Altaria"}), \
+             mock.patch("folder_dataset.distinct_collector_fractions",
+                        return_value={(123, 124)}), \
+             mock.patch("valuator.guess_query", return_value=("Altaria", "123/124")), \
+             mock.patch("evidence.build_evidence", return_value={}), \
+             mock.patch("evidence.log_failure"):
+            photo_path = os.path.join(upload_dir, "_test_altaria.jpg")
             from PIL import Image
             Image.new("RGB", (600, 800), (255, 255, 255)).save(photo_path, "JPEG")
-            try:
-                with mock.patch("valuator.search_candidates") as search:
-                    def fake_search(query, prefer_jp=False, size=12):
-                        if "EX" in query:
-                            return [{"pid": 1, "name": "Altaria EX (Full Art)",
-                                     "set": "XY - Fates Collide", "number": "123/124",
-                                     "line": "Pokemon", "img": "", "url": "",
-                                     "market": None}]
-                        return [{"pid": 2, "name": "Altaria", "set": "Dragons Exalted",
-                                 "number": "84/124", "line": "Pokemon", "img": "",
-                                 "url": "", "market": None}]
-                    search.side_effect = fake_search
-                    with open(photo_path, "rb") as photo_file:
-                        data = {"photo": (photo_file, "test.jpg")}
-                        r = client.post("/api/valuator/ocr", data=data,
-                                        content_type="multipart/form-data")
-            finally:
-                os.remove(photo_path)
+            with mock.patch("valuator.search_candidates") as search:
+                def fake_search(query, prefer_jp=False, size=12):
+                    if "EX" in query:
+                        return [{"pid": 1, "name": "Altaria EX (Full Art)",
+                                 "set": "XY - Fates Collide", "number": "123/124",
+                                 "line": "Pokemon", "img": "", "url": "",
+                                 "market": None}]
+                    return [{"pid": 2, "name": "Altaria", "set": "Dragons Exalted",
+                             "number": "84/124", "line": "Pokemon", "img": "",
+                             "url": "", "market": None}]
+                search.side_effect = fake_search
+                with open(photo_path, "rb") as photo_file:
+                    data = {"photo": (photo_file, "test.jpg")}
+                    r = client.post("/api/valuator/ocr", data=data,
+                                    content_type="multipart/form-data")
         d = r.get_json()
         self.assertEqual(d.get("number"), "123/124")
         self.assertIn("EX", d.get("name") or "")
         self.assertTrue(any(c.get("set") == "XY - Fates Collide"
                             for c in d.get("candidates") or []))
+
+    def test_setcode_shaped_name_is_not_presented_by_single_card_route(self):
+        """The binder/canonical path already fixed this live failure, but the
+        single-card route has a separate identification copy. It must not
+        display an OCR'd JP set code such as ``m20`` as a Pokemon name when
+        cross-region number collisions prevent a unique catalog upgrade."""
+        import app as dashboard_app
+        dashboard_app.app.config["TESTING"] = True
+        client = dashboard_app.app.test_client()
+        candidates = [
+            {"pid": 1, "name": "Jamming Tower - 222/193",
+             "set": "M2a: High Class Pack", "number": "222/193"},
+            {"pid": 2, "name": "Tyranitar - 222/193",
+             "set": "SV02: Paldea Evolved", "number": "222/193"},
+        ]
+        with tempfile.TemporaryDirectory() as upload_dir, \
+             mock.patch.object(dashboard_app, "UPLOAD_DIR", upload_dir), \
+             mock.patch("valuator.ocr_lines", return_value=["m20", "222/193"]), \
+             mock.patch("valuator.guess_query", return_value=("m20", "222/193")), \
+             mock.patch("valuator.search_candidates", return_value=candidates), \
+             mock.patch("evidence.build_evidence", return_value={}), \
+             mock.patch("evidence.log_failure"):
+            photo_path = os.path.join(upload_dir, "setcode.jpg")
+            from PIL import Image
+            Image.new("RGB", (600, 800), (255, 255, 255)).save(photo_path, "JPEG")
+            with open(photo_path, "rb") as photo_file:
+                response = client.post(
+                    "/api/valuator/ocr",
+                    data={"photo": (photo_file, "setcode.jpg")},
+                    content_type="multipart/form-data")
+        result = response.get_json()
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(result["name"])
+        self.assertEqual(result["number"], "222/193")
+        self.assertEqual(len(result["candidates"]), 2)
 
 
 class TestCardWarp(unittest.TestCase):
@@ -1589,9 +1628,12 @@ class TestCardWarp(unittest.TestCase):
         with _tf.TemporaryDirectory() as td:
             photo = os.path.join(td, "two_cards.png")
             cv2.imwrite(photo, scene)
-            boxes = folder_dataset.detect_card_regions(photo)
-            if len(boxes) < 2:
-                self.skipTest("synthetic scene did not yield 2 regions")
+            boxes = [(60, 200, 500, 700), (640, 200, 500, 700)]
+            quads = [
+                np.array([[x, 200], [x + 500, 200],
+                          [x + 500, 900], [x, 900]], dtype=np.float32)
+                for x in (60, 640)
+            ]
 
             ocr_calls = []
 
@@ -1606,7 +1648,9 @@ class TestCardWarp(unittest.TestCase):
                             "number": "001/198", "distance": 2.0}
                 return None
 
-            with mock.patch("providers.visual_catalog.VisualCatalogProvider"
+            with mock.patch("folder_dataset.detect_card_regions",
+                            return_value=(boxes, quads)), \
+                 mock.patch("providers.visual_catalog.VisualCatalogProvider"
                             ".match_image", fake_match):
                 cells, groups = folder_dataset.probe_contours(
                     photo, td, ocr_reader=fake_reader)

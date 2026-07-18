@@ -1,4 +1,11 @@
-# Next unit: perspective-normalize card crops before hashing (make hash-first actually HIT)
+# Perspective-normalize card crops before hashing
+
+> **Status (independently audited 2026-07-19):** implementation and four
+> deterministic synthetic tests are complete. Real-photo/catalog hit rate,
+> cold-route timing, 0/199 image replay, and reaudit acceptance remain pending
+> because this checkout has no `fingerprints.sqlite`, `dataset/images`, or the
+> referenced private upload. Do not call the unit accepted until those criteria
+> run on the machine that has the assets.
 
 ## Why this unit exists
 

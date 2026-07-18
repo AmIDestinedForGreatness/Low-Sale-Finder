@@ -32,9 +32,10 @@ separately.
 |---|---|
 | `PROGRESS.md` | **Start here.** Version history, the system, current limits, roadmap |
 | `DIRECTIVE.md` | The governing rules: evidence levels A–E, no silent inference, banned language |
-| `HASH-FIRST-NEXT.md` | The ACTIVE next work unit (perspective-warp before hashing) |
+| `HASH-FIRST-NEXT.md` | Perspective-warp unit: code/synthetic tests complete; real-photo/catalog acceptance still pending |
+| `docs/CLAUDE-CODE-AGENT-EVALUATION.md` | 2026-07-19 independent code, evidence, safety, and agent-work evaluation |
 | `AGENT-RELAY.md` | Chronological work log between CC (Claude Code) and CX (Codex). Read bottom-up |
-| `LESSONS.md` | 39 permanent lessons — every closed mistake, L1–L39 |
+| `LESSONS.md` | 41 permanent lessons — every closed mistake, L1–L41 |
 | `FAILURES.md` | Per-card failure database (auto-maintained; every non-Level-A ID gets a record) |
 | `VISION.md` | Product vision / where this is going |
 | `docs/archive/` | Completed unit specs, kept for their acceptance criteria |
@@ -46,7 +47,9 @@ separately.
 - **Never push without Yujin's explicit instruction.**
 - Every closed mistake becomes a permanent test in `tests.py` + a lesson in
   `LESSONS.md`. Nothing fails twice.
-- Full suite must stay green: `python tests.py` (123 tests as of 2026-07-18).
+- Full suite must stay green: `python tests.py` (117 total: 114 passed,
+  3 explicit skips, 0 failed on this checkout as of 2026-07-19; see
+  `PROGRESS.md` for environment limits).
 
 ## Per-machine setup notes
 

@@ -3,7 +3,27 @@
 > "We are nowhere near, but we are closer than where we were yesterday." — 2026-07-16
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
-written lesson (`LESSONS.md`). Current: **123 tests, 39 lessons** (as of 2026-07-18).
+written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
+**117 total tests: 114 passed, 3 explicitly skipped, 0 failed; 41 lessons**
+(2026-07-19).
+
+## 2026-07-19 independent Codex audit
+
+- Formal repository/agent evaluation: `docs/CLAUDE-CODE-AGENT-EVALUATION.md`.
+- Confirmed and fixed route parity: the dashboard's separate single-card
+  identifier could still display a JP set code (`m20`) as a Pokemon name after
+  the canonical dataset path had already fixed that failure class.
+- Isolated the Flask regressions from production uploads/failure logging and
+  replaced a machine-dependent warp/hash skip with deterministic regions/quads.
+- Full deterministic suite: **117 total, 114 passed, 3 skips, 0 failed**.
+  Offline scraper/parser replay:
+  **40/40**. All 31 Python files and the inline dashboard JavaScript parse.
+- **Still unverified here:** real-photo perspective-warp/hash hit rate, route
+  timing, and reaudit. This checkout has no `fingerprints.sqlite` and no
+  `dataset/images`; synthetic wiring is not real-photo acceptance.
+- Public deployment remains blocked pending authentication/input hardening:
+  the dashboard binds `0.0.0.0:5000` and exposes unauthenticated mutation and
+  process-control routes.
 
 ## Version history
 
@@ -23,6 +43,10 @@ written lesson (`LESSONS.md`). Current: **123 tests, 39 lessons** (as of 2026-07
 | V0.11 | 7/17 | **Adversarial verification**: widened cross-print collision analyzer; Evidence Coverage split from provisional Prediction Confidence; falsification block on every result; local-only perceptual-hash ArtworkProvider + honest provider stubs; transactional/resumable two-dataset audit; narrow-photo binder fallback and invalid-number rejection. |
 | V0.11.1 | 7/17 | **Facebook CPU/fairness fix**: replaced catastrophic whole-page PriceCharting regex with bounded row parsing; removed duplicate per-post valuation; added 500ms hover/45s collection caps, auction maintenance between groups, and explicit Marketplace state. One sequential burner browser, no ban-risky parallelism. |
 | V0.12 | 7/18 | **Mixed-set binder day**: contour-based card-region detection (`detect_card_regions`/`probe_contours`, geometry not text — catches pages the text signals can't); contour-first ordering ahead of the blind 2×2 grid; 12-card lattice completion (a 3×4 page can never come back as 11); hash-first lookup with numpy-vectorized `match_image()` (2-9s → 0.02s/lookup); content-hash OCR cache (warm 12-card re-run 473s → ~70-100s); `fingerprints.sqlite` refresh 20,324 → 20,444 (Mega Darkrai ex) with visual-column preservation on rebuild; live USD/PHP rate wired into all 4 price paths; cross-region number-collision documented (`224/193` = EN Orthworm AND JP Mega Froslass ex — the `len(cands)==1` gate is load-bearing); set-code-shaped garbage can no longer surface as a card name. Verified on Yujin's real 12-card JP binder photo: 12/12 detected, 4 at Level A, rest honest-unread. Suite 123/123. |
+
+The V0.12 row above records the originating machine's historical report. This
+audit could not replay its real-photo/catalog claims on the present machine;
+use the current audit section above for locally reproducible status.
 
 ## The system (4 always-on processes)
 

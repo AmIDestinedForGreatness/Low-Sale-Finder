@@ -511,3 +511,29 @@ auction-post revisits until historical post changes prove that hypothesis.
 **Guard:** `TestFacebookFeedPace` covers single valuation, collection/hover
 bounds, maintenance, and Marketplace state. The PriceCharting adversarial-HTML
 test enforces row-bounded parsing and a one-second ceiling.
+
+### L40 - an identification fix is incomplete while entry points copy the policy (2026-07-19)
+**Mistake:** the canonical `profile_dataset.identify()` path learned that a JP
+set-code-shaped OCR token such as `m20` is a search hint, never a Pokemon name.
+The dashboard's single-card route duplicated the result assembly and still
+displayed `m20` when an exact-number collision prevented a catalog upgrade.
+The same card could therefore receive different truth depending on its entry
+point.
+**Rule:** identification policy belongs in one canonical service. Until the
+duplicate route is removed, every correctness fix must be exercised through
+the real route as well as the canonical path, preserving the same candidates,
+abstention, and evidence result.
+**Guard:** `TestValuatorOcrRoute.test_setcode_shaped_name_is_not_presented_by_single_card_route`.
+
+### L41 - a test must not train production state or call a skip proof (2026-07-19)
+**Mistake:** a Flask route regression used the live upload/failure paths and
+machine-local catalog signals, so a data-light machine both failed the test and
+appended a bogus training record. Separately, the perspective-warp wiring test
+skipped when a synthetic contour happened not to be detected, even though the
+relay later described all four tests as passing.
+**Rule:** correctness tests use temporary persistence and deterministic boundary
+inputs. A skipped branch is unexecuted, never acceptance evidence. Keep optional
+live/catalog checks separate and report them as pending when their assets are
+absent.
+**Guards:** isolated `TestValuatorOcrRoute` fixtures and deterministic
+`TestCardWarp.test_probe_contours_hash_hit_skips_ocr` regions/quads.

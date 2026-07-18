@@ -227,15 +227,16 @@ def valuator_ocr():
     from PIL import Image as _Img
     n_names = len(folder_dataset.distinct_names(lines))
     n_numbers = folder_dataset.distinct_collector_fractions(lines)
-    _im = _Img.open(path)
-    pair = n_names == 2 and _im.width > _im.height
+    with _Img.open(path) as uploaded_image:
+        image_width, image_height = uploaded_image.size
+    pair = n_names == 2 and image_width > image_height
     probe_cells, probe_ocr = [], []
     contour_probe = False
     grid_worth_trying = (not pair and n_names < 3
                          and folder_dataset.should_probe_grid(
-                             _im.width, _im.height, n_names, n_numbers))
+                             image_width, image_height, n_names, n_numbers))
     if (not pair and n_names < 3
-            and (grid_worth_trying or min(_im.width, _im.height) >= 900)):
+            and (grid_worth_trying or min(image_width, image_height) >= 900)):
         # CONTOUR-FIRST: try actual card-shape detection before falling back
         # to a blind fixed 2x2 quarter-split. A blind split assumes exactly
         # 4 cards — wrong for anything else (a real 12-card 3x4 page got
@@ -258,7 +259,7 @@ def valuator_ocr():
             if boxes:
                 bands = {}
                 for (bx, by, bw, bh) in boxes:
-                    band = round(by / (_im.height * 0.15))
+                    band = round(by / (image_height * 0.15))
                     bands[band] = bands.get(band, 0) + 1
                 cols = max(2, max(bands.values()))
             rows = -(-len(probe_cells) // cols)
@@ -364,9 +365,16 @@ def valuator_ocr():
                 cands, name = c2, exact[0]["name"].split(" - ")[0]
                 via = via or "number-variant match"
                 break
+    query = (name + " " + (number or "")).strip()
+    # Match profile_dataset.identify(): a set-code-shaped OCR token is a
+    # search hint, never a Pokemon name. If cross-region collisions prevent
+    # the set-code+number lookup from upgrading it to a real name, present an
+    # honest unread and keep the candidates for the user's eye gate.
+    if name and not via and valuator._SET_RE.fullmatch(str(name)):
+        name = None
     graded = any(re.search(r"\b(psa|bgs|cgc|beckett|black label|"
-                           r"gem ?mint|pristine)", ln, re.I) for ln in lines)
-    result = {"query": (name + " " + (number or "")).strip(),
+                            r"gem ?mint|pristine)", ln, re.I) for ln in lines)
+    result = {"query": query,
               "name": name, "name_read": name_read,
               "number": number, "number_read": number_read,
               "snapped": snapped, "lines": lines[:12],

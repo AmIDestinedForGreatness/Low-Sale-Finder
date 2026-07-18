@@ -984,3 +984,60 @@ Implemented the spec in `HASH-FIRST-NEXT.md` while Yujin sleeps, per his instruc
 6. If hits are still rare: sample 2-3 warped-vs-raw-crop distances (spec's fallback ask) to tell alignment-gap from catalog-coverage-gap (739 cards in the `images.pokemontcg.io` 404 gap can't hash-match regardless of warp quality)
 
 Local commit only, not pushed — per the repo's own stated working agreement (never push without Yujin's explicit instruction), and because this unit's real acceptance is still open.
+
+### CX | 2026-07-19 [Mom's PC] — independent audit, route parity fix, and honest acceptance reset
+
+Read README, DIRECTIVE, VISION, PROGRESS, the active/archive unit specs, all
+data reports, deployment notes, and the full relay before changing behavior.
+Formal evaluation is now `docs/CLAUDE-CODE-AGENT-EVALUATION.md`; it separates
+implemented, test-proven, observed-once, and product-proven claims and includes
+severity/evidence/reproduction/correction/acceptance for 12 findings plus a
+Track A/Track B map, prioritized remediation, agent rules, and Definition of
+Done.
+
+**Confirmed defect, test first:** the canonical `profile_dataset.identify()`
+already blanked a set-code-shaped OCR token, but `/api/valuator/ocr` duplicated
+the identifier and still returned `name="m20"` for the cross-region `222/193`
+collision. The new real-Flask-route regression failed before the fix (`'m20'
+is not None`) and passes after the minimal parity correction. The route keeps
+`m20 222/193` as the trace/search query and both candidates for the eye gate,
+but presents `name=None`. The route's Pillow image handle is now closed.
+
+**Test-evidence correction:** the Altaria route test used production upload /
+failure paths and machine-local catalog signals. It is now temporary and
+deterministic. The perspective-warp wiring test previously skipped when a
+synthetic contour was not detected even though the earlier relay said all four
+tests passed; it now supplies deterministic boxes/quads and proves a warp hash
+hit skips OCR. Permanent lessons L40/L41 record both failure classes. The first
+baseline command accidentally ran in the real checkout and produced one bogus
+failure record plus five `card_1784395884*` files; the record was removed and
+the five known artifacts were deleted before final verification. No existing
+user/agent records were removed.
+
+**Baseline at `9f04482`, isolated archive:** `python tests.py` with the explicit
+Python 3.14.4 executable ran 116 tests: 115 pass, one data-dependent route
+failure, four skips. **After:** the same full command ran 117 total: 114
+passed, three skipped, zero failed, 0.388s. Focused offline classification/
+scraper/price-parser replay is 40/40,
+0.009s. All 31 Python files AST-parse; all four tracked dataset JSON files
+parse; the dashboard's one inline JS block passes `node --check`; `git diff
+--check` succeeds with line-ending warnings. Current machine still has no
+`fingerprints.sqlite` and zero `dataset/images`, so the private real-photo
+warp/hash hit rate, cold-route timing, 0/199 replay, and reaudit were **not**
+run or claimed. Google Vision live acceptance was also not run.
+
+**Release blockers found:** do not expose the current dashboard publicly. It
+binds `0.0.0.0:5000`, deploy docs open that port, and restart/webhook/confirm/
+remote-fetch/scrape mutations have no authentication. The raw URL substring
+allowlist and unbounded extension-only uploads also need hardening. Separately,
+DIRECTIVE's Level-A "zero inference" promise conflicts with evidence.py's
+unique-inferred-name A gate; owner/policy reconciliation is required before
+Level A can be a stable downstream contract.
+
+README, PROGRESS, HASH-FIRST status, and lesson count now reflect the locally
+reproducible state (117 tests, 41 lessons, real-photo acceptance pending).
+Nothing was pushed. Source writes succeeded, but two explicit `.git` write
+permission grants still left Windows denying `.git/index.lock`, so the
+authorized local commits could not be created in this sandbox. Working changes
+remain reviewable and uncommitted; the exact Git error was `fatal: Unable to
+create .../.git/index.lock: Permission denied`.
