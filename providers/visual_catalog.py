@@ -10,6 +10,8 @@ from contextlib import closing
 from functools import lru_cache
 from heapq import nsmallest
 
+import numpy as np
+
 from .artwork import _file_hashes, _norm_name, _norm_number
 from .base import EvidenceProvider
 
@@ -52,6 +54,22 @@ def _read_index(db_path, token):
         ).fetchall())
 
 
+@lru_cache(maxsize=4)
+def _hash_arrays(db_path, token):
+    """phash/dhash columns as numpy uint64 arrays, same rows/order as
+    _read_index(db_path, token) — built once per index version so a
+    candidate-free full-catalog scan (match_image) is a vectorized XOR +
+    popcount instead of a 19k-row Python loop (was ~2-9s/call, dominated
+    match_image() end-to-end and made probe_contours() net SLOWER than
+    OCR-only despite skipping OCR on hits — see AGENT-RELAY.md 2026-07-18)."""
+    rows = _read_index(db_path, token)
+    if not rows:
+        return np.array([], dtype=np.uint64), np.array([], dtype=np.uint64)
+    phashes = np.array([int(str(r[5]), 16) for r in rows], dtype=np.uint64)
+    dhashes = np.array([int(str(r[6]), 16) for r in rows], dtype=np.uint64)
+    return phashes, dhashes
+
+
 def _prepared_row(row):
     signature = (row[0], row[1], row[3], row[5], row[6])
     prepared = _PREPARED_ROWS.get(signature)
@@ -86,20 +104,26 @@ class VisualCatalogProvider(EvidenceProvider):
             rows = self._indexed_rows()
             if not rows:
                 return None
+            token = _db_token(self.db_path)
+            phashes, dhashes = _hash_arrays(self.db_path, token)
             stat = os.stat(image_path)
             input_phash, input_dhash = _file_hashes(
                 image_path, stat.st_mtime_ns, stat.st_size)
-            scored = [(_hash_distance(str(input_phash), str(input_dhash),
-                                       str(row[5]), str(row[6])), row)
-                      for row in rows]
+            p_xor = phashes ^ np.uint64(int(str(input_phash), 16))
+            d_xor = dhashes ^ np.uint64(int(str(input_dhash), 16))
+            distances = (.7 * np.bitwise_count(p_xor).astype(np.float64)
+                         + .3 * np.bitwise_count(d_xor).astype(np.float64))
         except (OSError, ValueError, TypeError, sqlite3.Error):
             return None
-        nearest = nsmallest(2, scored, key=lambda item: item[0])
-        best_distance, row = nearest[0]
-        next_distance = nearest[1][0] if len(nearest) > 1 else float("inf")
+        k = min(2, len(distances))
+        nearest_idx = np.argpartition(distances, k - 1)[:k]
+        nearest_idx = nearest_idx[np.argsort(distances[nearest_idx])]
+        best_distance = float(distances[nearest_idx[0]])
+        next_distance = float(distances[nearest_idx[1]]) if k > 1 else float("inf")
         if (best_distance > self.max_distance
                 or best_distance > next_distance - self.nearest_slack):
             return None
+        row = rows[int(nearest_idx[0])]
         return {"id": row[0], "name": row[1], "set": row[2],
                 "number": row[3], "visual_path": row[4],
                 "distance": round(best_distance, 2)}
