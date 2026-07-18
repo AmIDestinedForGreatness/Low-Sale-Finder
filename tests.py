@@ -502,6 +502,18 @@ class TestValuator(unittest.TestCase):
         out = self._valuate_with_sales(rows)
         self.assertEqual(out["volatility"]["label"], "Stable")
 
+    def test_sales_fetch_retries_and_exposes_failure(self):
+        price_resp = mock.Mock(status_code=200)
+        price_resp.json.return_value = [{"marketPrice": 10.0}]
+        with mock.patch("valuator.requests.get", return_value=price_resp), \
+             mock.patch("valuator.requests.post", side_effect=RuntimeError("timeout")) as post, \
+             mock.patch("valuator.time.sleep"):
+            out = valuator.valuate(130920)
+        self.assertEqual(post.call_count, 2)
+        self.assertEqual(out["sales_fetch"]["status"], "failed")
+        self.assertEqual(out["confidence"], "UNKNOWN")
+        self.assertIn("not evidence of a thin market", out["confidence_why"])
+
     def test_market_price_uses_tcgplayer_market_not_highest_condition(self):
         rows = [{"marketPrice": 19.34}, {"marketPrice": 44.90}]
         out = self._valuate_with_sales([])
@@ -734,6 +746,31 @@ class TestEvidence(unittest.TestCase):
         # even Level A must show the structural gap honestly, not hide it
         self.assertEqual(ev["evidence_chain"]["artwork"]["status"], "not_checked")
         self.assertEqual(ev["evidence_chain"]["holo_pattern"]["status"], "not_checked")
+
+    def test_unique_attack_fingerprint_inference_can_reach_level_a(self):
+        ident = self._ident(
+            name="Alolan Ninetales GX", name_read=None, via="attack fingerprint",
+            number="22/145", number_read="22/145",
+            candidates=[{"pid": 130920, "name": "Alolan Ninetales GX",
+                         "set": "Guardians Rising", "number": "22/145"}])
+        with mock.patch("collision._catalog_rows", return_value=[]):
+            ev = evidence.build_evidence(ident, ["Ice Blade", "Blizzard Edge", "22/145"])
+        self.assertEqual(ev["evidence_chain"]["pokemon_name"]["status"], "inferred")
+        self.assertEqual(ev["evidence_level"], "A")
+
+    def test_ambiguous_attack_fingerprint_inference_stays_at_level_c(self):
+        ident = self._ident(
+            name="Alolan Ninetales GX", name_read=None, via="attack fingerprint",
+            number="22/145", number_read="22/145",
+            candidates=[
+                {"pid": 130920, "name": "Alolan Ninetales GX",
+                 "set": "Guardians Rising", "number": "22/145"},
+                {"pid": 130921, "name": "Alolan Sandslash GX",
+                 "set": "Guardians Rising", "number": "23/145"},
+            ])
+        with mock.patch("collision._catalog_rows", return_value=[]):
+            ev = evidence.build_evidence(ident, ["Ice Blade", "22/145"])
+        self.assertEqual(ev["evidence_level"], "C")
 
     def test_eye_read_is_level_b_not_a(self):
         ident = self._ident(name="Coalossal", number="117/100",

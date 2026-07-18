@@ -375,6 +375,15 @@ def analyze(name, number, norm_number_value, language_evidence, set_evidence,
     else:
         status = "none"
 
+    exact_names = {
+        _norm_name(c.get("name")) for c in supplied
+        if c.get("name") and norm_number(c.get("number")) == norm_number(observed_number)
+    }
+    unique_inferred_name = (
+        name_via == "attack fingerprint" and len({_norm_name(c.get("name")) for c in supplied if c.get("name")}) == 1
+    ) or (
+        name_via == "candidate consensus" and len(exact_names) == 1
+    )
     if not name or not observed_number:
         recommended = "D"
     elif not search_performed:
@@ -385,7 +394,7 @@ def analyze(name, number, norm_number_value, language_evidence, set_evidence,
         recommended = "D"
     elif status == "possible":
         recommended = "C"
-    elif name_direct and number_direct:
+    elif (name_direct or unique_inferred_name) and number_direct:
         recommended = "A"
     else:
         recommended = "C"

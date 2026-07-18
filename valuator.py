@@ -788,6 +788,27 @@ def _confidence(n_sales, days_span):
     return "LOW", f"~{rate*30:.1f} sales/month — thin market, price unstable"
 
 
+def _request_with_retry(method, url, *, attempts=2, backoff=0.35, **kwargs):
+    """Make a small, bounded retry around the two TCGplayer data fetches.
+
+    The caller needs to distinguish a successful empty response from a
+    transport/API failure, so this returns ``(response, None)`` on success and
+    ``(None, error_text)`` after the final failed attempt.
+    """
+    last_error = None
+    for attempt in range(attempts):
+        try:
+            response = method(url, **kwargs)
+            if response.status_code < 200 or response.status_code >= 300:
+                raise RuntimeError(f"HTTP {response.status_code}")
+            return response, None
+        except Exception as exc:
+            last_error = str(exc) or exc.__class__.__name__
+            if attempt + 1 < attempts:
+                time.sleep(backoff * (attempt + 1))
+    return None, last_error or "request failed"
+
+
 # fallback multipliers when a condition has no real solds (industry-typical)
 _COND_FALLBACK = {"Near Mint": 1.0, "Lightly Played": 0.80,
                   "Moderately Played": 0.60, "Heavily Played": 0.45,
@@ -803,26 +824,46 @@ def valuate(pid, ph_factor=1.2):
     # market value returned for the product rather than presenting the highest
     # condition ceiling as the product's market price.
     market = None
-    try:
-        r = requests.get(PRICE.format(int(pid)), headers={"User-Agent": UA}, timeout=15)
-        for p in r.json():
-            m = p.get("marketPrice")
-            if m:
-                market = m
-                break
-    except Exception:
-        pass
+    r, market_error = _request_with_retry(
+        requests.get, PRICE.format(int(pid)),
+        headers={"User-Agent": UA}, timeout=15)
+    if r is not None:
+        if r.status_code != 200:
+            market_error = f"HTTP {r.status_code}"
+        else:
+            try:
+                pricepoints = r.json()
+            except Exception as exc:
+                market_error = f"invalid price response: {exc}"
+                pricepoints = []
+            for p in pricepoints:
+                m = p.get("marketPrice")
+                if m:
+                    market = m
+                    break
+    out["market_fetch"] = {"status": "ok" if market_error is None else "failed",
+                           "attempts": 2,
+                           "error": market_error}
     out["market_usd"] = market
     out["market_php"] = round(market * rate) if market else None
 
     # real recent solds, grouped by condition  [L16 + L17]
     sales, conds = [], {}
-    try:
-        r = requests.post(SALES.format(int(pid)), headers=_H, timeout=20,
-                          json={"listingType": "All", "limit": 25, "offset": 0})
-        sales = (r.json().get("data") or []) if r.status_code == 200 else []
-    except Exception:
-        pass
+    r, sales_error = _request_with_retry(
+        requests.post, SALES.format(int(pid)),
+        headers=_H, timeout=20,
+        json={"listingType": "All", "limit": 25, "offset": 0})
+    if r is not None:
+        try:
+            if r.status_code == 200:
+                sales = r.json().get("data") or []
+            else:
+                sales_error = f"HTTP {r.status_code}"
+        except Exception as exc:
+            sales_error = f"invalid sales response: {exc}"
+    out["sales_fetch"] = {"status": "ok" if sales_error is None else "failed",
+                           "attempts": 2,
+                           "error": sales_error}
     ts = []
     for s in sales:
         cond = s.get("condition") or "?"
@@ -837,6 +878,10 @@ def valuate(pid, ph_factor=1.2):
                 pass
     days_span = max(1, round((max(ts) - min(ts)) / 86400)) if len(ts) >= 2 else 1
     level, why = _confidence(len(sales), days_span)
+    if sales_error is not None:
+        level, why = "UNKNOWN", (
+            "recent sales unavailable: TCGplayer fetch failed after retry; "
+            "this is not evidence of a thin market")
     out["sales"] = [{"date": (s.get("orderDate") or "")[:10],
                      "usd": s.get("purchasePrice"),
                      "condition": s.get("condition")} for s in sales[:10]]

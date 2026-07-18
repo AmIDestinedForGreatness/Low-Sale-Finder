@@ -134,6 +134,21 @@ def _attack_status(ident, aid, merged_lines):
     return "not_checked", "no attack/ability text was usable in this OCR pass"
 
 
+def _provably_unique_inferred_name(ident):
+    """Allow the narrow Level-A inference routes only when candidates agree."""
+    via = ident.get("via")
+    candidates = ident.get("candidates") or []
+    if via == "attack fingerprint":
+        names = {_norm_card_name(c.get("name")) for c in candidates if c.get("name")}
+        return len(names) == 1
+    if via == "candidate consensus":
+        number = _norm(ident.get("number"))
+        names = {_norm_card_name(c.get("name")) for c in candidates
+                 if c.get("name") and _norm(c.get("number")) == number}
+        return len(names) == 1
+    return False
+
+
 def _artwork_evidence(image_paths, candidates, provider_context):
     if not image_paths:
         return {"provider": "ArtworkProvider:perceptual_hash",
@@ -329,7 +344,9 @@ def build_evidence(ident, merged_lines, aid=None, image_paths=None,
         level = "D"
     elif collision_status != "none" or not collision_result.get("search_performed"):
         level = "C"
-    elif (chain["pokemon_name"]["status"] == "confirmed"
+    elif ((chain["pokemon_name"]["status"] == "confirmed"
+           or (chain["pokemon_name"]["status"] == "inferred"
+               and _provably_unique_inferred_name(ident)))
           and chain["card_number"]["status"] == "confirmed"
           and chain["catalog_match"]["status"] == "confirmed"
           and collision_result.get("recommended_evidence_level") == "A"):

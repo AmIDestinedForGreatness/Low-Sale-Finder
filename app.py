@@ -1266,18 +1266,26 @@ document.querySelectorAll('.cmp-imgwrap').forEach(w=>{
 
 const VOL_C = {Stable:'var(--green)', Moderate:'#ffb454', Volatile:'var(--red)', Unknown:'var(--muted)'};
 
-function priceBarChart(sales){
-  // oldest -> newest, left to right, so a rising trend reads as rising bars
-  const asc = [...sales].filter(s=>s.usd).sort((a,b)=>(a.date||'').localeCompare(b.date||''));
-  if(asc.length < 2) return '';
-  const max = Math.max(...asc.map(s=>+s.usd));
-  const bars = asc.map(s=>{
-    const h = Math.max(8, Math.round((+s.usd / max) * 44));
-    return `<div class="pricebar" style="height:${h}px" title="${escapeHtml(s.date||'')}: $${s.usd} ${escapeHtml(s.condition||'')}"></div>`;
-  }).join('');
-  const trend = asc[asc.length-1].usd >= asc[0].usd ? '▲ up since oldest shown' : '▼ down since oldest shown';
-  return `<div class="muted" style="font-size:11px;margin-top:10px">price trend (real sales, oldest → newest) ${trend} · scale: $0–$${max.toFixed(2)}</div>
-    <div class="pricebar-wrap">${bars}</div>`;
+function priceHistoryChart(sales){
+  const asc = [...sales].filter(s=>s.usd !== null && s.usd !== undefined && s.date)
+    .sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  if(!asc.length) return '';
+  const width=640, left=42, right=10, top=12, lineBottom=112, volumeTop=134, bottom=178;
+  const plotW=width-left-right, max=Math.max(...asc.map(s=>+s.usd),1);
+  const counts={}; asc.forEach(s=>{counts[s.date]=(counts[s.date]||0)+1;});
+  const dates=Object.keys(counts), maxCount=Math.max(...Object.values(counts),1);
+  const x=i=>left+(dates.length===1?plotW/2:i*plotW/(dates.length-1));
+  const y=v=>lineBottom-(+v/max)*(lineBottom-top);
+  const points=asc.map((s,i)=>`${x(dates.indexOf(s.date)).toFixed(1)},${y(s.usd).toFixed(1)}`).join(' ');
+  const dots=asc.map((s,i)=>`<circle cx="${x(dates.indexOf(s.date)).toFixed(1)}" cy="${y(s.usd).toFixed(1)}" r="3" fill="var(--viz-series-1)" aria-label="${escapeHtml(s.date)} $${s.usd}"/>`).join('');
+  const bars=dates.map((d,i)=>{const h=Math.max(3,counts[d]/maxCount*28);return `<rect x="${(x(i)-5).toFixed(1)}" y="${(volumeTop+28-h).toFixed(1)}" width="10" height="${h.toFixed(1)}" fill="var(--viz-series-2)" opacity=".7"><title>${escapeHtml(d)}: ${counts[d]} sale${counts[d]===1?'':'s'}</title></rect>`;}).join('');
+  const labels=dates.map((d,i)=>`<text x="${x(i).toFixed(1)}" y="${bottom}" text-anchor="middle" class="ph-axis">${escapeHtml(d.slice(5))}</text>`).join('');
+  return `<div style="margin-top:10px;font-size:11px"><span class="muted">price history · ${asc.length} real sales</span>
+    <svg viewBox="0 0 ${width} ${bottom+8}" role="img" aria-label="TCGplayer-style price history line graph with sale volume" style="width:100%;height:auto;display:block">
+      <line x1="${left}" y1="${top}" x2="${left}" y2="${lineBottom}" stroke="var(--line)"/><line x1="${left}" y1="${lineBottom}" x2="${width-right}" y2="${lineBottom}" stroke="var(--line)"/><line x1="${left}" y1="${volumeTop+28}" x2="${width-right}" y2="${volumeTop+28}" stroke="var(--line)"/>
+      <text x="2" y="${top+4}" class="ph-axis">$${max.toFixed(2)}</text><text x="2" y="${lineBottom+4}" class="ph-axis">$0</text><text x="${left}" y="${volumeTop+42}" class="ph-axis">sales</text>
+      ${bars}<polyline points="${points}" fill="none" stroke="var(--viz-series-1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${dots}${labels}
+    </svg></div>`;
 }
 
 async function valPick(pid){
@@ -1304,7 +1312,8 @@ async function valPick(pid){
         <span class="vol-badge" style="color:${VOL_C[vol.label]};border-color:${VOL_C[vol.label]}" title="${escapeHtml(vol.note||'')}">${vol.label==='Unknown'?'volatility: unknown':'volatility: '+vol.label}</span>
         <span class="muted" style="font-size:12px">${escapeHtml(v.confidence_why||'')}</span>
       </div>
-      ${priceBarChart(v.sales||[])}
+      ${(v.market_fetch&&v.market_fetch.status==='failed')?`<div style="margin-top:8px;color:var(--red);font-size:12px">Market price unavailable: ${escapeHtml(v.market_fetch.error||'TCGplayer fetch failed after retry')}.</div>`:''}
+      ${(v.sales_fetch&&v.sales_fetch.status==='failed')?`<div style="margin-top:10px;color:var(--red)">Sales history unavailable: ${escapeHtml(v.sales_fetch.error||'TCGplayer fetch failed after retry')}. This does not mean the card has no sales.</div>`:priceHistoryChart(v.sales||[])}
       <table style="width:100%;margin-top:10px;font-size:13px;border-collapse:collapse">
         <tr class="muted"><td>Condition</td><td>Worth</td><td>List (×${v.ph_factor})</td><td>Steal ≤</td><td>Based on</td></tr>
         ${conds.map(([c,x])=>`<tr>
@@ -1312,7 +1321,7 @@ async function valPick(pid){
           <td>₱${fmt(v.suggest[c].list_php)}</td><td>₱${fmt(v.suggest[c].steal_php)}</td>
           <td class="muted">${x.from}</td></tr>`).join('')}
       </table>
-      ${(v.sales&&v.sales.length)?`<div class="muted" style="margin-top:10px;font-size:12px">
+      ${(v.sales_fetch&&v.sales_fetch.status==='failed')?'':(v.sales&&v.sales.length)?`<div class="muted" style="margin-top:10px;font-size:12px">
         last real sales: ${v.sales.slice(0,6).map(s=>`${s.date} $${s.usd} <i>${(s.condition||'').split(' ').map(w=>w[0]).join('')}</i>`).join(' · ')}
       </div>`:'<div class="muted" style="margin-top:10px;font-size:12px">no recorded recent sales — prices are estimates.</div>'}
       <div class="muted" style="margin-top:8px;font-size:12px">⚠️ check condition yourself: corners/edges for whitening FIRST — assume LP until it proves NM.</div>
