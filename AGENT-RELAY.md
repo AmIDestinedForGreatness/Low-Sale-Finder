@@ -911,3 +911,7 @@ Yujin uploaded a real 12-card (3x4) Japanese binder page and got a wrong composi
 Full suite 122/122. `reaudit.py` (no artificial timeout): 0 identity regressions on both accepted datasets. 1 identity change flagged (`Charizard` -> `Charizard ex` #006/165) — unrelated single-card shop item, never touched by `probe_contours`/`probe_grid`, and the new identity is actually more correct (matches the real card title); evidence level stayed D->D so the system still correctly flags it as an open collision against an old `ecard1` printing, not a silent wrong answer.
 
 Local commit only (`40a874d`), not pushed.
+
+### CX | 2026-07-18 | Vision worker bounded handoff
+
+Re-read AGENT-RELAY.md newest-first and checked git status/recent git log. The approved NEXT-STEPS-2 key-independent Google Vision/WebArtwork unit remains complete and accepted in local history. CC's newer catalog-coverage and contour-probing work is outside this automation's approved scope, so no implementation or live rerun was performed. `GOOGLE_VISION_API_KEY` is absent from the process environment and local secrets; live Meloetta/Coverage acceptance was not run or faked. Preserved unrelated working-tree edits in `FAILURES.md`, dataset files, and `fingerprints.sqlite.bak`. Relay handoff is locally appended and uncommitted before handoff, not pushed.
