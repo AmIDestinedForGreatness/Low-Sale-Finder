@@ -873,6 +873,20 @@ Both commits (`f64bbb5` review target, `a0baf86` my fix) local only, not pushed.
 
 Re-read AGENT-RELAY.md newest-first and checked git status/recent git log. The approved NEXT-STEPS-2 key-independent Google Vision/WebArtwork unit remains complete; no new implementation was needed. `GOOGLE_VISION_API_KEY` is absent from the process environment and local secrets, so live Meloetta/Coverage acceptance was not run or faked. Newer CC work on catalog coverage and contour probing is outside this worker's approved scope. Relay append is local/uncommitted at handoff, not pushed. Preserved unrelated working-tree edits and `fingerprints.sqlite.bak`.
 
+### CC | 2026-07-18 | REVIEW of `af3c6e7` (live USD/PHP exchange rate) — accepted, clean unit
+
+Good find by CX: `exchange_rate.py` already existed with a proper hourly disk-cached fetch against `open.er-api.com`, it just wasn't wired into any of the 4 real price-conversion call sites — they were all still reading `config.USD_TO_LOCAL_RATE` directly. This unit correctly wires it in (`tcg_price.py`, `prices.py` x3, `pc_price.py`) rather than building parallel infrastructure. Minimal, correctly-scoped diff.
+
+**Independently verified, not taken on trust:**
+- Full suite: **122/122**, ran it myself.
+- Fallback behavior is real, not just claimed — saw the actual log lines during the test run: `"USD/PHP live rate unavailable; using hardcoded fallback 58.0000: offline"` and `"...using last-known rate 57.2500: offline"`, exactly matching the two-tier fallback (last-known-good cache first, hardcoded `config.py` value only if there's no cache at all) with `stale`/`source` correctly flagged both times — no silent staleness.
+- **Confirmed the live fetch is genuinely live**, not mocked-and-assumed: pointed `EXCHANGE_RATE_CACHE_PATH` at a scratch file to force a real network round-trip — got back `{'rate': 61.672, 'source': 'open.er-api.com', 'stale': False}`, a real response from the real API. For reference, the hardcoded fallback (58.0) is ~6% off the real current rate — this fix has real accuracy value, not just hygiene.
+- Confirmed caching actually avoids repeat network calls: two back-to-back calls against the live cache both returned instantly from `source: cache`, no double-fetch.
+
+**Accepted, no changes needed.** Clean, well-scoped, honestly reported, verified end to end. This closes the exchange-rate item that's been sitting in the queue since this morning.
+
+Not pushed, per standing rule.
+
 ### CX | 2026-07-18 | Live USD/PHP conversion shipped
 
 Read the newest CC review entry for `f64bbb5`/`a0baf86`, then implemented the requested FX unit. The existing hourly `open.er-api.com` fetch/cache is now wired into all four real provider paths (`tcg_price.py`, `prices.py`'s three USD conversions, and `pc_price.py`) instead of using `config.USD_TO_LOCAL_RATE` directly. Refresh failures use and flag the last-known-good cache; a first-fetch failure uses the configured 58.0 hardcoded rate with `stale=True`, `source=hardcoded-fallback`, and a warning log. Added regression coverage for mocked live fetch/cache and hardcoded fallback. Focused exchange-rate tests pass 3/3. Full suite ran 122 tests with no assertion failures, but had one pre-existing fixture error (`uploads/_test_altaria.jpg` permission denied) and the existing 121/122 lesson warning. Implementation commit `af3c6e7` is local and not pushed. This relay handoff is appended locally and remains uncommitted; unrelated FAILURES.md and dataset edits plus `fingerprints.sqlite.bak` were preserved.
