@@ -35,7 +35,7 @@ separately.
 | `HASH-FIRST-NEXT.md` | Perspective-warp unit: code/synthetic tests complete; real-photo/catalog acceptance still pending |
 | `docs/CLAUDE-CODE-AGENT-EVALUATION.md` | 2026-07-19 independent code, evidence, safety, and agent-work evaluation |
 | `AGENT-RELAY.md` | Chronological work log between CC (Claude Code) and CX (Codex). Read bottom-up |
-| `LESSONS.md` | 45 permanent lessons — every closed mistake, L1–L45 |
+| `LESSONS.md` | 46 permanent lessons — every closed mistake, L1–L46 |
 | `FAILURES.md` | Per-card failure database (auto-maintained; every non-Level-A ID gets a record) |
 | `VISION.md` | Product vision / where this is going |
 | `docs/archive/` | Completed unit specs, kept for their acceptance criteria |
@@ -47,7 +47,7 @@ separately.
 - **Never push without Yujin's explicit instruction.**
 - Every closed mistake becomes a permanent test in `tests.py` + a lesson in
   `LESSONS.md`. Nothing fails twice.
-- Full suite must stay green: `python tests.py` (137 total: 134 passed,
+- Full suite must stay green: `python tests.py` (141 total: 138 passed,
   3 explicit skips, 0 failed on this checkout as of 2026-07-19; see
   `PROGRESS.md` for environment limits).
 
@@ -74,6 +74,11 @@ must decode as JPEG/PNG/BMP/WebP, stay within a 12,000-pixel edge and 40-million
 pixel area, and pass integrity plus bounded decode checks. Accepted files use
 UUID names and their actual image type; rejected temporary files are removed.
 Automated upload retention and resource metrics are not implemented yet.
+
+Failure records and user-confirmed reference JSON use `state_store.py`: one
+thread/process lock covers the full mutation and same-directory fsync + atomic
+replace prevents partial documents. This guarantee has not yet been migrated
+to every JSON/SQLite writer; see F-10 in the evaluation and `PROGRESS.md`.
 
 ## Per-machine setup notes
 

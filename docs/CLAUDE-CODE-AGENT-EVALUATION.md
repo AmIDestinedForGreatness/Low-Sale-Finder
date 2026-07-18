@@ -448,6 +448,15 @@ WAL, busy timeout, and schema migrations. Keep generated reports derived from th
 crash-injection leaves either the old or complete new state; migrations are repeatable;
 test stores are isolated.
 
+**Correction status (2026-07-19).** `state_store.py` now serializes threads and OS
+processes across the entire JSON mutation and uses flushed/fsynced same-directory
+temporary files plus atomic replacement. Failure JSON/Markdown/rebuilds and dashboard
+confirmations use it. Four isolated tests cover two simultaneous failure records, two
+separate writer processes, replace-failure preservation/cleanup, and confirmation-route
+persistence. `profile_dataset.py`, `reaudit.py`, other JSON writers, schema migrations,
+and consistent SQLite WAL/busy-timeout policy remain open, so F-10 is partially—not
+fully—closed.
+
 ### F-11 — Medium — Maintainability: one-file dashboard couples UI, control, and core logic
 
 **Evidence.** `app.py` is about 1,500 lines and embeds HTML/JavaScript, process control,

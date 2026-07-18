@@ -11,9 +11,10 @@ Coverage and prediction confidence are intentionally separate. Missing or
 unimplemented providers lower coverage only; their absence is never treated
 as evidence against a candidate.
 """
-import json
 import os
 import re
+
+import state_store
 
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -492,17 +493,12 @@ def _structural_record():
 
 
 def _load_failures():
-    if os.path.exists(FAILURES_JSON):
-        with open(FAILURES_JSON, encoding="utf-8") as handle:
-            return json.load(handle)
-    return {}
+    return state_store.read_json(FAILURES_JSON, default_factory=dict)
 
 
 def _save_failures(database):
-    os.makedirs(DATASET_DIR, exist_ok=True)
-    with open(FAILURES_JSON, "w", encoding="utf-8") as handle:
-        json.dump(database, handle, ensure_ascii=False, indent=1)
-    _render_md(database)
+    state_store.write_json(
+        FAILURES_JSON, database, indent=1, after_write=_render_md)
 
 
 def _card_key(ident):
@@ -558,12 +554,18 @@ def _record_for(ident):
 
 def log_failure(ident):
     """Idempotently persist every non-A result plus the structural gap."""
-    database = _load_failures()
-    database[_STRUCTURAL_GAP_ID] = _structural_record()
-    record = _record_for(ident)
-    if record:
-        database[_card_key(ident)] = record
-    _save_failures(database)
+    def update(database):
+        if not isinstance(database, dict):
+            database = {}
+        database[_STRUCTURAL_GAP_ID] = _structural_record()
+        record = _record_for(ident)
+        if record:
+            database[_card_key(ident)] = record
+        return database
+
+    state_store.update_json(
+        FAILURES_JSON, update, default_factory=dict, indent=1,
+        after_write=_render_md)
 
 
 def rebuild_failures(idents):
@@ -595,5 +597,4 @@ def _render_md(database):
         for field, value in record.items():
             lines.append(f"- **{field.replace('_', ' ').title()}:** {value}")
         lines.append("")
-    with open(FAILURES_MD, "w", encoding="utf-8") as handle:
-        handle.write("\n".join(lines))
+    state_store.atomic_write_text(FAILURES_MD, "\n".join(lines))

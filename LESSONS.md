@@ -598,3 +598,19 @@ temporary files.
 **Guard:** `TestUploadSafety` covers a 413 before OCR, bad bytes and cleanup,
 actual-format suffixes with distinct concurrent names, and a sub-1 MB compressed
 image that exceeds the explicit pixel budget.
+
+### L46 - atomic replacement alone does not prevent lost updates (2026-07-19)
+**Mistake:** failure logging and user confirmation each performed an unlocked
+JSON read-modify-write. Two synchronized failure writers both read the same
+snapshot; the last write discarded the other card (and one run produced
+malformed trailing JSON). The generated Markdown could also describe a stale
+private snapshot.
+**Rule:** a mutation lock must cover the complete read, decision, and atomic
+replace—not only the final write. Serialize threads and processes by state-file
+path, flush and fsync a same-directory temporary file, atomically replace the
+destination, and generate derived reports inside the source-file lock. Keep
+lock/temp artifacts ignored, but do not delete a live shared lock file.
+**Guard:** `TestStateDurability` proves simultaneous failure records survive,
+two separate Python processes preserve both updates, replace failure retains
+the old complete JSON with no temp leak, and the confirmation route keeps
+distinct records. Other repository writers remain a separate measured unit.

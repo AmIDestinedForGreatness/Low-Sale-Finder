@@ -10,11 +10,14 @@ Run:  E:\python.exe tests.py     (offline — no network, no Discord, no FB)
 """
 import base64
 import io
+import json
 import os
 import socket
+import subprocess
 import sys
 import time
 import tempfile
+import threading
 import unittest
 from unittest import mock
 
@@ -24,6 +27,7 @@ import fb_feed
 import network_safety
 import pc_price
 import scraper
+import state_store
 import tcg_price
 import valuator
 from fb_feed import parse_price, parse_end_time, parse_auction
@@ -751,6 +755,139 @@ class TestProfileDatasetSerialization(unittest.TestCase):
         self.assertEqual(len(result["candidates"]), 2)
 
 
+class TestStateDurability(unittest.TestCase):
+    """Mutable local state must survive concurrency and interrupted writes."""
+
+    @staticmethod
+    def _failed_ident(name, number):
+        return {
+            "name": name, "number": number, "query": name,
+            "evidence_level": "D", "collision_analysis": {},
+            "adversarial_validation": {},
+            "failure_report": {
+                "missing_feature": "identity incomplete",
+                "blocking_evidence": "test fixture",
+            },
+        }
+
+    def test_simultaneous_failure_logs_preserve_both_records(self):
+        barrier = threading.Barrier(2)
+        original_load = evidence._load_failures
+        errors = []
+
+        def synchronized_load():
+            value = original_load()
+            barrier.wait(timeout=5)
+            return value
+
+        def worker(ident):
+            try:
+                evidence.log_failure(ident)
+            except Exception as exc:
+                errors.append(exc)
+
+        with tempfile.TemporaryDirectory() as state_dir:
+            failures_json = os.path.join(state_dir, "failures.json")
+            failures_md = os.path.join(state_dir, "FAILURES.md")
+            with open(failures_json, "w", encoding="utf-8") as handle:
+                json.dump({}, handle)
+            with mock.patch.object(evidence, "DATASET_DIR", state_dir), \
+                 mock.patch.object(evidence, "FAILURES_JSON", failures_json), \
+                 mock.patch.object(evidence, "FAILURES_MD", failures_md), \
+                 mock.patch.object(evidence, "_load_failures",
+                                   side_effect=synchronized_load):
+                threads = [
+                    threading.Thread(target=worker, args=(
+                        self._failed_ident("Alpha", "001/100"),)),
+                    threading.Thread(target=worker, args=(
+                        self._failed_ident("Beta", "002/100"),)),
+                ]
+                for thread in threads:
+                    thread.start()
+                for thread in threads:
+                    thread.join(timeout=10)
+            self.assertFalse(errors)
+            self.assertTrue(all(not thread.is_alive() for thread in threads))
+            with open(failures_json, encoding="utf-8") as handle:
+                database = json.load(handle)
+            with open(failures_md, encoding="utf-8") as handle:
+                markdown = handle.read()
+
+        card_keys = {key for key in database
+                     if key != evidence._STRUCTURAL_GAP_ID}
+        self.assertEqual(card_keys,
+                         {"Alpha|001/100|Alpha", "Beta|002/100|Beta"})
+        self.assertIn("Alpha", markdown)
+        self.assertIn("Beta", markdown)
+
+    def test_separate_process_updates_preserve_both_records(self):
+        script = (
+            "import sys,time,state_store\n"
+            "path, marker = sys.argv[1:3]\n"
+            "def add(rows):\n"
+            "    time.sleep(0.15)\n"
+            "    rows.append(marker)\n"
+            "    return rows\n"
+            "state_store.update_json(path, add, default_factory=list)\n"
+        )
+        with tempfile.TemporaryDirectory() as state_dir:
+            path = os.path.join(state_dir, "shared.json")
+            state_store.write_json(path, [])
+            processes = [subprocess.Popen(
+                [sys.executable, "-c", script, path, marker],
+                cwd=os.path.dirname(os.path.abspath(__file__)),
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                for marker in ("Alpha", "Beta")]
+            results = [process.communicate(timeout=10) for process in processes]
+            self.assertEqual(
+                [(process.returncode, stderr) for process, (_, stderr)
+                 in zip(processes, results)], [(0, ""), (0, "")])
+            with open(path, encoding="utf-8") as handle:
+                self.assertEqual(set(json.load(handle)), {"Alpha", "Beta"})
+
+    def test_replace_failure_preserves_old_complete_document(self):
+        with tempfile.TemporaryDirectory() as state_dir:
+            path = os.path.join(state_dir, "state.json")
+            state_store.write_json(path, {"version": "old"})
+            with mock.patch.object(state_store.os, "replace",
+                                   side_effect=OSError("crash before replace")), \
+                 self.assertRaises(OSError):
+                state_store.write_json(path, {"version": "new"})
+            with open(path, encoding="utf-8") as handle:
+                self.assertEqual(json.load(handle), {"version": "old"})
+            leftovers = [name for name in os.listdir(state_dir)
+                         if name.endswith(".tmp")]
+            self.assertEqual(leftovers, [])
+
+    def test_confirmation_route_keeps_distinct_records_in_shared_store(self):
+        import app as dashboard_app
+        dashboard_app.app.config["TESTING"] = True
+        with tempfile.TemporaryDirectory() as root:
+            uploads = os.path.join(root, "uploads")
+            dataset = os.path.join(root, "dataset")
+            os.makedirs(uploads)
+            for filename in ("alpha.jpg", "beta.jpg"):
+                with open(os.path.join(uploads, filename), "wb") as handle:
+                    handle.write(b"route only checks the existing source path")
+            with mock.patch.object(dashboard_app, "UPLOAD_DIR", uploads), \
+                 mock.patch.object(dashboard_app, "DATASET_DIR", dataset):
+                client = dashboard_app.app.test_client()
+                responses = [client.post("/api/valuator/confirm", json={
+                    "image": f"/uploads/{filename}",
+                    "candidate": {"name": name, "number": number},
+                }) for filename, name, number in (
+                    ("alpha.jpg", "Alpha", "001/100"),
+                    ("beta.jpg", "Beta", "002/100"),
+                )]
+                path = os.path.join(dataset, "confirmed_by_user.json")
+                with open(path, encoding="utf-8") as handle:
+                    rows = json.load(handle)
+        self.assertEqual([response.status_code for response in responses], [200, 200])
+        self.assertEqual({(row["ident"]["name"], row["ident"]["number"])
+                          for row in rows},
+                         {("Alpha", "001/100"), ("Beta", "002/100")})
+
+
 class TestEvidence(unittest.TestCase):
     """DIRECTIVE.md (L31): no identification may omit its Evidence Level.
     These guard the pipeline ITSELF, not one card's result — a card whose
@@ -880,16 +1017,19 @@ class TestEvidence(unittest.TestCase):
         self.assertNotIn("confidence", ev)  # the old mislabeled field must stay gone
 
     def test_log_failure_skips_level_a_but_seeds_structural_gap(self):
-        # Capture the write in memory; tests never touch the real database.
-        database = {}
-        with mock.patch("evidence._load_failures", return_value=database), \
-             mock.patch("evidence._save_failures") as save:
+        # Use isolated real storage so the production atomic-write path runs.
+        with tempfile.TemporaryDirectory() as state_dir, \
+             mock.patch.object(evidence, "FAILURES_JSON",
+                               os.path.join(state_dir, "failures.json")), \
+             mock.patch.object(evidence, "FAILURES_MD",
+                               os.path.join(state_dir, "FAILURES.md")):
             ident = self._ident(name="Pikachu ex", number="063/193",
                                 candidates=[{"pid": 1, "name": "Pikachu ex", "set": "Paldea Evolved",
                                             "number": "063/193"}])
             ident.update(evidence.build_evidence(ident, ["Pikachu ex", "063/193"], None))
             evidence.log_failure(ident)
-            db_after = save.call_args.args[0]
+            with open(evidence.FAILURES_JSON, encoding="utf-8") as handle:
+                db_after = json.load(handle)
             self.assertIn(evidence._STRUCTURAL_GAP_ID, db_after)
             self.assertNotIn(evidence._card_key(ident), db_after)  # Level A -> no per-card record
 

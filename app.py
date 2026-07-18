@@ -33,6 +33,7 @@ import config
 import exchange_rate
 import engine
 import network_safety
+import state_store
 import valuator
 from version import VERSION
 
@@ -645,23 +646,21 @@ def valuator_confirm():
     if not os.path.isfile(image_path):
         return jsonify({"error": "confirmed image is unavailable"}), 404
     path = os.path.join(DATASET_DIR, "confirmed_by_user.json")
-    os.makedirs(DATASET_DIR, exist_ok=True)
-    rows = []
-    if os.path.exists(path):
-        try:
-            with open(path, encoding="utf-8") as handle:
-                rows = json.load(handle)
-        except (OSError, ValueError):
-            rows = []
-    if not isinstance(rows, list):
-        rows = []
     record = {"ident": {"name": str(name), "number": str(number)},
               "images": [image_path]}
-    if not any(r.get("ident") == record["ident"] and image_path in (r.get("images") or [])
-               for r in rows if isinstance(r, dict)):
-        rows.append(record)
-        with open(path, "w", encoding="utf-8") as handle:
-            json.dump(rows, handle, ensure_ascii=False, indent=2)
+
+    def add_confirmation(rows):
+        if not isinstance(rows, list):
+            rows = []
+        if not any(r.get("ident") == record["ident"]
+                   and image_path in (r.get("images") or [])
+                   for r in rows if isinstance(r, dict)):
+            rows.append(record)
+        return rows
+
+    state_store.update_json(
+        path, add_confirmation, default_factory=list, indent=2,
+        recover_invalid=True)
     from providers.artwork import _dataset_references
     _dataset_references.cache_clear()
     return jsonify({"ok": True, "record": record})

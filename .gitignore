@@ -24,3 +24,6 @@ ocr_cache.sqlite
 index_build.log
 index_build.err
 *.py.tmp
+*.json.lock
+*.md.lock
+.*.tmp

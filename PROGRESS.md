@@ -4,7 +4,7 @@
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
 written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
-**137 total tests: 134 passed, 3 explicitly skipped, 0 failed; 45 lessons**
+**141 total tests: 138 passed, 3 explicitly skipped, 0 failed; 46 lessons**
 (2026-07-19).
 
 ## 2026-07-19 independent Codex audit
@@ -15,9 +15,9 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
   the canonical dataset path had already fixed that failure class.
 - Isolated the Flask regressions from production uploads/failure logging and
   replaced a machine-dependent warp/hash skip with deterministic regions/quads.
-- Full deterministic suite: **137 total, 134 passed, 3 skips, 0 failed**.
+- Full deterministic suite: **141 total, 138 passed, 3 skips, 0 failed**.
   Offline scraper/parser replay:
-  **40/40**. All 32 Python files and the inline dashboard JavaScript parse.
+  **40/40**. All 33 Python files and the inline dashboard JavaScript parse.
 - **Still unverified here:** real-photo perspective-warp/hash hit rate, route
   timing, and reaudit. This checkout has no `fingerprints.sqlite` and no
   `dataset/images`; synthetic wiring is not real-photo acceptance.
@@ -50,6 +50,13 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
   UUID filename. Four tests cover 413 behavior, bad bytes/cleanup, spoofed
   extensions/name collisions, and compressed oversized dimensions. Retention
   policy and resource metrics remain open rather than being claimed complete.
+- State durability correction: new `state_store.py` holds a per-path thread and
+  OS process lock across JSON read-modify-write, flushes/fsyncs a same-directory
+  temporary file, and atomically replaces the destination. Failure logging,
+  generated `FAILURES.md`, rebuilds, and dashboard confirmations use it. Four
+  isolated tests prove thread/process update preservation, crash-before-replace
+  behavior, and route persistence. Other JSON writers and consistent SQLite
+  WAL/busy-timeout policy remain open; F-10 is only partially closed.
 
 ## Version history
 
