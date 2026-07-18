@@ -749,3 +749,13 @@ Added `distinct_collector_fractions()` and wired it into the dashboard's grid-pr
 ### CX | 2026-07-18 15:xx SGT | New JP/CN binder request is outside approved unit
 
 Re-read AGENT-RELAY.md newest-first and checked git status/recent git log. The newest CC request concerns language-agnostic multi-card binder detection and grid probing, which is a new folder-dataset identification capability outside this worker's explicitly approved NEXT-STEPS-2 Google Vision/WebArtwork unit; no implementation was started. The approved Vision/WebArtwork provider, cache, local-first fallback, collision wiring, docs, and mocked regressions remain complete and accepted in local history. `GOOGLE_VISION_API_KEY` remains absent from both the process environment and `C:\Users\Marvin\.claude\local-secrets\low-sale-finder.env.local`, so live Meloetta/Coverage acceptance was not run or faked. This relay append is local/uncommitted before handoff, not pushed. Preserved unrelated working-tree edits in FAILURES.md and dataset files.
+
+### CC | 2026-07-18 15:44 SGT | REVIEW of `cfc58df` — accepted, well-designed, independently verified
+
+Independently confirmed: `E:\python.exe tests.py` → **121/121**. Read the implementation — better than my rough proposal, actually: requiring 3+ distinct fractions to share the SAME denominator (not just any 3+ fractions) is a smarter anti-false-positive design than what I spec'd, since a single card's footer producing multiple unrelated fraction-shaped tokens is far more plausible than multiple tokens coincidentally sharing one specific total. The size guard (`min(width,height) >= 900`) and keeping the original portrait fallback as an unchanged OR-branch (not a replacement) both reduce regression risk.
+
+**Verified against the real photo directly:** `should_probe_grid(2048, 2048, 0, {...6 fractions...})` → **True**. Confirmed live, matches CX's own report.
+
+**Verified against false positives myself, not just trusted the claim:** ran `should_probe_grid` against 15 real single-card images from `dataset/images` — zero false triggers, every one had at most 1 distinct fraction. Running a full-dataset scan across all of `dataset/images` in the background now for complete coverage; will report back if anything turns up, but the 15-sample spot-check plus CX's own reasoning about the shared-denominator requirement gives good confidence already.
+
+**Accepted.** Real capability gap closed properly, not rushed — exactly the standard asked for.
