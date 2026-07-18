@@ -376,6 +376,11 @@ def identify(image_paths, ocr_raw, wm):
         # promo/JP numbers are near-unique: exactly ONE catalog product with
         # the read number = the card ("197/SV-P" -> Pikachu). Also upgrades
         # a setcode-only name ("sm3" -> Raichu GX). Still eye-gated.
+        # CROSS-REGION COLLISION (live catch, 2026-07-18): full collector
+        # fractions are NOT globally unique either — "224/193" is Orthworm
+        # in EN Paldea Evolved AND Mega Froslass ex in the JP M2a set. The
+        # len(cands)==1 requirement is what keeps this gate safe; never
+        # relax it to "all candidates share a number".
         if (not graded
                 and (not name or valuator._SET_RE.fullmatch(str(name)))
                 and number and len(cands) == 1
@@ -449,6 +454,14 @@ def identify(image_paths, ocr_raw, wm):
             fixed = valuator.snap_number(number, [c["number"] for c in cands])
             if fixed and valuator._norm_num(fixed) != valuator._norm_num(number):
                 number, snapped = fixed, True
+    # A set-code-shaped token ("m20", "sm3") is a SEARCH HINT, never a card
+    # name. The upgrade path above turns it into a real name when a unique
+    # catalog match exists; when no upgrade happened it must not be
+    # PRESENTED as the identification (live catch: a JP M2a-set card
+    # displayed name "m20" at Level C — a garbage name shown confidently is
+    # worse than an honest unread).
+    if name and not via and valuator._SET_RE.fullmatch(str(name)):
+        name = None
     result = {"name": name, "name_read": name_read,
               "number": number, "number_read": number_read,
               "snapped": snapped, "via": via, "jp": jp, "query": query,

@@ -722,6 +722,30 @@ class TestProfileDatasetSerialization(unittest.TestCase):
         self.assertEqual(result["candidates"][0]["url"], candidate["url"])
         self.assertEqual(result["candidates"][0]["market"], candidate["market"])
 
+    def test_setcode_shaped_name_never_presented_as_identification(self):
+        # live catch (Yujin's 12-card JP binder, 2026-07-18): OCR read the
+        # JP set code "M2a" as "m20"; two candidates shared the number
+        # (cross-region collision: JP Jamming Tower vs EN Tyranitar
+        # #222/193) so no unique-match upgrade fired — and the raw setcode
+        # was DISPLAYED as the card's name at Level C. A setcode is a
+        # search hint; if it never upgrades to a real name, the result must
+        # be an honest unread with the candidates preserved for the
+        # tap-to-pick flow.
+        import profile_dataset
+        cands = [{"pid": 1, "name": "Jamming Tower - 222/193",
+                  "set": "M2a: High Class Pack", "number": "222/193"},
+                 {"pid": 2, "name": "Tyranitar - 222/193",
+                  "set": "SV02: Paldea Evolved", "number": "222/193"}]
+        with mock.patch("valuator.guess_query", return_value=("m20", "222/193")), \
+             mock.patch("valuator.search_candidates", return_value=cands), \
+             mock.patch("valuator.ocr_deep", return_value=[]), \
+             mock.patch("evidence.build_evidence", return_value={}), \
+             mock.patch("evidence.log_failure"):
+            result = profile_dataset.identify(["cell.png"], [["m20", "222/193"]], set())
+        self.assertIsNone(result["name"])
+        self.assertEqual(result["number"], "222/193")
+        self.assertEqual(len(result["candidates"]), 2)
+
 
 class TestEvidence(unittest.TestCase):
     """DIRECTIVE.md (L31): no identification may omit its Evidence Level.
