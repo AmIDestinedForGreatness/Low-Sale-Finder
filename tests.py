@@ -353,6 +353,15 @@ class TestPriceChartingPrecision(unittest.TestCase):
         self.assertEqual(best[1], "Staraptor #26")
         self.assertEqual(best[0], "/game/pokemon/staraptor")
 
+    def test_same_name_wrong_printing_never_matches(self):
+        rows = [
+            ("/game/alakazam-ex-201", "Alakazam ex #201", "Pokemon 151", "20.00"),
+            ("/game/alakazam-1-102", "Alakazam #1", "Pokemon Base Set", "8.00"),
+        ]
+        best = pc_price._pick(rows, "Pokemon Card Alakazam 1/102")
+        self.assertIsNotNone(best)
+        self.assertEqual(best[0], "/game/alakazam-1-102")
+
     def test_pricecharting_parser_never_regexes_the_whole_page(self):
         # Live 7/17 CPU runaway: a generic FB sale query returned a large page
         # whose partial rows kept `_ROW.findall(full_html)` backtracking for

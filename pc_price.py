@@ -79,6 +79,36 @@ def _specific(tokens):
             and not t.isdigit()}
 
 
+def _collector_numbers(s):
+    """Return normalized collector-number pairs found in a product string."""
+    text = str(s or '').lower().replace('–', '-')
+    pairs = set()
+    for match in re.finditer(
+            r'(?<![a-z0-9])([a-z]{0,4}\d{1,4})\s*/\s*([a-z]?\d{1,4})',
+            text):
+        pairs.add((match.group(1).lstrip('0') or '0',
+                   match.group(2).lstrip('0') or '0'))
+    for match in re.finditer(r'(?<![a-z0-9])#\s*([a-z]{0,4}\d{1,4})', text):
+        pairs.add((match.group(1).lstrip('0') or '0', None))
+    return pairs
+
+
+def _number_compatible(title, name, console):
+    """Require a candidate's printed number when the title supplies one."""
+    wanted = _collector_numbers(title)
+    if not wanted:
+        return True
+    found = _collector_numbers(f'{name} {console}')
+    if not found:
+        return False
+    for want_num, want_total in wanted:
+        for got_num, got_total in found:
+            if want_num == got_num and (got_total is None or
+                                        want_total == got_total):
+                return True
+    return False
+
+
 def _pick(rows, title):
     """Choose the PriceCharting row for this title, or None.
     The match must share a SPECIFIC token with the product NAME itself —
@@ -89,6 +119,8 @@ def _pick(rows, title):
         return None                      # nothing identifying to match on
     best, best_score = None, 0
     for url, name, console, usd in rows:
+        if not _number_compatible(title, name, console):
+            continue
         name_hit = _specific(_tokens(name)) & want
         if not name_hit:
             continue
