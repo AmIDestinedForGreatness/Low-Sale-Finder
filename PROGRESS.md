@@ -4,7 +4,7 @@
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
 written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
-**133 total tests: 130 passed, 3 explicitly skipped, 0 failed; 44 lessons**
+**137 total tests: 134 passed, 3 explicitly skipped, 0 failed; 45 lessons**
 (2026-07-19).
 
 ## 2026-07-19 independent Codex audit
@@ -15,15 +15,15 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
   the canonical dataset path had already fixed that failure class.
 - Isolated the Flask regressions from production uploads/failure logging and
   replaced a machine-dependent warp/hash skip with deterministic regions/quads.
-- Full deterministic suite: **133 total, 130 passed, 3 skips, 0 failed**.
+- Full deterministic suite: **137 total, 134 passed, 3 skips, 0 failed**.
   Offline scraper/parser replay:
-  **40/40**. All 31 Python files and the inline dashboard JavaScript parse.
+  **40/40**. All 32 Python files and the inline dashboard JavaScript parse.
 - **Still unverified here:** real-photo perspective-warp/hash hit rate, route
   timing, and reaudit. This checkout has no `fingerprints.sqlite` and no
   `dataset/images`; synthetic wiring is not real-photo acceptance.
-- Public deployment remains blocked pending input/transport hardening: the
-  authorization boundary is now closed, but raw Flask still must not be
-  internet-exposed and URL/upload hardening is the next security unit.
+- Public raw-Flask deployment remains prohibited. Authorization, URL, and
+  upload boundaries are now test-proven, but the service still belongs on
+  localhost/a trusted network and behind the documented SSH tunnel.
 - Dashboard authorization correction: without `DASHBOARD_AUTH_TOKEN` the
   server binds to `127.0.0.1` and accepts direct loopback only; with a token,
   remote requests require constant-time Basic/Bearer verification. One global
@@ -43,6 +43,13 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
   the same combined query, unique-number/candidate-consensus resolver, and
   set-code presentation function. Remaining duplicated stages stay explicit
   pending another reproduced parity failure; this is not a wholesale rewrite.
+- Upload correction: Flask rejects requests above 12 MB before OCR. Direct
+  uploads and downloaded listing photos share one actual-image boundary that
+  checks supported raster format, 12,000-pixel edge/40-million-pixel area,
+  container integrity, and bounded full decode before atomically publishing a
+  UUID filename. Four tests cover 413 behavior, bad bytes/cleanup, spoofed
+  extensions/name collisions, and compressed oversized dimensions. Retention
+  policy and resource metrics remain open rather than being claimed complete.
 
 ## Version history
 

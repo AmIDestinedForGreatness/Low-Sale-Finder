@@ -295,6 +295,14 @@ Use random identifiers and a retention policy for uploads.
 redirects, private IPs, oversized files, decompression bombs, bad image bytes, and name
 collisions. Resource ceilings are observable in logs/metrics.
 
+**Correction status (2026-07-19).** Parsed-host/DNS/redirect and bounded-fetch guards
+are implemented with documented DNS-rebinding/browser-subresource residuals. Flask now
+caps requests at 12 MB before OCR; direct uploads and downloaded listing photos share
+actual-format, dimension, integrity, and bounded-decode validation with UUID filenames
+and rejected-file cleanup. `TestUrlSafety` is 8/8 and `TestUploadSafety` is 4/4. Upload
+retention and resource logging/metrics remain open, so the original acceptance is only
+partially closed rather than overstated.
+
 ### F-05 — High — Integration correctness: Google WebArtwork is mock-shaped, not live-ready
 
 **Evidence.** `providers/web_artwork.py:79` sends a local Windows path as Google

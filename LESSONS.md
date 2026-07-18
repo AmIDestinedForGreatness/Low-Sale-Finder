@@ -583,3 +583,18 @@ stages visible and require another failing parity case before extracting them.
 **Guard:**
 `TestValuatorOcrRoute.test_unique_number_adoption_matches_canonical_identifier`
 plus the existing route/profile set-code and mechanic regressions.
+
+### L45 - a filename extension is not image validation (2026-07-19)
+**Mistake:** the dashboard trusted `.jpg`/`.png` suffixes, had no request-size
+ceiling, saved same-second uploads to the same name, and sent bytes into OCR
+before proving they were a bounded decodable image. A fake JPEG raised an
+internal Pillow error after OCR had already been invoked.
+**Rule:** enforce the byte ceiling at the web boundary, save to a private
+random temporary name, inspect the actual raster format and dimensions, reject
+decompression-scale images before decoding, verify and load bounded images,
+then atomically publish under a content-derived suffix and UUID name. Apply the
+same storage boundary to downloaded listing photos. Always remove rejected
+temporary files.
+**Guard:** `TestUploadSafety` covers a 413 before OCR, bad bytes and cleanup,
+actual-format suffixes with distinct concurrent names, and a sub-1 MB compressed
+image that exceeds the explicit pixel budget.

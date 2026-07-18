@@ -35,7 +35,7 @@ separately.
 | `HASH-FIRST-NEXT.md` | Perspective-warp unit: code/synthetic tests complete; real-photo/catalog acceptance still pending |
 | `docs/CLAUDE-CODE-AGENT-EVALUATION.md` | 2026-07-19 independent code, evidence, safety, and agent-work evaluation |
 | `AGENT-RELAY.md` | Chronological work log between CC (Claude Code) and CX (Codex). Read bottom-up |
-| `LESSONS.md` | 44 permanent lessons — every closed mistake, L1–L44 |
+| `LESSONS.md` | 45 permanent lessons — every closed mistake, L1–L45 |
 | `FAILURES.md` | Per-card failure database (auto-maintained; every non-Level-A ID gets a record) |
 | `VISION.md` | Product vision / where this is going |
 | `docs/archive/` | Completed unit specs, kept for their acceptance criteria |
@@ -47,7 +47,7 @@ separately.
 - **Never push without Yujin's explicit instruction.**
 - Every closed mistake becomes a permanent test in `tests.py` + a lesson in
   `LESSONS.md`. Nothing fails twice.
-- Full suite must stay green: `python tests.py` (133 total: 130 passed,
+- Full suite must stay green: `python tests.py` (137 total: 134 passed,
   3 explicit skips, 0 failed on this checkout as of 2026-07-19; see
   `PROGRESS.md` for environment limits).
 
@@ -68,6 +68,12 @@ Carousell/Facebook host boundaries with public-DNS checks. Scraped image
 downloads revalidate redirects and enforce a byte budget. This is defense in
 depth, not a claim of DNS-rebinding-proof transport or a general-purpose URL
 fetcher; keep the dashboard on a trusted/private network.
+
+Direct uploads are capped at 12 MB before OCR. Direct and listing-photo images
+must decode as JPEG/PNG/BMP/WebP, stay within a 12,000-pixel edge and 40-million
+pixel area, and pass integrity plus bounded decode checks. Accepted files use
+UUID names and their actual image type; rejected temporary files are removed.
+Automated upload retention and resource metrics are not implemented yet.
 
 ## Per-machine setup notes
 

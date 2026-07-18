@@ -20,11 +20,14 @@ import socket
 import sqlite3
 import threading
 import time
+import uuid
+import warnings
 from urllib.parse import urlsplit
 
 import requests
 
 from flask import Flask, request, jsonify, Response, send_file
+from werkzeug.exceptions import RequestEntityTooLarge
 
 import config
 import exchange_rate
@@ -36,6 +39,79 @@ from version import VERSION
 STATUS_PATH = os.path.join(os.path.dirname(__file__), "feed_status.json")
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 DATASET_DIR = os.path.join(os.path.dirname(__file__), "dataset")
+MAX_UPLOAD_BYTES = 12 * 1024 * 1024
+MAX_UPLOAD_PIXELS = 40_000_000
+MAX_UPLOAD_EDGE = 12_000
+_IMAGE_SUFFIXES = {"JPEG": ".jpg", "PNG": ".png", "BMP": ".bmp",
+                   "WEBP": ".webp"}
+
+
+class InvalidImageUpload(ValueError):
+    """The supplied bytes are not a bounded supported raster image."""
+
+
+def _validated_image_suffix(path):
+    """Verify actual image bytes and dimensions before OCR sees the file."""
+    from PIL import Image, UnidentifiedImageError
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", Image.DecompressionBombWarning)
+            with Image.open(path) as uploaded:
+                image_format = str(uploaded.format or "").upper()
+                suffix = _IMAGE_SUFFIXES.get(image_format)
+                width, height = uploaded.size
+                if not suffix or width < 1 or height < 1:
+                    raise InvalidImageUpload("unsupported image")
+                if (width > MAX_UPLOAD_EDGE or height > MAX_UPLOAD_EDGE
+                        or width * height > MAX_UPLOAD_PIXELS):
+                    raise InvalidImageUpload("image dimensions too large")
+                uploaded.verify()
+            # verify() checks container integrity without decoding pixels.
+            # Reopen and load after the dimension gate so truncated payloads
+            # cannot become expensive OCR-time failures.
+            with Image.open(path) as decoded:
+                decoded.load()
+        return suffix
+    except InvalidImageUpload:
+        raise
+    except (Image.DecompressionBombError, Image.DecompressionBombWarning,
+            UnidentifiedImageError, OSError, SyntaxError, ValueError) as exc:
+        raise InvalidImageUpload("invalid image") from exc
+
+
+def _store_validated_image(writer, prefix):
+    """Write to a private temporary name, validate, then publish atomically."""
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    token = uuid.uuid4().hex
+    temporary = os.path.join(UPLOAD_DIR, f".{prefix}_{token}.upload")
+    final_path = None
+    try:
+        writer(temporary)
+        if os.path.getsize(temporary) > MAX_UPLOAD_BYTES:
+            raise InvalidImageUpload("image file too large")
+        suffix = _validated_image_suffix(temporary)
+        final_path = os.path.join(UPLOAD_DIR, f"{prefix}_{token}{suffix}")
+        os.replace(temporary, final_path)
+        return final_path
+    except Exception:
+        for candidate in (temporary, final_path):
+            if candidate and os.path.exists(candidate):
+                try:
+                    os.remove(candidate)
+                except OSError:
+                    pass
+        raise
+
+
+def _store_uploaded_image(file_storage):
+    return _store_validated_image(file_storage.save, "card")
+
+
+def _store_downloaded_image(content):
+    def write(path):
+        with open(path, "wb") as image_file:
+            image_file.write(content)
+    return _store_validated_image(write, "link")
 
 
 def _build_id():
@@ -104,6 +180,12 @@ def _watchdog():
         time.sleep(60)
 
 app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_BYTES
+
+
+@app.errorhandler(RequestEntityTooLarge)
+def _upload_too_large(_error):
+    return jsonify({"error": "upload too large"}), 413
 
 
 def _dashboard_auth_token():
@@ -286,12 +368,10 @@ def valuator_ocr():
     f = request.files.get("photo")
     if not f:
         return jsonify({"error": "no photo"}), 400
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
-    ext = os.path.splitext(f.filename or "")[1].lower() or ".jpg"
-    if ext not in (".jpg", ".jpeg", ".png", ".bmp", ".webp"):
-        return jsonify({"error": "not an image"}), 400
-    path = os.path.join(UPLOAD_DIR, f"card_{int(time.time())}{ext}")
-    f.save(path)
+    try:
+        path = _store_uploaded_image(f)
+    except InvalidImageUpload:
+        return jsonify({"error": "invalid image"}), 400
     lines = valuator.ocr_lines(path)
     # BINDER MODE (V0.9): 3+ distinct real card names in one photo = a
     # binder page (2x2); 2 names in a LANDSCAPE frame = two cards side by
@@ -484,17 +564,14 @@ def valuator_from_url():
         return jsonify({"error": "no photos found on that page — FB usually "
                         "needs login; save the photo and drop it in the box "
                         "instead"}), 422
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
-    stamp, paths = int(time.time()), []
-    for n, u in enumerate(imgs[:6]):
+    paths = []
+    for u in imgs[:6]:
         try:
             r = network_safety.fetch_public_bytes(
                 profile_dataset._fullsize(u), timeout=30,
                 headers={"User-Agent": profile_dataset.UA})
             if r.status_code == 200 and len(r.content) > 4000:
-                p = os.path.join(UPLOAD_DIR, f"link_{stamp}_{n}.jpg")
-                with open(p, "wb") as f:
-                    f.write(r.content)
+                p = _store_downloaded_image(r.content)
                 paths.append(p)
         except Exception:
             pass

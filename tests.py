@@ -9,6 +9,7 @@ this suite screaming. Pair each test with its entry in LESSONS.md.
 Run:  E:\python.exe tests.py     (offline — no network, no Discord, no FB)
 """
 import base64
+import io
 import os
 import socket
 import sys
@@ -1689,6 +1690,81 @@ class TestUrlSafety(unittest.TestCase):
         network_safety.guard_marketplace_navigation(route, frame)
         self.assertTrue(route.aborted)
         self.assertFalse(route.continued)
+
+
+class TestUploadSafety(unittest.TestCase):
+    """Uploaded bytes cross a trust boundary before the expensive OCR path."""
+
+    @staticmethod
+    def _image_bytes(size=(80, 100), image_format="PNG", mode="RGB"):
+        from PIL import Image
+        output = io.BytesIO()
+        Image.new(mode, size, 255).save(output, image_format)
+        return output.getvalue()
+
+    def test_request_size_is_capped_before_ocr(self):
+        import app as dashboard_app
+        dashboard_app.app.config["TESTING"] = True
+        self.assertEqual(dashboard_app.app.config["MAX_CONTENT_LENGTH"],
+                         dashboard_app.MAX_UPLOAD_BYTES)
+        client = dashboard_app.app.test_client()
+        payload = b"x" * (dashboard_app.MAX_UPLOAD_BYTES + 1024)
+        with tempfile.TemporaryDirectory() as upload_dir, \
+             mock.patch.object(dashboard_app, "UPLOAD_DIR", upload_dir), \
+             mock.patch("valuator.ocr_lines") as ocr:
+            response = client.post(
+                "/api/valuator/ocr",
+                data={"photo": (io.BytesIO(payload), "large.jpg")},
+                content_type="multipart/form-data")
+            remaining = os.listdir(upload_dir)
+        self.assertEqual(response.status_code, 413)
+        self.assertEqual(response.get_json()["error"], "upload too large")
+        self.assertEqual(remaining, [])
+        ocr.assert_not_called()
+
+    def test_non_image_bytes_are_rejected_and_removed_before_ocr(self):
+        import app as dashboard_app
+        dashboard_app.app.config["TESTING"] = True
+        client = dashboard_app.app.test_client()
+        with tempfile.TemporaryDirectory() as upload_dir, \
+             mock.patch.object(dashboard_app, "UPLOAD_DIR", upload_dir), \
+             mock.patch("valuator.ocr_lines") as ocr:
+            response = client.post(
+                "/api/valuator/ocr",
+                data={"photo": (io.BytesIO(b"not really a jpeg"), "claim.jpg")},
+                content_type="multipart/form-data")
+            remaining = os.listdir(upload_dir)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.get_json()["error"], "invalid image")
+        self.assertEqual(remaining, [])
+        ocr.assert_not_called()
+
+    def test_actual_format_names_and_concurrent_files_cannot_collide(self):
+        import app as dashboard_app
+        from werkzeug.datastructures import FileStorage
+        png = self._image_bytes()
+        with tempfile.TemporaryDirectory() as upload_dir, \
+             mock.patch.object(dashboard_app, "UPLOAD_DIR", upload_dir):
+            paths = [dashboard_app._store_uploaded_image(FileStorage(
+                stream=io.BytesIO(png), filename="spoofed.jpg"))
+                for _ in range(2)]
+            self.assertNotEqual(paths[0], paths[1])
+            self.assertTrue(all(path.endswith(".png") for path in paths))
+            self.assertTrue(all(os.path.exists(path) for path in paths))
+
+    def test_decompression_size_is_rejected_before_full_decode(self):
+        import app as dashboard_app
+        from werkzeug.datastructures import FileStorage
+        # A one-bit, highly compressible PNG is small on the wire but expands
+        # beyond the application's explicit pixel budget.
+        oversized = self._image_bytes(size=(7000, 7000), mode="1")
+        self.assertLess(len(oversized), 1024 * 1024)
+        with tempfile.TemporaryDirectory() as upload_dir, \
+             mock.patch.object(dashboard_app, "UPLOAD_DIR", upload_dir):
+            with self.assertRaises(dashboard_app.InvalidImageUpload):
+                dashboard_app._store_uploaded_image(FileStorage(
+                    stream=io.BytesIO(oversized), filename="compressed.png"))
+            self.assertEqual(os.listdir(upload_dir), [])
 
 
 class TestValuatorOcrRoute(unittest.TestCase):
