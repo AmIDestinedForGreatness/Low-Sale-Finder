@@ -4,7 +4,7 @@
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
 written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
-**132 total tests: 129 passed, 3 explicitly skipped, 0 failed; 43 lessons**
+**133 total tests: 130 passed, 3 explicitly skipped, 0 failed; 44 lessons**
 (2026-07-19).
 
 ## 2026-07-19 independent Codex audit
@@ -15,7 +15,7 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
   the canonical dataset path had already fixed that failure class.
 - Isolated the Flask regressions from production uploads/failure logging and
   replaced a machine-dependent warp/hash skip with deterministic regions/quads.
-- Full deterministic suite: **132 total, 129 passed, 3 skips, 0 failed**.
+- Full deterministic suite: **133 total, 130 passed, 3 skips, 0 failed**.
   Offline scraper/parser replay:
   **40/40**. All 31 Python files and the inline dashboard JavaScript parse.
 - **Still unverified here:** real-photo perspective-warp/hash hit rate, route
@@ -36,6 +36,13 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
   service workers disabled. WebArtwork sends bounded local bytes, not a local
   path as `image_uri`. Eight URL tests pass. Residual DNS-rebinding and browser
   subresource limits are documented rather than called solved.
+- Identification parity correction: single-card dashboard uploads were the
+  only entry point rebuilding the pipeline rather than calling
+  `profile_dataset.identify()`. A number-only promo input crashed there while
+  the canonical path safely adopted its sole exact product. The route now uses
+  the same combined query, unique-number/candidate-consensus resolver, and
+  set-code presentation function. Remaining duplicated stages stay explicit
+  pending another reproduced parity failure; this is not a wholesale rewrite.
 
 ## Version history
 

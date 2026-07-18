@@ -231,6 +231,37 @@ def adopt_attack_number(cand_nums):
     return None
 
 
+def resolve_catalog_identity(name, number, via, candidates, graded=False):
+    """Apply the shared safe name upgrade from already-fetched candidates.
+
+    This is intentionally narrow: searching, local-index joins, snapping, and
+    evidence remain with their callers. The dashboard and dataset must agree
+    when a number has one exact product or several exact products with one
+    normalized card name.
+    """
+    import valuator
+    exact = [candidate for candidate in candidates
+             if (number and valuator._norm_num(str(candidate.get("number") or ""))
+                 == valuator._norm_num(str(number)))]
+    if (not graded and (not name or valuator._SET_RE.fullmatch(str(name)))
+            and number and len(candidates) == 1 and len(exact) == 1):
+        return candidates[0]["name"].split(" - ")[0], via or "unique number match"
+    if not graded and not name and number and len(candidates) >= 2:
+        bases = {re.sub(r"\s*\(.*\)$", "", candidate["name"].split(" - ")[0]).strip()
+                 for candidate in exact}
+        if len(bases) == 1:
+            return bases.pop(), via or "candidate consensus"
+    return name, via
+
+
+def presented_identity_name(name, via):
+    """A set code may guide search but must never be presented as a name."""
+    import valuator
+    if name and not via and valuator._SET_RE.fullmatch(str(name)):
+        return None
+    return name
+
+
 def identify(image_paths, ocr_raw, wm):
     """Run the valuator identification stack over a listing's images.
     Mirrors /api/valuator/ocr, but uses EVERY photo (front, back, closeup)
@@ -390,23 +421,12 @@ def identify(image_paths, ocr_raw, wm):
         # in EN Paldea Evolved AND Mega Froslass ex in the JP M2a set. The
         # len(cands)==1 requirement is what keeps this gate safe; never
         # relax it to "all candidates share a number".
-        if (not graded
-                and (not name or valuator._SET_RE.fullmatch(str(name)))
-                and number and len(cands) == 1
-                and valuator._norm_num(cands[0]["number"]) == valuator._norm_num(str(number))):
-            name = cands[0]["name"].split(" - ")[0]
-            via = via or "unique number match"
+        name, via = resolve_catalog_identity(
+            name, number, via, cands, graded=graded)
         # CANDIDATE CONSENSUS: several products share the read number but
         # they are all the SAME card (Alolan Ninetales GX 22/145 appeared
         # twice; the system claimed nothing). One name in all candidates =
         # the name is determined even without a readable title.
-        elif (not graded and not name and number and len(cands) >= 2):
-            bases = {re.sub(r"\s*\(.*\)$", "", cd["name"].split(" - ")[0]).strip()
-                     for cd in cands
-                     if valuator._norm_num(cd["number"]) == valuator._norm_num(str(number))}
-            if len(bases) == 1:
-                name = bases.pop()
-                via = via or "candidate consensus"
         # LOCAL-INDEX JOIN: the number is EVIDENCE and the local index is
         # COMPLETE (TCGplayer text search often never surfaces promos/Full
         # Arts). If the read number is a real printing of exactly one
@@ -469,8 +489,7 @@ def identify(image_paths, ocr_raw, wm):
     # PRESENTED as the identification (live catch: a JP M2a-set card
     # displayed name "m20" at Level C — a garbage name shown confidently is
     # worse than an honest unread).
-    if name and not via and valuator._SET_RE.fullmatch(str(name)):
-        name = None
+    name = presented_identity_name(name, via)
     result = {"name": name, "name_read": name_read,
               "number": number, "number_read": number_read,
               "snapped": snapped, "via": via, "jp": jp, "query": query,

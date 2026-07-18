@@ -569,3 +569,17 @@ subresource.
 fixtures, credentials/schemes/ports, private/link-local/mixed DNS, redirect
 revalidation, bounded manual fetch behavior, and Playwright aborts;
 `test_web_artwork_cache_avoids_duplicate_calls` proves Vision receives bytes.
+
+### L44 - share the decision seam before copying another identification fix (2026-07-19)
+**Mistake:** the single-card Flask branch rebuilt the identifier separately
+from binder/listing/dataset/reaudit. It had already drifted on mechanic and set
+code handling; a valid number-only promo upload then crashed while the
+canonical path safely adopted its one exact catalog product.
+**Rule:** do not rewrite the whole pipeline without evidence, but do share the
+smallest policy seam that caused the divergence. Combined-query candidate
+search, unique exact-number adoption, same-name candidate consensus, and
+set-code presentation now use the same functions. Leave remaining duplicated
+stages visible and require another failing parity case before extracting them.
+**Guard:**
+`TestValuatorOcrRoute.test_unique_number_adoption_matches_canonical_identifier`
+plus the existing route/profile set-code and mechanic regressions.

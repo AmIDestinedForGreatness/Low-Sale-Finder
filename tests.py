@@ -1775,6 +1775,42 @@ class TestValuatorOcrRoute(unittest.TestCase):
         self.assertEqual(result["number"], "222/193")
         self.assertEqual(len(result["candidates"]), 2)
 
+    def test_unique_number_adoption_matches_canonical_identifier(self):
+        """A number-only single-card upload must use the same safe unique-
+        catalog upgrade as profile/binder identification. Before the shared
+        policy seam, the route never searched when the name was unreadable."""
+        import app as dashboard_app
+        dashboard_app.app.config["TESTING"] = True
+        client = dashboard_app.app.test_client()
+        candidate = {
+            "pid": 25, "name": "Pikachu - SM Black Star Promos",
+            "set": "SM Black Star Promos", "number": "197/SV-P",
+            "line": "Pokemon Japan", "img": "", "url": "", "market": None,
+        }
+        with tempfile.TemporaryDirectory() as upload_dir, \
+             mock.patch.object(dashboard_app, "UPLOAD_DIR", upload_dir), \
+             mock.patch("valuator.ocr_lines", return_value=["197/SV-P"]), \
+             mock.patch("valuator.ocr_deep", return_value=[]), \
+             mock.patch("valuator.guess_query", return_value=(None, "197/SV-P")), \
+             mock.patch("valuator.search_candidates", return_value=[candidate]), \
+             mock.patch("folder_dataset.distinct_names", return_value=set()), \
+             mock.patch("folder_dataset.distinct_collector_fractions", return_value=set()), \
+             mock.patch("evidence.build_evidence", return_value={}), \
+             mock.patch("evidence.log_failure"):
+            photo_path = os.path.join(upload_dir, "number-only.jpg")
+            from PIL import Image
+            Image.new("RGB", (700, 900), (255, 255, 255)).save(photo_path, "JPEG")
+            with open(photo_path, "rb") as photo_file:
+                response = client.post(
+                    "/api/valuator/ocr",
+                    data={"photo": (photo_file, "number-only.jpg")},
+                    content_type="multipart/form-data")
+        result = response.get_json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(result["name"], "Pikachu")
+        self.assertEqual(result["via"], "unique number match")
+        self.assertEqual(result["number"], "197/SV-P")
+
 
 class TestCardWarp(unittest.TestCase):
     """HASH-FIRST-NEXT unit (2026-07-19, built on Mom's PC): perspective-warp

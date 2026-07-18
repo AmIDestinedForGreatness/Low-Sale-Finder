@@ -35,7 +35,7 @@ separately.
 | `HASH-FIRST-NEXT.md` | Perspective-warp unit: code/synthetic tests complete; real-photo/catalog acceptance still pending |
 | `docs/CLAUDE-CODE-AGENT-EVALUATION.md` | 2026-07-19 independent code, evidence, safety, and agent-work evaluation |
 | `AGENT-RELAY.md` | Chronological work log between CC (Claude Code) and CX (Codex). Read bottom-up |
-| `LESSONS.md` | 43 permanent lessons — every closed mistake, L1–L43 |
+| `LESSONS.md` | 44 permanent lessons — every closed mistake, L1–L44 |
 | `FAILURES.md` | Per-card failure database (auto-maintained; every non-Level-A ID gets a record) |
 | `VISION.md` | Product vision / where this is going |
 | `docs/archive/` | Completed unit specs, kept for their acceptance criteria |
@@ -47,7 +47,7 @@ separately.
 - **Never push without Yujin's explicit instruction.**
 - Every closed mistake becomes a permanent test in `tests.py` + a lesson in
   `LESSONS.md`. Nothing fails twice.
-- Full suite must stay green: `python tests.py` (132 total: 129 passed,
+- Full suite must stay green: `python tests.py` (133 total: 130 passed,
   3 explicit skips, 0 failed on this checkout as of 2026-07-19; see
   `PROGRESS.md` for environment limits).
 

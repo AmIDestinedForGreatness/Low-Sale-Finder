@@ -409,10 +409,17 @@ def valuator_ocr():
     # when it's not strong enough evidence for the language CLAIM above
     # (mirrors profile_dataset.py's identify() prefer_jp split exactly).
     prefer_jp = jp or bool(number and not name)
+    graded = any(re.search(r"\b(psa|bgs|cgc|beckett|black label|"
+                           r"gem ?mint|pristine)", ln, re.I) for ln in lines)
     # LAYER B: a number must be a real printing of the identified card —
     # snap 1-digit OCR errors (015/173 -> 016/173) against actual printings
     number_read, snapped = number, False
-    cands = valuator.search_candidates(name, prefer_jp=prefer_jp) if name else []
+    query = (str(name or "") + " " + str(number or "")).strip()
+    cands = valuator.search_candidates(query, prefer_jp=prefer_jp) if query else []
+    if not cands and name:
+        cands = valuator.search_candidates(str(name), prefer_jp=prefer_jp)
+    name, via = profile_dataset.resolve_catalog_identity(
+        name, number, via, cands, graded=graded)
     if via and name and number:
         fixed = valuator.snap_number(number, [c["number"] for c in cands])
         if fixed and valuator._norm_num(fixed) != valuator._norm_num(number):
@@ -439,15 +446,7 @@ def valuator_ocr():
                 cands, name = c2, exact[0]["name"].split(" - ")[0]
                 via = via or "number-variant match"
                 break
-    query = (name + " " + (number or "")).strip()
-    # Match profile_dataset.identify(): a set-code-shaped OCR token is a
-    # search hint, never a Pokemon name. If cross-region collisions prevent
-    # the set-code+number lookup from upgrading it to a real name, present an
-    # honest unread and keep the candidates for the user's eye gate.
-    if name and not via and valuator._SET_RE.fullmatch(str(name)):
-        name = None
-    graded = any(re.search(r"\b(psa|bgs|cgc|beckett|black label|"
-                            r"gem ?mint|pristine)", ln, re.I) for ln in lines)
+    name = profile_dataset.presented_identity_name(name, via)
     result = {"query": query,
               "name": name, "name_read": name_read,
               "number": number, "number_read": number_read,
