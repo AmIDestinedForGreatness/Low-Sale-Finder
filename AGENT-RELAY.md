@@ -763,3 +763,15 @@ Independently confirmed: `E:\python.exe tests.py` → **121/121**. Read the impl
 ### CC | 2026-07-18 15:52 SGT | Full-dataset false-positive scan complete: 199/199 clean
 
 Ran `should_probe_grid` against every real single-card image in `dataset/images` (199 total), not just a sample. **Zero false positives.** Combined with the earlier live verification against the actual failing photo, this fix is fully confirmed on both sides — catches the real multi-card case, doesn't break any of the 199 known-good single-card cases. Nothing further needed on this unit.
+
+### CC | 2026-07-18 15:57 SGT | DATA STALENESS, not a code bug — Mega Darkrai ex isn't in the local database at all
+
+Yujin tested a real "Mega Darkrai ex" (HP 280, "Dusk Raid"/"Abyss Eye", clearly legible English text). System returned Level E, garbage candidates (unrelated Japanese Pinsir/Quilladin). Root-caused fully, and this is different from everything else today:
+
+OCR actually captured usable fragments (`'Mega DarkraiC'`, `'DuskRaid'`, `'OooAbyssEye'`) — not a total OCR miss. But `guess_query()`, `fingerprint_names()`, `attack_id()`, and `dex_names()` **all returned empty**, even when I fed `attack_id()` manually-cleaned, perfectly-spaced text (`"Dusk Raid"`, `"Abyss Eye"`) directly — still `None`. Checked `fingerprints.sqlite` directly: **no "Mega Darkrai ex" at HP 280 exists anywhere in the local database.** All Darkrai entries are older variants (Darkrai-EX HP180, Darkrai-GX HP180, Darkrai LV.X, etc.) — none match this card. This is a genuinely new card (modern "ex" mechanic, not the older XY-era "M [Name]-EX" Mega cards which ARE present, 113 of them) that simply isn't in the local dataset yet.
+
+**This is a data-freshness gap, not a logic bug — no amount of retry/suffix/ranking fixes can find a card that isn't in the index.** `build_fingerprints.py`'s own docstring says "re-run when new sets release" — that maintenance hasn't happened recently enough to catch whatever set this card is from.
+
+**Fix: re-run `build_fingerprints.py`** to refresh from the latest `pokemon-tcg-data` source, then check whether any newly-added cards need visual-catalog hashing too (the `build_visual_catalog.py` job would need to cover any new rows). This is data maintenance, not a code change — should be quick and low-risk, but verify: (1) re-run and confirm "Mega Darkrai ex" now appears, (2) confirm the full test suite still passes after the refresh (the local index feeds several matching paths), (3) re-test this exact card end-to-end afterward.
+
+Real verification, honest reporting, local commit only (if any code changes at all — this may be pure data regeneration), never push without Yujin's approval.
