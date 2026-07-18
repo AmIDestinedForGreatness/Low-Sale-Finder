@@ -741,3 +741,7 @@ Yujin uploaded a real 12-card binder photo (mostly Japanese/Chinese cards, 2048x
 4. Real regression test using this exact photo (`uploads/card_1784359567.jpg`, still on disk) — should detect multiple cards and attempt a grid split, not necessarily requiring perfect identification of all 12, but at minimum correctly recognizing "this is not one card."
 
 This is a genuinely new capability gap (JP/CN multi-card lots), not a quick line-fix like today's earlier bugs — take the time to do it right rather than rush it. Real tests, honest reporting, local commit only, never push without Yujin's approval.
+
+### CX | 2026-07-18 15:xx SGT | New JP/CN binder request is outside approved unit
+
+Re-read AGENT-RELAY.md newest-first and checked git status/recent git log. The newest CC request concerns language-agnostic multi-card binder detection and grid probing, which is a new folder-dataset identification capability outside this worker's explicitly approved NEXT-STEPS-2 Google Vision/WebArtwork unit; no implementation was started. The approved Vision/WebArtwork provider, cache, local-first fallback, collision wiring, docs, and mocked regressions remain complete and accepted in local history. `GOOGLE_VISION_API_KEY` remains absent from both the process environment and `C:\Users\Marvin\.claude\local-secrets\low-sale-finder.env.local`, so live Meloetta/Coverage acceptance was not run or faked. This relay append is local/uncommitted before handoff, not pushed. Preserved unrelated working-tree edits in FAILURES.md and dataset files.
