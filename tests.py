@@ -758,6 +758,16 @@ class TestEvidence(unittest.TestCase):
         self.assertEqual(ev["evidence_chain"]["pokemon_name"]["status"], "inferred")
         self.assertEqual(ev["evidence_level"], "A")
 
+    def test_unique_attack_names_inference_can_reach_level_a(self):
+        ident = self._ident(
+            name="Alolan Ninetales GX", name_read=None, via="attack names",
+            number="22/145", number_read="22/145",
+            candidates=[{"pid": 130920, "name": "Alolan Ninetales GX",
+                         "set": "Guardians Rising", "number": "22/145"}])
+        with mock.patch("collision._catalog_rows", return_value=[]):
+            ev = evidence.build_evidence(ident, ["Ice Blade", "Blizzard Edge", "22/145"])
+        self.assertEqual(ev["evidence_level"], "A")
+
     def test_ambiguous_attack_fingerprint_inference_stays_at_level_c(self):
         ident = self._ident(
             name="Alolan Ninetales GX", name_read=None, via="attack fingerprint",
@@ -1071,6 +1081,22 @@ class TestEvidenceProviders(unittest.TestCase):
         art = result["evidence_chain"]["artwork"]
         self.assertEqual(art["status"], "not_verified")
         self.assertIsNone(art["provider_result"]["matched_reference"])
+
+    def test_confirmed_reference_is_seen_after_dataset_cache_clear(self):
+        from providers import artwork
+        image = "confirmed-reference.png"
+        confirmed = [{"ident": {"name": "Testmon ex", "number": "010/100"},
+                      "images": [image]}]
+        state = {"rows": []}
+        with mock.patch.object(artwork, "DATASET_DIR", "dataset-test"), \
+             mock.patch("providers.artwork.os.path.exists", side_effect=lambda p: str(p).endswith("confirmed_by_user.json") or p == image), \
+             mock.patch("providers.artwork.json.load", side_effect=lambda _: state["rows"]), \
+             mock.patch("providers.artwork.open", mock.mock_open()):
+            artwork._dataset_references.cache_clear()
+            self.assertEqual(artwork._dataset_references(), {})
+            state["rows"] = confirmed
+            artwork._dataset_references.cache_clear()
+            self.assertEqual(artwork._dataset_references()[("testmon ex", "10/100")], [image])
 
     def test_future_provider_stubs_are_honest(self):
         from providers import AbilityProvider, ExpansionProvider, HoloProvider, HPProvider

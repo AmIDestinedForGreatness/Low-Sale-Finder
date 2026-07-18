@@ -30,7 +30,8 @@ def _ident_key(ident):
 def _dataset_references():
     """Map known, already-local dataset identifications to their photos."""
     refs = {}
-    for filename in ("carousell_profile.json", "for_u_to_do_while_im_asleep.json"):
+    for filename in ("carousell_profile.json", "for_u_to_do_while_im_asleep.json",
+                     "confirmed_by_user.json"):
         path = os.path.join(DATASET_DIR, filename)
         if not os.path.exists(path):
             continue

@@ -30,6 +30,7 @@ from version import VERSION
 
 STATUS_PATH = os.path.join(os.path.dirname(__file__), "feed_status.json")
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
+DATASET_DIR = os.path.join(os.path.dirname(__file__), "dataset")
 
 
 def _build_id():
@@ -407,6 +408,52 @@ def valuator_value():
     return jsonify(valuator.valuate(pid, ph_factor=max(0.5, min(3.0, ph))))
 
 
+@app.route("/api/pricecharting")
+def pricecharting_lookup():
+    title = (request.args.get("title") or "").strip()
+    if len(title) < 3:
+        return jsonify({"url": None})
+    import pc_price
+    _, label = pc_price.market_value(title)
+    marker = "|url:"
+    url = label.split(marker, 1)[1].strip() if label and marker in label else None
+    return jsonify({"url": url})
+
+
+@app.route("/api/valuator/confirm", methods=["POST"])
+def valuator_confirm():
+    payload = request.get_json(silent=True) or {}
+    image = str(payload.get("image") or "")
+    candidate = payload.get("candidate") or {}
+    name, number = candidate.get("name"), candidate.get("number")
+    if not image.startswith("/uploads/") or not name or not number:
+        return jsonify({"error": "image, candidate.name, and candidate.number are required"}), 400
+    image_path = os.path.join(UPLOAD_DIR, os.path.basename(image))
+    if not os.path.isfile(image_path):
+        return jsonify({"error": "confirmed image is unavailable"}), 404
+    path = os.path.join(DATASET_DIR, "confirmed_by_user.json")
+    os.makedirs(DATASET_DIR, exist_ok=True)
+    rows = []
+    if os.path.exists(path):
+        try:
+            with open(path, encoding="utf-8") as handle:
+                rows = json.load(handle)
+        except (OSError, ValueError):
+            rows = []
+    if not isinstance(rows, list):
+        rows = []
+    record = {"ident": {"name": str(name), "number": str(number)},
+              "images": [image_path]}
+    if not any(r.get("ident") == record["ident"] and image_path in (r.get("images") or [])
+               for r in rows if isinstance(r, dict)):
+        rows.append(record)
+        with open(path, "w", encoding="utf-8") as handle:
+            json.dump(rows, handle, ensure_ascii=False, indent=2)
+    from providers.artwork import _dataset_references
+    _dataset_references.cache_clear()
+    return jsonify({"ok": True, "record": record})
+
+
 @app.route("/api/stats")
 def stats():
     conn = sqlite3.connect(config.SEEN_DB_PATH)
@@ -554,10 +601,11 @@ HTML = r"""<!doctype html>
   :root{
     --bg:#05070f; --panel:rgba(15,21,40,.78); --panel2:#0c1224; --line:rgba(42,184,246,.13);
     --line2:rgba(42,184,246,.38); --ink:#d9e6f5; --muted:#66779c; --accent:#2ab8f6; --accent2:#3b6cff;
-    --green:#2ee6a8; --red:#ff5470; --radius:14px;
+    --green:#2ee6a8; --red:#ff5470; --viz-series-1:#2ab8f6; --viz-series-2:#3b6cff; --radius:14px;
     --mono:'Cascadia Code','Consolas',ui-monospace,Menlo,monospace;
   }
   *{box-sizing:border-box}
+  .ph-axis{fill:var(--muted);font-size:10px}
   body{margin:0;color:var(--ink);
     font:15px/1.55 'Segoe UI',system-ui,-apple-system,sans-serif;
     background:
@@ -1231,7 +1279,13 @@ function valConfirm(pid){
   cmpResetZoom();                        // every confirm starts unzoomed
   $('#cmpModal').style.display = 'flex';
 }
-$('#cmpYes').onclick = ()=>{ $('#cmpModal').style.display='none'; if(cmpPid) valPick(cmpPid); };
+$('#cmpYes').onclick = async ()=>{
+  $('#cmpModal').style.display='none';
+  const cd = (window._cands||{})[cmpPid] || {};
+  const image = $('#valThumb').dataset.full || '';
+  try{ await fetch('/api/valuator/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image,candidate:{name:cd.name,number:cd.number}})}); }catch(e){}
+  if(cmpPid) valPick(cmpPid);
+};
 $('#cmpNo').onclick  = ()=>{ $('#cmpModal').style.display='none'; };
 $('#cmpModal').onclick = e=>{ if(e.target === $('#cmpModal')) $('#cmpModal').style.display='none'; };
 
@@ -1294,6 +1348,10 @@ async function valPick(pid){
   const CONF_C = {HIGH:'var(--green)', MED:'var(--accent)', LOW:'var(--red)'};
   const conds = Object.entries(v.by_condition||{});
   const cd = (window._cands||{})[pid] || {};
+  let pcUrl = v.pricecharting_url || '';
+  if(!pcUrl && cd.name){
+    try{ pcUrl = ((await (await fetch('/api/pricecharting?title=' + encodeURIComponent(cardLabel(cd)+' '+(cd.number||''))).json()).url)||''); }catch(e){}
+  }
   const vol = v.volatility || {label:'Unknown', note:''};
   $('#valResult').innerHTML = `
     <div style="border:1px solid var(--line);border-radius:10px;padding:14px">
@@ -1303,7 +1361,7 @@ async function valPick(pid){
           <div style="font-weight:700">${escapeHtml(cardLabel(cd))}</div>
           <div class="muted" style="font-size:12px">${escapeHtml(cd.set||'')} · #${escapeHtml(cd.number||'')}
             ${cd.url?` · <a href="${cd.url}" target="_blank" rel="noopener" style="color:var(--accent)">TCGplayer ↗</a>`:''}
-            ${v.pricecharting_url?` · <a href="${v.pricecharting_url}" target="_blank" rel="noopener" style="color:var(--accent)">PriceCharting ↗</a>`:''}</div>
+            ${pcUrl?` · <a href="${pcUrl}" target="_blank" rel="noopener" style="color:var(--accent)">PriceCharting ↗</a>`:''}</div>
         </div>
       </div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">

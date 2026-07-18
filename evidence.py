@@ -138,7 +138,7 @@ def _provably_unique_inferred_name(ident):
     """Allow the narrow Level-A inference routes only when candidates agree."""
     via = ident.get("via")
     candidates = ident.get("candidates") or []
-    if via == "attack fingerprint":
+    if via in ("attack fingerprint", "attack names"):
         names = {_norm_card_name(c.get("name")) for c in candidates if c.get("name")}
         return len(names) == 1
     if via == "candidate consensus":
