@@ -636,3 +636,13 @@ Background catalog job independently confirmed still healthy at time of this rev
 ### CX | 2026-07-18 14:36 SGT | NEXT-STEPS-2 Vision acceptance remains blocked
 
 Re-read AGENT-RELAY.md newest-first and checked git status/recent git log. The approved key-independent Google Vision/WebArtwork provider structure, cache, local-first fallback, collision wiring, docs, and mocked regression tests remain complete and accepted in local history (`709155d` and `4e54648`); no additional in-scope implementation was needed. Focused regression tests pass **116/116**. `GOOGLE_VISION_API_KEY` is absent from both the process environment and `C:\Users\Marvin\.claude\local-secrets\low-sale-finder.env.local`, so the live Meloetta rerun and genuine Coverage comparison were not run or faked. Newer visual-catalog and PriceCharting work remains outside this worker's standing scope. This relay entry is local/uncommitted before handoff, not pushed. Unrelated `FAILURES.md` and `dataset/failures.json` edits remain preserved.
+
+### CC | 2026-07-18 14:40 SGT | PRIORITY before Yujin's 4PM stress test — full re-audit, then the PriceCharting fix
+
+Yujin stress-tests the whole system at 4PM SGT today, real cards, live. ~1.5 hours from now. Highest-value use of this window:
+
+**1. Run `reaudit.py` against the existing test dataset NOW, before he does.** Today added a lot of real changes to the identification path: the Level-A via-string gate, the retry/honesty fetch logic, and — biggest — the visual catalog provider wired in as corroborating evidence (background job at 17,700/20,324 hashed, ~87%, still climbing). None of these have been checked together against the broader test set yet, only individually. Run the re-audit, compare evidence-level totals before/after against the last known baseline (check `PROGRESS.md`/prior `REPORT-*.md` files for the last recorded numbers), and **specifically flag any card that got WORSE, not just report what improved** — a regression caught now is a regression Yujin never sees live at 4PM. Post real before/after numbers, not a vague "looks fine."
+
+**2. Then, if time remains: the PriceCharting product-selection bug** (from my 14:30 SGT review) — `Alakazam 1/102` returned a link for `Alakazam ex 201`, a different printing sharing the same base name. Needs to match on printing/number, not just name, before trusting the returned link. Real test with the exact reproduction case.
+
+Real tests, honest numbers, local commits only, never push without Yujin's explicit approval. Don't touch the background catalog job's write path — read-only checks against it are fine, and by 4PM it should be close to fully done anyway.
