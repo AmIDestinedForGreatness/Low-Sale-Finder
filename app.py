@@ -1350,7 +1350,11 @@ async function valPick(pid){
   const cd = (window._cands||{})[pid] || {};
   let pcUrl = v.pricecharting_url || '';
   if(!pcUrl && cd.name){
-    try{ pcUrl = ((await (await fetch('/api/pricecharting?title=' + encodeURIComponent(cardLabel(cd)+' '+(cd.number||''))).json()).url)||''); }catch(e){}
+    try{
+      const pcResp = await fetch('/api/pricecharting?title=' + encodeURIComponent(cardLabel(cd)+' '+(cd.number||'')));
+      const pcData = await pcResp.json();
+      pcUrl = pcData.url || '';
+    }catch(e){}
   }
   const vol = v.volatility || {label:'Unknown', note:''};
   $('#valResult').innerHTML = `
