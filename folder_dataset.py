@@ -29,6 +29,7 @@ import valuator
 from profile_dataset import identify
 
 EXTS = (".png", ".jpg", ".jpeg", ".webp", ".bmp")
+_FRACTION_RE = re.compile(r"(?<!\d)(\d{1,3})\s*/\s*(\d{1,3})(?!\d)")
 
 
 def _evidence_score(lines):
@@ -69,7 +70,13 @@ def distinct_names(lines):
     return names
 
 
-def should_probe_grid(width, height, distinct_name_count):
+def distinct_collector_fractions(lines):
+    """Return OCR collector fractions, preserving only distinct values."""
+    return {(int(a), int(b)) for ln in lines for a, b in _FRACTION_RE.findall(ln)
+            if int(b) >= 10}
+
+
+def should_probe_grid(width, height, distinct_name_count, number_fractions=None):
     """Whether a portrait upload deserves a bounded 2x2 binder probe.
 
     A phone photo of a binder can be too low-resolution for whole-image OCR
@@ -78,8 +85,19 @@ def should_probe_grid(width, height, distinct_name_count):
     photos are materially wider, so the narrow portrait ratio keeps this
     fallback from quadrupling OCR work for every upload.
     """
-    return (distinct_name_count < 3 and height > width
-            and width / max(height, 1) <= 0.68)
+    portrait_fallback = (height > width and width / max(height, 1) <= 0.68)
+    if distinct_name_count < 3 and portrait_fallback:
+        return True
+    # A square/wide, high-resolution page with 3+ distinct fractions sharing
+    # a denominator is a language-independent binder signal. The size guard
+    # avoids treating a single landscape card's footer as a 2x2 page.
+    fractions = number_fractions or set()
+    totals = {}
+    for _, total in fractions:
+        totals[total] = totals.get(total, 0) + 1
+    number_signal = max(totals.values(), default=0) >= 3
+    return (distinct_name_count < 3 and number_signal
+            and min(width, height) >= 900)
 
 
 def probe_grid(path, tmpdir, ocr_reader=None):

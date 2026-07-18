@@ -1311,6 +1311,17 @@ class TestReauditHandoffEdges(unittest.TestCase):
 
 
 class TestBinderDashboardFallback(unittest.TestCase):
+    def test_collector_fractions_are_language_agnostic_and_grid_safe(self):
+        import folder_dataset
+        lines = ["克雷色利亚 197/193", "治愈之舞 200 / 193",
+                 "カード 201/193", "224/193"]
+        self.assertEqual(len(folder_dataset.distinct_collector_fractions(lines)), 4)
+        self.assertTrue(folder_dataset.should_probe_grid(2048, 2048, 0,
+                                                         folder_dataset.distinct_collector_fractions(lines)))
+        # A normal-sized single landscape card with footer-like tokens stays single.
+        self.assertFalse(folder_dataset.should_probe_grid(800, 600, 0,
+                                                          {(1, 193), (2, 193), (3, 193)}))
+
     def test_narrow_four_card_photo_gets_bounded_grid_probe(self):
         import folder_dataset
         self.assertTrue(folder_dataset.should_probe_grid(720, 1280, 0))

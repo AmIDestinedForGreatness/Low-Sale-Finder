@@ -226,11 +226,13 @@ def valuator_ocr():
     import profile_dataset
     from PIL import Image as _Img
     n_names = len(folder_dataset.distinct_names(lines))
+    n_numbers = folder_dataset.distinct_collector_fractions(lines)
     _im = _Img.open(path)
     pair = n_names == 2 and _im.width > _im.height
     probe_cells, probe_ocr = [], []
     if (not pair and n_names < 3
-            and folder_dataset.should_probe_grid(_im.width, _im.height, n_names)):
+            and folder_dataset.should_probe_grid(_im.width, _im.height, n_names,
+                                                 n_numbers)):
         probe_cells, probe_ocr = folder_dataset.probe_grid(path, UPLOAD_DIR)
     if n_names >= 3 or pair or probe_cells:
         rows, cols = (1, 2) if pair else (2, 2)
