@@ -75,6 +75,35 @@ class VisualCatalogProvider(EvidenceProvider):
         # owns all writes, and a partially populated index is valid input.
         return _read_index(self.db_path, _db_token(self.db_path))
 
+    def match_image(self, image_path):
+        """Return a confident catalog match for an image, or ``None``.
+
+        Uses the same max-distance and nearest-slack gates as ``verify``.
+        """
+        if not image_path or not os.path.exists(image_path):
+            return None
+        try:
+            rows = self._indexed_rows()
+            if not rows:
+                return None
+            stat = os.stat(image_path)
+            input_phash, input_dhash = _file_hashes(
+                image_path, stat.st_mtime_ns, stat.st_size)
+            scored = [(_hash_distance(str(input_phash), str(input_dhash),
+                                       str(row[5]), str(row[6])), row)
+                      for row in rows]
+        except (OSError, ValueError, TypeError, sqlite3.Error):
+            return None
+        nearest = nsmallest(2, scored, key=lambda item: item[0])
+        best_distance, row = nearest[0]
+        next_distance = nearest[1][0] if len(nearest) > 1 else float("inf")
+        if (best_distance > self.max_distance
+                or best_distance > next_distance - self.nearest_slack):
+            return None
+        return {"id": row[0], "name": row[1], "set": row[2],
+                "number": row[3], "visual_path": row[4],
+                "distance": round(best_distance, 2)}
+
     @staticmethod
     def _candidate_keys(candidates):
         keyed = {}

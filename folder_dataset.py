@@ -158,6 +158,8 @@ def probe_contours(path, tmpdir, ocr_reader=None, pad=0.06):
     if not boxes:
         return [], []
     reader = ocr_reader or valuator.ocr_lines
+    from providers.visual_catalog import VisualCatalogProvider
+    visual_catalog = VisualCatalogProvider()
     img = Image.open(path)
     w, h = img.size
     cells = []
@@ -189,11 +191,21 @@ def probe_contours(path, tmpdir, ocr_reader=None, pad=0.06):
     # GIL during its C++ compute, so threading gives real wall-clock
     # parallelism on this OCR-bound path instead of running 4 full OCR
     # passes back to back.
+    hash_matches = [visual_catalog.match_image(cell) for cell in cells]
+    ocr_indices = [i for i, match in enumerate(hash_matches) if match is None]
+    ocr_groups = [None] * len(cells)
     from concurrent.futures import ThreadPoolExecutor
-    with ThreadPoolExecutor(max_workers=min(4, len(cells))) as pool:
-        ocr_groups = list(pool.map(reader, cells))
+    if ocr_indices:
+        with ThreadPoolExecutor(max_workers=min(4, len(ocr_indices))) as pool:
+            ocr_results = list(pool.map(reader, [cells[i] for i in ocr_indices]))
+        for i, lines in zip(ocr_indices, ocr_results):
+            ocr_groups[i] = lines
     signals = 0
-    for lines in ocr_groups:
+    for i, (match, lines) in enumerate(zip(hash_matches, ocr_groups)):
+        if match is not None:
+            signals += 1
+            ocr_groups[i] = [match["name"], match["number"]]
+            continue
         name, number = valuator.guess_query(lines)
         # detected-contour crops are tighter than blind grid quadrants, so a
         # card's name is often unreadable (glare/JP/holo) even though its
