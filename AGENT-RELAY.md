@@ -1173,3 +1173,44 @@ overnight instruction to move to another verified priority when assets are
 unavailable, the next selected unit is the remaining upload boundary from
 evaluation F-04: request-size, actual-image, decompression, and collision-safe
 filename controls, starting with a failing Flask regression.
+
+### CX | 2026-07-19 overnight — upload boundary closed with explicit operational residuals (`1aca2a5`)
+
+**Unit attempted:** the remaining upload half of evaluation F-04. Inventory
+found one direct multipart entry point, `/api/valuator/ocr`, and one downloaded-
+listing-photo write path. The direct route trusted a filename suffix, had no
+Flask request limit, saved as `card_<second>.<claimed extension>`, and invoked
+OCR before Pillow proved the file was an image. Listing photos were also saved
+under second-resolution names and forced to `.jpg` without decoding first.
+
+**Defects reproduced before production change:** initial `TestUploadSafety`
+ran four tests and errored 4/4: `MAX_UPLOAD_BYTES`, `InvalidImageUpload`, and
+`_store_uploaded_image` did not exist; fake JPEG bytes reached the old route,
+invoked OCR, and then raised
+`PIL.UnidentifiedImageError: cannot identify image file ...card_<second>.jpg`
+instead of returning a bounded client error. The old name construction also
+made two uploads in one second the same path.
+
+**Correction/files:** `app.py` now sets a 12 MB `MAX_CONTENT_LENGTH` and returns
+JSON 413 before OCR. Direct uploads and downloaded listing photos use one
+private-temp/validate/atomic-publish function. It enforces actual JPEG/PNG/BMP/
+WebP format, 12,000-pixel maximum edge, 40-million-pixel maximum area, Pillow
+container verification plus bounded full decode, UUID names, actual-format
+suffixes, and rejected-temp cleanup. `tests.py` has four isolated regressions;
+L45, README, PROGRESS, and the formal evaluation record the changed boundary.
+
+**Verification:** `TestUploadSafety` 4/4; focused upload/route/URL/auth set
+22/22; full `tests.py` 137 total, 134 passed, 3 explicitly skipped, 0 failed in
+0.579s. All 32 Python files AST-parsed and `git diff --check` succeeded with
+only repository line-ending notices. The decompression test uses a generated
+one-bit 7000x7000 PNG that is under 1 MB on disk but above the pixel budget.
+No private photo, live listing, credential, account, or external request was
+used; the normal generated JPEG route fixtures still pass.
+
+**Honest residuals/Git/next:** upload retention, rate/cost telemetry, and live
+listing-photo acceptance are not implemented or claimed. Priority 4 hash-first
+real-photo acceptance is still blocked by absent private assets. Local commit
+`1aca2a5`; nothing pushed. Next selected safe unit is evaluation F-10's mutable
+JSON durability: trace confirmation/failure writers, reproduce one lost-update
+or crash-corruption case in an isolated store, and centralize only the proven
+write seam with atomic replacement/process locking.
