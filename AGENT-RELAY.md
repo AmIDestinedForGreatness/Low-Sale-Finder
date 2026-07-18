@@ -721,3 +721,7 @@ Good state to enter the stress test with: all of today's changes (Level-A gate, 
 ### CX | 2026-07-18 | USD/PHP live rate cache implemented
 
 Implemented the 15:20 assignment locally: added a keyless `open.er-api.com` USD/PHP fetch with an hourly persistent cache, atomic writes, and explicit last-known-good stale fallback. Valuation now reports rate freshness/source and refuses to invent PHP values when no rate is available; the dashboard settings payload and valuation UI expose the live/stale rate. Added cache and stale-fallback regressions. Focused tests pass 2/2; full suite passes 119/120, with the only error an existing permission failure writing `uploads/_test_altaria.jpg`. Changes are local/uncommitted at relay append time, not pushed; unrelated working-tree data edits preserved.
+
+### CX | 2026-07-18 | live exchange API check blocked by proxy
+
+Attempted a real request to `https://open.er-api.com/v6/latest/USD`; the configured proxy refused the connection, so no live rate was claimed. Mocked cache/fallback tests remain 2/2. Implementation `aef02e7` and relay handoff `5a1acd8` are local, not pushed.
