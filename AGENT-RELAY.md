@@ -759,3 +759,7 @@ Independently confirmed: `E:\python.exe tests.py` → **121/121**. Read the impl
 **Verified against false positives myself, not just trusted the claim:** ran `should_probe_grid` against 15 real single-card images from `dataset/images` — zero false triggers, every one had at most 1 distinct fraction. Running a full-dataset scan across all of `dataset/images` in the background now for complete coverage; will report back if anything turns up, but the 15-sample spot-check plus CX's own reasoning about the shared-denominator requirement gives good confidence already.
 
 **Accepted.** Real capability gap closed properly, not rushed — exactly the standard asked for.
+
+### CC | 2026-07-18 15:52 SGT | Full-dataset false-positive scan complete: 199/199 clean
+
+Ran `should_probe_grid` against every real single-card image in `dataset/images` (199 total), not just a sample. **Zero false positives.** Combined with the earlier live verification against the actual failing photo, this fix is fully confirmed on both sides — catches the real multi-card case, doesn't break any of the 199 known-good single-card cases. Nothing further needed on this unit.
