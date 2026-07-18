@@ -291,14 +291,22 @@ def valuator_ocr():
         deep = valuator.ocr_deep(path)
         if deep:
             _, number = valuator.guess_query(lines + deep)
-    # unreadable name or a JP-style set code = the card is not English —
-    # English cards read their own names fine
-    jp = (bool(via) or bool(name and valuator._SET_RE.fullmatch(name))
-          or bool(number and not name))
+    # LANGUAGE is a claim — only POSITIVE evidence sets it (mirrors
+    # profile_dataset.py's identify(), which fixed this same bug already:
+    # "identified via unique number match" says nothing about language,
+    # it mislabeled English cards Japanese and buried their real candidate
+    # past the [:6] display cutoff when prefer_jp reordered results).
+    jp = (bool(name and valuator._SET_RE.fullmatch(name))
+          or bool(re.search(r"[A-Za-z]-P$", str(number or "")))
+          or via in ("attack fingerprint", "dex number", "fingerprint × number"))
+    # for SEARCH RANKING an unreadable name is still a useful JP hint, even
+    # when it's not strong enough evidence for the language CLAIM above
+    # (mirrors profile_dataset.py's identify() prefer_jp split exactly).
+    prefer_jp = jp or bool(number and not name)
     # LAYER B: a number must be a real printing of the identified card —
     # snap 1-digit OCR errors (015/173 -> 016/173) against actual printings
     number_read, snapped = number, False
-    cands = valuator.search_candidates(name, prefer_jp=jp) if name else []
+    cands = valuator.search_candidates(name, prefer_jp=prefer_jp) if name else []
     if via and name and number:
         fixed = valuator.snap_number(number, [c["number"] for c in cands])
         if fixed and valuator._norm_num(fixed) != valuator._norm_num(number):
@@ -309,7 +317,7 @@ def valuator_ocr():
             valuator._norm_num(c["number"]) == valuator._norm_num(str(number)) for c in cands):
         # the name-only search above may not carry the exact-number product —
         # re-search with the number too so catalog_match evidence is real
-        cands = valuator.search_candidates(f"{name} {number}", prefer_jp=jp) or cands
+        cands = valuator.search_candidates(f"{name} {number}", prefer_jp=prefer_jp) or cands
     if name and number and not any(
             valuator._norm_num(c["number"]) == valuator._norm_num(str(number)) for c in cands):
         # MECHANIC-VARIANT RETRY: OCR often drops the stylized V/GX/EX glyph
@@ -318,7 +326,7 @@ def valuator_ocr():
         # failure mode. This route has its own inline logic (doesn't call
         # identify()), so it needs its own copy of this retry.
         for suf in ("V", "VMAX", "GX", "EX", "ex"):
-            c2 = valuator.search_candidates(f"{name} {suf} {number}", prefer_jp=jp)
+            c2 = valuator.search_candidates(f"{name} {suf} {number}", prefer_jp=prefer_jp)
             exact = [c for c in c2
                      if valuator._norm_num(c["number"]) == valuator._norm_num(str(number))]
             if exact:
