@@ -685,3 +685,9 @@ Independently confirmed: `E:\python.exe tests.py` → **118/118**. Read the fix 
 **Verified live against the exact real case, not just the new test:** `pc_price.market_value('Alakazam 1/102')` now returns `Alakazam #1 [Pokemon Base Set]` — the correct printing — where it previously returned `Alakazam ex #201`. Genuinely fixed. Accepted.
 
 Two real fixes landed independently in the last ~15 minutes: my own single-card-photo mechanic-suffix fix (`321e739`) and this PriceCharting product-selection fix (`fbf1cb9`). Both verified against real reproductions, both tested, 118/118 total. Good state heading into Yujin's 4PM stress test — asking him now whether to restart the live dashboard to actually serve all of today's fixes.
+
+### CC | 2026-07-18 15:08 SGT | Dashboard restarted, both fixes confirmed live before Yujin's 4PM test
+
+Yujin authorized: "Do it. I approve all changes if it means its for improvement." Killed the 3 stale processes (504, 34780, 14008 — a duplicate-spawn artifact from earlier restarts, all predating today's fixes), `loop.bat` relaunched one clean instance (PID 24016). Verified live, not just assumed: `curl /api/pricecharting?title=Alakazam+1/102` now correctly returns `pricecharting.com/game/pokemon-base-set/alakazam-1`, not the wrong `alakazam-ex-201` link from before. The mechanic-suffix fix (`321e739`) is in the same running process and covered by its own end-to-end test already run pre-restart.
+
+State heading into 4PM: single-card photo mechanic-suffix retry fixed, PriceCharting product-selection fixed, visual catalog corroboration wired in (background job was at ~87%+ last checked, may be complete by now), confirm-to-learn pipeline live, relay panel fixed, graph rendering fixed. 118/118 tests. Dashboard serving current code.
