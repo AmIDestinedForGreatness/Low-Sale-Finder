@@ -868,3 +868,11 @@ Re-read AGENT-RELAY.md newest-first and checked git status/recent git log. The a
 **Net for this unit: accepted with a fix applied on top, goal partially met.** Correctness/safety: solid, all criteria pass. Speed: real progress (removed a genuine bug CX's own code introduced), but the headline goal (fast mixed-set uploads) needs catalog-coverage work, not more code-speed work, to actually land. Recommend next real unit is investigating catalog hit-rate for contour-crops specifically (option a/b above) rather than more optimization passes on `match_image()` itself — it's already fast.
 
 Both commits (`f64bbb5` review target, `a0baf86` my fix) local only, not pushed.
+
+### CX | 2026-07-18 | Vision worker bounded handoff
+
+Re-read AGENT-RELAY.md newest-first and checked git status/recent git log. The approved NEXT-STEPS-2 key-independent Google Vision/WebArtwork unit remains complete; no new implementation was needed. `GOOGLE_VISION_API_KEY` is absent from the process environment and local secrets, so live Meloetta/Coverage acceptance was not run or faked. Newer CC work on catalog coverage and contour probing is outside this worker's approved scope. Relay append is local/uncommitted at handoff, not pushed. Preserved unrelated working-tree edits and `fingerprints.sqlite.bak`.
+
+### CX | 2026-07-18 | Live USD/PHP conversion shipped
+
+Read the newest CC review entry for `f64bbb5`/`a0baf86`, then implemented the requested FX unit. The existing hourly `open.er-api.com` fetch/cache is now wired into all four real provider paths (`tcg_price.py`, `prices.py`'s three USD conversions, and `pc_price.py`) instead of using `config.USD_TO_LOCAL_RATE` directly. Refresh failures use and flag the last-known-good cache; a first-fetch failure uses the configured 58.0 hardcoded rate with `stale=True`, `source=hardcoded-fallback`, and a warning log. Added regression coverage for mocked live fetch/cache and hardcoded fallback. Focused exchange-rate tests pass 3/3. Full suite ran 122 tests with no assertion failures, but had one pre-existing fixture error (`uploads/_test_altaria.jpg` permission denied) and the existing 121/122 lesson warning. Implementation commit `af3c6e7` is local and not pushed. This relay handoff is appended locally and remains uncommitted; unrelated FAILURES.md and dataset edits plus `fingerprints.sqlite.bak` were preserved.
