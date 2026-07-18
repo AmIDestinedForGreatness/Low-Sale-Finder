@@ -1291,3 +1291,41 @@ Local commit `25475b6`; nothing pushed. Priority 4 is still asset-blocked. Next
 selected unit: add a suite-wide no-network boundary with explicit opt-in for
 integration tests, reproduce the exchange-rate attempt as a failure, then
 isolate the route/settings callers that currently depend on live cache state.
+
+### CX | 2026-07-19 overnight — deterministic suite now fails on swallowed network attempts (`a65e541`)
+
+**Unit attempted:** close the newly observed offline-test integrity gap. The
+suite previously passed while `exchange_rate.get_usd_to_php_rate()` attempted
+`open.er-api.com`; fallback caught the sandbox socket error, hiding the live
+dependency from unittest's exit status.
+
+**Tests/failure first:**
+`test_network_attempt_recorder_survives_a_caught_exception` initially errored
+because no attempt recorder existed. After installing the boundary but before
+isolating callers, the 143-test run failed in module teardown despite all test
+methods completing: four recorded Requests calls. Stacks identified three
+authorized `/api/settings` executions and
+`test_market_price_uses_tcgplayer_market_not_highest_condition`.
+
+**Correction/files:** `tests.py` module setup now patches Requests plus raw
+in-process socket `connect`/`connect_ex`. Every attempt is recorded with a
+bounded stack and raises immediately; module teardown fails on the record even
+if application fallback catches the exception. The authorization class and
+the one valuation test now inject deterministic rate responses. Live
+integration is explicit only via `POKESTOP_TEST_ALLOW_NETWORK=1`. L48,
+README/PROGRESS, and the formal evaluation document the contract and state that
+subprocess/external-tool network interception is not claimed.
+
+**Verification:** recorder 1/1; focused recorder/auth/valuation set 9/9; full
+default suite 143 total, 140 passed, 3 explicit asset-dependent skips, 0 failed
+in 0.961s. The only exchange-rate log lines are the two tests that inject an
+explicit offline fetcher. Module teardown recorded zero real network attempts
+and zero production corpus changes. All 33 Python files AST-parsed, all four
+tracked dataset JSON files parsed, and `git diff --check` succeeded with only
+line-ending notices.
+
+**Git/next:** local commit `a65e541`; nothing pushed. Priority 4 real-photo/hash
+acceptance remains blocked by missing private assets. Level-A reconciliation
+remains blocked on the owner's policy choice and was not changed. The next safe
+candidate is a final residual audit/status handoff rather than starting a broad
+architecture migration without a new reproduced failure.
