@@ -1082,3 +1082,51 @@ The earlier audit/parity work was first preserved as local commit `65c8f0c`;
 this security unit is local commit `e3a435a`. Nothing pushed. Next selected
 unit: Priority 2 URL/SSRF validation, test-first, beginning with the raw
 Carousell/FB substring allowlist and redirect/download boundaries.
+
+### CX | 2026-07-19 overnight — Priority 2 URL/SSRF boundary closed with explicit residuals (`f6f018c`)
+
+**Unit attempted:** evaluation F-04/F-05 URL paths. Trace found two direct
+user-controlled browser fetches: dashboard `/api/valuator/from_url`, whose raw
+substring regex accepted an attacker URL containing `facebook.com` in its
+query, and `/api/scrape` absolute queries passed by `scraper.build_url()`
+straight to Playwright. Scraped remote values also reached image downloads in
+the dashboard/dataset, legacy `card_id`, and catalog builders. WebArtwork sent
+a local Windows filename as Google `image_uri`. Fixed API provider URLs and
+operator-only Discord/config endpoints were inventoried but not turned into a
+speculative transport rewrite.
+
+**Defects reproduced before production change:** the first two
+`TestUrlSafety` regressions both failed: `scraper.build_url()` did not raise for
+`http://127.0.0.1:5000/api/settings`, and
+`https://attacker.example/forward?to=facebook.com` reached the mocked listing
+scraper and returned 422 instead of being rejected at 400. Command:
+`python -m unittest -v tests.TestUrlSafety` with the explicit Python 3.14.4
+executable.
+
+**Correction/files:** new `network_safety.py` requires HTTPS, rejects URL
+credentials/custom ports, matches parsed Carousell/Facebook domain boundaries,
+and requires every resolved address to be globally routable. It manually
+follows at most four redirects with destination revalidation, disables
+automatic redirects, streams at most 12 MB, and provides a Playwright
+top-level-navigation abort guard. Wired into `app.py`, `scraper.py`,
+`profile_dataset.py`, legacy `card_id.py`, and both visual catalog builders.
+Playwright service workers are blocked on guarded paths. WebArtwork now reads
+at most 12 MB and sends `image.content` bytes. README/PROGRESS and L43 document
+the boundary.
+
+**Verification:** `TestUrlSafety` 8/8 and `TestEvidenceProviders` 11/11;
+focused surrounding set 43/43; full `tests.py` 132 total, 129 passed, 3
+explicit skips, 0 failed in 0.416s. All 32 Python files AST-parsed and
+`git diff --check` succeeded with line-ending warnings. Existing configured
+Carousell category and FB group URLs were replayed under mocked public DNS and
+all stayed allowed. No live marketplace request, redirect, credential, account,
+or webhook was used.
+
+**Honest residuals:** validation and connection resolution are not pinned, so
+DNS rebinding between the check and client connect remains possible; guarded
+Playwright top-level documents do not prove every browser subresource safe;
+the optional Google client/dependency/credential path remains live-unaccepted.
+This closes the demonstrated arbitrary-host/private-redirect paths without
+claiming general SSRF elimination. Local commit `f6f018c`, nothing pushed.
+Next selected unit: Priority 3 canonical identification service, beginning
+with an entry-point/stage inventory and a new parity failure before extraction.
