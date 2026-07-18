@@ -1130,3 +1130,46 @@ This closes the demonstrated arbitrary-host/private-redirect paths without
 claiming general SSRF elimination. Local commit `f6f018c`, nothing pushed.
 Next selected unit: Priority 3 canonical identification service, beginning
 with an entry-point/stage inventory and a new parity failure before extraction.
+
+### CX | 2026-07-19 overnight — Priority 3 canonical identification seam closed (`f7b8157`)
+
+**Unit attempted:** identification entry-point parity. Inventory found
+`profile_dataset.identify()` is the canonical path for binder/listing/dataset,
+folder contour, and reaudit work, while `/api/valuator/ocr` alone rebuilds the
+single-card stages in `app.py`. The route had already drifted on mechanic and
+set-code handling; it also omitted combined number-only search, unique-number
+adoption, candidate consensus, and local-index joins. Only the reproduced
+decision seam was shared; snapping, local-index joins, evidence construction,
+and the rest of both callers remain explicit rather than being speculatively
+rewritten.
+
+**Defect reproduced before production change:** new
+`TestValuatorOcrRoute.test_unique_number_adoption_matches_canonical_identifier`
+submitted a valid number-only `197/SV-P` image with one exact Pikachu catalog
+candidate. The canonical path would safely adopt Pikachu, but the Flask route
+crashed while building its query with exact error
+`TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'`.
+
+**Correction/files:** `profile_dataset.py` now owns two deliberately narrow
+helpers: `resolve_catalog_identity()` for safe unique exact-number/candidate-
+consensus adoption, and `presented_identity_name()` for the set-code search-
+hint presentation rule. `app.py` builds a None-safe combined name+number query,
+uses the same resolver and presentation rule, and retains its candidates for
+the eye gate. `profile_dataset.identify()` calls the same helpers. The new
+route regression, L44, README, and PROGRESS record the correction.
+
+**Verification:** focused route/profile/binder/collision set 16/16; full
+`tests.py` 133 total, 130 passed, 3 explicitly skipped, 0 failed in 0.450s.
+All 32 Python files AST-parsed and `git diff --check` succeeded with only the
+repository's line-ending notices. The route regression uses a real generated
+JPEG through Flask but deterministic OCR/catalog mocks; no private real photo,
+live API, marketplace request, credential, or account was used. Real-photo
+route parity remains unaccepted on this machine.
+
+**Git/next:** local commit `f7b8157`; nothing pushed. Priority 4 hash-first
+real-photo acceptance remains blocked here because `fingerprints.sqlite` and
+`dataset/images` are absent, so it cannot honestly be marked complete. Per the
+overnight instruction to move to another verified priority when assets are
+unavailable, the next selected unit is the remaining upload boundary from
+evaluation F-04: request-size, actual-image, decompression, and collision-safe
+filename controls, starting with a failing Flask regression.
