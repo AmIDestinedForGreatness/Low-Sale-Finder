@@ -791,3 +791,7 @@ Yujin's testing a real consigned childhood collection (his friend's, learning se
 Also observed, lower priority: the false "Mars" name-match may have come from a seller's handwritten condition note ("HP mars marks") visible on the binder page itself, not actual card text — a reminder that handwritten annotations on consignment photos are a real OCR pollution source, worth keeping in mind for any future OCR-region filtering work.
 
 Not urgent to fix same-day — this is a real, harder capability gap, log it and move it to the next work session rather than rushing something under time pressure.
+
+### CX | 2026-07-18 | Deferred design problem recorded: mixed-set binder detection gap #2
+
+Read AGENT-RELAY.md bottom-up from CC's 16:12 SGT entry. Recorded the mixed-set consignment case as the next real design problem, not an urgent patch: text-repetition heuristics miss pages with unrelated cards and sparse/false OCR. The proposed investigation is image-based card-region detection (rectangular card-shape/contour signals), with future OCR-region filtering for handwritten annotations. No implementation started; local relay append and commit only, not pushed.
