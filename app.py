@@ -310,6 +310,21 @@ def valuator_ocr():
         # the name-only search above may not carry the exact-number product —
         # re-search with the number too so catalog_match evidence is real
         cands = valuator.search_candidates(f"{name} {number}", prefer_jp=jp) or cands
+    if name and number and not any(
+            valuator._norm_num(c["number"]) == valuator._norm_num(str(number)) for c in cands):
+        # MECHANIC-VARIANT RETRY: OCR often drops the stylized V/GX/EX glyph
+        # ("Altaria" 123/124 is really Altaria EX) — try suffixed forms, same
+        # pattern profile_dataset.py's identify() already uses for this exact
+        # failure mode. This route has its own inline logic (doesn't call
+        # identify()), so it needs its own copy of this retry.
+        for suf in ("V", "VMAX", "GX", "EX", "ex"):
+            c2 = valuator.search_candidates(f"{name} {suf} {number}", prefer_jp=jp)
+            exact = [c for c in c2
+                     if valuator._norm_num(c["number"]) == valuator._norm_num(str(number))]
+            if exact:
+                cands, name = c2, exact[0]["name"].split(" - ")[0]
+                via = via or "number-variant match"
+                break
     graded = any(re.search(r"\b(psa|bgs|cgc|beckett|black label|"
                            r"gem ?mint|pristine)", ln, re.I) for ln in lines)
     result = {"query": (name + " " + (number or "")).strip(),

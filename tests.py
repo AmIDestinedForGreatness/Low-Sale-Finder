@@ -1347,6 +1347,52 @@ class TestBinderDashboardFallback(unittest.TestCase):
         self.assertEqual(result["evidence_level"], "A")
 
 
+class TestValuatorOcrRoute(unittest.TestCase):
+    """The /api/valuator/ocr route has its OWN inline identification logic
+    (it does not call profile_dataset.identify()) — real single-card photo
+    uploads go through this route, not the binder path. It needs its own
+    regression coverage or it silently drifts from identify()'s fixes, which
+    is exactly what happened here: OCR read 'Altaria' (the EX glyph was
+    dropped, same known failure mode as Mimikyu V), but this route had no
+    mechanic-variant-suffix retry, so the real card (Altaria EX, XY - Fates
+    Collide, #123/124) was never even searched for."""
+
+    def test_dropped_mechanic_glyph_is_recovered_via_suffix_retry(self):
+        import app as dashboard_app
+        dashboard_app.app.config["TESTING"] = True
+        client = dashboard_app.app.test_client()
+        with mock.patch.object(
+                __import__("valuator"), "ocr_lines",
+                return_value=["Altaria", "Powerful Gain", "Shining Wind", "123/124"]):
+            photo_path = os.path.join(dashboard_app.UPLOAD_DIR, "_test_altaria.jpg")
+            os.makedirs(dashboard_app.UPLOAD_DIR, exist_ok=True)
+            from PIL import Image
+            Image.new("RGB", (600, 800), (255, 255, 255)).save(photo_path, "JPEG")
+            try:
+                with mock.patch("valuator.search_candidates") as search:
+                    def fake_search(query, prefer_jp=False, size=12):
+                        if "EX" in query:
+                            return [{"pid": 1, "name": "Altaria EX (Full Art)",
+                                     "set": "XY - Fates Collide", "number": "123/124",
+                                     "line": "Pokemon", "img": "", "url": "",
+                                     "market": None}]
+                        return [{"pid": 2, "name": "Altaria", "set": "Dragons Exalted",
+                                 "number": "84/124", "line": "Pokemon", "img": "",
+                                 "url": "", "market": None}]
+                    search.side_effect = fake_search
+                    with open(photo_path, "rb") as photo_file:
+                        data = {"photo": (photo_file, "test.jpg")}
+                        r = client.post("/api/valuator/ocr", data=data,
+                                        content_type="multipart/form-data")
+            finally:
+                os.remove(photo_path)
+        d = r.get_json()
+        self.assertEqual(d.get("number"), "123/124")
+        self.assertIn("EX", d.get("name") or "")
+        self.assertTrue(any(c.get("set") == "XY - Fates Collide"
+                            for c in d.get("candidates") or []))
+
+
 if __name__ == "__main__":
     result = unittest.main(exit=False, verbosity=1).result
     n = result.testsRun
