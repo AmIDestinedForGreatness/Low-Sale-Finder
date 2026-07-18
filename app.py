@@ -529,7 +529,10 @@ def _parse_relay():
       <body...>
     Split on '### ' headers; '|'-separated header fields are who/when/note."""
     try:
-        with open(RELAY_PATH, encoding="utf-8") as f:
+        # errors="replace": one bad byte anywhere in this file (e.g. a
+        # non-UTF-8 dash from a copy-paste) must never silently blank the
+        # entire relay panel — replace the bad byte, keep every real entry.
+        with open(RELAY_PATH, encoding="utf-8", errors="replace") as f:
             text = f.read()
     except Exception:
         return []
@@ -1328,16 +1331,26 @@ function priceHistoryChart(sales){
   const plotW=width-left-right, max=Math.max(...asc.map(s=>+s.usd),1);
   const counts={}; asc.forEach(s=>{counts[s.date]=(counts[s.date]||0)+1;});
   const dates=Object.keys(counts), maxCount=Math.max(...Object.values(counts),1);
-  const x=i=>left+(dates.length===1?plotW/2:i*plotW/(dates.length-1));
+  // Keep same-day sales visible as separate observations. Dates remain the
+  // axis buckets, but observations within a bucket get a small deterministic
+  // spread so the plotted count matches the caption.
+  const xFor=(dateIndex, ordinal)=>{
+    const center=left+(dates.length===1?plotW/2:dateIndex*plotW/(dates.length-1));
+    const bucket=counts[dates[dateIndex]];
+    const spread=Math.min(14, Math.max(4, plotW/(Math.max(dates.length,2)*8)));
+    return bucket<=1 ? center : center-spread/2 + ordinal*spread/(bucket-1);
+  };
   const y=v=>lineBottom-(+v/max)*(lineBottom-top);
-  const points=asc.map((s,i)=>`${x(dates.indexOf(s.date)).toFixed(1)},${y(s.usd).toFixed(1)}`).join(' ');
-  const dots=asc.map((s,i)=>`<circle cx="${x(dates.indexOf(s.date)).toFixed(1)}" cy="${y(s.usd).toFixed(1)}" r="3" fill="var(--viz-series-1)" aria-label="${escapeHtml(s.date)} $${s.usd}"/>`).join('');
-  const bars=dates.map((d,i)=>{const h=Math.max(3,counts[d]/maxCount*28);return `<rect x="${(x(i)-5).toFixed(1)}" y="${(volumeTop+28-h).toFixed(1)}" width="10" height="${h.toFixed(1)}" fill="var(--viz-series-2)" opacity=".7"><title>${escapeHtml(d)}: ${counts[d]} sale${counts[d]===1?'':'s'}</title></rect>`;}).join('');
-  const labels=dates.map((d,i)=>`<text x="${x(i).toFixed(1)}" y="${bottom}" text-anchor="middle" class="ph-axis">${escapeHtml(d.slice(5))}</text>`).join('');
+  let seen={};
+  const points=asc.map(s=>{const di=dates.indexOf(s.date), oi=seen[s.date]||0; seen[s.date]=oi+1; return `${xFor(di,oi).toFixed(1)},${y(s.usd).toFixed(1)}`;}).join(' ');
+  seen={};
+  const dots=asc.map(s=>{const di=dates.indexOf(s.date), oi=seen[s.date]||0; seen[s.date]=oi+1; return `<circle cx="${xFor(di,oi).toFixed(1)}" cy="${y(s.usd).toFixed(1)}" r="3" fill="var(--viz-series-1)" aria-label="${escapeHtml(s.date)} $${s.usd}"/>`;}).join('');
+  const bars=dates.map((d,i)=>{const h=Math.max(3,counts[d]/maxCount*28);return `<rect x="${(xFor(i,0)-5).toFixed(1)}" y="${(volumeTop+28-h).toFixed(1)}" width="10" height="${h.toFixed(1)}" fill="var(--viz-series-2)" opacity=".7"><title>${escapeHtml(d)}: ${counts[d]} sale${counts[d]===1?'':'s'}</title></rect>`;}).join('');
+  const labels=dates.map((d,i)=>`<text x="${xFor(i,0).toFixed(1)}" y="${bottom}" text-anchor="middle" class="ph-axis">${escapeHtml(d.slice(5))}</text>`).join('');
   return `<div style="margin-top:10px;font-size:11px"><span class="muted">price history · ${asc.length} real sales</span>
     <svg viewBox="0 0 ${width} ${bottom+8}" role="img" aria-label="TCGplayer-style price history line graph with sale volume" style="width:100%;height:auto;display:block">
       <line x1="${left}" y1="${top}" x2="${left}" y2="${lineBottom}" stroke="var(--line)"/><line x1="${left}" y1="${lineBottom}" x2="${width-right}" y2="${lineBottom}" stroke="var(--line)"/><line x1="${left}" y1="${volumeTop+28}" x2="${width-right}" y2="${volumeTop+28}" stroke="var(--line)"/>
-      <text x="2" y="${top+4}" class="ph-axis">$${max.toFixed(2)}</text><text x="2" y="${lineBottom+4}" class="ph-axis">$0</text><text x="${left}" y="${volumeTop+42}" class="ph-axis">sales</text>
+      <text x="2" y="${top+4}" class="ph-axis">$${max.toFixed(2)}</text><text x="2" y="${lineBottom+4}" class="ph-axis">$0</text><text x="2" y="${volumeTop+24}" class="ph-axis">sales</text>
       ${bars}<polyline points="${points}" fill="none" stroke="var(--viz-series-1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${dots}${labels}
     </svg></div>`;
 }
