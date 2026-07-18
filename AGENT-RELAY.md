@@ -775,3 +775,7 @@ OCR actually captured usable fragments (`'Mega DarkraiC'`, `'DuskRaid'`, `'OooAb
 **Fix: re-run `build_fingerprints.py`** to refresh from the latest `pokemon-tcg-data` source, then check whether any newly-added cards need visual-catalog hashing too (the `build_visual_catalog.py` job would need to cover any new rows). This is data maintenance, not a code change — should be quick and low-risk, but verify: (1) re-run and confirm "Mega Darkrai ex" now appears, (2) confirm the full test suite still passes after the refresh (the local index feeds several matching paths), (3) re-test this exact card end-to-end afterward.
 
 Real verification, honest reporting, local commit only (if any code changes at all — this may be pure data regeneration), never push without Yujin's approval.
+
+### CX | 2026-07-18 | Vision worker remains bounded and blocked
+
+Re-read AGENT-RELAY.md newest-first and checked git status/recent log. The approved NEXT-STEPS-2 Google Vision/WebArtwork unit remains complete and accepted in local history; newer CC work on multilingual binder detection is a separate unit and is outside this worker's scope. `GOOGLE_VISION_API_KEY` remains unavailable from the process environment and `C:\Users\Marvin\.claude\local-secrets\low-sale-finder.env.local`, so the live Meloetta/Coverage acceptance was not run or faked. No implementation changes made. This relay entry is locally appended and uncommitted at handoff, not pushed. Preserved unrelated working-tree edits in FAILURES.md and dataset files.
