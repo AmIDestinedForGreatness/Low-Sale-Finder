@@ -12,6 +12,8 @@ Flow (human-in-the-loop by design — the honest fix for image matching):
        - REAL recent solds, per condition (latestsales)  [LESSONS L16/L17]
        - sales velocity -> confidence tag (a price with no sales is a rumor)
 """
+import hashlib
+import json
 import os
 import re
 import sqlite3
@@ -69,8 +71,57 @@ def _rapid():
     return _RAPID
 
 
+_OCR_CACHE_DB = os.path.join(_HERE, "ocr_cache.sqlite")
+_OCR_CACHE_MAX = 20000
+
+
+def _ocr_cache_conn():
+    conn = sqlite3.connect(_OCR_CACHE_DB, timeout=1)
+    conn.execute("CREATE TABLE IF NOT EXISTS ocr (hash TEXT PRIMARY KEY, "
+                 "lines TEXT, ts REAL)")
+    return conn
+
+
 def ocr_lines(image_path):
-    """OCR the photo: RapidOCR first, Windows OCR as fallback."""
+    """OCR the photo: RapidOCR first, Windows OCR as fallback.
+
+    Results are cached by CONTENT hash (not path): the same pixels always
+    OCR to the same lines, engine inference is the single most expensive
+    step in the whole pipeline (~5-30s/call on this machine), and real
+    usage re-reads identical images constantly — re-testing the same
+    upload, ocr_deep()'s deterministic region crops, dataset re-audits.
+    """
+    key = None
+    try:
+        with open(image_path, "rb") as fh:
+            key = hashlib.sha1(fh.read()).hexdigest()
+        conn = _ocr_cache_conn()
+        row = conn.execute("SELECT lines FROM ocr WHERE hash=?", (key,)).fetchone()
+        if row:
+            conn.close()
+            return json.loads(row[0])
+        conn.close()
+    except Exception:
+        key = None
+    lines = _ocr_lines_uncached(image_path)
+    if key is not None and lines:
+        try:
+            conn = _ocr_cache_conn()
+            conn.execute("INSERT OR REPLACE INTO ocr VALUES (?,?,?)",
+                         (key, json.dumps(lines), time.time()))
+            n = conn.execute("SELECT COUNT(*) FROM ocr").fetchone()[0]
+            if n > _OCR_CACHE_MAX:
+                conn.execute("DELETE FROM ocr WHERE hash IN "
+                             "(SELECT hash FROM ocr ORDER BY ts LIMIT ?)",
+                             (n - _OCR_CACHE_MAX,))
+            conn.commit()
+            conn.close()
+        except Exception:
+            pass
+    return lines
+
+
+def _ocr_lines_uncached(image_path):
     eng = _rapid()
     if eng:
         try:
@@ -94,7 +145,18 @@ def ocr_lines(image_path):
 def ocr_deep(image_path):
     """Second-pass OCR for hard photos (glare/holo/angle): zoomed region
     crops with contrast variants, merged with the full-frame read. Slower
-    (~10s) — only runs when the first pass came back unusable."""
+    (~10s) — only runs when the first pass came back unusable.
+
+    DO NOT try to slim this sweep down for multi-card cell crops to save
+    time (tried 2026-07-18, reverted same day): the regions deliberately
+    overlap at different zoom levels, and A/B testing against a real
+    12-card binder page showed that redundancy is load-bearing — the same
+    damage digits that one framing misses, another framing's zoom reads
+    ('260' only at the 3x bottom-left zoom, '140' only in the footer
+    band's framing). Every trimmed variant lost 2 real Level-A
+    identifications. The speed answer for cells is the content-hash OCR
+    cache (repeat runs are near-free) and hash-first visual matching, not
+    fewer OCR passes."""
     try:
         from PIL import Image, ImageOps
     except ImportError:
