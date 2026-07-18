@@ -711,3 +711,9 @@ Re-tested the exact real card that motivated this morning's Level-A proposal (Yu
 **This is the second of what's now clearly a pattern** — the two-parallel-implementations problem flagged this morning isn't a one-off, it's actively hiding real bugs every time `profile_dataset.py` gets fixed and this route doesn't. Raising the priority on the architectural merge I flagged earlier as "risky, do later" — after today's stress test, this route should almost certainly just call `profile_dataset.identify()` instead of maintaining a second copy.
 
 Needs a dashboard restart to go live — asked Yujin, waiting on his go-ahead.
+
+### CC | 2026-07-18 15:30 SGT | Full reaudit complete, before Yujin's test: 0 regressions, 3 real improvements
+
+`reaudit.py` finished across both test datasets. **Zero regressions, zero identity changes, 3 evidence-level improvements, all C→A:** Mega Manectric ex, Lucario VSTAR, and Alolan Ninetales-GX (the exact card from this morning's Level-A investigation — independently confirms it now reads A). Shop set: A 5→6, C 10→9. Lot set: A 10→12, C 16→14. Report: `dataset/REPORT-5-collision-evidence.md`.
+
+Good state to enter the stress test with: all of today's changes (Level-A gate, retry/honesty logic, visual catalog corroboration, the two mechanic-suffix/JP-ranking fixes) hold up across the full existing test corpus with nothing broken.
