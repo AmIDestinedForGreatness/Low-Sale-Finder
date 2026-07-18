@@ -19,3 +19,4 @@ dataset/visual_catalog/
 dataset/visual_catalog_build.log
 dataset/visual_catalog_build.err.log
 fingerprints.sqlite-*
+data/exchange_rate_cache.json

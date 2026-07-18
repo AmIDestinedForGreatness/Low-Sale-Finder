@@ -24,6 +24,7 @@ import requests
 from flask import Flask, request, jsonify, Response, send_file
 
 import config
+import exchange_rate
 import engine
 import valuator
 from version import VERSION
@@ -507,7 +508,7 @@ def settings():
         "webhook_set": bool(config.DISCORD_WEBHOOK_URL) and "PASTE" not in config.DISCORD_WEBHOOK_URL,
         "price_source": config.PRICE_SOURCE,
         "country": config.CAROUSELL_COUNTRY,
-        "usd_to_local": config.USD_TO_LOCAL_RATE,
+        "usd_to_local": exchange_rate.get_usd_to_php_rate(),
         "default_below_pct": round((1 - config.ALERT_AT_OR_BELOW_FRACTION) * 100),
     })
 
@@ -1407,6 +1408,7 @@ async function valPick(pid){
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <b>Market ${v.market_php?('₱'+fmt(v.market_php)+' ($'+v.market_usd+' TCGplayer)'):'—'}</b>
         <span class="badge" style="color:${CONF_C[v.confidence]||''}">confidence: ${v.confidence}</span>
+        ${v.usd_rate?`<span class="muted" style="font-size:12px" title="${v.usd_rate_stale?'Last-known-good rate; refresh failed':'Fetched live'}">USD/PHP ${v.usd_rate.toFixed(2)}${v.usd_rate_stale?' (stale)':''}</span>`:''}
         <span class="vol-badge" style="color:${VOL_C[vol.label]};border-color:${VOL_C[vol.label]}" title="${escapeHtml(vol.note||'')}">${vol.label==='Unknown'?'volatility: unknown':'volatility: '+vol.label}</span>
         <span class="muted" style="font-size:12px">${escapeHtml(v.confidence_why||'')}</span>
       </div>

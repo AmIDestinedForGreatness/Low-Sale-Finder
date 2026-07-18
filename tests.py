@@ -11,6 +11,7 @@ Run:  E:\python.exe tests.py     (offline — no network, no Discord, no FB)
 import os
 import sys
 import time
+import tempfile
 import unittest
 from unittest import mock
 
@@ -500,7 +501,8 @@ class TestValuator(unittest.TestCase):
         sales_resp = mock.Mock(status_code=200)
         sales_resp.json.return_value = {"data": sales_rows}
         with mock.patch("valuator.requests.get", return_value=price_resp), \
-             mock.patch("valuator.requests.post", return_value=sales_resp):
+             mock.patch("valuator.requests.post", return_value=sales_resp), \
+             mock.patch("valuator.exchange_rate.get_usd_to_php_rate", return_value={"rate": 58.0, "fetched_at": 10000, "stale": False, "source": "test", "error": None}):
             return valuator.valuate(12345)
 
     def test_volatility_tight_sales_is_stable(self):
@@ -516,7 +518,8 @@ class TestValuator(unittest.TestCase):
         price_resp.json.return_value = [{"marketPrice": 10.0}]
         with mock.patch("valuator.requests.get", return_value=price_resp), \
              mock.patch("valuator.requests.post", side_effect=RuntimeError("timeout")) as post, \
-             mock.patch("valuator.time.sleep"):
+             mock.patch("valuator.time.sleep"), \
+             mock.patch("valuator.exchange_rate.get_usd_to_php_rate", return_value={"rate": 58.0, "fetched_at": 10000, "stale": False, "source": "test", "error": None}):
             out = valuator.valuate(130920)
         self.assertEqual(post.call_count, 2)
         self.assertEqual(out["sales_fetch"]["status"], "failed")
@@ -1354,6 +1357,45 @@ class TestBinderDashboardFallback(unittest.TestCase):
         self.assertEqual(result["evidence_chain"]["catalog_match"]["status"],
                          "confirmed")
         self.assertEqual(result["evidence_level"], "A")
+
+
+class TestExchangeRate(unittest.TestCase):
+    def test_live_response_is_cached_hourly(self):
+        import exchange_rate
+        with mock.patch.object(exchange_rate, "CACHE_PATH", os.path.join(tempfile.gettempdir(), "low-sale-finder-test-rate.json")):
+            try:
+                response = mock.Mock()
+                response.json.return_value = {"rates": {"PHP": 57.25}}
+                response.raise_for_status.return_value = None
+                fetcher = mock.Mock(return_value=response)
+                first = exchange_rate.get_usd_to_php_rate(now=10000, fetcher=fetcher)
+                second = exchange_rate.get_usd_to_php_rate(now=10001, fetcher=fetcher)
+                self.assertEqual(first["rate"], 57.25)
+                self.assertEqual(second["source"], "cache")
+                fetcher.assert_called_once()
+            finally:
+                try:
+                    os.remove(exchange_rate.CACHE_PATH)
+                except FileNotFoundError:
+                    pass
+
+    def test_failed_refresh_uses_last_known_good_and_marks_stale(self):
+        import exchange_rate
+        with mock.patch.object(exchange_rate, "CACHE_PATH", os.path.join(tempfile.gettempdir(), "low-sale-finder-test-rate.json")):
+            try:
+                response = mock.Mock()
+                response.json.return_value = {"rates": {"PHP": 57.25}}
+                response.raise_for_status.return_value = None
+                exchange_rate.get_usd_to_php_rate(now=10000, fetcher=mock.Mock(return_value=response))
+                stale = exchange_rate.get_usd_to_php_rate(now=15000, fetcher=mock.Mock(side_effect=OSError("offline")))
+                self.assertEqual(stale["rate"], 57.25)
+                self.assertTrue(stale["stale"])
+                self.assertEqual(stale["source"], "last-known-good")
+            finally:
+                try:
+                    os.remove(exchange_rate.CACHE_PATH)
+                except FileNotFoundError:
+                    pass
 
 
 class TestValuatorOcrRoute(unittest.TestCase):

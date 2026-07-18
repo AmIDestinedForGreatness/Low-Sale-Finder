@@ -22,6 +22,7 @@ import time
 import requests
 
 import config
+import exchange_rate
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/125.0 Safari/537.36")
@@ -817,8 +818,11 @@ _COND_FALLBACK = {"Near Mint": 1.0, "Lightly Played": 0.80,
 
 def valuate(pid, ph_factor=1.2):
     """Full valuation of a confirmed TCGplayer product."""
-    rate = getattr(config, "USD_TO_LOCAL_RATE", 58)
-    out = {"pid": pid, "usd_rate": rate, "ph_factor": ph_factor}
+    rate_info = exchange_rate.get_usd_to_php_rate()
+    rate = rate_info["rate"]
+    out = {"pid": pid, "usd_rate": rate, "usd_rate_fetched_at": rate_info["fetched_at"],
+           "usd_rate_stale": rate_info["stale"], "usd_rate_source": rate_info["source"],
+           "usd_rate_error": rate_info["error"], "ph_factor": ph_factor}
 
     # TCGplayer's marketPrice is condition-specific.  Use the first usable
     # market value returned for the product rather than presenting the highest
@@ -845,7 +849,7 @@ def valuate(pid, ph_factor=1.2):
                            "attempts": 2,
                            "error": market_error}
     out["market_usd"] = market
-    out["market_php"] = round(market * rate) if market else None
+    out["market_php"] = round(market * rate) if market and rate else None
 
     # real recent solds, grouped by condition  [L16 + L17]
     sales, conds = [], {}
@@ -917,17 +921,17 @@ def valuate(pid, ph_factor=1.2):
         real = conds.get(cond) or []
         if real:
             usd = statistics.median(real)
-            by_cond[cond] = {"usd": round(usd, 2), "php": round(usd * rate),
+            by_cond[cond] = {"usd": round(usd, 2), "php": round(usd * rate) if rate else None,
                              "from": f"{len(real)} real sold"}
         elif base:
             usd = base * mult
-            by_cond[cond] = {"usd": round(usd, 2), "php": round(usd * rate),
+            by_cond[cond] = {"usd": round(usd, 2), "php": round(usd * rate) if rate else None,
                              "from": "est. % of market"}
     out["by_condition"] = by_cond
 
     # sell suggestion (his formula: TCG x rate x PH factor), per condition
     out["suggest"] = {
-        cond: {"list_php": round(v["php"] * ph_factor),
-               "steal_php": round(v["php"] * 0.72)}
+        cond: {"list_php": round(v["php"] * ph_factor) if v["php"] is not None else None,
+               "steal_php": round(v["php"] * 0.72) if v["php"] is not None else None}
         for cond, v in by_cond.items()}
     return out
