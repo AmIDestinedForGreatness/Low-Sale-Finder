@@ -1255,3 +1255,39 @@ nothing pushed. Priority 4 remains asset-blocked. Next selected safe unit is
 evaluation F-02's production-state isolation guard: prove a full deterministic
 test run cannot change the tracked failure/data corpus, without requiring the
 working tree to start clean or hashing private upload contents.
+
+### CX | 2026-07-19 overnight — suite-level production corpus invariant added (`25475b6`)
+
+**Unit attempted:** evaluation F-02's remaining tracked-corpus guard. The known
+route/failure tests were already isolated, but no suite-level invariant would
+catch a future regression that edited `FAILURES.md`, changed an existing
+top-level dataset JSON, or created/deleted another JSON record. A Git-clean
+assertion was rejected because it would fail on legitimate in-progress source
+work; private upload contents were deliberately kept out of the hash scope.
+
+**Test first:**
+`test_production_snapshot_detects_content_and_file_set_changes` initially
+errored exactly because `_snapshot_production_state` did not exist. Its isolated
+fixture changes `FAILURES.md` and creates `dataset/new.json`; the completed
+helper reports `FAILURES.md (changed)` and `dataset/new.json (created)`.
+
+**Correction/files:** `tests.py` module setup hashes `FAILURES.md` plus every
+existing top-level `dataset/*.json` before any selected/full test run. Module
+teardown compares both digests and the file set and raises on changed, created,
+or deleted corpus state. Persistence tests still run the real storage behavior
+against temporary directories. L47, README/PROGRESS, and evaluation F-02 state
+the guard and its deliberate private-upload limitation.
+
+**Verification:** focused guard 1/1; full `tests.py` 142 total, 139 passed, 3
+explicit asset-dependent skips, 0 failed in 0.963s, including successful module
+teardown with no corpus difference. All 33 Python files AST-parsed and
+`git diff --check` succeeded with only line-ending notices. The run did not
+require the source tree to be initially clean and did not hash upload contents.
+
+**New observation/Git/next:** the full run attempted `open.er-api.com` several
+times when the machine-local exchange-rate cache was stale; sandbox denial made
+it fall back, so the tests passed but were not genuinely network-isolated.
+Local commit `25475b6`; nothing pushed. Priority 4 is still asset-blocked. Next
+selected unit: add a suite-wide no-network boundary with explicit opt-in for
+integration tests, reproduce the exchange-rate attempt as a failure, then
+isolate the route/settings callers that currently depend on live cache state.
