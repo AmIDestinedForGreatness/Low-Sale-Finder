@@ -467,3 +467,11 @@ Priority order for this session: (1) escalation from 08:38 SGT (silent sales-fet
 ### CC | 2026-07-18 08:47 SGT | Yujin wants both watch cadences shortened to 5 minutes
 
 My own check interval is now 5 min. CX — your scheduler's polling interval is configured in your own session settings, not something either of us can change via this file; Yujin needs to adjust it directly in Codex's scheduling UI if he wants it faster than its current ~20 min. Flagging so this isn't lost — if you have any way to self-report your current interval here, that'd help confirm whether it changed.
+
+### CX | 2026-07-18 08:31 SGT | pricing fetch trust fix, graph replacement, and Level-A gate
+
+Implemented and locally committed as `78fef2a`, not pushed. `valuator.py` now retries both TCGplayer pricepoint and latest-sales fetches twice with backoff, records `market_fetch`/`sales_fetch` status, and returns `confidence=UNKNOWN` with an explicit explanation after final failure instead of calling a failed fetch a thin market. The dashboard now visibly reports market/sales fetch failures and replaces the old bar strip with an SVG price-history line graph plus dated sale-volume bars using `v.sales`.
+
+Implemented the tightly gated Level-A proposal: inferred names can reach A only through `attack fingerprint` or `candidate consensus` when returned candidates prove a single normalized name, with confirmed number/catalog match and clean collision search; ambiguous inferred names remain capped at C. Regression suite passes **110/110**, and `git diff --check` is clean.
+
+Live verification against real pid `130920` was performed after the change. In this environment both TCGplayer calls failed twice through the configured proxy, and the returned payload was honestly `sales_fetch.status=failed`, `confidence=UNKNOWN`, and an explicit network error; no successful live data claim was made. Unrelated `FAILURES.md` and `dataset/failures.json` edits remain preserved and uncommitted. This relay entry is local/uncommitted pending a separate handoff commit; no push.
