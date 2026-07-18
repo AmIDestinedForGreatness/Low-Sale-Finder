@@ -1,15 +1,19 @@
 """Persistent hourly USD/PHP rate cache with honest stale fallback."""
 import json
+import logging
 import os
 import tempfile
 import time
 
 import requests
 
+import config
+
 API_URL = "https://open.er-api.com/v6/latest/USD"
 TTL_SECONDS = 3600
 _HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE_PATH = os.environ.get("EXCHANGE_RATE_CACHE_PATH", os.path.join(_HERE, "data", "exchange_rate_cache.json"))
+_LOG = logging.getLogger(__name__)
 
 
 def _read_cache():
@@ -52,5 +56,16 @@ def get_usd_to_php_rate(now=None, fetcher=requests.get):
         return {**item, "stale": False, "source": "open.er-api.com", "error": None}
     except Exception as exc:
         if cached:
+            _LOG.warning("USD/PHP live rate unavailable; using last-known rate %.4f: %s",
+                         cached["rate"], exc)
             return {**cached, "stale": True, "source": "last-known-good", "error": str(exc)}
-        return {"rate": None, "fetched_at": None, "stale": True, "source": "unavailable", "error": str(exc)}
+        fallback = float(config.USD_TO_LOCAL_RATE)
+        _LOG.warning("USD/PHP live rate unavailable; using hardcoded fallback %.4f: %s",
+                     fallback, exc)
+        return {"rate": fallback, "fetched_at": None, "stale": True,
+                "source": "hardcoded-fallback", "error": str(exc)}
+
+
+def usd_to_php_rate():
+    """Return the current usable rate, with fallback status handled upstream."""
+    return get_usd_to_php_rate()["rate"]

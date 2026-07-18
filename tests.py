@@ -1408,6 +1408,22 @@ class TestExchangeRate(unittest.TestCase):
                 except FileNotFoundError:
                     pass
 
+    def test_failed_first_fetch_uses_hardcoded_fallback_and_flags_stale(self):
+        import exchange_rate
+        with mock.patch.object(exchange_rate, "CACHE_PATH", os.path.join(tempfile.gettempdir(), "low-sale-finder-test-rate.json")):
+            try:
+                result = exchange_rate.get_usd_to_php_rate(
+                    now=10000, fetcher=mock.Mock(side_effect=OSError("offline")))
+                self.assertEqual(result["rate"], 58.0)
+                self.assertTrue(result["stale"])
+                self.assertEqual(result["source"], "hardcoded-fallback")
+                self.assertIn("offline", result["error"])
+            finally:
+                try:
+                    os.remove(exchange_rate.CACHE_PATH)
+                except FileNotFoundError:
+                    pass
+
 
 class TestValuatorOcrRoute(unittest.TestCase):
     """The /api/valuator/ocr route has its OWN inline identification logic

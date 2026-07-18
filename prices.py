@@ -14,6 +14,7 @@ from functools import lru_cache
 from rapidfuzz import fuzz
 
 import config
+import exchange_rate
 
 
 # ── grade / edition detection from a messy listing title ──────────────
@@ -105,7 +106,7 @@ def _ppt_lookup(title: str):
         if usd is None:
             return None, None
         name = data.get("name", "?")
-        return float(usd) * config.USD_TO_LOCAL_RATE, f"PPT:{name} {grade or 'raw'}"
+        return float(usd) * exchange_rate.usd_to_php_rate(), f"PPT:{name} {grade or 'raw'}"
     except Exception as e:
         print(f"  [PPT error] {e}")
         return None, None
@@ -139,7 +140,7 @@ def _pc_lookup(title: str):
         if not pennies:
             return None, None
         usd = pennies / 100.0
-        return usd * config.USD_TO_LOCAL_RATE, f"PC:{d.get('product-name','?')} {grade or 'raw'}"
+        return usd * exchange_rate.usd_to_php_rate(), f"PC:{d.get('product-name','?')} {grade or 'raw'}"
     except Exception as e:
         print(f"  [PriceCharting error] {e}")
         return None, None
@@ -239,7 +240,7 @@ def _ptcgio_lookup(title: str):
                         label = (f"ptcgio:{card.get('name','?')} "
                                  f"{card.get('number','?')}/{printed_total} "
                                  f"{set_name} [{variant}]")
-                        result = (float(usd) * config.USD_TO_LOCAL_RATE, label)
+                        result = (float(usd) * exchange_rate.usd_to_php_rate(), label)
                         break
                 if result[0]:
                     break

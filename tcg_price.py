@@ -16,6 +16,7 @@ import time
 import requests
 
 import config
+import exchange_rate
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/125.0 Safari/537.36")
@@ -175,7 +176,7 @@ def market_value(title: str):
         if it:
             usd = it.get("marketPrice") or _market(it.get("productId"))
             if usd:
-                price = float(usd) * config.USD_TO_LOCAL_RATE
+                price = float(usd) * exchange_rate.usd_to_php_rate()
                 label = f"tcg:{it.get('productName','?')} {it.get('setName','?')} (${usd})"
         conn.execute("INSERT OR REPLACE INTO tcg_cache VALUES (?,?,?,?)",
                      (key, price, label, time.time()))

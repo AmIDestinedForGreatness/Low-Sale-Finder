@@ -12,6 +12,7 @@ import time
 import requests
 
 import config
+import exchange_rate
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/125.0 Safari/537.36")
@@ -162,7 +163,7 @@ def market_value(title: str):
             best = _pick(_parse_rows(r.text), title)
             if best:
                 usd = float(best[3].replace(",", ""))
-                price = usd * config.USD_TO_LOCAL_RATE
+                price = usd * exchange_rate.usd_to_php_rate()
                 product_url = best[0]
                 if product_url.startswith("/"):
                     product_url = "https://www.pricecharting.com" + product_url
