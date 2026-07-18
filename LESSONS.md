@@ -614,3 +614,19 @@ lock/temp artifacts ignored, but do not delete a live shared lock file.
 two separate Python processes preserve both updates, replace failure retains
 the old complete JSON with no temp leak, and the confirmation route keeps
 distinct records. Other repository writers remain a separate measured unit.
+
+### L47 - test isolation needs a suite-level invariant (2026-07-19)
+**Mistake:** individual route mocks were assumed to protect the learning corpus,
+but an earlier full run had already appended a bogus failure and created upload
+artifacts. A future test could silently reintroduce that behavior without any
+assertion noticing the repository data changed.
+**Rule:** snapshot the production learning/data corpus before the test module
+and compare it after every selected or full run. Hash `FAILURES.md` and every
+top-level `dataset/*.json`, including the file set, so content changes,
+creations, and deletions fail the suite. Do not require a clean source tree and
+do not hash private upload contents. Tests that exercise persistence must patch
+paths to temporary directories and run the real storage behavior there.
+**Guard:**
+`test_production_snapshot_detects_content_and_file_set_changes` proves changed
+and created files are reported; the complete 142-test run passed its module
+teardown with no corpus difference.

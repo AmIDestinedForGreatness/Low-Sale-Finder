@@ -9,6 +9,7 @@ this suite screaming. Pair each test with its entry in LESSONS.md.
 Run:  E:\python.exe tests.py     (offline — no network, no Discord, no FB)
 """
 import base64
+import hashlib
 import io
 import json
 import os
@@ -31,6 +32,61 @@ import state_store
 import tcg_price
 import valuator
 from fb_feed import parse_price, parse_end_time, parse_auction
+
+
+_REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
+_PRODUCTION_STATE_BASELINE = None
+
+
+def _snapshot_production_state(root=_REPO_ROOT):
+    """Hash tracked learning/data files without reading private uploads."""
+    paths = []
+    failures = os.path.join(root, "FAILURES.md")
+    if os.path.isfile(failures):
+        paths.append(failures)
+    dataset = os.path.join(root, "dataset")
+    if os.path.isdir(dataset):
+        paths.extend(os.path.join(dataset, name)
+                     for name in os.listdir(dataset)
+                     if name.endswith(".json")
+                     and os.path.isfile(os.path.join(dataset, name)))
+    snapshot = {}
+    for path in paths:
+        digest = hashlib.sha256()
+        with open(path, "rb") as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                digest.update(chunk)
+        snapshot[os.path.relpath(path, root).replace("\\", "/")] = digest.hexdigest()
+    return snapshot
+
+
+def _production_state_changes(before, after):
+    changes = []
+    for path in sorted(set(before) | set(after)):
+        if path not in before:
+            kind = "created"
+        elif path not in after:
+            kind = "deleted"
+        elif before[path] != after[path]:
+            kind = "changed"
+        else:
+            continue
+        changes.append(f"{path} ({kind})")
+    return changes
+
+
+def setUpModule():
+    global _PRODUCTION_STATE_BASELINE
+    _PRODUCTION_STATE_BASELINE = _snapshot_production_state()
+
+
+def tearDownModule():
+    changes = _production_state_changes(
+        _PRODUCTION_STATE_BASELINE or {}, _snapshot_production_state())
+    if changes:
+        raise AssertionError(
+            "tests changed the production learning/data corpus: "
+            + ", ".join(changes))
 
 
 class TestClassify(unittest.TestCase):
@@ -886,6 +942,28 @@ class TestStateDurability(unittest.TestCase):
         self.assertEqual({(row["ident"]["name"], row["ident"]["number"])
                           for row in rows},
                          {("Alpha", "001/100"), ("Beta", "002/100")})
+
+    def test_production_snapshot_detects_content_and_file_set_changes(self):
+        with tempfile.TemporaryDirectory() as root:
+            dataset = os.path.join(root, "dataset")
+            os.makedirs(dataset)
+            with open(os.path.join(root, "FAILURES.md"), "w",
+                      encoding="utf-8") as handle:
+                handle.write("before")
+            with open(os.path.join(dataset, "existing.json"), "w",
+                      encoding="utf-8") as handle:
+                handle.write("{}")
+            before = _snapshot_production_state(root)
+            with open(os.path.join(root, "FAILURES.md"), "w",
+                      encoding="utf-8") as handle:
+                handle.write("after")
+            with open(os.path.join(dataset, "new.json"), "w",
+                      encoding="utf-8") as handle:
+                handle.write("[]")
+            changes = _production_state_changes(
+                before, _snapshot_production_state(root))
+        self.assertEqual(changes,
+                         ["FAILURES.md (changed)", "dataset/new.json (created)"])
 
 
 class TestEvidence(unittest.TestCase):

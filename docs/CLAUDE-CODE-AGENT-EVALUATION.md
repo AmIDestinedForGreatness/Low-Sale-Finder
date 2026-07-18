@@ -244,6 +244,14 @@ are 2/2 and warp tests are 4/4.
 make the suite fail if tracked datasets or the repository upload directory change. Use a
 temporary repository state fixture by default.
 
+**Correction status (2026-07-19).** Route, failure, upload, confirmation, and durability
+tests use temporary paths for their mutable records. Module setup/teardown now hashes
+`FAILURES.md` and the full top-level `dataset/*.json` file set; changed, created, or
+deleted corpus files fail focused and full runs without requiring an initially clean
+source tree. A dedicated regression proves changed/created detection, and the 142-test
+suite left the corpus unchanged. Private upload contents are deliberately not hashed, so
+an explicit upload-directory invariant remains open rather than being implied.
+
 ### F-03 — Critical — Operations/security: public unauthenticated control plane
 
 **Evidence.** `app.py:1497` binds `0.0.0.0:5000`. `deploy/README.md:18` and
