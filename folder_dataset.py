@@ -112,7 +112,15 @@ def detect_card_regions(path):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
     edges = cv2.Canny(blur, 40, 120)
-    edges = cv2.dilate(edges, np.ones((5, 5), np.uint8), iterations=2)
+    # 2 dilation passes bridges the gap between ADJACENT cards on a dense
+    # grid page (a real 3x4=12-card page merged its top row into one blob
+    # spanning 3 cards, which then correctly failed the size-consistency
+    # check below and vanished entirely instead of being split). 1 pass
+    # still closes gaps within a single card's own border but stops
+    # bridging separate neighboring cards (verified: recovers 11/12 real
+    # cards on that page, up from 8/12, with no new false positives on the
+    # known single-card dataset).
+    edges = cv2.dilate(edges, np.ones((5, 5), np.uint8), iterations=1)
     contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     boxes = []
@@ -216,8 +224,15 @@ def probe_contours(path, tmpdir, ocr_reader=None, pad=0.06):
                 or valuator.fingerprint_names(lines)
                 or valuator.attack_id(lines)):
             signals += 1
-    # majority, not unanimous — a real card can still have a bad OCR read
-    if signals >= max(2, -(-len(cells) * 3 // 4)):   # ceil(0.75 * N), floor 2
+    # STRICT MAJORITY, not a supermajority — a real card can still have a bad
+    # OCR read (glare, tiny JP text on a dense grid), and requiring 75% was
+    # too strict: a real 11-card page (dilation fix recovered 11 of 12 real
+    # cards) had 7/11 cells with real, individually-plausible evidence
+    # (matching collector fractions, a confirmed name+attack-fingerprint
+    # hit) but got REJECTED by the old 9-of-11 bar, silently falling back to
+    # the wrong blind 2x2 split. >50% is still a real safety margin — a
+    # split that's mostly noise won't clear it.
+    if signals >= max(2, len(cells) // 2 + 1):
         return cells, ocr_groups
     return [], []
 

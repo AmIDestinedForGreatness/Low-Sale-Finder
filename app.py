@@ -231,20 +231,23 @@ def valuator_ocr():
     pair = n_names == 2 and _im.width > _im.height
     probe_cells, probe_ocr = [], []
     contour_probe = False
+    grid_worth_trying = (not pair and n_names < 3
+                         and folder_dataset.should_probe_grid(
+                             _im.width, _im.height, n_names, n_numbers))
     if (not pair and n_names < 3
-            and folder_dataset.should_probe_grid(_im.width, _im.height, n_names,
-                                                 n_numbers)):
-        probe_cells, probe_ocr = folder_dataset.probe_grid(path, UPLOAD_DIR)
-    if (not pair and n_names < 3 and not probe_cells
-            and min(_im.width, _im.height) >= 900):
-        # MIXED-SET FALLBACK: neither the name-repetition nor the shared-
-        # fraction signal fired (a page of unrelated cards from different
-        # products has neither), but the page may still hold several real
-        # cards laid out unevenly. Card shape itself is language- and
-        # content-agnostic, so try detecting actual card-shaped regions
-        # before giving up and treating the page as one card.
+            and (grid_worth_trying or min(_im.width, _im.height) >= 900)):
+        # CONTOUR-FIRST: try actual card-shape detection before falling back
+        # to a blind fixed 2x2 quarter-split. A blind split assumes exactly
+        # 4 cards — wrong for anything else (a real 12-card 3x4 page got
+        # quartered into 4 cells each fusing 3 different cards, and still
+        # "succeeded" by probe_grid()'s own evidence-count gate because each
+        # fused cell had SOME readable fragment, locking in a wrong answer
+        # before a better split was ever tried). Contour detection looks at
+        # the real geometry, so prefer it whenever it finds something usable.
         probe_cells, probe_ocr = folder_dataset.probe_contours(path, UPLOAD_DIR)
         contour_probe = bool(probe_cells)
+    if not probe_cells and grid_worth_trying:
+        probe_cells, probe_ocr = folder_dataset.probe_grid(path, UPLOAD_DIR)
     if n_names >= 3 or pair or probe_cells:
         if contour_probe:
             cols = 2 if len(probe_cells) > 1 else 1
