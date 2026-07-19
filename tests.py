@@ -2756,8 +2756,13 @@ class TestCardWarp(unittest.TestCase):
         # coverage of the real function on a real single-card image with
         # with_quads=True; this both proves the fix and closes that gap.
         import folder_dataset
-        img = os.path.join("dataset", "images", os.listdir(
-            os.path.join("dataset", "images"))[0])
+        image_dir = os.path.join("dataset", "images")
+        if not os.path.isdir(image_dir):
+            self.skipTest("real dataset image fixture is unavailable")
+        images = os.listdir(image_dir)
+        if not images:
+            self.skipTest("real dataset image fixture is unavailable")
+        img = os.path.join(image_dir, images[0])
         boxes, quads = folder_dataset.detect_card_regions(img, with_quads=True)
         self.assertEqual(boxes, [])
         self.assertEqual(quads, [])
@@ -2765,6 +2770,109 @@ class TestCardWarp(unittest.TestCase):
             cells, groups = folder_dataset.probe_contours(img, td)
         self.assertEqual(cells, [])
         self.assertEqual(groups, [])
+
+    def test_batch_main_prefers_contours_for_binder_page(self):
+        """The batch CLI must not quarter a contour-detected 3x4 page."""
+        import folder_dataset
+        from pathlib import Path
+        from types import SimpleNamespace
+
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            photos = root / "photos"
+            photos.mkdir()
+            photo = photos / "binder.jpg"
+            photo.write_bytes(b"fixture path; image operations are mocked")
+            scratch = root / "cells"
+            scratch.mkdir()
+            contour_cells = [str(scratch / f"cell_{i}.png")
+                             for i in range(12)]
+            contour_ocr = [[f"Card {i}"] for i in range(12)]
+
+            def fake_identify(_paths, groups, _seen):
+                return {"name": groups[0][0], "number": None,
+                        "via": "test", "candidates": [], "ocr": groups[0]}
+
+            with mock.patch.object(folder_dataset, "__file__",
+                                   str(root / "folder_dataset.py")), \
+                 mock.patch.object(sys, "argv",
+                                   ["folder_dataset.py", str(photos)]), \
+                 mock.patch("folder_dataset.tempfile.mkdtemp",
+                            return_value=str(scratch)), \
+                 mock.patch("folder_dataset.best_orientation",
+                            return_value=(0, str(photo), ["A", "B", "C"])), \
+                 mock.patch("folder_dataset.distinct_names",
+                            return_value={"A", "B", "C"}), \
+                 mock.patch("folder_dataset.Image.open",
+                            return_value=SimpleNamespace(width=2048,
+                                                         height=2048)), \
+                 mock.patch("folder_dataset.probe_contours",
+                            return_value=(contour_cells, contour_ocr)) as probe, \
+                 mock.patch("folder_dataset.split_grid") as grid, \
+                 mock.patch("folder_dataset.identify",
+                            side_effect=fake_identify), \
+                 mock.patch("folder_dataset.time.sleep"):
+                folder_dataset.main()
+
+            probe.assert_called_once_with(str(photo), str(scratch))
+            grid.assert_not_called()
+            output = json.loads((root / "dataset" / "photos.json")
+                                .read_text(encoding="utf-8"))
+            cards = output["binder.jpg"]["cards"]
+            self.assertEqual(len(cards), 12)
+            self.assertEqual([card["name"] for card in cards],
+                             [f"Card {i}" for i in range(12)])
+
+    def test_batch_main_falls_back_to_existing_grid(self):
+        """An empty contour probe retains the previous bounded 2x2 path."""
+        import folder_dataset
+        from pathlib import Path
+        from types import SimpleNamespace
+
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            photos = root / "photos"
+            photos.mkdir()
+            photo = photos / "binder.jpg"
+            photo.write_bytes(b"fixture path; image operations are mocked")
+            scratch = root / "cells"
+            scratch.mkdir()
+            grid_cells = [str(scratch / f"grid_{i}.png") for i in range(4)]
+
+            def fake_identify(_paths, groups, _seen):
+                return {"name": groups[0][0], "number": None,
+                        "via": "test", "candidates": [], "ocr": groups[0]}
+
+            with mock.patch.object(folder_dataset, "__file__",
+                                   str(root / "folder_dataset.py")), \
+                 mock.patch.object(sys, "argv",
+                                   ["folder_dataset.py", str(photos)]), \
+                 mock.patch("folder_dataset.tempfile.mkdtemp",
+                            return_value=str(scratch)), \
+                 mock.patch("folder_dataset.best_orientation",
+                            return_value=(0, str(photo), ["A", "B", "C"])), \
+                 mock.patch("folder_dataset.distinct_names",
+                            return_value={"A", "B", "C"}), \
+                 mock.patch("folder_dataset.Image.open",
+                            return_value=SimpleNamespace(width=2048,
+                                                         height=2048)), \
+                 mock.patch("folder_dataset.probe_contours",
+                            return_value=([], [])) as probe, \
+                 mock.patch("folder_dataset.split_grid",
+                            return_value=grid_cells) as grid, \
+                 mock.patch("folder_dataset.valuator.ocr_lines",
+                            side_effect=lambda cell: [Path(cell).stem]), \
+                 mock.patch("folder_dataset.identify",
+                            side_effect=fake_identify), \
+                 mock.patch("folder_dataset.time.sleep"):
+                folder_dataset.main()
+
+            probe.assert_called_once_with(str(photo), str(scratch))
+            grid.assert_called_once_with(str(photo), str(scratch), rows=2,
+                                         cols=2)
+            output = json.loads((root / "dataset" / "photos.json")
+                                .read_text(encoding="utf-8"))
+            self.assertEqual(len(output["binder.jpg"]["cards"]), 4)
 
 
 if __name__ == "__main__":

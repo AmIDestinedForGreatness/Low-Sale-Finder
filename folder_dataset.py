@@ -516,9 +516,23 @@ def main():
         if multi or pair:
             rows, cols = (1, 2) if pair else (2, 2)
             print(f"[{i+1}/{len(files)}] {fn} -> "
-                  f"{'SIDE-BY-SIDE (1x2)' if pair else 'BINDER PAGE (2x2)'}")
-            for cell in split_grid(upath, tmpdir, rows=rows, cols=cols):
-                ident = identify([cell], [valuator.ocr_lines(cell)], set())
+                  f"{'SIDE-BY-SIDE (1x2)' if pair else 'BINDER PAGE (CONTOUR-FIRST)'}")
+            cells, cell_ocr = [], []
+            if not pair:
+                # CONTOUR-FIRST: preserve the real card geometry on binder
+                # pages; a blind 2x2 split can fuse a 3x4 page into four
+                # misleading quarter-page crops. Match app.py's route and
+                # retain the bounded grid only as the fallback.
+                cells, cell_ocr = probe_contours(upath, tmpdir)
+                if cells:
+                    print(f"    contours -> {len(cells)} card regions")
+            if not cells:
+                if not pair:
+                    print(f"    contours empty -> fallback {rows}x{cols}")
+                cells = split_grid(upath, tmpdir, rows=rows, cols=cols)
+                cell_ocr = [valuator.ocr_lines(cell) for cell in cells]
+            for cell, lines_for_cell in zip(cells, cell_ocr):
+                ident = identify([cell], [lines_for_cell], set())
                 ident.pop("ocr", None)
                 if do_price:
                     ident["value"] = price_confident(ident)

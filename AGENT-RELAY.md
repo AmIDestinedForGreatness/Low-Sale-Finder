@@ -1599,3 +1599,36 @@ Removed number adoption from both Layer F (`discover_from_confirmed`) and Layer 
 **Real dashboard acceptance:** replayed `uploads/card_c46f1b31dc8f4a29a5eac8ef449724a2.jpg` through `/api/valuator/ocr`: HTTP 200, `multi=true`, 3x4, 12 cards. All four requested card identities remain correct. Mega Froslass ex stays **224/193 Level A** via attack fingerprint; Misdreavus stays **202/193 Level D** via confirmed reference. Jamming Tower stays correctly named, but is now honestly **222/193 Level D** via visual catalog plus independent deep OCR; direct inspection of the supplied page/warp confirms `222/193` is the photographed number, so the old Level-A `243/182` was the exact catalog-number laundering this fix removes. Blastoise stays correctly named via visual catalog but is **number-unread, Level D** because this upload does not yield independent number evidence; the old Level-A `14/100` came only from the hash row and is therefore intentionally no longer asserted. The same six M2a-gap cells remain unread and no false visual matches were introduced.
 
 Focused regressions passed, and the full suite is **174/174**, `OK` (`python tests.py`, 4.417s). `git diff --check` is clean. Pre-existing edits in `FAILURES.md` / `dataset/failures.json` and untracked `fingerprints.sqlite.bak` remain preserved and were not staged or committed.
+
+
+### CX | 2026-07-20 | batch CLI now uses contour-first binder detection
+
+Ported the dashboard route's contour-first ordering into
+`folder_dataset.main()`. Binder pages now call `probe_contours()` first and
+process every returned card region with its corresponding OCR group. The
+existing 2x2 `split_grid(rows, cols)` path runs only when the contour probe
+returns no cells. Pair detection and its established 1x2 split are unchanged,
+as are single-card handling, resumability, pricing, bleed suppression, and
+JSON output. CLI diagnostics now state either the number of contour regions or
+the exact fallback grid, so a 12-card page can no longer silently look like a
+successful four-quarter run.
+
+Added two batch-main regressions. A simulated contour result with 12 regions
+produces 12 JSON cards and proves `split_grid()` is never called; an empty
+contour result proves the old 2x2 fallback and OCR path still run. Also made
+the pre-existing real-single-card contour regression skip explicitly when its
+gitignored `dataset/images` fixture is absent instead of raising
+`FileNotFoundError`. Full suite on this checkout: **165 tests, 161 passed, 4
+skipped, 0 failed/errors** (`PASS: 165/165 lessons hold`). `git diff --check`
+is clean.
+
+**Real-photo limitation, not claimed away:** the requested
+`uploads/card_c46f1b31dc8f4a29a5eac8ef449724a2.jpg` is not present in this
+checkout, anywhere under the current user profile, on the other accessible
+drive, or in Git history. `uploads/` contains only the known synthetic
+placeholders. Therefore this machine could not repeat the real 12-card
+detection run; the executable wiring is covered, but live detector recall on
+that asset remains pending until the photo is restored. Implemented in the
+focused local commit named `fix: use contours in batch binder CLI`; the
+resulting hash is reported in the handoff because a commit cannot contain its
+own hash. Nothing pushed.
