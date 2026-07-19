@@ -352,6 +352,25 @@ def identify(image_paths, ocr_raw, wm):
                 if not number:
                     number = disc.get("number")
                 break
+    if not name:
+        # LAYER G: candidate-free discovery against the full local visual
+        # catalog. VisualCatalogProvider.verify() only corroborates an
+        # identity text/OCR already proposed; match_image() uses the same
+        # conservative absolute-distance + nearest-neighbor-lead gates as
+        # the hash-first contour path, and returns None for catalog gaps.
+        # Keep the provider defaults unchanged: an M2a/M-era card missing
+        # from fingerprints.sqlite must stay unread, never be force-matched
+        # to the merely-nearest indexed artwork.
+        from providers.visual_catalog import VisualCatalogProvider
+        visual_catalog = VisualCatalogProvider()
+        for p in image_paths:
+            disc = visual_catalog.match_image(p)
+            if disc:
+                name = str(disc["name"] or "").split(" - ")[0].strip()
+                via = "visual catalog match"
+                if not number:
+                    number = disc.get("number")
+                break
     if not name and number:
         # TIE-BREAK: tied fingerprint × the number's own catalog matches
         cross = valuator.crosscheck_name(merged, number)

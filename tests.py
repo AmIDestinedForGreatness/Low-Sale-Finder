@@ -920,6 +920,39 @@ class TestProfileDatasetSerialization(unittest.TestCase):
         self.assertEqual(result["number"], "202/193")
         self.assertEqual(result["via"], "confirmed reference match")
 
+    def test_unread_cell_resolves_via_full_visual_catalog(self):
+        # Regression for the discovery wiring: verify() cannot help when OCR
+        # proposed no candidate, so identify() must call candidate-free
+        # match_image() only after the confirmed-reference layer misses.
+        import profile_dataset
+        catalog = mock.Mock()
+        catalog.match_image.side_effect = [None, {
+            "id": "base1-2", "name": "Blastoise", "number": "2/102",
+            "set": "Base Set", "distance": 4.2,
+        }]
+        cands = [{"pid": 2, "name": "Blastoise", "set": "Base Set",
+                  "number": "2/102"}]
+        with mock.patch("valuator.guess_query", return_value=(None, None)), \
+             mock.patch("valuator.fingerprint_names", return_value=[]), \
+             mock.patch("valuator.dex_names", return_value=[]), \
+             mock.patch("valuator.attack_id", return_value=None), \
+             mock.patch("providers.artwork.discover_from_confirmed",
+                        return_value=None), \
+             mock.patch("providers.visual_catalog.VisualCatalogProvider",
+                        return_value=catalog) as provider_cls, \
+             mock.patch("valuator.search_candidates", return_value=cands), \
+             mock.patch("valuator.ocr_deep", return_value=[]), \
+             mock.patch("evidence.build_evidence", return_value={}), \
+             mock.patch("evidence.log_failure"):
+            result = profile_dataset.identify(
+                ["missing.png", "covered.png"], [[], []], set())
+        provider_cls.assert_called_once_with()
+        self.assertEqual(catalog.match_image.call_args_list,
+                         [mock.call("missing.png"), mock.call("covered.png")])
+        self.assertEqual(result["name"], "Blastoise")
+        self.assertEqual(result["number"], "2/102")
+        self.assertEqual(result["via"], "visual catalog match")
+
 
 class TestStateDurability(unittest.TestCase):
     """Mutable local state must survive concurrency and interrupted writes."""
