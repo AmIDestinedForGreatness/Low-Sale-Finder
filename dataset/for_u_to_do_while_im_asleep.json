@@ -22,7 +22,9 @@
       "set": "XY - BREAKthrough",
       "number": "63/162",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/107182.jpg"
+      "img": "https://product-images.tcgplayer.com/107182.jpg",
+      "url": "https://www.tcgplayer.com/product/107182",
+      "market": 52.79
      },
      {
       "pid": 107183,
@@ -30,22 +32,74 @@
       "set": "XY - BREAKthrough",
       "number": "64/162",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/107183.jpg"
+      "img": "https://product-images.tcgplayer.com/107183.jpg",
+      "url": "https://www.tcgplayer.com/product/107183",
+      "market": 37.51
      }
     ],
     "evidence_level": "C",
     "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 29.0, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5469,
+       "hash_distance": 29.0,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xy8-63.png",
+       "matched_candidate": {
+        "name": "M Mewtwo-EX",
+        "number": "63/162",
+        "set": null
+       },
+       "matched_catalog": {
+        "id": "xy8-63",
+        "name": "M Mewtwo-EX",
+        "set": "xy8",
+        "number": "63/162"
+       },
+       "nearest_matches": [
+        {
+         "distance": 20.3,
+         "id": "swsh8-43",
+         "name": "Cinderace V",
+         "set": "swsh8",
+         "number": "43/264"
+        },
+        {
+         "distance": 20.4,
+         "id": "base5-55",
+         "name": "Eevee",
+         "set": "base5",
+         "number": "55/82"
+        },
+        {
+         "distance": 20.4,
+         "id": "tk1b-9",
+         "name": "Energy Search",
+         "set": "tk1b",
+         "number": "9/10"
+        },
+        {
+         "distance": 20.6,
+         "id": "xyp-XY174",
+         "name": "Pikachu-EX",
+         "set": "xyp",
+         "number": "XY174"
+        },
+        {
+         "distance": 20.7,
+         "id": "base4-68",
+         "name": "Caterpie",
+         "set": "base4",
+         "number": "68/130"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 29.0, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -94,7 +148,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "-12 an OCR-neighbor alternative remains possible",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "possible",
@@ -105,6 +159,8 @@
       "number": "63/162",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/107182.jpg",
+      "url": "https://www.tcgplayer.com/product/107182",
+      "market": 52.79,
       "source": "existing_candidates"
      },
      "candidate_count": 3,
@@ -116,6 +172,8 @@
        "number": "64/162",
        "line": "Pokemon",
        "img": "https://product-images.tcgplayer.com/107183.jpg",
+       "url": "https://www.tcgplayer.com/product/107183",
+       "market": 37.51,
        "source": "existing_candidates",
        "collision_basis": [
         "card_name",
@@ -276,6 +334,8 @@
       "number": "64/162",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/107183.jpg",
+      "url": "https://www.tcgplayer.com/product/107183",
+      "market": 37.51,
       "source": "existing_candidates",
       "collision_basis": [
        "card_name",
@@ -341,22 +401,79 @@
       "set": "SM Promos",
       "number": "SM05",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/126027.jpg"
+      "img": "https://product-images.tcgplayer.com/126027.jpg",
+      "url": "https://www.tcgplayer.com/product/126027",
+      "market": 17.21
      }
     ],
     "evidence_level": "C",
     "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 24.0, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.625,
+       "hash_distance": 24.0,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\smp-SM05.png",
+       "matched_candidate": {
+        "pid": 126027,
+        "name": "Snorlax GX - SM05",
+        "set": "SM Promos",
+        "number": "SM05",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/126027.jpg",
+        "url": "https://www.tcgplayer.com/product/126027",
+        "market": 17.21
+       },
+       "matched_catalog": {
+        "id": "smp-SM05",
+        "name": "Snorlax-GX",
+        "set": "smp",
+        "number": "SM05"
+       },
+       "nearest_matches": [
+        {
+         "distance": 17.7,
+         "id": "pl3-146",
+         "name": "Rayquaza C LV.X",
+         "set": "pl3",
+         "number": "146/147"
+        },
+        {
+         "distance": 18.3,
+         "id": "sm35-56",
+         "name": "Shining Rayquaza",
+         "set": "sm35",
+         "number": "56/73"
+        },
+        {
+         "distance": 18.4,
+         "id": "swsh35-73",
+         "name": "Hop",
+         "set": "swsh35",
+         "number": "73/73"
+        },
+        {
+         "distance": 18.7,
+         "id": "gym1-28",
+         "name": "Lt. Surge's Raichu",
+         "set": "gym1",
+         "number": "28/132"
+        },
+        {
+         "distance": 19.2,
+         "id": "base4-16",
+         "name": "Raichu",
+         "set": "base4",
+         "number": "16/130"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 24.0, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -405,7 +522,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -416,6 +533,8 @@
       "number": "SM05",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/126027.jpg",
+      "url": "https://www.tcgplayer.com/product/126027",
+      "market": 17.21,
       "source": "existing_candidates"
      },
      "candidate_count": 1,
@@ -499,22 +618,79 @@
       "set": "XY - Steam Siege",
       "number": "68/114",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/121197.jpg"
+      "img": "https://product-images.tcgplayer.com/121197.jpg",
+      "url": "https://www.tcgplayer.com/product/121197",
+      "market": 8.95
      }
     ],
     "evidence_level": "A",
     "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 28.8, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.55,
+       "hash_distance": 28.8,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xy11-68.png",
+       "matched_candidate": {
+        "pid": 121197,
+        "name": "M Steelix EX",
+        "set": "XY - Steam Siege",
+        "number": "68/114",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/121197.jpg",
+        "url": "https://www.tcgplayer.com/product/121197",
+        "market": 8.95
+       },
+       "matched_catalog": {
+        "id": "xy11-68",
+        "name": "M Steelix-EX",
+        "set": "xy11",
+        "number": "68/114"
+       },
+       "nearest_matches": [
+        {
+         "distance": 16.9,
+         "id": "sv8-199",
+         "name": "Spheal",
+         "set": "sv8",
+         "number": "199/191"
+        },
+        {
+         "distance": 19.5,
+         "id": "sv3pt5-127",
+         "name": "Pinsir",
+         "set": "sv3pt5",
+         "number": "127/165"
+        },
+        {
+         "distance": 19.9,
+         "id": "swsh4-22",
+         "name": "Zarude V",
+         "set": "swsh4",
+         "number": "22/185"
+        },
+        {
+         "distance": 20.0,
+         "id": "sv1-62",
+         "name": "Tatsugiri",
+         "set": "sv1",
+         "number": "62/198"
+        },
+        {
+         "distance": 20.1,
+         "id": "base3-19",
+         "name": "Dragonite",
+         "set": "base3",
+         "number": "19/62"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 28.8, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -563,7 +739,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -574,6 +750,8 @@
       "number": "68/114",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/121197.jpg",
+      "url": "https://www.tcgplayer.com/product/121197",
+      "market": 8.95,
       "source": "existing_candidates"
      },
      "candidate_count": 1,
@@ -710,22 +888,79 @@
       "set": "SM - Cosmic Eclipse",
       "number": "110/236",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/201141.jpg"
+      "img": "https://product-images.tcgplayer.com/201141.jpg",
+      "url": "https://www.tcgplayer.com/product/201141",
+      "market": 2.39
      }
     ],
     "evidence_level": "A",
     "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 33.4, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.4781,
+       "hash_distance": 33.4,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\sm12-110.png",
+       "matched_candidate": {
+        "pid": 201141,
+        "name": "Flygon GX",
+        "set": "SM - Cosmic Eclipse",
+        "number": "110/236",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/201141.jpg",
+        "url": "https://www.tcgplayer.com/product/201141",
+        "market": 2.39
+       },
+       "matched_catalog": {
+        "id": "sm12-110",
+        "name": "Flygon-GX",
+        "set": "sm12",
+        "number": "110/236"
+       },
+       "nearest_matches": [
+        {
+         "distance": 16.9,
+         "id": "sv3-123",
+         "name": "Glimmora ex",
+         "set": "sv3",
+         "number": "123/197"
+        },
+        {
+         "distance": 17.9,
+         "id": "sv4pt5-230",
+         "name": "Paldean Student",
+         "set": "sv4pt5",
+         "number": "230/91"
+        },
+        {
+         "distance": 18.4,
+         "id": "pl2-7",
+         "name": "Jirachi",
+         "set": "pl2",
+         "number": "7/111"
+        },
+        {
+         "distance": 18.4,
+         "id": "sv10-39",
+         "name": "Ethan's Ho-Oh ex",
+         "set": "sv10",
+         "number": "39/182"
+        },
+        {
+         "distance": 19.0,
+         "id": "hgss1-7",
+         "name": "Ninetales",
+         "set": "hgss1",
+         "number": "7/123"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 33.4, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -774,7 +1009,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -785,6 +1020,8 @@
       "number": "110/236",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/201141.jpg",
+      "url": "https://www.tcgplayer.com/product/201141",
+      "market": 2.39,
       "source": "existing_candidates"
      },
      "candidate_count": 1,
@@ -947,15 +1184,65 @@
     "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 25.7, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5984,
+       "hash_distance": 25.7,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xyp-XY08.png",
+       "matched_candidate": {
+        "name": "Yveltal-EX",
+        "number": "XY08",
+        "set": null
+       },
+       "matched_catalog": {
+        "id": "xyp-XY08",
+        "name": "Yveltal-EX",
+        "set": "xyp",
+        "number": "XY08"
+       },
+       "nearest_matches": [
+        {
+         "distance": 17.5,
+         "id": "swsh45sv-SV082",
+         "name": "Thievul",
+         "set": "swsh45sv",
+         "number": "SV082"
+        },
+        {
+         "distance": 18.2,
+         "id": "swshp-SWSH182",
+         "name": "Vaporeon VMAX",
+         "set": "swshp",
+         "number": "SWSH182"
+        },
+        {
+         "distance": 19.7,
+         "id": "sm11-228",
+         "name": "Garchomp & Giratina-GX",
+         "set": "sm11",
+         "number": "228/236"
+        },
+        {
+         "distance": 20.1,
+         "id": "ex7-11",
+         "name": "Jumpluff",
+         "set": "ex7",
+         "number": "11/109"
+        },
+        {
+         "distance": 20.1,
+         "id": "sv4-209",
+         "name": "Ferrothorn",
+         "set": "sv4",
+         "number": "209/182"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 25.7, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -1004,7 +1291,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "-12 an OCR-neighbor alternative remains possible",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "possible",
@@ -1209,11 +1496,13 @@
       "set": "SWSH: Sword & Shield Promo Cards",
       "number": "SWSH291",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/475642.jpg"
+      "img": "https://product-images.tcgplayer.com/475642.jpg",
+      "url": "https://www.tcgplayer.com/product/475642",
+      "market": 12.59
      }
     ],
-    "evidence_level": "C",
-    "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
+    "evidence_level": "A",
+    "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
     "evidence_chain": {
      "artwork": {
       "status": "failed",
@@ -1231,7 +1520,9 @@
         "set": "SWSH: Sword & Shield Promo Cards",
         "number": "SWSH291",
         "line": "Pokemon",
-        "img": "https://product-images.tcgplayer.com/475642.jpg"
+        "img": "https://product-images.tcgplayer.com/475642.jpg",
+        "url": "https://www.tcgplayer.com/product/475642",
+        "market": 12.59
        }
       }
      },
@@ -1292,6 +1583,8 @@
       "number": "SWSH291",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/475642.jpg",
+      "url": "https://www.tcgplayer.com/product/475642",
+      "market": 12.59,
       "source": "existing_candidates"
      },
      "candidate_count": 1,
@@ -1301,7 +1594,7 @@
      "evidence_conflicts": [],
      "evidence_missing": [],
      "reason": "Adversarial search tested 2 catalog row(s); no plausible competing printing survived the direct evidence.",
-     "recommended_evidence_level": "C",
+     "recommended_evidence_level": "A",
      "search_performed": true,
      "catalog_rows_examined": 2,
      "search_limitations": [
@@ -1333,20 +1626,6 @@
       "local catalog may not contain every regional or newly released printing",
       "artwork/holo authenticity is outside collision search"
      ]
-    },
-    "inference_explanation": {
-     "original_ocr_text": [
-      "270",
-      "120+",
-      "attackdoes 120moredamage.",
-      "This attack does 70 damage for each Eneray atta",
-      "GSWSH291",
-      "isKnockedOut,youropponenttakes2Prizecard"
-     ],
-     "why_ocr_failed": "OCR did not directly establish every field needed for an exact printing",
-     "candidate_search_process": "via=attack names; 1 API candidate(s); 2 widened rows examined",
-     "why_only_one_candidate_remained": "the available fragments resolved via attack names; adversarial search: Adversarial search tested 2 catalog row(s); no plausible competing printing survived the direct evidence.",
-     "remaining_uncertainty": "identity still depends on inference rather than every field being read"
     }
    }
   ],
@@ -1422,15 +1701,68 @@
     "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 23.8, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.6281,
+       "hash_distance": 23.8,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xy12-22.png",
+       "matched_candidate": {
+        "pid": 124035,
+        "name": "M Blastoise EX",
+        "set": "XY - Evolutions",
+        "number": "22/108",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/124035.jpg"
+       },
+       "matched_catalog": {
+        "id": "xy12-22",
+        "name": "M Blastoise-EX",
+        "set": "xy12",
+        "number": "22/108"
+       },
+       "nearest_matches": [
+        {
+         "distance": 18.3,
+         "id": "sm11-234",
+         "name": "Grimsley",
+         "set": "sm11",
+         "number": "234/236"
+        },
+        {
+         "distance": 18.7,
+         "id": "sm2-149",
+         "name": "Primarina-GX",
+         "set": "sm2",
+         "number": "149/145"
+        },
+        {
+         "distance": 18.9,
+         "id": "sv2-230",
+         "name": "Forretress ex",
+         "set": "sv2",
+         "number": "230/193"
+        },
+        {
+         "distance": 19.2,
+         "id": "swsh7-222",
+         "name": "Copycat",
+         "set": "swsh7",
+         "number": "222/203"
+        },
+        {
+         "distance": 19.5,
+         "id": "xy12-77",
+         "name": "Energy Retrieval",
+         "set": "xy12",
+         "number": "77/108"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 23.8, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -1479,7 +1811,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -1763,22 +2095,79 @@
       "set": "XY Base Set",
       "number": "2/146",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/86955.jpg"
+      "img": "https://product-images.tcgplayer.com/86955.jpg",
+      "url": "https://www.tcgplayer.com/product/86955",
+      "market": 21.9
      }
     ],
     "evidence_level": "A",
     "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 26.8, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5813,
+       "hash_distance": 26.8,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xy1-2.png",
+       "matched_candidate": {
+        "pid": 86955,
+        "name": "M Venusaur EX",
+        "set": "XY Base Set",
+        "number": "2/146",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/86955.jpg",
+        "url": "https://www.tcgplayer.com/product/86955",
+        "market": 21.9
+       },
+       "matched_catalog": {
+        "id": "xy1-2",
+        "name": "M Venusaur-EX",
+        "set": "xy1",
+        "number": "2/146"
+       },
+       "nearest_matches": [
+        {
+         "distance": 17.8,
+         "id": "ex1-6",
+         "name": "Dustox",
+         "set": "ex1",
+         "number": "6/109"
+        },
+        {
+         "distance": 18.4,
+         "id": "hgss2-91",
+         "name": "Entei & Raikou LEGEND",
+         "set": "hgss2",
+         "number": "91/95"
+        },
+        {
+         "distance": 19.1,
+         "id": "swsh6-218",
+         "name": "Melony",
+         "set": "swsh6",
+         "number": "218/198"
+        },
+        {
+         "distance": 19.2,
+         "id": "sv4pt5-104",
+         "name": "Arboliva",
+         "set": "sv4pt5",
+         "number": "104/91"
+        },
+        {
+         "distance": 19.8,
+         "id": "bw4-23",
+         "name": "Staryu",
+         "set": "bw4",
+         "number": "23/99"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 26.8, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -1827,7 +2216,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -1838,6 +2227,8 @@
       "number": "2/146",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/86955.jpg",
+      "url": "https://www.tcgplayer.com/product/86955",
+      "market": 21.9,
       "source": "existing_candidates"
      },
      "candidate_count": 1,
@@ -1974,22 +2365,74 @@
       "set": "XY - Fates Collide",
       "number": "121/124",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/117893.jpg"
+      "img": "https://product-images.tcgplayer.com/117893.jpg",
+      "url": "https://www.tcgplayer.com/product/117893",
+      "market": 24.87
      }
     ],
     "evidence_level": "A",
     "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 32.2, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.4969,
+       "hash_distance": 32.2,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xy10-121.png",
+       "matched_candidate": {
+        "name": "M Altaria-EX",
+        "number": "121/124",
+        "set": null
+       },
+       "matched_catalog": {
+        "id": "xy10-121",
+        "name": "M Altaria-EX",
+        "set": "xy10",
+        "number": "121/124"
+       },
+       "nearest_matches": [
+        {
+         "distance": 15.6,
+         "id": "swsh1-108",
+         "name": "Silicobra",
+         "set": "swsh1",
+         "number": "108/202"
+        },
+        {
+         "distance": 19.1,
+         "id": "dp4-3",
+         "name": "Darkrai",
+         "set": "dp4",
+         "number": "3/106"
+        },
+        {
+         "distance": 19.5,
+         "id": "ecard1-40",
+         "name": "Charizard",
+         "set": "ecard1",
+         "number": "40/165"
+        },
+        {
+         "distance": 19.7,
+         "id": "sv9-92",
+         "name": "Weezing",
+         "set": "sv9",
+         "number": "92/159"
+        },
+        {
+         "distance": 20.0,
+         "id": "dp7-48",
+         "name": "Sableye",
+         "set": "dp7",
+         "number": "48/100"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 32.2, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -2038,7 +2481,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -2049,6 +2492,8 @@
       "number": "121/124",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/117893.jpg",
+      "url": "https://www.tcgplayer.com/product/117893",
+      "market": 24.87,
       "source": "existing_candidates"
      },
      "candidate_count": 1,
@@ -2185,7 +2630,9 @@
       "set": "SM Promos",
       "number": "SM194",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/185254.jpg"
+      "img": "https://product-images.tcgplayer.com/185254.jpg",
+      "url": "https://www.tcgplayer.com/product/185254",
+      "market": 11.25
      },
      {
       "pid": 189805,
@@ -2193,22 +2640,34 @@
       "set": "SM Promos",
       "number": "SM190",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/189805.jpg"
+      "img": "https://product-images.tcgplayer.com/189805.jpg",
+      "url": "https://www.tcgplayer.com/product/189805",
+      "market": 7.0
      }
     ],
     "evidence_level": "C",
     "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "best local perceptual-hash similarity was 65.8%, below the 86% threshold; provider limitations may explain this",
       "provider_result": {
        "provider": "ArtworkProvider:perceptual_hash",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "match_score": 0.6578,
+       "matched_reference": "C:\\Users\\Marvin\\Downloads\\for u to do while im asleep\\Detective Pikachu SM194 English.png",
+       "confidence_note": "best local perceptual-hash similarity was 65.8%, below the 86% threshold; provider limitations may explain this",
+       "status": "no_match",
+       "matched_candidate": {
+        "pid": 185254,
+        "name": "Detective Pikachu - SM194",
+        "set": "SM Promos",
+        "number": "SM194",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/185254.jpg",
+        "url": "https://www.tcgplayer.com/product/185254",
+        "market": 11.25
+       }
       }
      },
      "pokemon_name": {
@@ -2257,7 +2716,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "-12 an OCR-neighbor alternative remains possible",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "possible",
@@ -2268,6 +2727,8 @@
       "number": "SM194",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/185254.jpg",
+      "url": "https://www.tcgplayer.com/product/185254",
+      "market": 11.25,
       "source": "existing_candidates"
      },
      "candidate_count": 3,
@@ -2279,6 +2740,8 @@
        "number": "SM190",
        "line": "Pokemon",
        "img": "https://product-images.tcgplayer.com/189805.jpg",
+       "url": "https://www.tcgplayer.com/product/189805",
+       "market": 7.0,
        "source": "existing_candidates",
        "collision_basis": [
         "card_name",
@@ -2354,6 +2817,8 @@
       "number": "SM190",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/189805.jpg",
+      "url": "https://www.tcgplayer.com/product/189805",
+      "market": 7.0,
       "source": "existing_candidates",
       "collision_basis": [
        "card_name",
@@ -2468,15 +2933,65 @@
     "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 28.5, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5547,
+       "hash_distance": 28.5,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\smp-SM17.png",
+       "matched_candidate": {
+        "name": "Lunala-GX",
+        "number": "SM17",
+        "set": null
+       },
+       "matched_catalog": {
+        "id": "smp-SM17",
+        "name": "Lunala-GX",
+        "set": "smp",
+        "number": "SM17"
+       },
+       "nearest_matches": [
+        {
+         "distance": 16.4,
+         "id": "base3-21",
+         "name": "Haunter",
+         "set": "base3",
+         "number": "21/62"
+        },
+        {
+         "distance": 17.5,
+         "id": "base6-46",
+         "name": "Haunter",
+         "set": "base6",
+         "number": "46/110"
+        },
+        {
+         "distance": 19.1,
+         "id": "xy10-74",
+         "name": "Meowth",
+         "set": "xy10",
+         "number": "74/124"
+        },
+        {
+         "distance": 19.6,
+         "id": "ex15-21",
+         "name": "Quagsire δ",
+         "set": "ex15",
+         "number": "21/101"
+        },
+        {
+         "distance": 19.8,
+         "id": "col1-SL4",
+         "name": "Groudon",
+         "set": "col1",
+         "number": "SL4"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 28.5, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -2525,7 +3040,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -2668,22 +3183,34 @@
       "set": "Detective Pikachu",
       "number": "10/18",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/186015.jpg"
+      "img": "https://product-images.tcgplayer.com/186015.jpg",
+      "url": "https://www.tcgplayer.com/product/186015",
+      "market": 14.24
      }
     ],
     "evidence_level": "A",
     "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "best local perceptual-hash similarity was 65.3%, below the 86% threshold; provider limitations may explain this",
       "provider_result": {
        "provider": "ArtworkProvider:perceptual_hash",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "match_score": 0.6531,
+       "matched_reference": "C:\\Users\\Marvin\\Downloads\\for u to do while im asleep\\Detective Pikachu 10-18 English.png",
+       "confidence_note": "best local perceptual-hash similarity was 65.3%, below the 86% threshold; provider limitations may explain this",
+       "status": "no_match",
+       "matched_candidate": {
+        "pid": 186015,
+        "name": "Detective Pikachu",
+        "set": "Detective Pikachu",
+        "number": "10/18",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/186015.jpg",
+        "url": "https://www.tcgplayer.com/product/186015",
+        "market": 14.24
+       }
       }
      },
      "pokemon_name": {
@@ -2732,7 +3259,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -2743,6 +3270,8 @@
       "number": "10/18",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/186015.jpg",
+      "url": "https://www.tcgplayer.com/product/186015",
+      "market": 14.24,
       "source": "existing_candidates"
      },
      "candidate_count": 1,
@@ -3010,22 +3539,79 @@
       "set": "XY - Evolutions",
       "number": "27/108",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/124040.jpg"
+      "img": "https://product-images.tcgplayer.com/124040.jpg",
+      "url": "https://www.tcgplayer.com/product/124040",
+      "market": 9.25
      }
     ],
     "evidence_level": "A",
     "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 24.9, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.6109,
+       "hash_distance": 24.9,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xy12-27.png",
+       "matched_candidate": {
+        "pid": 124040,
+        "name": "M Slowbro EX",
+        "set": "XY - Evolutions",
+        "number": "27/108",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/124040.jpg",
+        "url": "https://www.tcgplayer.com/product/124040",
+        "market": 9.25
+       },
+       "matched_catalog": {
+        "id": "xy12-27",
+        "name": "M Slowbro-EX",
+        "set": "xy12",
+        "number": "27/108"
+       },
+       "nearest_matches": [
+        {
+         "distance": 17.7,
+         "id": "sv4pt5-205",
+         "name": "Skwovet",
+         "set": "sv4pt5",
+         "number": "205/91"
+        },
+        {
+         "distance": 18.1,
+         "id": "swsh11tg-TG11",
+         "name": "Castform",
+         "set": "swsh11tg",
+         "number": "TG11"
+        },
+        {
+         "distance": 18.6,
+         "id": "swsh45sv-SV100",
+         "name": "Greedent",
+         "set": "swsh45sv",
+         "number": "SV100"
+        },
+        {
+         "distance": 19.1,
+         "id": "swsh1-68",
+         "name": "Chinchou",
+         "set": "swsh1",
+         "number": "68/202"
+        },
+        {
+         "distance": 19.1,
+         "id": "swsh45sv-SV063",
+         "name": "Galarian Farfetch'd",
+         "set": "swsh45sv",
+         "number": "SV063"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 24.9, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -3074,7 +3660,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -3085,6 +3671,8 @@
       "number": "27/108",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/124040.jpg",
+      "url": "https://www.tcgplayer.com/product/124040",
+      "market": 9.25,
       "source": "existing_candidates"
      },
      "candidate_count": 1,
@@ -3310,15 +3898,68 @@
     "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 28.6, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5531,
+       "hash_distance": 28.6,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xy4-24.png",
+       "matched_candidate": {
+        "pid": 94157,
+        "name": "M Manectric EX",
+        "set": "XY - Phantom Forces",
+        "number": "24/119",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/94157.jpg"
+       },
+       "matched_catalog": {
+        "id": "xy4-24",
+        "name": "M Manectric-EX",
+        "set": "xy4",
+        "number": "24/119"
+       },
+       "nearest_matches": [
+        {
+         "distance": 19.0,
+         "id": "swsh10-168",
+         "name": "Luxray V",
+         "set": "swsh10",
+         "number": "168/189"
+        },
+        {
+         "distance": 19.2,
+         "id": "sv4-123",
+         "name": "Brute Bonnet",
+         "set": "sv4",
+         "number": "123/182"
+        },
+        {
+         "distance": 19.8,
+         "id": "svp-21",
+         "name": "Murkrow",
+         "set": "svp",
+         "number": "21/102"
+        },
+        {
+         "distance": 20.1,
+         "id": "swsh45sv-SV026",
+         "name": "Drizzile",
+         "set": "swsh45sv",
+         "number": "SV026"
+        },
+        {
+         "distance": 20.2,
+         "id": "sv9-93",
+         "name": "Paldean Wooper",
+         "set": "sv9",
+         "number": "93/159"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 28.6, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -3367,7 +4008,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "-12 an OCR-neighbor alternative remains possible",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "possible",
@@ -3578,22 +4219,79 @@
       "set": "SWSH: Sword & Shield Promo Cards",
       "number": "SWSH087",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/232611.jpg"
+      "img": "https://product-images.tcgplayer.com/232611.jpg",
+      "url": "https://www.tcgplayer.com/product/232611",
+      "market": 4.18
      }
     ],
     "evidence_level": "A",
     "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 28.6, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5531,
+       "hash_distance": 28.6,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\swshp-SWSH087.png",
+       "matched_candidate": {
+        "pid": 232611,
+        "name": "Eevee VMAX - SWSH087",
+        "set": "SWSH: Sword & Shield Promo Cards",
+        "number": "SWSH087",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/232611.jpg",
+        "url": "https://www.tcgplayer.com/product/232611",
+        "market": 4.18
+       },
+       "matched_catalog": {
+        "id": "swshp-SWSH087",
+        "name": "Eevee VMAX",
+        "set": "swshp",
+        "number": "SWSH087"
+       },
+       "nearest_matches": [
+        {
+         "distance": 16.0,
+         "id": "swsh45sv-SV074",
+         "name": "Falinks",
+         "set": "swsh45sv",
+         "number": "SV074"
+        },
+        {
+         "distance": 19.0,
+         "id": "sv10-40",
+         "name": "Torchic",
+         "set": "sv10",
+         "number": "40/182"
+        },
+        {
+         "distance": 19.0,
+         "id": "swsh4-8",
+         "name": "Pineco",
+         "set": "swsh4",
+         "number": "8/185"
+        },
+        {
+         "distance": 19.1,
+         "id": "sm2-60a",
+         "name": "Tapu Lele-GX",
+         "set": "sm2",
+         "number": "60a"
+        },
+        {
+         "distance": 19.1,
+         "id": "swsh11tg-TG25",
+         "name": "Cook",
+         "set": "swsh11tg",
+         "number": "TG25"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 28.6, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -3642,7 +4340,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -3653,6 +4351,8 @@
       "number": "SWSH087",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/232611.jpg",
+      "url": "https://www.tcgplayer.com/product/232611",
+      "market": 4.18,
       "source": "existing_candidates"
      },
      "candidate_count": 1,
@@ -3722,22 +4422,79 @@
       "set": "XY - Fates Collide",
       "number": "85/124",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/117516.jpg"
+      "img": "https://product-images.tcgplayer.com/117516.jpg",
+      "url": "https://www.tcgplayer.com/product/117516",
+      "market": 8.4888
      }
     ],
     "evidence_level": "A",
     "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 18.7, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.7078,
+       "hash_distance": 18.7,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xy10-85.png",
+       "matched_candidate": {
+        "pid": 117516,
+        "name": "M Audino EX",
+        "set": "XY - Fates Collide",
+        "number": "85/124",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/117516.jpg",
+        "url": "https://www.tcgplayer.com/product/117516",
+        "market": 8.4888
+       },
+       "matched_catalog": {
+        "id": "xy10-85",
+        "name": "M Audino-EX",
+        "set": "xy10",
+        "number": "85/124"
+       },
+       "nearest_matches": [
+        {
+         "distance": 18.4,
+         "id": "swsh5-51",
+         "name": "Tapu Koko VMAX",
+         "set": "swsh5",
+         "number": "51/163"
+        },
+        {
+         "distance": 18.7,
+         "id": "xy10-85",
+         "name": "M Audino-EX",
+         "set": "xy10",
+         "number": "85/124"
+        },
+        {
+         "distance": 18.9,
+         "id": "base6-91",
+         "name": "Sandshrew",
+         "set": "base6",
+         "number": "91/110"
+        },
+        {
+         "distance": 19.2,
+         "id": "svp-124",
+         "name": "Iono",
+         "set": "svp",
+         "number": "124/102"
+        },
+        {
+         "distance": 19.8,
+         "id": "svp-7",
+         "name": "Hawlucha",
+         "set": "svp",
+         "number": "7/102"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 18.7, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -3786,7 +4543,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -3797,6 +4554,8 @@
       "number": "85/124",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/117516.jpg",
+      "url": "https://www.tcgplayer.com/product/117516",
+      "market": 8.4888,
       "source": "existing_candidates"
      },
      "candidate_count": 1,
@@ -3966,15 +4725,65 @@
     "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 21.2, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.6687,
+       "hash_distance": 21.2,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xyp-XY150.png",
+       "matched_candidate": {
+        "name": "Yveltal-EX",
+        "number": "XY150",
+        "set": null
+       },
+       "matched_catalog": {
+        "id": "xyp-XY150",
+        "name": "Yveltal-EX",
+        "set": "xyp",
+        "number": "XY150"
+       },
+       "nearest_matches": [
+        {
+         "distance": 18.2,
+         "id": "ru1-15",
+         "name": "Rattata",
+         "set": "ru1",
+         "number": "15/16"
+        },
+        {
+         "distance": 19.8,
+         "id": "swsh1-72",
+         "name": "Tapu Koko V",
+         "set": "swsh1",
+         "number": "72/202"
+        },
+        {
+         "distance": 20.0,
+         "id": "bw6-122",
+         "name": "Registeel-EX",
+         "set": "bw6",
+         "number": "122/124"
+        },
+        {
+         "distance": 20.3,
+         "id": "sm7-180",
+         "name": "Life Herb",
+         "set": "sm7",
+         "number": "180/168"
+        },
+        {
+         "distance": 20.7,
+         "id": "sma-SV9",
+         "name": "Wooper",
+         "set": "sma",
+         "number": "SV9"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 21.2, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -4023,7 +4832,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "-12 an OCR-neighbor alternative remains possible",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "possible",
@@ -4219,15 +5028,68 @@
     "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 36.3, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.4328,
+       "hash_distance": 36.3,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\swsh3-69.png",
+       "matched_candidate": {
+        "pid": 219443,
+        "name": "Mew V",
+        "set": "SWSH03: Darkness Ablaze",
+        "number": "069/189",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/219443.jpg"
+       },
+       "matched_catalog": {
+        "id": "swsh3-69",
+        "name": "Mew V",
+        "set": "swsh3",
+        "number": "69/189"
+       },
+       "nearest_matches": [
+        {
+         "distance": 17.0,
+         "id": "sm5-162",
+         "name": "Celesteela-GX",
+         "set": "sm5",
+         "number": "162/156"
+        },
+        {
+         "distance": 18.6,
+         "id": "sma-SV65",
+         "name": "Zygarde-GX",
+         "set": "sma",
+         "number": "SV65"
+        },
+        {
+         "distance": 18.7,
+         "id": "pl3-5",
+         "name": "Garchomp",
+         "set": "pl3",
+         "number": "5/147"
+        },
+        {
+         "distance": 18.9,
+         "id": "ecard2-H27",
+         "name": "Togetic",
+         "set": "ecard2",
+         "number": "H27"
+        },
+        {
+         "distance": 19.5,
+         "id": "sma-SV76",
+         "name": "Sylveon-GX",
+         "set": "sma",
+         "number": "SV76"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 36.3, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -4276,7 +5138,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -4516,15 +5378,67 @@
     "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 29.1, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5453,
+       "hash_distance": 29.1,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\swsh9-68.png",
+       "matched_candidate": {
+        "pid": 263784,
+        "name": "Mimikyu V",
+        "set": "SWSH09: Brilliant Stars",
+        "number": "068/172",
+        "line": "Pokemon"
+       },
+       "matched_catalog": {
+        "id": "swsh9-68",
+        "name": "Mimikyu V",
+        "set": "swsh9",
+        "number": "68/172"
+       },
+       "nearest_matches": [
+        {
+         "distance": 17.2,
+         "id": "swsh3-185",
+         "name": "Salamence V",
+         "set": "swsh3",
+         "number": "185/189"
+        },
+        {
+         "distance": 17.3,
+         "id": "neo1-7",
+         "name": "Jumpluff",
+         "set": "neo1",
+         "number": "7/111"
+        },
+        {
+         "distance": 18.8,
+         "id": "gym2-95",
+         "name": "Sabrina's Drowzee",
+         "set": "gym2",
+         "number": "95/132"
+        },
+        {
+         "distance": 19.7,
+         "id": "basep-46",
+         "name": "Electabuzz",
+         "set": "basep",
+         "number": "46/53"
+        },
+        {
+         "distance": 19.8,
+         "id": "swsh10-40",
+         "name": "Origin Forme Palkia VSTAR",
+         "set": "swsh10",
+         "number": "40/189"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 29.1, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -4573,7 +5487,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -4720,15 +5634,68 @@
     "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 35.4, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.4469,
+       "hash_distance": 35.4,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\swshp-SWSH286.png",
+       "matched_candidate": {
+        "pid": 478424,
+        "name": "Pikachu VMAX - SWSH286",
+        "set": "SWSH: Sword & Shield Promo Cards",
+        "number": "SWSH286",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/478424.jpg"
+       },
+       "matched_catalog": {
+        "id": "swshp-SWSH286",
+        "name": "Pikachu VMAX",
+        "set": "swshp",
+        "number": "SWSH286"
+       },
+       "nearest_matches": [
+        {
+         "distance": 16.9,
+         "id": "swsh2-17",
+         "name": "Rillaboom V",
+         "set": "swsh2",
+         "number": "17/192"
+        },
+        {
+         "distance": 17.8,
+         "id": "dp6-136",
+         "name": "Technical Machine TS-1",
+         "set": "dp6",
+         "number": "136/146"
+        },
+        {
+         "distance": 19.5,
+         "id": "sv8pt5-109",
+         "name": "Friends in Paldea",
+         "set": "sv8pt5",
+         "number": "109/131"
+        },
+        {
+         "distance": 20.2,
+         "id": "hgss2-72",
+         "name": "Dual Ball",
+         "set": "hgss2",
+         "number": "72/95"
+        },
+        {
+         "distance": 20.4,
+         "id": "g1-12",
+         "name": "M Charizard-EX",
+         "set": "g1",
+         "number": "12/83"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 35.4, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -4777,7 +5744,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "-12 an OCR-neighbor alternative remains possible",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "possible",
@@ -4933,15 +5900,65 @@
     "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 28.4, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5563,
+       "hash_distance": 28.4,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xy9-119.png",
+       "matched_candidate": {
+        "name": "Scizor-EX",
+        "number": "119/122",
+        "set": null
+       },
+       "matched_catalog": {
+        "id": "xy9-119",
+        "name": "Scizor-EX",
+        "set": "xy9",
+        "number": "119/122"
+       },
+       "nearest_matches": [
+        {
+         "distance": 18.6,
+         "id": "dp3-34",
+         "name": "Nidoking",
+         "set": "dp3",
+         "number": "34/132"
+        },
+        {
+         "distance": 18.9,
+         "id": "ex13-74",
+         "name": "Omanyte δ",
+         "set": "ex13",
+         "number": "74/110"
+        },
+        {
+         "distance": 18.9,
+         "id": "sv3-123",
+         "name": "Glimmora ex",
+         "set": "sv3",
+         "number": "123/197"
+        },
+        {
+         "distance": 19.0,
+         "id": "base5-56",
+         "name": "Ekans",
+         "set": "base5",
+         "number": "56/82"
+        },
+        {
+         "distance": 19.1,
+         "id": "sv3-140",
+         "name": "Salazzle",
+         "set": "sv3",
+         "number": "140/197"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 28.4, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -4990,7 +6007,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -5128,7 +6145,9 @@
       "set": "Pt2: Bonds to the End of Time",
       "number": "070/090",
       "line": "Pokemon Japan",
-      "img": "https://product-images.tcgplayer.com/607162.jpg"
+      "img": "https://product-images.tcgplayer.com/607162.jpg",
+      "url": "https://www.tcgplayer.com/product/607162",
+      "market": 28.42
      },
      {
       "pid": 113716,
@@ -5136,7 +6155,9 @@
       "set": "Generations",
       "number": "58/83",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/113716.jpg"
+      "img": "https://product-images.tcgplayer.com/113716.jpg",
+      "url": "https://www.tcgplayer.com/product/113716",
+      "market": 6.8
      },
      {
       "pid": 42502,
@@ -5144,7 +6165,9 @@
       "set": "Base Set 2",
       "number": "030/130",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/42502.jpg"
+      "img": "https://product-images.tcgplayer.com/42502.jpg",
+      "url": "https://www.tcgplayer.com/product/42502",
+      "market": 29.99
      },
      {
       "pid": 535193,
@@ -5152,15 +6175,19 @@
       "set": "SV: Paldean Fates",
       "number": "202/091",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/535193.jpg"
+      "img": "https://product-images.tcgplayer.com/535193.jpg",
+      "url": "https://www.tcgplayer.com/product/535193",
+      "market": 65.94
      },
      {
-      "pid": 612448,
+      "pid": 478136,
       "name": "Snorlax",
-      "set": "Flight of Legends",
-      "number": "074/082",
-      "line": "Pokemon Japan",
-      "img": "https://product-images.tcgplayer.com/612448.jpg"
+      "set": "SWSH: Crown Zenith",
+      "number": "109/159",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/478136.jpg",
+      "url": "https://www.tcgplayer.com/product/478136",
+      "market": 2.9
      },
      {
       "pid": 89389,
@@ -5168,22 +6195,74 @@
       "set": "Diamond and Pearl",
       "number": "37/130",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/89389.jpg"
+      "img": "https://product-images.tcgplayer.com/89389.jpg",
+      "url": "https://www.tcgplayer.com/product/89389",
+      "market": 22.64
      }
     ],
     "evidence_level": "C",
     "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 26.9, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5797,
+       "hash_distance": 26.9,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xyp-XY179.png",
+       "matched_candidate": {
+        "name": "Snorlax",
+        "number": "XY179",
+        "set": null
+       },
+       "matched_catalog": {
+        "id": "xyp-XY179",
+        "name": "Snorlax",
+        "set": "xyp",
+        "number": "XY179"
+       },
+       "nearest_matches": [
+        {
+         "distance": 17.4,
+         "id": "ex9-88",
+         "name": "Metal Energy",
+         "set": "ex9",
+         "number": "88/106"
+        },
+        {
+         "distance": 17.4,
+         "id": "sm1-167",
+         "name": "Lightning Energy",
+         "set": "sm1",
+         "number": "167/149"
+        },
+        {
+         "distance": 17.7,
+         "id": "ex1-94",
+         "name": "Metal Energy",
+         "set": "ex1",
+         "number": "94/109"
+        },
+        {
+         "distance": 17.7,
+         "id": "ex10-97",
+         "name": "Metal Energy",
+         "set": "ex10",
+         "number": "97/115"
+        },
+        {
+         "distance": 17.7,
+         "id": "ex11-107",
+         "name": "Metal Energy",
+         "set": "ex11",
+         "number": "107/113"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 26.9, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -5233,7 +6312,7 @@
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
      "-12 number was corrected rather than read",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -5258,6 +6337,8 @@
        "number": "070/090",
        "line": "Pokemon Japan",
        "img": "https://product-images.tcgplayer.com/607162.jpg",
+       "url": "https://www.tcgplayer.com/product/607162",
+       "market": 28.42,
        "source": "existing_candidates",
        "collision_basis": [
         "card_name"
@@ -5277,6 +6358,8 @@
        "number": "58/83",
        "line": "Pokemon",
        "img": "https://product-images.tcgplayer.com/113716.jpg",
+       "url": "https://www.tcgplayer.com/product/113716",
+       "market": 6.8,
        "source": "existing_candidates",
        "collision_basis": [
         "card_name"
@@ -5296,6 +6379,8 @@
        "number": "030/130",
        "line": "Pokemon",
        "img": "https://product-images.tcgplayer.com/42502.jpg",
+       "url": "https://www.tcgplayer.com/product/42502",
+       "market": 29.99,
        "source": "existing_candidates",
        "collision_basis": [
         "card_name"
@@ -5315,6 +6400,8 @@
        "number": "202/091",
        "line": "Pokemon",
        "img": "https://product-images.tcgplayer.com/535193.jpg",
+       "url": "https://www.tcgplayer.com/product/535193",
+       "market": 65.94,
        "source": "existing_candidates",
        "collision_basis": [
         "card_name"
@@ -5328,12 +6415,14 @@
        "excluded_by": "available direct evidence"
       },
       {
-       "pid": 612448,
+       "pid": 478136,
        "name": "Snorlax",
-       "set": "Flight of Legends",
-       "number": "074/082",
-       "line": "Pokemon Japan",
-       "img": "https://product-images.tcgplayer.com/612448.jpg",
+       "set": "SWSH: Crown Zenith",
+       "number": "109/159",
+       "line": "Pokemon",
+       "img": "https://product-images.tcgplayer.com/478136.jpg",
+       "url": "https://www.tcgplayer.com/product/478136",
+       "market": 2.9,
        "source": "existing_candidates",
        "collision_basis": [
         "card_name"
@@ -5353,6 +6442,8 @@
        "number": "37/130",
        "line": "Pokemon",
        "img": "https://product-images.tcgplayer.com/89389.jpg",
+       "url": "https://www.tcgplayer.com/product/89389",
+       "market": 22.64,
        "source": "existing_candidates",
        "collision_basis": [
         "card_name"
@@ -5398,6 +6489,8 @@
       "number": "070/090",
       "line": "Pokemon Japan",
       "img": "https://product-images.tcgplayer.com/607162.jpg",
+      "url": "https://www.tcgplayer.com/product/607162",
+      "market": 28.42,
       "source": "existing_candidates",
       "collision_basis": [
        "card_name"
@@ -5467,19 +6560,27 @@
       "img": "https://product-images.tcgplayer.com/130920.jpg"
      }
     ],
-    "evidence_level": "C",
-    "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
+    "evidence_level": "A",
+    "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "confirmed",
+      "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
       "provider_result": {
        "provider": "ArtworkProvider:perceptual_hash",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "match_score": 1.0,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\uploads\\card_1784358935.png",
+       "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+       "status": "matched",
+       "matched_candidate": {
+        "pid": 130920,
+        "name": "Alolan Ninetales GX",
+        "set": "SM - Guardians Rising",
+        "number": "22/145",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/130920.jpg"
+       }
       }
      },
      "pokemon_name": {
@@ -5519,8 +6620,8 @@
       "note": "catalog agrees with name+number: Alolan Ninetales GX (SM - Guardians Rising); uniqueness alone is not proof"
      }
     },
-    "evidence_coverage": 30,
-    "evidence_coverage_reason": "3/10 dimensions independently confirmed: attack_names, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+    "evidence_coverage": 40,
+    "evidence_coverage_reason": "4/10 dimensions independently confirmed: artwork, attack_names, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
     "provisional_prediction_confidence": 73,
     "provisional_prediction_confidence_factors": [
      "+5 candidate proposed",
@@ -5528,7 +6629,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork matched a local reference (coverage only)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -5548,7 +6649,7 @@
      "evidence_conflicts": [],
      "evidence_missing": [],
      "reason": "Adversarial search tested 2 catalog row(s); no plausible competing printing survived the direct evidence.",
-     "recommended_evidence_level": "C",
+     "recommended_evidence_level": "A",
      "search_performed": true,
      "catalog_rows_examined": 2,
      "search_limitations": [
@@ -5580,20 +6681,6 @@
       "local catalog may not contain every regional or newly released printing",
       "artwork/holo authenticity is outside collision search"
      ]
-    },
-    "inference_explanation": {
-     "original_ocr_text": [
-      "HP210",
-      "STAGE1",
-      "This attack does 50 damage to I of your opponent's",
-      "Discard2Energy from this Pokemon.",
-      "llus.5banGraphics",
-      "22/145"
-     ],
-     "why_ocr_failed": "OCR did not directly establish every field needed for an exact printing",
-     "candidate_search_process": "via=attack names; 1 API candidate(s); 2 widened rows examined",
-     "why_only_one_candidate_remained": "the available fragments resolved via attack names; adversarial search: Adversarial search tested 2 catalog row(s); no plausible competing printing survived the direct evidence.",
-     "remaining_uncertainty": "identity still depends on inference rather than every field being read"
     }
    }
   ],
@@ -5629,15 +6716,65 @@
     "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 31.7, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5047,
+       "hash_distance": 31.7,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xy10-123.png",
+       "matched_candidate": {
+        "name": "Altaria-EX",
+        "number": "123/124",
+        "set": null
+       },
+       "matched_catalog": {
+        "id": "xy10-123",
+        "name": "Altaria-EX",
+        "set": "xy10",
+        "number": "123/124"
+       },
+       "nearest_matches": [
+        {
+         "distance": 17.7,
+         "id": "sv3pt5-140",
+         "name": "Kabuto",
+         "set": "sv3pt5",
+         "number": "140/165"
+        },
+        {
+         "distance": 18.0,
+         "id": "hgss2-79",
+         "name": "Life Herb",
+         "set": "hgss2",
+         "number": "79/95"
+        },
+        {
+         "distance": 18.3,
+         "id": "sv2-137",
+         "name": "Seviper",
+         "set": "sv2",
+         "number": "137/193"
+        },
+        {
+         "distance": 18.8,
+         "id": "sv1-108",
+         "name": "Primeape",
+         "set": "sv1",
+         "number": "108/198"
+        },
+        {
+         "distance": 18.9,
+         "id": "ecard2-20",
+         "name": "Lanturn",
+         "set": "ecard2",
+         "number": "20/147"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 31.7, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -5686,7 +6823,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "-12 an OCR-neighbor alternative remains possible",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "possible",
@@ -5864,15 +7001,68 @@
     "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 28.3, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5578,
+       "hash_distance": 28.3,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\sm9-96.png",
+       "matched_candidate": {
+        "pid": 183874,
+        "name": "Hoopa GX",
+        "set": "SM - Team Up",
+        "number": "96/181",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/183874.jpg"
+       },
+       "matched_catalog": {
+        "id": "sm9-96",
+        "name": "Hoopa-GX",
+        "set": "sm9",
+        "number": "96/181"
+       },
+       "nearest_matches": [
+        {
+         "distance": 17.4,
+         "id": "swsh2-209",
+         "name": "Twin Energy",
+         "set": "swsh2",
+         "number": "209/192"
+        },
+        {
+         "distance": 19.6,
+         "id": "swsh2-93",
+         "name": "Dragapult VMAX",
+         "set": "swsh2",
+         "number": "93/192"
+        },
+        {
+         "distance": 19.7,
+         "id": "swsh10-117",
+         "name": "Garchomp V",
+         "set": "swsh10",
+         "number": "117/189"
+        },
+        {
+         "distance": 19.8,
+         "id": "svp-73",
+         "name": "Iron Treads ex",
+         "set": "svp",
+         "number": "73/102"
+        },
+        {
+         "distance": 20.1,
+         "id": "pl3-45",
+         "name": "Solrock",
+         "set": "pl3",
+         "number": "45/147"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 28.3, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -5921,7 +7111,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -6109,15 +7299,67 @@
     "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 29.3, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5422,
+       "hash_distance": 29.3,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\sm1-27.png",
+       "matched_candidate": {
+        "pid": 126898,
+        "name": "Incineroar GX",
+        "set": "SM Base Set",
+        "number": "27/149",
+        "line": "Pokemon"
+       },
+       "matched_catalog": {
+        "id": "sm1-27",
+        "name": "Incineroar-GX",
+        "set": "sm1",
+        "number": "27/149"
+       },
+       "nearest_matches": [
+        {
+         "distance": 18.3,
+         "id": "swsh9-28",
+         "name": "Kingler V",
+         "set": "swsh9",
+         "number": "28/172"
+        },
+        {
+         "distance": 18.7,
+         "id": "sv4-260",
+         "name": "Garchomp ex",
+         "set": "sv4",
+         "number": "260/182"
+        },
+        {
+         "distance": 19.2,
+         "id": "sm3-84",
+         "name": "Alolan Muk-GX",
+         "set": "sm3",
+         "number": "84/147"
+        },
+        {
+         "distance": 19.3,
+         "id": "base3-58",
+         "name": "Mr. Fuji",
+         "set": "base3",
+         "number": "58/62"
+        },
+        {
+         "distance": 19.6,
+         "id": "sv5-214",
+         "name": "Gouging Fire ex",
+         "set": "sv5",
+         "number": "214/162"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 29.3, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -6166,7 +7408,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -6319,15 +7561,68 @@
     "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 27.2, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.575,
+       "hash_distance": 27.2,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\sm9-82.png",
+       "matched_candidate": {
+        "pid": 183860,
+        "name": "Lycanroc GX",
+        "set": "SM - Team Up",
+        "number": "82/181",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/183860.jpg"
+       },
+       "matched_catalog": {
+        "id": "sm9-82",
+        "name": "Lycanroc-GX",
+        "set": "sm9",
+        "number": "82/181"
+       },
+       "nearest_matches": [
+        {
+         "distance": 18.3,
+         "id": "pop4-14",
+         "name": "Squirtle",
+         "set": "pop4",
+         "number": "14/17"
+        },
+        {
+         "distance": 18.3,
+         "id": "sm9-49",
+         "name": "Helioptile",
+         "set": "sm9",
+         "number": "49/181"
+        },
+        {
+         "distance": 19.1,
+         "id": "hgss4-99",
+         "name": "Darkrai & Cresselia LEGEND",
+         "set": "hgss4",
+         "number": "99/102"
+        },
+        {
+         "distance": 19.1,
+         "id": "xy3-74",
+         "name": "Dragonite-EX",
+         "set": "xy3",
+         "number": "74/111"
+        },
+        {
+         "distance": 19.7,
+         "id": "ex7-54",
+         "name": "Drowzee",
+         "set": "ex7",
+         "number": "54/109"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 27.2, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -6376,7 +7671,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -6477,15 +7772,68 @@
     "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 25.7, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5984,
+       "hash_distance": 25.7,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\sm35-53.png",
+       "matched_candidate": {
+        "pid": 146715,
+        "name": "Zoroark GX",
+        "set": "Shining Legends",
+        "number": "53/73",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/146715.jpg"
+       },
+       "matched_catalog": {
+        "id": "sm35-53",
+        "name": "Zoroark-GX",
+        "set": "sm35",
+        "number": "53/73"
+       },
+       "nearest_matches": [
+        {
+         "distance": 19.1,
+         "id": "sv4pt5-216",
+         "name": "Mew ex",
+         "set": "sv4pt5",
+         "number": "216/91"
+        },
+        {
+         "distance": 19.4,
+         "id": "swsh7-151",
+         "name": "Moon & Sun Badge",
+         "set": "swsh7",
+         "number": "151/203"
+        },
+        {
+         "distance": 19.7,
+         "id": "bw2-73",
+         "name": "Ferrothorn",
+         "set": "bw2",
+         "number": "73/98"
+        },
+        {
+         "distance": 19.7,
+         "id": "smp-SM90",
+         "name": "Raichu-GX",
+         "set": "smp",
+         "number": "SM90"
+        },
+        {
+         "distance": 19.8,
+         "id": "bw10-9",
+         "name": "Virizion-EX",
+         "set": "bw10",
+         "number": "9/101"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 25.7, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -6534,7 +7882,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -6708,15 +8056,67 @@
     "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 29.1, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5453,
+       "hash_distance": 29.1,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\sm5-74.png",
+       "matched_candidate": {
+        "pid": 157691,
+        "name": "Weavile",
+        "set": "SM - Ultra Prism",
+        "number": "74/156",
+        "line": "Pokemon"
+       },
+       "matched_catalog": {
+        "id": "sm5-74",
+        "name": "Weavile",
+        "set": "sm5",
+        "number": "74/156"
+       },
+       "nearest_matches": [
+        {
+         "distance": 18.9,
+         "id": "swsh1-206",
+         "name": "Snorlax VMAX",
+         "set": "swsh1",
+         "number": "206/202"
+        },
+        {
+         "distance": 19.6,
+         "id": "swsh12pt5gg-GG45",
+         "name": "Deoxys VMAX",
+         "set": "swsh12pt5gg",
+         "number": "GG45"
+        },
+        {
+         "distance": 19.7,
+         "id": "sm2-124a",
+         "name": "Enhanced Hammer",
+         "set": "sm2",
+         "number": "124a"
+        },
+        {
+         "distance": 19.9,
+         "id": "rsv10pt5-116",
+         "name": "Joltik",
+         "set": "rsv10pt5",
+         "number": "116/86"
+        },
+        {
+         "distance": 20.0,
+         "id": "swsh8-216",
+         "name": "Hawlucha",
+         "set": "swsh8",
+         "number": "216/264"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 29.1, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -6765,7 +8165,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -7009,15 +8409,65 @@
     "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 24.2, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.6219,
+       "hash_distance": 24.2,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\sm12-246.png",
+       "matched_candidate": {
+        "name": "Excadrill",
+        "number": "246/236",
+        "set": null
+       },
+       "matched_catalog": {
+        "id": "sm12-246",
+        "name": "Excadrill",
+        "set": "sm12",
+        "number": "246/236"
+       },
+       "nearest_matches": [
+        {
+         "distance": 19.8,
+         "id": "col1-SL10",
+         "name": "Rayquaza",
+         "set": "col1",
+         "number": "SL10"
+        },
+        {
+         "distance": 19.8,
+         "id": "sm115-15",
+         "name": "Magikarp",
+         "set": "sm115",
+         "number": "15/68"
+        },
+        {
+         "distance": 19.8,
+         "id": "xy8-19",
+         "name": "Quilava",
+         "set": "xy8",
+         "number": "19/162"
+        },
+        {
+         "distance": 20.6,
+         "id": "sv9-104",
+         "name": "N's Klang",
+         "set": "sv9",
+         "number": "104/159"
+        },
+        {
+         "distance": 20.6,
+         "id": "swsh11tg-TG19",
+         "name": "Gallade V",
+         "set": "swsh11tg",
+         "number": "TG19"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 24.2, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -7066,7 +8516,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -7310,15 +8760,67 @@
     "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 30.0, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5312,
+       "hash_distance": 30.0,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xy1-110.png",
+       "matched_candidate": {
+        "pid": 89573,
+        "name": "Stoutland",
+        "set": "XY Base Set",
+        "number": "110/146",
+        "line": "Pokemon"
+       },
+       "matched_catalog": {
+        "id": "xy1-110",
+        "name": "Stoutland",
+        "set": "xy1",
+        "number": "110/146"
+       },
+       "nearest_matches": [
+        {
+         "distance": 18.3,
+         "id": "sv4pt5-211",
+         "name": "Flamigo",
+         "set": "sv4pt5",
+         "number": "211/91"
+        },
+        {
+         "distance": 18.5,
+         "id": "pgo-50",
+         "name": "Dragonite VSTAR",
+         "set": "pgo",
+         "number": "50/78"
+        },
+        {
+         "distance": 18.8,
+         "id": "sm35-4",
+         "name": "Shroomish",
+         "set": "sm35",
+         "number": "4/73"
+        },
+        {
+         "distance": 19.3,
+         "id": "swsh9-91",
+         "name": "Liepard",
+         "set": "swsh9",
+         "number": "91/172"
+        },
+        {
+         "distance": 19.4,
+         "id": "sv7-42",
+         "name": "Crabominable",
+         "set": "sv7",
+         "number": "42/142"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 30.0, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -7367,7 +8869,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -7611,15 +9113,67 @@
     "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 29.1, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5453,
+       "hash_distance": 29.1,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\swsh7-46.png",
+       "matched_candidate": {
+        "pid": 246873,
+        "name": "Wishiwashi",
+        "set": "SWSH07: Evolving Skies",
+        "number": "046/203",
+        "line": "Pokemon"
+       },
+       "matched_catalog": {
+        "id": "swsh7-46",
+        "name": "Wishiwashi",
+        "set": "swsh7",
+        "number": "46/203"
+       },
+       "nearest_matches": [
+        {
+         "distance": 19.5,
+         "id": "swsh45-70",
+         "name": "Poké Kid",
+         "set": "swsh45",
+         "number": "70/72"
+        },
+        {
+         "distance": 19.7,
+         "id": "bw1-52",
+         "name": "Venipede",
+         "set": "bw1",
+         "number": "52/114"
+        },
+        {
+         "distance": 20.3,
+         "id": "swsh12pt5-32",
+         "name": "Wailord",
+         "set": "swsh12pt5",
+         "number": "32/159"
+        },
+        {
+         "distance": 20.4,
+         "id": "sm5-88",
+         "name": "Heatran",
+         "set": "sm5",
+         "number": "88/156"
+        },
+        {
+         "distance": 20.9,
+         "id": "swsh1-86",
+         "name": "Wobbuffet V",
+         "set": "swsh1",
+         "number": "86/202"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 29.1, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -7668,7 +9222,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -7921,15 +9475,67 @@
     "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 26.9, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5797,
+       "hash_distance": 26.9,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\swsh12-23.png",
+       "matched_candidate": {
+        "pid": 451654,
+        "name": "Victini",
+        "set": "SWSH12: Silver Tempest",
+        "number": "023/195",
+        "line": "Pokemon"
+       },
+       "matched_catalog": {
+        "id": "swsh12-23",
+        "name": "Victini",
+        "set": "swsh12",
+        "number": "23/195"
+       },
+       "nearest_matches": [
+        {
+         "distance": 19.6,
+         "id": "bw9-93",
+         "name": "Miltank",
+         "set": "bw9",
+         "number": "93/116"
+        },
+        {
+         "distance": 19.7,
+         "id": "swsh12-50",
+         "name": "Raichu",
+         "set": "swsh12",
+         "number": "50/195"
+        },
+        {
+         "distance": 19.9,
+         "id": "sv6pt5-85",
+         "name": "Pecharunt ex",
+         "set": "sv6pt5",
+         "number": "85/64"
+        },
+        {
+         "distance": 20.6,
+         "id": "dp7-70",
+         "name": "Pikachu",
+         "set": "dp7",
+         "number": "70/100"
+        },
+        {
+         "distance": 20.6,
+         "id": "swsh8-199",
+         "name": "Meowth",
+         "set": "swsh8",
+         "number": "199/264"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 26.9, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -7978,7 +9584,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -8257,15 +9863,67 @@
     "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 26.9, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5797,
+       "hash_distance": 26.9,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xyp-XY120.png",
+       "matched_candidate": {
+        "pid": 125898,
+        "name": "Meloetta - XY120",
+        "set": "XY Promos",
+        "number": "XY120",
+        "line": "Pokemon"
+       },
+       "matched_catalog": {
+        "id": "xyp-XY120",
+        "name": "Meloetta",
+        "set": "xyp",
+        "number": "XY120"
+       },
+       "nearest_matches": [
+        {
+         "distance": 18.0,
+         "id": "sm8-65",
+         "name": "Popplio",
+         "set": "sm8",
+         "number": "65/214"
+        },
+        {
+         "distance": 18.0,
+         "id": "sv3-73",
+         "name": "Pawmot ex",
+         "set": "sv3",
+         "number": "73/197"
+        },
+        {
+         "distance": 18.1,
+         "id": "swshp-SWSH076",
+         "name": "Zacian V",
+         "set": "swshp",
+         "number": "SWSH076"
+        },
+        {
+         "distance": 19.0,
+         "id": "sm75-50",
+         "name": "Turtonator",
+         "set": "sm75",
+         "number": "50/70"
+        },
+        {
+         "distance": 19.8,
+         "id": "sm12-31",
+         "name": "Tepig",
+         "set": "sm12",
+         "number": "31/236"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 26.9, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -8314,7 +9972,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -8478,15 +10136,67 @@
     "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 31.2, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5125,
+       "hash_distance": 31.2,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xyp-XY186.png",
+       "matched_candidate": {
+        "pid": 127138,
+        "name": "Magearna - XY186",
+        "set": "XY Promos",
+        "number": "XY186",
+        "line": "Pokemon"
+       },
+       "matched_catalog": {
+        "id": "xyp-XY186",
+        "name": "Magearna",
+        "set": "xyp",
+        "number": "XY186"
+       },
+       "nearest_matches": [
+        {
+         "distance": 18.4,
+         "id": "sv6-212",
+         "name": "Hearthflame Mask Ogerpon ex",
+         "set": "sv6",
+         "number": "212/167"
+        },
+        {
+         "distance": 18.7,
+         "id": "swsh45-72",
+         "name": "Skyla",
+         "set": "swsh45",
+         "number": "72/72"
+        },
+        {
+         "distance": 19.0,
+         "id": "swsh4-164",
+         "name": "Stone Fighting Energy",
+         "set": "swsh4",
+         "number": "164/185"
+        },
+        {
+         "distance": 19.3,
+         "id": "pl2-15",
+         "name": "Beedrill",
+         "set": "pl2",
+         "number": "15/111"
+        },
+        {
+         "distance": 19.7,
+         "id": "ex8-1",
+         "name": "Altaria",
+         "set": "ex8",
+         "number": "1/107"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 31.2, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -8535,7 +10245,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -8699,15 +10409,67 @@
     "evidence_level_meaning": "Human Eye Verified - OCR failed; a manual visual read succeeded and is exact",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 28.1, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5609,
+       "hash_distance": 28.1,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xyp-XY113.png",
+       "matched_candidate": {
+        "pid": 118861,
+        "name": "Manaphy",
+        "set": "XY Promos",
+        "number": "XY113",
+        "line": "Pokemon"
+       },
+       "matched_catalog": {
+        "id": "xyp-XY113",
+        "name": "Manaphy",
+        "set": "xyp",
+        "number": "XY113"
+       },
+       "nearest_matches": [
+        {
+         "distance": 16.7,
+         "id": "xy2-66",
+         "name": "Florges",
+         "set": "xy2",
+         "number": "66/106"
+        },
+        {
+         "distance": 17.2,
+         "id": "swshp-SWSH198",
+         "name": "Pikachu V",
+         "set": "swshp",
+         "number": "SWSH198"
+        },
+        {
+         "distance": 19.4,
+         "id": "neo1-80",
+         "name": "Totodile",
+         "set": "neo1",
+         "number": "80/111"
+        },
+        {
+         "distance": 19.8,
+         "id": "sm3-144",
+         "name": "Kiawe",
+         "set": "sm3",
+         "number": "144/147"
+        },
+        {
+         "distance": 19.8,
+         "id": "swsh6-192",
+         "name": "Honey",
+         "set": "swsh6",
+         "number": "192/198"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 28.1, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -8756,7 +10518,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",
@@ -8836,22 +10598,79 @@
       "set": "XY - Steam Siege",
       "number": "26/114",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/120151.jpg"
+      "img": "https://product-images.tcgplayer.com/120151.jpg",
+      "url": "https://www.tcgplayer.com/product/120151",
+      "market": 2.78
      }
     ],
     "evidence_level": "C",
     "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 27.2, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.575,
+       "hash_distance": 27.2,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\xy11-26.png",
+       "matched_candidate": {
+        "pid": 120151,
+        "name": "Volcanion EX",
+        "set": "XY - Steam Siege",
+        "number": "26/114",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/120151.jpg",
+        "url": "https://www.tcgplayer.com/product/120151",
+        "market": 2.78
+       },
+       "matched_catalog": {
+        "id": "xy11-26",
+        "name": "Volcanion-EX",
+        "set": "xy11",
+        "number": "26/114"
+       },
+       "nearest_matches": [
+        {
+         "distance": 18.3,
+         "id": "swsh8-268",
+         "name": "Mew VMAX",
+         "set": "swsh8",
+         "number": "268/264"
+        },
+        {
+         "distance": 19.2,
+         "id": "xy10-87",
+         "name": "Minccino",
+         "set": "xy10",
+         "number": "87/124"
+        },
+        {
+         "distance": 19.2,
+         "id": "xy2-19",
+         "name": "Litleo",
+         "set": "xy2",
+         "number": "19/106"
+        },
+        {
+         "distance": 19.3,
+         "id": "bwp-BW06",
+         "name": "Snivy",
+         "set": "bwp",
+         "number": "BW06"
+        },
+        {
+         "distance": 19.5,
+         "id": "sm2-51a",
+         "name": "Garbodor",
+         "set": "sm2",
+         "number": "51a"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 27.2, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -8901,7 +10720,7 @@
      "+8 catalog agrees with name+number (not proof by itself)",
      "-12 an OCR-neighbor alternative remains possible",
      "-12 number was corrected rather than read",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "possible",
@@ -8912,6 +10731,8 @@
       "number": "26/114",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/120151.jpg",
+      "url": "https://www.tcgplayer.com/product/120151",
+      "market": 2.78,
       "source": "existing_candidates"
      },
      "candidate_count": 2,
@@ -9068,15 +10889,68 @@
     "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
     "evidence_chain": {
      "artwork": {
-      "status": "not_verified",
-      "note": "no independent local reference image exists for any candidate; no match was guessed",
+      "status": "failed",
+      "note": "text candidate's best indexed artwork was distance 28.6, above the 9.0 threshold; no identity change was made",
       "provider_result": {
-       "provider": "ArtworkProvider:perceptual_hash",
+       "provider": "VisualCatalogProvider:partial_perceptual_index",
        "dimension": "artwork",
-       "match_score": 0.0,
-       "matched_reference": null,
-       "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-       "status": "not_verified"
+       "status": "no_match",
+       "match_score": 0.5531,
+       "hash_distance": 28.6,
+       "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\g1-46.png",
+       "matched_candidate": {
+        "pid": 113704,
+        "name": "Golem EX",
+        "set": "Generations",
+        "number": "46/83",
+        "line": "Pokemon",
+        "img": "https://product-images.tcgplayer.com/113704.jpg"
+       },
+       "matched_catalog": {
+        "id": "g1-46",
+        "name": "Golem-EX",
+        "set": "g1",
+        "number": "46/83"
+       },
+       "nearest_matches": [
+        {
+         "distance": 18.9,
+         "id": "sv8-18",
+         "name": "Paldean Tauros",
+         "set": "sv8",
+         "number": "18/191"
+        },
+        {
+         "distance": 19.4,
+         "id": "pl2-74",
+         "name": "Nidorino",
+         "set": "pl2",
+         "number": "74/111"
+        },
+        {
+         "distance": 19.5,
+         "id": "sv9-43",
+         "name": "Veluza ex",
+         "set": "sv9",
+         "number": "43/159"
+        },
+        {
+         "distance": 19.8,
+         "id": "ex7-11",
+         "name": "Jumpluff",
+         "set": "ex7",
+         "number": "11/109"
+        },
+        {
+         "distance": 20.1,
+         "id": "sma-SV60",
+         "name": "Espeon-GX",
+         "set": "sma",
+         "number": "SV60"
+        }
+       ],
+       "indexed_rows": 19705,
+       "confidence_note": "text candidate's best indexed artwork was distance 28.6, above the 9.0 threshold; no identity change was made"
       }
      },
      "pokemon_name": {
@@ -9125,7 +10999,7 @@
      "+30 collector number directly read",
      "+8 catalog agrees with name+number (not proof by itself)",
      "+18 adversarial search found no plausible competitor",
-     "+0 artwork unavailable/not verified (no prediction penalty)"
+     "+0 artwork did not match (weak provider result; score unchanged)"
     ],
     "collision_analysis": {
      "collision_status": "none",

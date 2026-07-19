@@ -27,9 +27,10 @@ def _ident_key(ident):
 
 
 @lru_cache(maxsize=1)
-def _dataset_references():
-    """Map known, already-local dataset identifications to their photos."""
-    refs = {}
+def _scan_dataset_refs():
+    """One disk walk shared by both callers below: (key, raw_name, raw_number,
+    image) for every dataset row with a real identity and a real photo."""
+    rows = []
     for filename in ("carousell_profile.json", "for_u_to_do_while_im_asleep.json",
                      "confirmed_by_user.json"):
         path = os.path.join(DATASET_DIR, filename)
@@ -46,7 +47,7 @@ def _dataset_references():
                 key = _ident_key(ident)
                 for image in row.get("images") or []:
                     if all(key) and os.path.exists(image):
-                        refs.setdefault(key, []).append(image)
+                        rows.append((key, ident.get("name"), ident.get("number"), image))
         elif isinstance(data, dict):
             # The folder dataset's keys are the real filenames.  They live in
             # Downloads; no reference image is downloaded or scraped here.
@@ -63,7 +64,16 @@ def _dataset_references():
                 for ident in row.get("cards") or []:
                     key = _ident_key(ident)
                     if all(key):
-                        refs.setdefault(key, []).append(image)
+                        rows.append((key, ident.get("name"), ident.get("number"), image))
+    return rows
+
+
+@lru_cache(maxsize=1)
+def _dataset_references():
+    """Map known, already-local dataset identifications to their photos."""
+    refs = {}
+    for key, _name, _number, image in _scan_dataset_refs():
+        refs.setdefault(key, []).append(image)
     return refs
 
 
@@ -98,6 +108,42 @@ def _hash_similarity(left, right):
     phash_score = 1.0 - ((ap - bp) / bits)
     dhash_score = 1.0 - ((ad - bd) / bits)
     return max(0.0, min(1.0, .7 * phash_score + .3 * dhash_score))
+
+
+def discover_from_confirmed(image_path, threshold=0.90):
+    """DISCOVERY (not verification): find the nearest confirmed reference by
+    artwork alone, with no name/number candidate required to key against.
+
+    ArtworkProvider.verify() only re-checks candidates identify() already
+    proposed by OCR text — useless for a card whose printed name never
+    survives OCR (unreadable JP script) and whose bare collector number
+    returns nothing from TCGplayer's name-only search (the exact "(unread)"
+    binder-pocket case, live catch 2026-07-19: Yujin confirmed a Misdreavus
+    cell by hand, but re-scanning the same photo still showed it unnamed,
+    because nothing had ever pointed the artwork check at that reference).
+    A HIGHER threshold than verify()'s 0.86 is used here on purpose: this
+    result gets ADOPTED as the name, not just used to nudge confidence.
+    """
+    if not image_path or not os.path.exists(image_path):
+        return None
+    best = None
+    # NOTE: deliberately no self-path skip. Re-uploads reuse a content-hash
+    # filename, so the identical, previously-confirmed file is the common
+    # real case (rescanning the same binder photo) — a same-file match is
+    # ground truth, not a false positive, and must resolve just like any
+    # other reference would.
+    for _key, raw_name, raw_number, ref in _scan_dataset_refs():
+        try:
+            score = _hash_similarity(image_path, ref)
+        except Exception:
+            continue
+        if best is None or score > best[0]:
+            best = (score, raw_name, raw_number, ref)
+    if best is None or best[0] < threshold:
+        return None
+    score, name, number, ref = best
+    return {"name": name, "number": number, "score": round(score, 4),
+            "matched_reference": ref}
 
 
 class ArtworkProvider(EvidenceProvider):

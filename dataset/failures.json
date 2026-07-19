@@ -16,16 +16,6 @@
   "strongest_alternative": "{'id': 'sv3pt5-6', 'name': 'Charizard ex', 'hp': 330, 'damages': '60+,330', 'subtypes': 'Stage 2,ex', 'set': 'sv3pt5', 'number': '6/165', 'rarity': 'Double Rare', 'source': 'local_fingerprint_catalog', 'collision_basis': ['similar_card_name', 'card_number'], 'collision_conflicts': ['set'], 'number_relation': 'exact', 'name_similarity': 0.857, 'unresolved_reason': 'name and collector-number evidence overlap'}",
   "regression_test_requirement": "required for the failure class when closed"
  },
- "Mega Manectric ex|077/063|Mega Manectric ex 077/063": {
-  "problem": "Mega Manectric ex 077/063 - identity still uses inference",
-  "cause": "OCR did not directly establish every field needed for an exact printing",
-  "current_solution": "the available fragments resolved via attack fingerprint; adversarial search: Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
-  "future_solution": "obtain direct evidence for the missing or collision-sensitive dimension",
-  "status": "Pending - mitigated, not fully solved",
-  "evidence_missing": "none recorded",
-  "strongest_alternative": "None",
-  "regression_test_requirement": "required for the failure class when closed"
- },
  "Chespin|034/XY-P|Chespin 034/XY-P": {
   "problem": "Chespin 034/XY-P - identity still uses inference",
   "cause": "OCR did not directly establish every field needed for an exact printing",
@@ -43,7 +33,7 @@
   "future_solution": "obtain direct evidence for the missing or collision-sensitive dimension",
   "status": "Pending - mitigated, not fully solved",
   "evidence_missing": "artwork; expansion_symbol; language",
-  "strongest_alternative": "{'pid': 129898, 'name': 'M Camerupt EX - XY198', 'set': 'XY Promos', 'number': 'XY198', 'line': 'Pokemon', 'img': 'https://product-images.tcgplayer.com/129898.jpg', 'source': 'existing_candidates', 'collision_basis': ['card_name', 'normalized_card_number'], 'collision_conflicts': ['set'], 'number_relation': 'normalized_variant', 'name_similarity': 1.0, 'unresolved_reason': 'name and collector-number evidence overlap'}",
+  "strongest_alternative": "{'pid': 129898, 'name': 'M Camerupt EX - XY198', 'set': 'XY Promos', 'number': 'XY198', 'line': 'Pokemon', 'img': 'https://product-images.tcgplayer.com/129898.jpg', 'url': 'https://www.tcgplayer.com/product/129898', 'market': 8.26, 'source': 'existing_candidates', 'collision_basis': ['card_name', 'normalized_card_number'], 'collision_conflicts': ['set'], 'number_relation': 'normalized_variant', 'name_similarity': 1.0, 'unresolved_reason': 'name and collector-number evidence overlap'}",
   "regression_test_requirement": "required for the failure class when closed"
  },
  "Pikachu|197/SV-P|Pikachu 197/SV-P": {
@@ -73,7 +63,7 @@
   "future_solution": "another image angle help; removing glare help; scan instead of photo help",
   "status": "Open",
   "evidence_missing": "none recorded",
-  "strongest_alternative": "{'pid': 604118, 'name': 'Staraptor', 'set': 'XY8-Br: Red Flash', 'number': '053/059', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/604118.jpg', 'source': 'existing_candidates', 'collision_basis': ['card_name'], 'collision_conflicts': ['card_number'], 'number_relation': 'missing', 'name_similarity': 1.0, 'excluded_by': 'available direct evidence'}",
+  "strongest_alternative": "{'pid': 567182, 'name': 'Staraptor', 'set': 'SV1S: Scarlet ex', 'number': '065/078', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/567182.jpg', 'url': 'https://www.tcgplayer.com/product/567182', 'market': 0.22, 'source': 'existing_candidates', 'collision_basis': ['card_name'], 'collision_conflicts': ['card_number'], 'number_relation': 'missing', 'name_similarity': 1.0, 'excluded_by': 'available direct evidence'}",
   "regression_test_requirement": "required for the failure class when closed"
  },
  "Combusken|065/PCG-P|065/PCG-P": {
@@ -97,13 +87,13 @@
   "regression_test_requirement": "required for the failure class when closed"
  },
  "Rota's Mime Jr.|086/PCG-P|Rota's Mime Jr. 086/PCG-P": {
-  "problem": "Rota's Mime Jr. 086/PCG-P - identity still uses inference",
-  "cause": "OCR did not directly establish every field needed for an exact printing",
-  "current_solution": "the available fragments resolved via unique number match; adversarial search: Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
-  "future_solution": "obtain direct evidence for the missing or collision-sensitive dimension",
-  "status": "Pending - mitigated, not fully solved",
+  "problem": "Rota's Mime Jr. 086/PCG-P - automated OCR required a human read",
+  "cause": "read directly from the footer by a human eye after OCR failed",
+  "current_solution": "manual human eye gate",
+  "future_solution": "add targeted preprocessing/provider coverage for this failure pattern",
+  "status": "Pending - manual path works; automated path incomplete",
   "evidence_missing": "none recorded",
-  "strongest_alternative": "None",
+  "strongest_alternative": "{'pid': 613498, 'name': \"Rota's Mime Jr. - 097/PCG-P\", 'set': 'PCG-P Promotional cards', 'number': '097/PCG-P', 'line': 'Pokemon Japan', 'source': 'existing_candidates', 'collision_basis': ['card_name', 'set'], 'collision_conflicts': ['card_number'], 'number_relation': 'different', 'name_similarity': 1.0, 'excluded_by': 'available direct evidence'}",
   "regression_test_requirement": "required for the failure class when closed"
  },
  "Croagunk|032/DP-P|Croagunk 032/DP-P": {
@@ -163,7 +153,7 @@
   "future_solution": "obtain direct evidence for the missing or collision-sensitive dimension",
   "status": "Pending - mitigated, not fully solved",
   "evidence_missing": "artwork; higher_resolution_card_number",
-  "strongest_alternative": "{'pid': 107183, 'name': 'M Mewtwo EX (64)', 'set': 'XY - BREAKthrough', 'number': '64/162', 'line': 'Pokemon', 'img': 'https://product-images.tcgplayer.com/107183.jpg', 'source': 'existing_candidates', 'collision_basis': ['card_name', 'one_ocr_substitution_from_card_number', 'set'], 'collision_conflicts': [], 'number_relation': 'ocr_substitution', 'name_similarity': 1.0, 'unresolved_reason': 'one OCR substitution reaches another similar-name printing'}",
+  "strongest_alternative": "{'pid': 107183, 'name': 'M Mewtwo EX (64)', 'set': 'XY - BREAKthrough', 'number': '64/162', 'line': 'Pokemon', 'img': 'https://product-images.tcgplayer.com/107183.jpg', 'url': 'https://www.tcgplayer.com/product/107183', 'market': 37.51, 'source': 'existing_candidates', 'collision_basis': ['card_name', 'one_ocr_substitution_from_card_number', 'set'], 'collision_conflicts': [], 'number_relation': 'ocr_substitution', 'name_similarity': 1.0, 'unresolved_reason': 'one OCR substitution reaches another similar-name printing'}",
   "regression_test_requirement": "required for the failure class when closed"
  },
  "Snorlax GX|SM05|sm05 SM05": {
@@ -186,16 +176,6 @@
   "strongest_alternative": "{'id': 'xyp-XY06', 'name': 'Yveltal', 'hp': 130, 'damages': '30,100', 'subtypes': 'Basic', 'set': 'xyp', 'number': 'XY06', 'rarity': 'Promo', 'source': 'local_fingerprint_catalog', 'collision_basis': ['similar_card_name', 'one_ocr_substitution_from_card_number', 'set'], 'collision_conflicts': [], 'number_relation': 'ocr_substitution', 'name_similarity': 0.824, 'unresolved_reason': 'one OCR substitution reaches another similar-name printing'}",
   "regression_test_requirement": "required for the failure class when closed"
  },
- "Lucario VSTAR|SWSH291|Lucario VSTAR SWSH291": {
-  "problem": "Lucario VSTAR SWSH291 - identity still uses inference",
-  "cause": "OCR did not directly establish every field needed for an exact printing",
-  "current_solution": "the available fragments resolved via attack names; adversarial search: Adversarial search tested 2 catalog row(s); no plausible competing printing survived the direct evidence.",
-  "future_solution": "obtain direct evidence for the missing or collision-sensitive dimension",
-  "status": "Pending - mitigated, not fully solved",
-  "evidence_missing": "none recorded",
-  "strongest_alternative": "None",
-  "regression_test_requirement": "required for the failure class when closed"
- },
  "M Blastoise-EX|22/108|M Blastoise-EX": {
   "problem": "M Blastoise-EX 22/108 - automated OCR required a human read",
   "cause": "read directly from the footer by a human eye after OCR failed",
@@ -213,7 +193,7 @@
   "future_solution": "obtain direct evidence for the missing or collision-sensitive dimension",
   "status": "Pending - mitigated, not fully solved",
   "evidence_missing": "artwork; higher_resolution_card_number",
-  "strongest_alternative": "{'pid': 189805, 'name': 'Detective Pikachu - SM190', 'set': 'SM Promos', 'number': 'SM190', 'line': 'Pokemon', 'img': 'https://product-images.tcgplayer.com/189805.jpg', 'source': 'existing_candidates', 'collision_basis': ['card_name', 'one_ocr_substitution_from_card_number', 'set'], 'collision_conflicts': [], 'number_relation': 'ocr_substitution', 'name_similarity': 1.0, 'unresolved_reason': 'one OCR substitution reaches another similar-name printing'}",
+  "strongest_alternative": "{'pid': 189805, 'name': 'Detective Pikachu - SM190', 'set': 'SM Promos', 'number': 'SM190', 'line': 'Pokemon', 'img': 'https://product-images.tcgplayer.com/189805.jpg', 'url': 'https://www.tcgplayer.com/product/189805', 'market': 7.0, 'source': 'existing_candidates', 'collision_basis': ['card_name', 'one_ocr_substitution_from_card_number', 'set'], 'collision_conflicts': [], 'number_relation': 'ocr_substitution', 'name_similarity': 1.0, 'unresolved_reason': 'one OCR substitution reaches another similar-name printing'}",
   "regression_test_requirement": "required for the failure class when closed"
  },
  "M Manectric-EX|024a/119|M Manectric-EX": {
@@ -283,17 +263,7 @@
   "future_solution": "obtain direct evidence for the missing or collision-sensitive dimension",
   "status": "Pending - mitigated, not fully solved",
   "evidence_missing": "none recorded",
-  "strongest_alternative": "{'pid': 607162, 'name': 'Snorlax', 'set': 'Pt2: Bonds to the End of Time', 'number': '070/090', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/607162.jpg', 'source': 'existing_candidates', 'collision_basis': ['card_name'], 'collision_conflicts': ['card_number', 'set'], 'number_relation': 'different', 'name_similarity': 1.0, 'excluded_by': 'available direct evidence'}",
-  "regression_test_requirement": "required for the failure class when closed"
- },
- "Alolan Ninetales-GX|22/145|Alolan Ninetales-GX 22/145": {
-  "problem": "Alolan Ninetales-GX 22/145 - identity still uses inference",
-  "cause": "OCR did not directly establish every field needed for an exact printing",
-  "current_solution": "the available fragments resolved via attack names; adversarial search: Adversarial search tested 2 catalog row(s); no plausible competing printing survived the direct evidence.",
-  "future_solution": "obtain direct evidence for the missing or collision-sensitive dimension",
-  "status": "Pending - mitigated, not fully solved",
-  "evidence_missing": "none recorded",
-  "strongest_alternative": "None",
+  "strongest_alternative": "{'pid': 607162, 'name': 'Snorlax', 'set': 'Pt2: Bonds to the End of Time', 'number': '070/090', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/607162.jpg', 'url': 'https://www.tcgplayer.com/product/607162', 'market': 28.42, 'source': 'existing_candidates', 'collision_basis': ['card_name'], 'collision_conflicts': ['card_number', 'set'], 'number_relation': 'different', 'name_similarity': 1.0, 'excluded_by': 'available direct evidence'}",
   "regression_test_requirement": "required for the failure class when closed"
  },
  "Altaria-EX|123/124|Altaria 123/124": {
@@ -446,14 +416,94 @@
   "strongest_alternative": "None",
   "regression_test_requirement": "required for the failure class when closed"
  },
- "Coalossal|117/100|None": {
-  "problem": "Coalossal 117/100 - automated OCR required a human read",
-  "cause": "read directly from the footer by a human eye after OCR failed",
-  "current_solution": "manual human eye gate",
-  "future_solution": "add targeted preprocessing/provider coverage for this failure pattern",
-  "status": "Pending - manual path works; automated path incomplete",
+ "|200/193|200/193": {
+  "problem": "(unknown) 200/193 - distinguishing evidence between competing printings",
+  "cause": "3 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.",
+  "current_solution": "none - result remains ambiguous/unknown",
+  "future_solution": "another image angle help; removing glare help; different language db help; scan instead of photo help",
+  "status": "Open",
+  "evidence_missing": "none recorded",
+  "strongest_alternative": "{'pid': 665871, 'name': 'Snorunt - 200/193', 'set': 'M2a: High Class Pack: MEGA Dream ex', 'number': '200/193', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/665871.jpg', 'url': 'https://www.tcgplayer.com/product/665871', 'market': 1.82, 'source': 'existing_candidates', 'collision_basis': ['card_number'], 'collision_conflicts': [], 'number_relation': 'exact', 'name_similarity': 0.0, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}",
+  "regression_test_requirement": "required for the failure class when closed"
+ },
+ "|201/133|201/133": {
+  "problem": "(unknown) 201/133 - card name",
+  "cause": "text exists but no complete name/number evidence resolved",
+  "current_solution": "none - result remains ambiguous/unknown",
+  "future_solution": "another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help",
+  "status": "Open",
   "evidence_missing": "none recorded",
   "strongest_alternative": "None",
+  "regression_test_requirement": "required for the failure class when closed"
+ },
+ "|201/193|201/193": {
+  "problem": "(unknown) 201/193 - distinguishing evidence between competing printings",
+  "cause": "3 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.",
+  "current_solution": "none - result remains ambiguous/unknown",
+  "future_solution": "another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help",
+  "status": "Open",
+  "evidence_missing": "none recorded",
+  "strongest_alternative": "{'pid': 665872, 'name': 'Heliolisk - 201/193', 'set': 'M2a: High Class Pack: MEGA Dream ex', 'number': '201/193', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/665872.jpg', 'url': 'https://www.tcgplayer.com/product/665872', 'market': 1.0272, 'source': 'existing_candidates', 'collision_basis': ['card_number'], 'collision_conflicts': [], 'number_relation': 'exact', 'name_similarity': 0.0, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}",
+  "regression_test_requirement": "required for the failure class when closed"
+ },
+ "|197/193|197/193": {
+  "problem": "(unknown) 197/193 - distinguishing evidence between competing printings",
+  "cause": "3 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.",
+  "current_solution": "none - result remains ambiguous/unknown",
+  "future_solution": "another image angle help; removing glare help; different language db help; scan instead of photo help",
+  "status": "Open",
+  "evidence_missing": "none recorded",
+  "strongest_alternative": "{'pid': 665868, 'name': \"Ethan's Magcargo - 197/193\", 'set': 'M2a: High Class Pack: MEGA Dream ex', 'number': '197/193', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/665868.jpg', 'url': 'https://www.tcgplayer.com/product/665868', 'market': 1.51, 'source': 'existing_candidates', 'collision_basis': ['card_number'], 'collision_conflicts': [], 'number_relation': 'exact', 'name_similarity': 0.0, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}",
+  "regression_test_requirement": "required for the failure class when closed"
+ },
+ "|202/193|202/193": {
+  "problem": "(unknown) 202/193 - distinguishing evidence between competing printings",
+  "cause": "3 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.",
+  "current_solution": "none - result remains ambiguous/unknown",
+  "future_solution": "another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help",
+  "status": "Open",
+  "evidence_missing": "none recorded",
+  "strongest_alternative": "{'pid': 665873, 'name': 'Misdreavus - 202/193', 'set': 'M2a: High Class Pack: MEGA Dream ex', 'number': '202/193', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/665873.jpg', 'url': 'https://www.tcgplayer.com/product/665873', 'market': 2.0, 'source': 'existing_candidates', 'collision_basis': ['card_number'], 'collision_conflicts': [], 'number_relation': 'exact', 'name_similarity': 0.0, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}",
+  "regression_test_requirement": "required for the failure class when closed"
+ },
+ "|214/193|214/193": {
+  "problem": "(unknown) 214/193 - distinguishing evidence between competing printings",
+  "cause": "3 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.",
+  "current_solution": "none - result remains ambiguous/unknown",
+  "future_solution": "another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help",
+  "status": "Open",
+  "evidence_missing": "none recorded",
+  "strongest_alternative": "{'pid': 665885, 'name': \"N's PP Up - 214/193\", 'set': 'M2a: High Class Pack: MEGA Dream ex', 'number': '214/193', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/665885.jpg', 'url': 'https://www.tcgplayer.com/product/665885', 'market': 0.43, 'source': 'existing_candidates', 'collision_basis': ['card_number'], 'collision_conflicts': [], 'number_relation': 'exact', 'name_similarity': 0.0, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}",
+  "regression_test_requirement": "required for the failure class when closed"
+ },
+ "|211/208|211/208": {
+  "problem": "(unknown) 211/208 - card name",
+  "cause": "text exists but no complete name/number evidence resolved",
+  "current_solution": "none - result remains ambiguous/unknown",
+  "future_solution": "another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help",
+  "status": "Open",
+  "evidence_missing": "none recorded",
+  "strongest_alternative": "None",
+  "regression_test_requirement": "required for the failure class when closed"
+ },
+ "Misdreavus|202/193|Misdreavus 202/193": {
+  "problem": "Misdreavus 202/193 - distinguishing evidence between competing printings",
+  "cause": "1 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.",
+  "current_solution": "none - result remains ambiguous/unknown",
+  "future_solution": "another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help",
+  "status": "Open",
+  "evidence_missing": "none recorded",
+  "strongest_alternative": "{'id': 'sv2-202', 'name': 'Crocalor', 'hp': 110, 'damages': '30,70', 'subtypes': 'Stage 1', 'set': 'sv2', 'number': '202/193', 'rarity': 'Illustration Rare', 'source': 'local_fingerprint_catalog', 'collision_basis': ['card_number'], 'collision_conflicts': ['card_name'], 'number_relation': 'exact', 'name_similarity': 0.222, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}",
+  "regression_test_requirement": "required for the failure class when closed"
+ },
+ "None|222/193|m20 222/193": {
+  "problem": "(unknown) 222/193 - distinguishing evidence between competing printings",
+  "cause": "3 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.",
+  "current_solution": "none - result remains ambiguous/unknown",
+  "future_solution": "another image angle help; different ocr pass help; removing glare help; scan instead of photo help",
+  "status": "Open",
+  "evidence_missing": "none recorded",
+  "strongest_alternative": "{'pid': 665893, 'name': 'Jamming Tower', 'set': 'M2a: High Class Pack: MEGA Dream ex', 'number': '222/193', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/665893.jpg', 'url': 'https://www.tcgplayer.com/product/665893', 'market': 0.31, 'source': 'existing_candidates', 'collision_basis': ['card_number'], 'collision_conflicts': [], 'number_relation': 'exact', 'name_similarity': 0.0, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}",
   "regression_test_requirement": "required for the failure class when closed"
  }
 }

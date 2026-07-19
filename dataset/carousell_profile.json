@@ -116,7 +116,9 @@
      "set": "SV02: Paldea Evolved",
      "number": "063/193",
      "line": "Pokemon",
-     "img": "https://product-images.tcgplayer.com/497474.jpg"
+     "img": "https://product-images.tcgplayer.com/497474.jpg",
+     "url": "https://www.tcgplayer.com/product/497474",
+     "market": 4.02
     }
    ],
    "ocr": [
@@ -228,7 +230,9 @@
        "set": "SV02: Paldea Evolved",
        "number": "063/193",
        "line": "Pokemon",
-       "img": "https://product-images.tcgplayer.com/497474.jpg"
+       "img": "https://product-images.tcgplayer.com/497474.jpg",
+       "url": "https://www.tcgplayer.com/product/497474",
+       "market": 4.02
       }
      }
     },
@@ -289,6 +293,8 @@
      "number": "063/193",
      "line": "Pokemon",
      "img": "https://product-images.tcgplayer.com/497474.jpg",
+     "url": "https://www.tcgplayer.com/product/497474",
+     "market": 4.02,
      "source": "existing_candidates"
     },
     "candidate_count": 1,
@@ -499,7 +505,9 @@
      "set": "McDonald's Promos 2024",
      "number": "001/015",
      "line": "Pokemon",
-     "img": "https://product-images.tcgplayer.com/614370.jpg"
+     "img": "https://product-images.tcgplayer.com/614370.jpg",
+     "url": "https://www.tcgplayer.com/product/614370",
+     "market": 2.51
     }
    ],
    "ocr": [
@@ -593,15 +601,65 @@
    "evidence_level_meaning": "Partial/Ambiguous - exact printing is not established",
    "evidence_chain": {
     "artwork": {
-     "status": "not_verified",
-     "note": "no independent local reference image exists for any candidate; no match was guessed",
+     "status": "failed",
+     "note": "text candidate's best indexed artwork was distance 31.1, above the 9.0 threshold; no identity change was made",
      "provider_result": {
-      "provider": "ArtworkProvider:perceptual_hash",
+      "provider": "VisualCatalogProvider:partial_perceptual_index",
       "dimension": "artwork",
-      "match_score": 0.0,
-      "matched_reference": null,
-      "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-      "status": "not_verified"
+      "status": "no_match",
+      "match_score": 0.5141,
+      "hash_distance": 31.1,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\ecard1-6.png",
+      "matched_candidate": {
+       "name": "Charizard",
+       "number": "006/165",
+       "set": null
+      },
+      "matched_catalog": {
+       "id": "ecard1-6",
+       "name": "Charizard",
+       "set": "ecard1",
+       "number": "6/165"
+      },
+      "nearest_matches": [
+       {
+        "distance": 18.8,
+        "id": "dc1-28",
+        "name": "Team Aqua's Secret Base",
+        "set": "dc1",
+        "number": "28/34"
+       },
+       {
+        "distance": 18.9,
+        "id": "neo3-41",
+        "name": "Aipom",
+        "set": "neo3",
+        "number": "41/64"
+       },
+       {
+        "distance": 18.9,
+        "id": "swsh2-161",
+        "name": "Milo",
+        "set": "swsh2",
+        "number": "161/192"
+       },
+       {
+        "distance": 18.9,
+        "id": "swsh35-57",
+        "name": "Milo",
+        "set": "swsh35",
+        "number": "57/73"
+       },
+       {
+        "distance": 19.0,
+        "id": "swsh12pt5-145",
+        "name": "Trekking Shoes",
+        "set": "swsh12pt5",
+        "number": "145/159"
+       }
+      ],
+      "indexed_rows": 19705,
+      "confidence_note": "text candidate's best indexed artwork was distance 31.1, above the 9.0 threshold; no identity change was made"
      }
     },
     "pokemon_name": {
@@ -650,7 +708,7 @@
     "+30 collector number directly read",
     "+8 catalog agrees with name+number (not proof by itself)",
     "-35 competing printings remain unresolved",
-    "+0 artwork unavailable/not verified (no prediction penalty)"
+    "+0 artwork did not match (weak provider result; score unchanged)"
    ],
    "collision_analysis": {
     "collision_status": "confirmed",
@@ -697,6 +755,8 @@
       "number": "001/015",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/614370.jpg",
+      "url": "https://www.tcgplayer.com/product/614370",
+      "market": 2.51,
       "source": "existing_candidates",
       "collision_basis": [
        "card_name"
@@ -925,7 +985,9 @@
      "set": "SV09: Journey Together",
      "number": "173/159",
      "line": "Pokemon",
-     "img": "https://product-images.tcgplayer.com/623600.jpg"
+     "img": "https://product-images.tcgplayer.com/623600.jpg",
+     "url": "https://www.tcgplayer.com/product/623600",
+     "market": 8.11
     }
    ],
    "ocr": [
@@ -1044,7 +1106,9 @@
        "set": "SV09: Journey Together",
        "number": "173/159",
        "line": "Pokemon",
-       "img": "https://product-images.tcgplayer.com/623600.jpg"
+       "img": "https://product-images.tcgplayer.com/623600.jpg",
+       "url": "https://www.tcgplayer.com/product/623600",
+       "market": 8.11
       }
      }
     },
@@ -1105,6 +1169,8 @@
      "number": "173/159",
      "line": "Pokemon",
      "img": "https://product-images.tcgplayer.com/623600.jpg",
+     "url": "https://www.tcgplayer.com/product/623600",
+     "market": 8.11,
      "source": "existing_candidates"
     },
     "candidate_count": 1,
@@ -1315,8 +1381,8 @@
      ]
     }
    ],
-   "evidence_level": "C",
-   "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
+   "evidence_level": "A",
+   "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
    "evidence_chain": {
     "artwork": {
      "status": "confirmed",
@@ -1404,7 +1470,7 @@
     "evidence_conflicts": [],
     "evidence_missing": [],
     "reason": "Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
-    "recommended_evidence_level": "C",
+    "recommended_evidence_level": "A",
     "search_performed": true,
     "catalog_rows_examined": 1,
     "search_limitations": [
@@ -1436,20 +1502,6 @@
      "local catalog may not contain every regional or newly released printing",
      "artwork/holo authenticity is outside collision search"
     ]
-   },
-   "inference_explanation": {
-    "original_ocr_text": [
-     "1道化",
-     "@X330",
-     "2026",
-     "术X330",
-     "2026",
-     "330"
-    ],
-    "why_ocr_failed": "OCR did not directly establish every field needed for an exact printing",
-    "candidate_search_process": "via=attack fingerprint; 1 API candidate(s); 1 widened rows examined",
-    "why_only_one_candidate_remained": "the available fragments resolved via attack fingerprint; adversarial search: Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.",
-    "remaining_uncertainty": "identity still depends on inference rather than every field being read"
    }
   },
   "verify": {
@@ -1911,7 +1963,9 @@
      "set": "Alternate Art Promos",
      "number": "XY198a",
      "line": "Pokemon",
-     "img": "https://product-images.tcgplayer.com/148345.jpg"
+     "img": "https://product-images.tcgplayer.com/148345.jpg",
+     "url": "https://www.tcgplayer.com/product/148345",
+     "market": 27.44
     },
     {
      "pid": 129898,
@@ -1919,7 +1973,9 @@
      "set": "XY Promos",
      "number": "XY198",
      "line": "Pokemon",
-     "img": "https://product-images.tcgplayer.com/129898.jpg"
+     "img": "https://product-images.tcgplayer.com/129898.jpg",
+     "url": "https://www.tcgplayer.com/product/129898",
+     "market": 8.26
     }
    ],
    "ocr": [
@@ -2041,7 +2097,9 @@
        "set": "Alternate Art Promos",
        "number": "XY198a",
        "line": "Pokemon",
-       "img": "https://product-images.tcgplayer.com/148345.jpg"
+       "img": "https://product-images.tcgplayer.com/148345.jpg",
+       "url": "https://www.tcgplayer.com/product/148345",
+       "market": 27.44
       }
      }
     },
@@ -2102,6 +2160,8 @@
      "number": "XY198a",
      "line": "Pokemon",
      "img": "https://product-images.tcgplayer.com/148345.jpg",
+     "url": "https://www.tcgplayer.com/product/148345",
+     "market": 27.44,
      "source": "existing_candidates"
     },
     "candidate_count": 3,
@@ -2113,6 +2173,8 @@
       "number": "XY198",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/129898.jpg",
+      "url": "https://www.tcgplayer.com/product/129898",
+      "market": 8.26,
       "source": "existing_candidates",
       "collision_basis": [
        "card_name",
@@ -2189,6 +2251,8 @@
      "number": "XY198",
      "line": "Pokemon",
      "img": "https://product-images.tcgplayer.com/129898.jpg",
+     "url": "https://www.tcgplayer.com/product/129898",
+     "market": 8.26,
      "source": "existing_candidates",
      "collision_basis": [
       "card_name",
@@ -2953,44 +3017,44 @@
    ],
    "candidates": [
     {
-     "pid": 604118,
-     "name": "Staraptor",
-     "set": "XY8-Br: Red Flash",
-     "number": "053/059",
-     "line": "Pokemon Japan",
-     "img": "https://product-images.tcgplayer.com/604118.jpg"
-    },
-    {
-     "pid": 602315,
-     "name": "Staraptor",
-     "set": "BW8: Thunder Knuckle",
-     "number": "045/051",
-     "line": "Pokemon Japan",
-     "img": "https://product-images.tcgplayer.com/602315.jpg"
-    },
-    {
      "pid": 567182,
      "name": "Staraptor",
      "set": "SV1S: Scarlet ex",
      "number": "065/078",
      "line": "Pokemon Japan",
-     "img": "https://product-images.tcgplayer.com/567182.jpg"
+     "img": "https://product-images.tcgplayer.com/567182.jpg",
+     "url": "https://www.tcgplayer.com/product/567182",
+     "market": 0.22
     },
     {
-     "pid": 219355,
+     "pid": 604118,
      "name": "Staraptor",
-     "set": "SWSH03: Darkness Ablaze",
-     "number": "147/189",
-     "line": "Pokemon",
-     "img": "https://product-images.tcgplayer.com/219355.jpg"
+     "set": "XY8-Br: Red Flash",
+     "number": "053/059",
+     "line": "Pokemon Japan",
+     "img": "https://product-images.tcgplayer.com/604118.jpg",
+     "url": "https://www.tcgplayer.com/product/604118",
+     "market": 2.65
     },
     {
-     "pid": 149108,
+     "pid": 569708,
      "name": "Staraptor",
-     "set": "SM - Crimson Invasion",
-     "number": "83/111",
+     "set": "S9: Star Birth",
+     "number": "080/100",
+     "line": "Pokemon Japan",
+     "img": "https://product-images.tcgplayer.com/569708.jpg",
+     "url": "https://www.tcgplayer.com/product/569708",
+     "market": 0.31
+    },
+    {
+     "pid": 488040,
+     "name": "Staraptor",
+     "set": "SV01: Scarlet & Violet Base Set",
+     "number": "150/198",
      "line": "Pokemon",
-     "img": "https://product-images.tcgplayer.com/149108.jpg"
+     "img": "https://product-images.tcgplayer.com/488040.jpg",
+     "url": "https://www.tcgplayer.com/product/488040",
+     "market": 0.11
     },
     {
      "pid": 263844,
@@ -2998,7 +3062,19 @@
      "set": "SWSH09: Brilliant Stars",
      "number": "119/172",
      "line": "Pokemon",
-     "img": "https://product-images.tcgplayer.com/263844.jpg"
+     "img": "https://product-images.tcgplayer.com/263844.jpg",
+     "url": "https://www.tcgplayer.com/product/263844",
+     "market": 0.16
+    },
+    {
+     "pid": 89510,
+     "name": "Staraptor",
+     "set": "Plasma Freeze",
+     "number": "97/116",
+     "line": "Pokemon",
+     "img": "https://product-images.tcgplayer.com/89510.jpg",
+     "url": "https://www.tcgplayer.com/product/89510",
+     "market": 0.72
     }
    ],
    "ocr": [
@@ -3102,15 +3178,70 @@
    "evidence_level_meaning": "Partial/Ambiguous - exact printing is not established",
    "evidence_chain": {
     "artwork": {
-     "status": "not_verified",
-     "note": "no independent local reference image exists for any candidate; no match was guessed",
+     "status": "failed",
+     "note": "text candidate's best indexed artwork was distance 25.5, above the 9.0 threshold; no identity change was made",
      "provider_result": {
-      "provider": "ArtworkProvider:perceptual_hash",
+      "provider": "VisualCatalogProvider:partial_perceptual_index",
       "dimension": "artwork",
-      "match_score": 0.0,
-      "matched_reference": null,
-      "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-      "status": "not_verified"
+      "status": "no_match",
+      "match_score": 0.6016,
+      "hash_distance": 25.5,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\visual_catalog\\sv1-150.png",
+      "matched_candidate": {
+       "pid": 488040,
+       "name": "Staraptor",
+       "set": "SV01: Scarlet & Violet Base Set",
+       "number": "150/198",
+       "line": "Pokemon",
+       "img": "https://product-images.tcgplayer.com/488040.jpg",
+       "url": "https://www.tcgplayer.com/product/488040",
+       "market": 0.11
+      },
+      "matched_catalog": {
+       "id": "sv1-150",
+       "name": "Staraptor",
+       "set": "sv1",
+       "number": "150/198"
+      },
+      "nearest_matches": [
+       {
+        "distance": 17.7,
+        "id": "zsv10pt5-170",
+        "name": "N's Plan",
+        "set": "zsv10pt5",
+        "number": "170/86"
+       },
+       {
+        "distance": 18.9,
+        "id": "ecard1-76",
+        "name": "Electabuzz",
+        "set": "ecard1",
+        "number": "76/165"
+       },
+       {
+        "distance": 19.2,
+        "id": "xy2-13",
+        "name": "M Charizard-EX",
+        "set": "xy2",
+        "number": "13/106"
+       },
+       {
+        "distance": 19.2,
+        "id": "xy4-36",
+        "name": "Wobbuffet",
+        "set": "xy4",
+        "number": "36/119"
+       },
+       {
+        "distance": 19.8,
+        "id": "ex15-78",
+        "name": "Old Rod",
+        "set": "ex15",
+        "number": "78/101"
+       }
+      ],
+      "indexed_rows": 19705,
+      "confidence_note": "text candidate's best indexed artwork was distance 25.5, above the 9.0 threshold; no identity change was made"
      }
     },
     "pokemon_name": {
@@ -3157,7 +3288,7 @@
     "+5 candidate proposed",
     "+12 card name inferred from structured evidence",
     "+18 adversarial search found no plausible competitor",
-    "+0 artwork unavailable/not verified (no prediction penalty)"
+    "+0 artwork did not match (weak provider result; score unchanged)"
    ],
    "collision_analysis": {
     "collision_status": "none",
@@ -3166,48 +3297,14 @@
     "competing_candidates": [],
     "alternatives_tested": [
      {
-      "pid": 604118,
-      "name": "Staraptor",
-      "set": "XY8-Br: Red Flash",
-      "number": "053/059",
-      "line": "Pokemon Japan",
-      "img": "https://product-images.tcgplayer.com/604118.jpg",
-      "source": "existing_candidates",
-      "collision_basis": [
-       "card_name"
-      ],
-      "collision_conflicts": [
-       "card_number"
-      ],
-      "number_relation": "missing",
-      "name_similarity": 1.0,
-      "excluded_by": "available direct evidence"
-     },
-     {
-      "pid": 602315,
-      "name": "Staraptor",
-      "set": "BW8: Thunder Knuckle",
-      "number": "045/051",
-      "line": "Pokemon Japan",
-      "img": "https://product-images.tcgplayer.com/602315.jpg",
-      "source": "existing_candidates",
-      "collision_basis": [
-       "card_name"
-      ],
-      "collision_conflicts": [
-       "card_number"
-      ],
-      "number_relation": "missing",
-      "name_similarity": 1.0,
-      "excluded_by": "available direct evidence"
-     },
-     {
       "pid": 567182,
       "name": "Staraptor",
       "set": "SV1S: Scarlet ex",
       "number": "065/078",
       "line": "Pokemon Japan",
       "img": "https://product-images.tcgplayer.com/567182.jpg",
+      "url": "https://www.tcgplayer.com/product/567182",
+      "market": 0.22,
       "source": "existing_candidates",
       "collision_basis": [
        "card_name"
@@ -3220,12 +3317,14 @@
       "excluded_by": "available direct evidence"
      },
      {
-      "pid": 219355,
+      "pid": 604118,
       "name": "Staraptor",
-      "set": "SWSH03: Darkness Ablaze",
-      "number": "147/189",
-      "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/219355.jpg",
+      "set": "XY8-Br: Red Flash",
+      "number": "053/059",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/604118.jpg",
+      "url": "https://www.tcgplayer.com/product/604118",
+      "market": 2.65,
       "source": "existing_candidates",
       "collision_basis": [
        "card_name"
@@ -3238,12 +3337,34 @@
       "excluded_by": "available direct evidence"
      },
      {
-      "pid": 149108,
+      "pid": 569708,
       "name": "Staraptor",
-      "set": "SM - Crimson Invasion",
-      "number": "83/111",
+      "set": "S9: Star Birth",
+      "number": "080/100",
+      "line": "Pokemon Japan",
+      "img": "https://product-images.tcgplayer.com/569708.jpg",
+      "url": "https://www.tcgplayer.com/product/569708",
+      "market": 0.31,
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number"
+      ],
+      "number_relation": "missing",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     },
+     {
+      "pid": 488040,
+      "name": "Staraptor",
+      "set": "SV01: Scarlet & Violet Base Set",
+      "number": "150/198",
       "line": "Pokemon",
-      "img": "https://product-images.tcgplayer.com/149108.jpg",
+      "img": "https://product-images.tcgplayer.com/488040.jpg",
+      "url": "https://www.tcgplayer.com/product/488040",
+      "market": 0.11,
       "source": "existing_candidates",
       "collision_basis": [
        "card_name"
@@ -3262,6 +3383,28 @@
       "number": "119/172",
       "line": "Pokemon",
       "img": "https://product-images.tcgplayer.com/263844.jpg",
+      "url": "https://www.tcgplayer.com/product/263844",
+      "market": 0.16,
+      "source": "existing_candidates",
+      "collision_basis": [
+       "card_name"
+      ],
+      "collision_conflicts": [
+       "card_number"
+      ],
+      "number_relation": "missing",
+      "name_similarity": 1.0,
+      "excluded_by": "available direct evidence"
+     },
+     {
+      "pid": 89510,
+      "name": "Staraptor",
+      "set": "Plasma Freeze",
+      "number": "97/116",
+      "line": "Pokemon",
+      "img": "https://product-images.tcgplayer.com/89510.jpg",
+      "url": "https://www.tcgplayer.com/product/89510",
+      "market": 0.72,
       "source": "existing_candidates",
       "collision_basis": [
        "card_name"
@@ -3300,12 +3443,14 @@
    },
    "adversarial_validation": {
     "strongest_alternative": {
-     "pid": 604118,
+     "pid": 567182,
      "name": "Staraptor",
-     "set": "XY8-Br: Red Flash",
-     "number": "053/059",
+     "set": "SV1S: Scarlet ex",
+     "number": "065/078",
      "line": "Pokemon Japan",
-     "img": "https://product-images.tcgplayer.com/604118.jpg",
+     "img": "https://product-images.tcgplayer.com/567182.jpg",
+     "url": "https://www.tcgplayer.com/product/567182",
+     "market": 0.22,
      "source": "existing_candidates",
      "collision_basis": [
       "card_name"
@@ -4687,7 +4832,9 @@
      "set": "XY - Primal Clash",
      "number": "164/160",
      "line": "Pokemon",
-     "img": "https://product-images.tcgplayer.com/96062.jpg"
+     "img": "https://product-images.tcgplayer.com/96062.jpg",
+     "url": "https://www.tcgplayer.com/product/96062",
+     "market": 6.11
     }
    ],
    "ocr": [
@@ -4773,15 +4920,20 @@
    "evidence_level_meaning": "Verified - direct name/number read, catalog agreement, and adversarial collision search clean",
    "evidence_chain": {
     "artwork": {
-     "status": "not_verified",
-     "note": "no independent local reference image exists for any candidate; no match was guessed",
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
      "provider_result": {
       "provider": "ArtworkProvider:perceptual_hash",
       "dimension": "artwork",
-      "match_score": 0.0,
-      "matched_reference": null,
-      "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-      "status": "not_verified"
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L13_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "name": "Weakness Policy",
+       "number": "164/160",
+       "set": null
+      }
      }
     },
     "pokemon_name": {
@@ -4821,8 +4973,8 @@
      "note": "catalog agrees with name+number: Weakness Policy (164 Secret Rare) (XY - Primal Clash); uniqueness alone is not proof"
     }
    },
-   "evidence_coverage": 30,
-   "evidence_coverage_reason": "3/10 dimensions independently confirmed: pokemon_name, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "evidence_coverage": 40,
+   "evidence_coverage_reason": "4/10 dimensions independently confirmed: artwork, pokemon_name, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
    "provisional_prediction_confidence": 89,
    "provisional_prediction_confidence_factors": [
     "+5 candidate proposed",
@@ -4830,7 +4982,7 @@
     "+30 collector number directly read",
     "+8 catalog agrees with name+number (not proof by itself)",
     "+18 adversarial search found no plausible competitor",
-    "+0 artwork unavailable/not verified (no prediction penalty)"
+    "+0 artwork matched a local reference (coverage only)"
    ],
    "collision_analysis": {
     "collision_status": "none",
@@ -4841,6 +4993,8 @@
      "number": "164/160",
      "line": "Pokemon",
      "img": "https://product-images.tcgplayer.com/96062.jpg",
+     "url": "https://www.tcgplayer.com/product/96062",
+     "market": 6.11,
      "source": "existing_candidates"
     },
     "candidate_count": 1,
@@ -4967,7 +5121,9 @@
      "set": "SM3+: Shining Legends",
      "number": "079/072",
      "line": "Pokemon Japan",
-     "img": "https://product-images.tcgplayer.com/573993.jpg"
+     "img": "https://product-images.tcgplayer.com/573993.jpg",
+     "url": "https://www.tcgplayer.com/product/573993",
+     "market": null
     }
    ],
    "ocr": [
@@ -5046,7 +5202,9 @@
        "set": "SM3+: Shining Legends",
        "number": "079/072",
        "line": "Pokemon Japan",
-       "img": "https://product-images.tcgplayer.com/573993.jpg"
+       "img": "https://product-images.tcgplayer.com/573993.jpg",
+       "url": "https://www.tcgplayer.com/product/573993",
+       "market": null
       }
      }
     },
@@ -5107,6 +5265,8 @@
      "number": "079/072",
      "line": "Pokemon Japan",
      "img": "https://product-images.tcgplayer.com/573993.jpg",
+     "url": "https://www.tcgplayer.com/product/573993",
+     "market": null,
      "source": "existing_candidates"
     },
     "candidate_count": 1,
@@ -5286,7 +5446,9 @@
      "set": "XY - Ancient Origins",
      "number": "43/98",
      "line": "Pokemon",
-     "img": "https://product-images.tcgplayer.com/100625.jpg"
+     "img": "https://product-images.tcgplayer.com/100625.jpg",
+     "url": "https://www.tcgplayer.com/product/100625",
+     "market": 31.55
     }
    ],
    "ocr": [
@@ -5394,7 +5556,9 @@
        "set": "XY - Ancient Origins",
        "number": "43/98",
        "line": "Pokemon",
-       "img": "https://product-images.tcgplayer.com/100625.jpg"
+       "img": "https://product-images.tcgplayer.com/100625.jpg",
+       "url": "https://www.tcgplayer.com/product/100625",
+       "market": 31.55
       }
      }
     },
@@ -5456,6 +5620,8 @@
      "number": "43/98",
      "line": "Pokemon",
      "img": "https://product-images.tcgplayer.com/100625.jpg",
+     "url": "https://www.tcgplayer.com/product/100625",
+     "market": 31.55,
      "source": "existing_candidates"
     },
     "candidate_count": 1,
@@ -5740,7 +5906,9 @@
      "set": "XY Promos",
      "number": "XY158",
      "line": "Pokemon",
-     "img": "https://product-images.tcgplayer.com/125566.jpg"
+     "img": "https://product-images.tcgplayer.com/125566.jpg",
+     "url": "https://www.tcgplayer.com/product/125566",
+     "market": 26.44
     }
    ],
    "ocr": [
@@ -5859,7 +6027,9 @@
        "set": "XY Promos",
        "number": "XY158",
        "line": "Pokemon",
-       "img": "https://product-images.tcgplayer.com/125566.jpg"
+       "img": "https://product-images.tcgplayer.com/125566.jpg",
+       "url": "https://www.tcgplayer.com/product/125566",
+       "market": 26.44
       }
      }
     },
@@ -5920,6 +6090,8 @@
      "number": "XY158",
      "line": "Pokemon",
      "img": "https://product-images.tcgplayer.com/125566.jpg",
+     "url": "https://www.tcgplayer.com/product/125566",
+     "market": 26.44,
      "source": "existing_candidates"
     },
     "candidate_count": 1,
@@ -6224,15 +6396,20 @@
    "evidence_level_meaning": "Partial/Ambiguous - exact printing is not established",
    "evidence_chain": {
     "artwork": {
-     "status": "not_verified",
-     "note": "no independent local reference image exists for any candidate; no match was guessed",
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
      "provider_result": {
       "provider": "ArtworkProvider:perceptual_hash",
       "dimension": "artwork",
-      "match_score": 0.0,
-      "matched_reference": null,
-      "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-      "status": "not_verified"
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L17_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "name": "Black Kyurem-EX",
+       "number": "045/059",
+       "set": null
+      }
      }
     },
     "pokemon_name": {
@@ -6272,15 +6449,15 @@
      "note": "6 candidate(s) returned; none exactly match the number"
     }
    },
-   "evidence_coverage": 10,
-   "evidence_coverage_reason": "1/10 dimensions independently confirmed: card_number. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "evidence_coverage": 20,
+   "evidence_coverage_reason": "2/10 dimensions independently confirmed: artwork, card_number. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
    "provisional_prediction_confidence": 49,
    "provisional_prediction_confidence_factors": [
     "+5 candidate proposed",
     "+12 card name inferred from structured evidence",
     "+30 collector number directly read",
     "+18 adversarial search found no plausible competitor",
-    "+0 artwork unavailable/not verified (no prediction penalty)"
+    "+0 artwork matched a local reference (coverage only)"
    ],
    "collision_analysis": {
     "collision_status": "none",
@@ -6688,15 +6865,20 @@
    "evidence_level_meaning": "Catalog Forced - one or more identifying steps remain inferred or collision-sensitive",
    "evidence_chain": {
     "artwork": {
-     "status": "not_verified",
-     "note": "no independent local reference image exists for any candidate; no match was guessed",
+     "status": "confirmed",
+     "note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
      "provider_result": {
       "provider": "ArtworkProvider:perceptual_hash",
       "dimension": "artwork",
-      "match_score": 0.0,
-      "matched_reference": null,
-      "confidence_note": "no independent local reference image exists for any candidate; no match was guessed",
-      "status": "not_verified"
+      "match_score": 1.0,
+      "matched_reference": "C:\\Users\\Marvin\\low-sale-finder\\dataset\\images\\L18_1.jpg",
+      "confidence_note": "local perceptual hashes matched at 100.0%; this adds coverage only, not calibrated prediction confidence",
+      "status": "matched",
+      "matched_candidate": {
+       "name": "Hydreigon-EX",
+       "number": "103/108",
+       "set": null
+      }
      }
     },
     "pokemon_name": {
@@ -6736,8 +6918,8 @@
      "note": "local catalog agrees with name+number: Hydreigon-EX (xy6); uniqueness alone is not proof"
     }
    },
-   "evidence_coverage": 30,
-   "evidence_coverage_reason": "3/10 dimensions independently confirmed: attack_names, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
+   "evidence_coverage": 40,
+   "evidence_coverage_reason": "4/10 dimensions independently confirmed: artwork, attack_names, card_number, catalog_match. Unchecked/unavailable providers affect coverage only, not prediction confidence.",
    "provisional_prediction_confidence": 73,
    "provisional_prediction_confidence_factors": [
     "+5 candidate proposed",
@@ -6745,7 +6927,7 @@
     "+30 collector number directly read",
     "+8 catalog agrees with name+number (not proof by itself)",
     "+18 adversarial search found no plausible competitor",
-    "+0 artwork unavailable/not verified (no prediction penalty)"
+    "+0 artwork matched a local reference (coverage only)"
    ],
    "collision_analysis": {
     "collision_status": "none",
@@ -7194,7 +7376,9 @@
      "set": "SM - Cosmic Eclipse",
      "number": "158/236",
      "line": "Pokemon",
-     "img": "https://product-images.tcgplayer.com/201208.jpg"
+     "img": "https://product-images.tcgplayer.com/201208.jpg",
+     "url": "https://www.tcgplayer.com/product/201208",
+     "market": 12.15
     }
    ],
    "ocr": [
@@ -7322,7 +7506,9 @@
        "set": "SM - Cosmic Eclipse",
        "number": "158/236",
        "line": "Pokemon",
-       "img": "https://product-images.tcgplayer.com/201208.jpg"
+       "img": "https://product-images.tcgplayer.com/201208.jpg",
+       "url": "https://www.tcgplayer.com/product/201208",
+       "market": 12.15
       }
      }
     },
@@ -7383,6 +7569,8 @@
      "number": "158/236",
      "line": "Pokemon",
      "img": "https://product-images.tcgplayer.com/201208.jpg",
+     "url": "https://www.tcgplayer.com/product/201208",
+     "market": 12.15,
      "source": "existing_candidates"
     },
     "candidate_count": 1,

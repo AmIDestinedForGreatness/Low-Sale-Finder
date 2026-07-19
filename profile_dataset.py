@@ -331,6 +331,27 @@ def identify(image_paths, ocr_raw, wm):
             if adopted:
                 number = adopted
                 via = via or "attack names"
+    if not name:
+        # LAYER F: nearest-neighbor match against every photo Yujin has
+        # already manually confirmed (dataset/confirmed_by_user.json).
+        # ArtworkProvider.verify() (in evidence.py) only re-checks a
+        # candidate identify() already proposed by OCR text — no use for a
+        # card whose printed name never survives OCR (unreadable JP script)
+        # and whose bare collector number returns nothing from TCGplayer's
+        # name-only search (live catch 2026-07-19: a JP binder page's cells
+        # showed a number but stayed "(unread)" forever, even after Yujin
+        # hand-confirmed one of those exact cells, because nothing had ever
+        # pointed an artwork check at that reference). This is DISCOVERY —
+        # it runs on the raw image with no candidate list required.
+        from providers.artwork import discover_from_confirmed
+        for p in image_paths:
+            disc = discover_from_confirmed(p)
+            if disc:
+                name = str(disc["name"] or "").split(" - ")[0].strip()
+                via = "confirmed reference match"
+                if not number:
+                    number = disc.get("number")
+                break
     if not name and number:
         # TIE-BREAK: tied fingerprint × the number's own catalog matches
         cross = valuator.crosscheck_name(merged, number)

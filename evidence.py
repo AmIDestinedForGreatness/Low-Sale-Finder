@@ -81,6 +81,7 @@ def _name_status(ident):
         "local index: number is a printing": "name derived by joining the number to the printings index",
         "local index snap": "name derived while correcting a number against the local index",
         "number-variant match": "mechanic variant derived from the number's catalog product",
+        "confirmed reference match": "name derived by perceptual-hash match against a photo Yujin already confirmed by hand, not name text",
     }
     return "inferred", messages.get(via, f"name derived via {via}")
 

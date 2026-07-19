@@ -661,8 +661,9 @@ def valuator_confirm():
     state_store.update_json(
         path, add_confirmation, default_factory=list, indent=2,
         recover_invalid=True)
-    from providers.artwork import _dataset_references
+    from providers.artwork import _dataset_references, _scan_dataset_refs
     _dataset_references.cache_clear()
+    _scan_dataset_refs.cache_clear()
     return jsonify({"ok": True, "record": record})
 
 

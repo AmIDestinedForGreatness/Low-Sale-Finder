@@ -895,6 +895,31 @@ class TestProfileDatasetSerialization(unittest.TestCase):
         self.assertEqual(result["number"], "222/193")
         self.assertEqual(len(result["candidates"]), 2)
 
+    def test_unread_cell_resolves_via_confirmed_reference_when_ocr_finds_nothing(self):
+        # live catch (Yujin's 12-card JP binder, 2026-07-19): OCR gets NO
+        # name and NO number for a cell whose card he already confirmed by
+        # hand — a bare-number query can't even fire here, so without the
+        # confirmed-reference discovery layer this stays "(unread)" forever
+        # even though the exact card was already hand-identified once.
+        import profile_dataset
+        cands = [{"pid": 1, "name": "Misdreavus", "set": "M2a: High Class Pack",
+                  "number": "202/193"}]
+        with mock.patch("valuator.guess_query", return_value=(None, None)), \
+             mock.patch("valuator.fingerprint_names", return_value=[]), \
+             mock.patch("valuator.dex_names", return_value=[]), \
+             mock.patch("valuator.attack_id", return_value=None), \
+             mock.patch("providers.artwork.discover_from_confirmed",
+                        return_value={"name": "Misdreavus - 202/193", "number": "202/193",
+                                      "score": 1.0, "matched_reference": "ref.png"}), \
+             mock.patch("valuator.search_candidates", return_value=cands), \
+             mock.patch("valuator.ocr_deep", return_value=[]), \
+             mock.patch("evidence.build_evidence", return_value={}), \
+             mock.patch("evidence.log_failure"):
+            result = profile_dataset.identify(["cell.png"], [[]], set())
+        self.assertEqual(result["name"], "Misdreavus")
+        self.assertEqual(result["number"], "202/193")
+        self.assertEqual(result["via"], "confirmed reference match")
+
 
 class TestStateDurability(unittest.TestCase):
     """Mutable local state must survive concurrency and interrupted writes."""
@@ -1516,10 +1541,38 @@ class TestEvidenceProviders(unittest.TestCase):
              mock.patch("providers.artwork.json.load", side_effect=lambda _: state["rows"]), \
              mock.patch("providers.artwork.open", mock.mock_open()):
             artwork._dataset_references.cache_clear()
+            artwork._scan_dataset_refs.cache_clear()
             self.assertEqual(artwork._dataset_references(), {})
             state["rows"] = confirmed
             artwork._dataset_references.cache_clear()
+            artwork._scan_dataset_refs.cache_clear()
             self.assertEqual(artwork._dataset_references()[("testmon ex", "10/100")], [image])
+
+    def test_discover_from_confirmed_matches_above_threshold(self):
+        from providers import artwork
+        rows = [(("misdreavus", "202/193"), "Misdreavus - 202/193", "202/193", "ref.png")]
+        with mock.patch.object(artwork, "_scan_dataset_refs", return_value=rows), \
+             mock.patch("providers.artwork.os.path.exists", return_value=True), \
+             mock.patch("providers.artwork._hash_similarity", return_value=0.95):
+            result = artwork.discover_from_confirmed("cell.png")
+        self.assertEqual(result["name"], "Misdreavus - 202/193")
+        self.assertEqual(result["number"], "202/193")
+        self.assertEqual(result["matched_reference"], "ref.png")
+
+    def test_discover_from_confirmed_below_threshold_stays_unmatched(self):
+        from providers import artwork
+        rows = [(("misdreavus", "202/193"), "Misdreavus - 202/193", "202/193", "ref.png")]
+        with mock.patch.object(artwork, "_scan_dataset_refs", return_value=rows), \
+             mock.patch("providers.artwork.os.path.exists", return_value=True), \
+             mock.patch("providers.artwork._hash_similarity", return_value=0.5):
+            result = artwork.discover_from_confirmed("cell.png")
+        self.assertIsNone(result)
+
+    def test_discover_from_confirmed_missing_image_returns_none(self):
+        from providers import artwork
+        self.assertIsNone(artwork.discover_from_confirmed(""))
+        with mock.patch("providers.artwork.os.path.exists", return_value=False):
+            self.assertIsNone(artwork.discover_from_confirmed("missing.png"))
 
     def test_future_provider_stubs_are_honest(self):
         from providers import AbilityProvider, ExpansionProvider, HoloProvider, HPProvider
