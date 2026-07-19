@@ -2575,6 +2575,27 @@ class TestCardWarp(unittest.TestCase):
             for g in groups:
                 self.assertIn("Sprigatito", g)
 
+    def test_detect_card_regions_with_quads_on_single_card_image(self):
+        # live catch (2026-07-19, Personal PC pull-and-verify of the
+        # HASH-FIRST-NEXT unit): detect_card_regions()'s "fewer than 2
+        # boxes" early return was `return []` unconditionally, ignoring
+        # with_quads. probe_contours() always calls with with_quads=True
+        # and unpacks two values -> ValueError on EVERY single-card photo,
+        # a page that never even reaches the (mocked, not-crash-exercising)
+        # multi-card wiring test above. The existing suite had zero
+        # coverage of the real function on a real single-card image with
+        # with_quads=True; this both proves the fix and closes that gap.
+        import folder_dataset
+        img = os.path.join("dataset", "images", os.listdir(
+            os.path.join("dataset", "images"))[0])
+        boxes, quads = folder_dataset.detect_card_regions(img, with_quads=True)
+        self.assertEqual(boxes, [])
+        self.assertEqual(quads, [])
+        with tempfile.TemporaryDirectory() as td:
+            cells, groups = folder_dataset.probe_contours(img, td)
+        self.assertEqual(cells, [])
+        self.assertEqual(groups, [])
+
 
 if __name__ == "__main__":
     result = unittest.main(exit=False, verbosity=1).result

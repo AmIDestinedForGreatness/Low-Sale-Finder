@@ -210,7 +210,7 @@ def detect_card_regions(path, with_quads=False):
         kept = [b for b in kept if 0.5 <= b[4] / median <= 2.0]
 
     if len(kept) < 2:
-        return []
+        return ([], []) if with_quads else []
 
     # GRID COMPLETION: a card whose light borders blend into a light
     # background (live catch: a pale tent-artwork JP card on a white desk,
