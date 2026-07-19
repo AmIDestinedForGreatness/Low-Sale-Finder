@@ -13,6 +13,7 @@ import hashlib
 import io
 import json
 import os
+import sqlite3
 import socket
 import subprocess
 import sys
@@ -1656,6 +1657,82 @@ class TestEvidenceProviders(unittest.TestCase):
         self.assertEqual(second["status"], "matched")
         self.assertEqual(client.calls, 1)
         self.assertEqual(client.last_request["image"], {"content": b"image bytes"})
+
+
+class TestVisualCatalogTCGplayerBackfill(unittest.TestCase):
+    def test_only_exact_number_product_is_downloaded_and_written(self):
+        import backfill_visual_catalog_tcgplayer as backfill
+        from PIL import Image
+
+        output = io.BytesIO()
+        Image.new("RGB", (120, 168), (30, 120, 210)).save(
+            output, format="JPEG")
+        payload = output.getvalue()
+        searches, fetches = [], []
+
+        def fake_search(query, **kwargs):
+            searches.append((query, kwargs))
+            if query.startswith("Exactmon"):
+                return [
+                    {"pid": 40, "number": "2/100"},
+                    {"pid": 41, "number": "1/100"},
+                ]
+            return [{"pid": 42, "number": "4/100"}]
+
+        def fake_fetch(url, **kwargs):
+            fetches.append((url, kwargs))
+            return mock.Mock(status_code=200,
+                             headers={"content-type": "image/jpeg"},
+                             content=payload)
+
+        with tempfile.TemporaryDirectory() as td:
+            db = os.path.join(td, "fingerprints.sqlite")
+            root = os.path.join(td, "visual_catalog")
+            conn = sqlite3.connect(db)
+            conn.execute(
+                "CREATE TABLE fp (id TEXT PRIMARY KEY, name TEXT, setname TEXT, "
+                "number TEXT, visual_path TEXT, visual_phash TEXT, visual_dhash TEXT)")
+            conn.executemany(
+                "INSERT INTO fp VALUES (?,?,?,?,?,?,?)", [
+                    ("me2pt5-1", "Exactmon", "me2pt5", "001/100",
+                     None, None, None),
+                    ("me2pt5-3", "Noexactmon", "me2pt5", "003/100",
+                     None, None, None),
+                    ("old-1", "Existingmon", "old", "1/1", "old.jpg",
+                     "aaaaaaaaaaaaaaaa", "bbbbbbbbbbbbbbbb"),
+                ])
+            conn.commit()
+            conn.close()
+
+            stats = backfill.backfill(
+                db, root, delay=0, search_fn=fake_search,
+                fetch_fn=fake_fetch, report_fn=lambda *_: None)
+            conn = sqlite3.connect(db)
+            exact = conn.execute(
+                "SELECT visual_path, visual_phash, visual_dhash FROM fp "
+                "WHERE id='me2pt5-1'").fetchone()
+            no_exact = conn.execute(
+                "SELECT visual_path, visual_phash, visual_dhash FROM fp "
+                "WHERE id='me2pt5-3'").fetchone()
+            existing = conn.execute(
+                "SELECT visual_path, visual_phash, visual_dhash FROM fp "
+                "WHERE id='old-1'").fetchone()
+            conn.close()
+
+        self.assertEqual(stats, {"processed": 2, "hashed": 1,
+                                 "no_exact": 1, "failed": 0})
+        self.assertEqual(searches, [
+            ("Exactmon 001/100 me2pt5", {"size": 50}),
+            ("Noexactmon 003/100 me2pt5", {"size": 50}),
+        ])
+        self.assertEqual(len(fetches), 1)
+        self.assertEqual(fetches[0][0], valuator.IMG.format(41))
+        self.assertTrue(exact[0].endswith("me2pt5-1_tcgplayer_41.jpg"))
+        self.assertEqual(len(exact[1]), 16)
+        self.assertEqual(len(exact[2]), 16)
+        self.assertEqual(no_exact, (None, None, None))
+        self.assertEqual(existing,
+                         ("old.jpg", "aaaaaaaaaaaaaaaa", "bbbbbbbbbbbbbbbb"))
 
 
 class TestReauditHandoffEdges(unittest.TestCase):
