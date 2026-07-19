@@ -1329,3 +1329,96 @@ acceptance remains blocked by missing private assets. Level-A reconciliation
 remains blocked on the owner's policy choice and was not changed. The next safe
 candidate is a final residual audit/status handoff rather than starting a broad
 architecture migration without a new reproduced failure.
+
+### CX | 2026-07-19 - real footer parser defect closed without accepting the 16-record premise (`801885b`)
+
+**Unit:** verify the identification continuation prompt's claimed footer-OCR
+failure category, establish a source-backed baseline, and correct the first
+current real failure without broad OCR or catalog-threshold changes.
+
+**Evidence:** `dataset/failures.json` has 45 per-card records plus one
+structural record. The prompt's starting count was mechanically correct:
+16/45 records had the exact human-footer cause, but they represented only 15
+unique card-number pairs because Coalossal `117/100` had two query-keyed
+records. Ten/45 cite missing artwork. `fingerprints.sqlite` and
+`dataset/images` are absent; `uploads` contains only three identical blank test
+JPEGs and their synthetic crops. Six claimed records were sampled: Coalossal,
+Rota's Mime Jr., M Blastoise-EX, M Manectric-EX, Mimikyu V, and Victini. Only
+Coalossal and Mime Jr. had retrievable original listing sources (6 photos each);
+the other 4/6 lack their original file, raw OCR, crop, coordinates, and source
+URL on this checkout and were recorded as non-reproducible rather than replaced.
+
+**Baseline:** current initial RapidOCR read exact Coalossal `117/100` on 2/6
+photos. A live number-only search returned six Japanese products with that
+number; Coalossal was candidate 6 and the pipeline safely returned Level E
+instead of forcing it. Mime Jr. initial OCR read 0/6 exact and 1/6 partial
+(`086/PC`); the existing deep sweep contained exact `086/PCG-P` on 1/6. The
+parser nevertheless returned `86/PCG-P`, candidate search returned 0, and final
+identity was Level E. Incorrect/high-confidence identifications: 0/0.
+
+**Root cause:** promo extraction stopped at the first regex substring. The
+earlier OCR line `O86/PCG-P` matched from its second character as
+`86/PCG-P`; the later direct clean `086/PCG-P` was discarded. This was
+collector-number extraction/aggregation, not crop localization or missing OCR.
+
+**Regression test:**
+`TestValuator.test_real_mime_jr_footer_prefers_clean_complete_read` uses a
+privacy-minimized real footer crop plus a provenance/hash/OCR manifest. Before
+production change it failed exactly: expected `086/PCG-P`, received
+`86/PCG-P`. The adjacent bounded test proves the correction does not invent a
+zero from a sole glued read, preserves first-clean behavior when multiple cards
+show promo numbers, and rejects HP/year/partial/missing-slash noise.
+
+**Implementation:** `valuator._promo_footer_number()` prefers the first direct
+promo token with a clean alphanumeric boundary and retains the former glued
+substring only as a fallback. It does not pad, vote, catalog-snap, or raise
+confidence. Added the real crop/manifest, L49, the six-record evidence table,
+and refreshed the existing Mime Jr. failure record from its observed Level B
+human-footer category to Level C/catalog-derived-name status. The footer-human
+category is now 15/45 records / 14 unique pairs; total non-Level-A records stay
+45 because the exact name is still inferred from the sole number match.
+
+**Verification:** failing-first regression 0/1 before; new focused tests 2/2.
+Related identifier/profile/binder/route set: 31 total, 29 passed, 2 explicit
+fingerprint-asset skips, 0 failed. Full default `tests.py`: 145 total, 142
+passed, 3 explicit asset-dependent skips, 0 failed in 0.968s; production-corpus
+and no-network teardown guards passed. All 33 Python files AST-parsed; all four
+top-level dataset JSON files plus the fixture manifest parsed; `git diff
+--check` passed with line-ending notices. The known `build_fingerprints.py`
+invalid-escape `SyntaxWarning` remains and was not conflated with this unit.
+
+**Real-data status:** 12 real cached marketplace photos across two records,
+not synthetic degradation. Only the cropped Mime Jr. footer is retained; its
+manifest records both source/crop SHA-256 values and crop coordinates. OCR was
+local RapidOCR/ONNX; external OCR calls: 0. Successful read-only network during
+diagnosis/replay: 3 listing-page GETs, 12 source-image GETs, and 6 TCGplayer
+candidate-search POSTs (2 baseline, 2 query differential, 1 post-fix, 1 failure
+record refresh). No credential, message, offer, purchase, webhook, account,
+deployment, or push action occurred.
+
+**Safety result:** post-fix Mime Jr. is the single correct product at Level C,
+provisional confidence 73, with `via=unique number match`; the name is not
+called directly read. Coalossal remains Level E among six exact-number
+candidates. Across the two source-backed records: incorrect final printing 0
+before/0 after; incorrect high-confidence printing 0 before/0 after; unsafe
+abstention removal 0.
+
+**Limitations:** this is one current real footer defect, not validation of the
+other historical records. The required five/six-unique-real-case corpus could
+not be built: 4/6 sampled originals are unavailable. Exact crop coordinates and
+raw OCR were not historically retained for them. HASH-FIRST real-photo work is
+still blocked by absent fingerprint/catalog-image assets. Live TCGplayer search
+was observed today but remains external and can change; deterministic tests use
+only captured OCR and mocks.
+
+**Commit/branch:** focused local commit `801885b`; `main` began clean and 21
+commits ahead of `origin/main`, and is 22 ahead after this code/data commit.
+Nothing pushed. This documentation checkpoint follows locally.
+
+**Next unit:** on the Personal PC, acquire one original named source (best:
+M Blastoise-EX `22/108`, M Manectric-EX `024a/119`, Mimikyu V `068/172`, or a
+binder page), preserve source hash/raw OCR/crop provenance, and reproduce its
+current pipeline failure before modifying OCR. The next agent should first
+challenge whether clean-boundary preference ever suppresses a legitimate
+letter-adjacent promo footer; the glued-only fallback and multi-number tests
+are the current safety boundary.

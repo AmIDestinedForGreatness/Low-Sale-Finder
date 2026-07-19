@@ -4,7 +4,7 @@
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
 written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
-**143 total tests: 140 passed, 3 explicitly skipped, 0 failed; 48 lessons**
+**145 total tests: 142 passed, 3 explicitly skipped, 0 failed; 49 lessons**
 (2026-07-19).
 
 ## 2026-07-19 independent Codex audit
@@ -15,9 +15,21 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
   the canonical dataset path had already fixed that failure class.
 - Isolated the Flask regressions from production uploads/failure logging and
   replaced a machine-dependent warp/hash skip with deterministic regions/quads.
-- Full deterministic/offline suite: **143 total, 140 passed, 3 skips, 0 failed**.
+- Full deterministic/offline suite: **145 total, 142 passed, 3 skips, 0 failed**.
   Offline scraper/parser replay:
   **40/40**. All 33 Python files and the inline dashboard JavaScript parse.
+- Footer-OCR evidence audit: the claimed category was initially 16/45
+  per-card records but only 15 unique card-number pairs (Coalossal duplicated).
+  In a six-record sample, 2/6 original sources were retrievable and 4/6 were
+  not reproducible here. Coalossal's current OCR already reads `117/100` but
+  safely abstains among six same-number products. Rota's Mime Jr. exposed a
+  real parser defect: deep OCR contained exact `086/PCG-P`, but an earlier
+  glued `O86/PCG-P` substring won as `86/PCG-P`, returning no candidate.
+  Clean-boundary preference now produces the one correct product at Level C
+  (name catalog-derived), with 0 incorrect/high-confidence results across the
+  two source-backed records. The footer-human category is now 15/45 records /
+  14 unique pairs; total non-Level-A records remain 45. Full provenance and
+  unavailable-case limits are in `docs/FOOTER-OCR-AUDIT-2026-07-19.md`.
 - **Still unverified here:** real-photo perspective-warp/hash hit rate, route
   timing, and reaudit. This checkout has no `fingerprints.sqlite` and no
   `dataset/images`; synthetic wiring is not real-photo acceptance.

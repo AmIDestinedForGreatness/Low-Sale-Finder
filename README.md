@@ -34,8 +34,9 @@ separately.
 | `DIRECTIVE.md` | The governing rules: evidence levels A–E, no silent inference, banned language |
 | `HASH-FIRST-NEXT.md` | Perspective-warp unit: code/synthetic tests complete; real-photo/catalog acceptance still pending |
 | `docs/CLAUDE-CODE-AGENT-EVALUATION.md` | 2026-07-19 independent code, evidence, safety, and agent-work evaluation |
+| `docs/FOOTER-OCR-AUDIT-2026-07-19.md` | Source-backed audit of the claimed footer failures, real Mime Jr. regression, and unavailable-case handoff |
 | `AGENT-RELAY.md` | Chronological work log between CC (Claude Code) and CX (Codex). Read bottom-up |
-| `LESSONS.md` | 48 permanent lessons — every closed mistake, L1–L48 |
+| `LESSONS.md` | 49 permanent lessons — every closed mistake, L1–L49 |
 | `FAILURES.md` | Per-card failure database (auto-maintained; every non-Level-A ID gets a record) |
 | `VISION.md` | Product vision / where this is going |
 | `docs/archive/` | Completed unit specs, kept for their acceptance criteria |
@@ -47,7 +48,7 @@ separately.
 - **Never push without Yujin's explicit instruction.**
 - Every closed mistake becomes a permanent test in `tests.py` + a lesson in
   `LESSONS.md`. Nothing fails twice.
-- Full suite must stay green: `python tests.py` (143 total: 140 passed,
+- Full suite must stay green: `python tests.py` (145 total: 142 passed,
   3 explicit skips, 0 failed on this checkout as of 2026-07-19; see
   `PROGRESS.md` for environment limits).
 
