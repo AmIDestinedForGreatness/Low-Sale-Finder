@@ -510,6 +510,39 @@ class TestValuator(unittest.TestCase):
         name, number = valuator.guess_query(["Charizard", "006/165"])
         self.assertEqual(number, "006/165")
 
+    def test_real_mime_jr_footer_prefers_clean_complete_read(self):
+        """A letter-glued OCR fragment must not beat a later clean footer."""
+        fixture_path = os.path.join(
+            _REPO_ROOT, "tests", "fixtures", "footer_ocr",
+            "rota_mime_jr_086_pcg_p.json")
+        with open(fixture_path, encoding="utf-8") as fh:
+            fixture = json.load(fh)
+        crop_path = os.path.join(os.path.dirname(fixture_path),
+                                 fixture["retained_fixture"])
+        with open(crop_path, "rb") as fh:
+            crop_hash = hashlib.sha256(fh.read()).hexdigest()
+        self.assertEqual(crop_hash, fixture["retained_fixture_sha256"])
+        self.assertIn("real photo", fixture["source_classification"])
+        _, number = valuator.guess_query(fixture["ocr"]["deep_footer_lines"])
+        self.assertEqual(number, fixture["expected"]["collector_number"])
+
+    def test_promo_footer_boundary_preference_is_bounded(self):
+        # A sole letter-glued read remains a partial direct observation; the
+        # parser must not invent a leading zero merely because promos often
+        # use three digits.
+        _, number = valuator.guess_query(["O86/PCG-P"])
+        self.assertEqual(number, "86/PCG-P")
+        # Multiple clean numbers can mean multiple cards. Preserve the old
+        # first-clean behavior rather than voting or catalog-snapping.
+        _, number = valuator.guess_query(["065/PCG-P", "086/PCG-P"])
+        self.assertEqual(number, "065/PCG-P")
+        # Damage/year/watermark digits and incomplete promo tokens remain
+        # unusable collector-number evidence.
+        for lines in (["HP160", "130", "2026"],
+                      ["086/PCG"], ["086 PCG-P"]):
+            _, number = valuator.guess_query(lines)
+            self.assertIsNone(number)
+
     def test_body_text_never_becomes_the_name(self):
         name, _ = valuator.guess_query(
             ["Evolves from Slugma", "Discard the top card", "Pikachu"])

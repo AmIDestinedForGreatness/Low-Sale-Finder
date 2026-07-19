@@ -645,3 +645,21 @@ never silently inherit network permission from the machine.
 **Guard:** `test_network_attempt_recorder_survives_a_caught_exception` proves
 the recorder outlives a caught error. With the rate fixtures added, the full
 143-test run completes with no recorded real network attempt.
+
+### L49 - OCR pass order is not evidence quality (2026-07-19)
+**Mistake:** the real Rota's Mime Jr. deep-footer trace contained an early
+letter-glued `O86/PCG-P` and a later clean `086/PCG-P`. Collector extraction
+stopped at the first regex substring, silently turned the former into
+`86/PCG-P`, and discarded the exact direct read. That malformed query returned
+zero catalog products even though `086/PCG-P` returns the one correct product.
+**Rule:** preserve every raw OCR line and prefer a collector token with a clean
+boundary over a substring beginning inside another alphanumeric token. Keep a
+glued substring only as a fallback; do not invent a leading zero, vote
+correlated preprocessing passes into confidence, or snap to a nearby catalog
+number. Parsing quality must be decided from direct text evidence before
+catalog lookup.
+**Guard:**
+`test_real_mime_jr_footer_prefers_clean_complete_read` loads the provenance
+manifest captured from the real source photo. The bounded adversarial test
+keeps a sole glued read unchanged, preserves first-clean behavior for multiple
+cards, and rejects HP/year/partial/missing-slash noise.

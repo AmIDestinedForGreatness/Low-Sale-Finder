@@ -338,13 +338,13 @@ Every non-Level-A identification produces an improvement record.
 - **Regression Test Requirement:** required for the failure class when closed
 
 ### Rota's Mime Jr.|086/PCG-P|Rota's Mime Jr. 086/PCG-P
-- **Problem:** Rota's Mime Jr. 086/PCG-P - automated OCR required a human read
-- **Cause:** read directly from the footer by a human eye after OCR failed
-- **Current Solution:** manual human eye gate
-- **Future Solution:** add targeted preprocessing/provider coverage for this failure pattern
-- **Status:** Pending - manual path works; automated path incomplete
+- **Problem:** Rota's Mime Jr. 086/PCG-P - identity still uses inference
+- **Cause:** OCR did not directly establish every field needed for an exact printing
+- **Current Solution:** the available fragments resolved via unique number match; adversarial search: Adversarial search tested 1 catalog row(s); no plausible competing printing survived the direct evidence.
+- **Future Solution:** obtain direct evidence for the missing or collision-sensitive dimension
+- **Status:** Pending - mitigated, not fully solved
 - **Evidence Missing:** none recorded
-- **Strongest Alternative:** {'pid': 613498, 'name': "Rota's Mime Jr. - 097/PCG-P", 'set': 'PCG-P Promotional cards', 'number': '097/PCG-P', 'line': 'Pokemon Japan', 'source': 'existing_candidates', 'collision_basis': ['card_name', 'set'], 'collision_conflicts': ['card_number'], 'number_relation': 'different', 'name_similarity': 1.0, 'excluded_by': 'available direct evidence'}
+- **Strongest Alternative:** None
 - **Regression Test Requirement:** required for the failure class when closed
 
 ### Scizor-EX|119/122|Scizor 119/122

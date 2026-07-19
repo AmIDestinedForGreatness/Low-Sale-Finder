@@ -52,6 +52,9 @@ _NUM_RE = re.compile(r"\b(\d{1,3})\s*/\s*(\d{1,3})\b|"
 _PROMO_SERIES = frozenset({"DP-P", "HGSS-P", "BW-P", "XY-P", "SM-P",
                            "SWSH-P", "S-P", "SV-P"})
 
+_PROMO_FOOTER_RE = re.compile(
+    r"(?<!\d)(\d{1,3})\s*/\s*([A-Za-z]{1,4}\s*-\s*[Pp])\b")
+
 
 _RAPID = None
 
@@ -595,6 +598,27 @@ def dex_names(lines):
         conn.close()
 
 
+def _promo_footer_number(lines):
+    """Prefer a clean direct promo-footer read over letter-glued variants.
+
+    OCR variants are ordered by crop/pass, not by textual quality. Keep the
+    former letter-glued substring behavior only as a fallback, so a sole
+    ``O86/PCG-P`` remains observable while a later direct ``086/PCG-P`` wins.
+    No missing digit is invented here.
+    """
+    glued_fallback = None
+    for line in lines:
+        for match in _PROMO_FOOTER_RE.finditer(line):
+            value = (match.group(1) + "/"
+                     + match.group(2).upper().replace(" ", ""))
+            previous = line[match.start() - 1] if match.start() else ""
+            if not previous or not previous.isalnum():
+                return value
+            if glued_fallback is None:
+                glued_fallback = value
+    return glued_fallback
+
+
 def guess_query(lines):
     """Best-guess card name + collector number from OCR lines.
     The name is printed big near the top; body text is filtered by _NOISE.
@@ -614,11 +638,7 @@ def guess_query(lines):
     if not number:
         # JP/KR PROMO footers use a LETTER denominator ("034/XY-P",
         # "197/SV-P", "065/PCG-P") — the digit-only patterns never saw them
-        for ln in lines:
-            m = re.search(r"(?<!\d)(\d{1,3})\s*/\s*([A-Za-z]{1,4}\s*-\s*[Pp])\b", ln)
-            if m:
-                number = m.group(1) + "/" + m.group(2).upper().replace(" ", "")
-                break
+        number = _promo_footer_number(lines)
     if not number:
         # GALLERY numbering letters BOTH sides ("TG26/TG30", "GG12/GG70").
         # Both sides share the same prefix — trim OCR glue ("WGG12/GG70")
