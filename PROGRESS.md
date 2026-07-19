@@ -4,7 +4,7 @@
 
 The compounding rule: every mistake becomes a permanent test (`tests.py`) and a
 written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
-**145 total tests: 142 passed, 3 explicitly skipped, 0 failed; 49 lessons**
+**156 total tests: 153 passed, 3 explicitly skipped, 0 failed; 50 lessons**
 (2026-07-19).
 
 ## 2026-07-19 independent Codex audit
@@ -15,7 +15,7 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
   the canonical dataset path had already fixed that failure class.
 - Isolated the Flask regressions from production uploads/failure logging and
   replaced a machine-dependent warp/hash skip with deterministic regions/quads.
-- Full deterministic/offline suite: **145 total, 142 passed, 3 skips, 0 failed**.
+- Full deterministic/offline suite: **156 total, 153 passed, 3 skips, 0 failed**.
   Offline scraper/parser replay:
   **40/40**. All 33 Python files and the inline dashboard JavaScript parse.
 - Footer-OCR evidence audit: the claimed category was initially 16/45
@@ -30,6 +30,17 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
   two source-backed records. The footer-human category is now 15/45 records /
   14 unique pairs; total non-Level-A records remain 45. Full provenance and
   unavailable-case limits are in `docs/FOOTER-OCR-AUDIT-2026-07-19.md`.
+- Frozen acceptance corpus v1: 0 retained real full-card samples, 1 retained
+  real footer crop, and 44/45 historical per-card failure records without a
+  durable asset. The newly acquired third-party eBay Blastoise front/back pair
+  was rejected at the retention gate; hashes/URLs and the decision are recorded,
+  but no image or derivative is committed or executed. The isolated offline run
+  executed 1/1 manifest asset: exact footer OCR 0/1 (`086/PCG` partial), frozen
+  parser replay 1/1 (`086/PCG-P`), full-card success 0/0, network attempts 0,
+  production changes 0, HASH-FIRST not executed, and acceptance pass false.
+  Raw latency is reported per sample; percentiles are not calculated at n=1.
+  Eleven permanent corpus-integrity tests bring the current suite to **156 total,
+  153 passed, 3 skips, 0 failed**.
 - **Still unverified here:** real-photo perspective-warp/hash hit rate, route
   timing, and reaudit. This checkout has no `fingerprints.sqlite` and no
   `dataset/images`; synthetic wiring is not real-photo acceptance.
@@ -79,7 +90,7 @@ written lesson (`LESSONS.md`). Current reproducible suite on this checkout:
   catches the injected error. It exposed three settings-route calls and one
   valuation call that inherited stale exchange-rate cache behavior. Those
   tests now inject deterministic rate data. Live integration requires explicit
-  `POKESTOP_TEST_ALLOW_NETWORK=1`; the default 143-test suite makes no recorded
+  `POKESTOP_TEST_ALLOW_NETWORK=1`; the default 156-test suite makes no recorded
   in-process Python network attempt.
 
 ## Version history

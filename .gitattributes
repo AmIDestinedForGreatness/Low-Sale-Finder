@@ -1,0 +1,6 @@
+# Acceptance checksums must be byte-stable across Windows/Linux checkouts.
+acceptance/**/*.py text eol=lf
+acceptance/**/*.json text eol=lf
+acceptance/**/*.jsonl text eol=lf
+acceptance/**/*.md text eol=lf
+acceptance/**/*.jpg -text

@@ -2206,6 +2206,248 @@ class TestValuatorOcrRoute(unittest.TestCase):
         self.assertEqual(result["number"], "197/SV-P")
 
 
+class TestIdentificationAcceptanceCorpus(unittest.TestCase):
+    """F-07: frozen corpus integrity, isolation, and honest accounting."""
+
+    def _image(self, path):
+        from PIL import Image
+        Image.new("RGB", (24, 32), (230, 230, 230)).save(path, "PNG")
+
+    def _sha(self, path):
+        with open(path, "rb") as handle:
+            return hashlib.sha256(handle.read()).hexdigest()
+
+    def _record(self, checksum, *, asset_path="assets/card.png",
+                benchmark="footer-ocr", asset_type="footer-crop"):
+        return {
+            "manifest_schema": "identification-acceptance-manifest-v1",
+            "sample_id": "sample-001",
+            "corpus_version": "corpus-v1",
+            "asset_path": asset_path,
+            "sha256": checksum,
+            "asset_type": asset_type,
+            "benchmark": benchmark,
+            "provenance": {
+                "source_uri": "owner:test-fixture",
+                "retrieval_date": "2026-07-19",
+                "source_classification": "isolated generated test asset",
+            },
+            "retention": {
+                "status": "permitted",
+                "basis": "generated inside this temporary test directory",
+            },
+            "ground_truth": {
+                "authority": ["test fixture definition"],
+                "confidence": "high",
+                "system_prediction_used": False,
+                "listing_title_used": False,
+            },
+            "expected": {
+                "name": "Testmon",
+                "set": "Test Set",
+                "number": "001/100",
+                "language": "English",
+                "finish": None,
+                "variant": None,
+                "unknown_fields": ["finish", "variant"],
+            },
+            "difficulty_tags": ["generated-test"],
+            "known_failure_category": "test-only",
+        }
+
+    def _corpus(self, root, record=None, raw_manifest=None, with_asset=True):
+        from pathlib import Path
+        corpus = Path(root) / "acceptance" / "corpus-v1"
+        assets = corpus / "assets"
+        assets.mkdir(parents=True)
+        asset = assets / "card.png"
+        if with_asset:
+            self._image(asset)
+        if raw_manifest is not None:
+            (corpus / "manifest.jsonl").write_text(
+                raw_manifest, encoding="utf-8")
+        elif record is not None:
+            (corpus / "manifest.jsonl").write_text(
+                json.dumps(record) + "\n", encoding="utf-8")
+        else:
+            (corpus / "manifest.jsonl").write_text("", encoding="utf-8")
+        return corpus, asset
+
+    def _fixed_evaluator(self, record, asset_path, corpus_root, temp_root):
+        return {
+            "executed": True,
+            "status": "passed",
+            "image_ocr": {
+                "exact_number": True,
+                "observed_number": "001/100",
+                "latency_ms": 1.0,
+            },
+            "parser_replay": {"executed": False, "latency_ms": None},
+            "final_identification": {"executed": False},
+            "evidence": {
+                "catalog_inference_used": False,
+                "zero_inference_exact_number": True,
+            },
+            "latency_ms": 1.5,
+        }
+
+    def test_valid_manifest_loads(self):
+        from acceptance import corpus_runner
+        with tempfile.TemporaryDirectory() as td:
+            corpus, asset = self._corpus(td)
+            record = self._record(self._sha(asset))
+            (corpus / "manifest.jsonl").write_text(
+                json.dumps(record) + "\n", encoding="utf-8")
+            loaded = corpus_runner.load_manifest(corpus)
+        self.assertEqual([row["sample_id"] for row in loaded], ["sample-001"])
+
+    def test_malformed_manifest_is_rejected(self):
+        from acceptance import corpus_runner
+        with tempfile.TemporaryDirectory() as td:
+            corpus, _ = self._corpus(td, raw_manifest="{not-json\n")
+            with self.assertRaises(corpus_runner.ManifestError):
+                corpus_runner.load_manifest(corpus)
+
+    def test_duplicate_sample_id_is_rejected(self):
+        from acceptance import corpus_runner
+        with tempfile.TemporaryDirectory() as td:
+            corpus, asset = self._corpus(td)
+            record = self._record(self._sha(asset))
+            (corpus / "manifest.jsonl").write_text(
+                json.dumps(record) + "\n" + json.dumps(record) + "\n",
+                encoding="utf-8")
+            with self.assertRaisesRegex(corpus_runner.ManifestError,
+                                        "duplicate sample_id"):
+                corpus_runner.load_manifest(corpus)
+
+    def test_footer_crop_cannot_enter_full_card_benchmark(self):
+        from acceptance import corpus_runner
+        with tempfile.TemporaryDirectory() as td:
+            corpus, asset = self._corpus(td)
+            record = self._record(
+                self._sha(asset), benchmark="full-card",
+                asset_type="footer-crop")
+            (corpus / "manifest.jsonl").write_text(
+                json.dumps(record) + "\n", encoding="utf-8")
+            with self.assertRaisesRegex(corpus_runner.ManifestError,
+                                        "cannot enter"):
+                corpus_runner.load_manifest(corpus)
+
+    def test_retention_permission_is_required(self):
+        from acceptance import corpus_runner
+        with tempfile.TemporaryDirectory() as td:
+            corpus, asset = self._corpus(td)
+            record = self._record(self._sha(asset))
+            record["retention"]["status"] = "unknown"
+            (corpus / "manifest.jsonl").write_text(
+                json.dumps(record) + "\n", encoding="utf-8")
+            with self.assertRaisesRegex(corpus_runner.ManifestError,
+                                        "permitted retention"):
+                corpus_runner.load_manifest(corpus)
+
+    def test_missing_asset_is_unavailable_not_pass(self):
+        from acceptance import corpus_runner
+        with tempfile.TemporaryDirectory() as td:
+            corpus, _ = self._corpus(td, with_asset=False)
+            record = self._record("0" * 64)
+            (corpus / "manifest.jsonl").write_text(
+                json.dumps(record) + "\n", encoding="utf-8")
+            report = corpus_runner.run_corpus(
+                corpus, repo_root=td, evaluator=self._fixed_evaluator,
+                generated_at="2026-07-19T00:00:00+00:00", commit="test")
+        self.assertEqual(report["sample_outcomes"][0]["status"], "unavailable")
+        self.assertFalse(report["sample_outcomes"][0]["counted_as_pass"])
+        self.assertEqual(report["execution_accounting"]["executed"], 0)
+        self.assertFalse(report["acceptance_pass"])
+
+    def test_checksum_mismatch_is_rejected_before_execution(self):
+        from acceptance import corpus_runner
+        with tempfile.TemporaryDirectory() as td:
+            corpus, _ = self._corpus(td)
+            record = self._record("f" * 64)
+            (corpus / "manifest.jsonl").write_text(
+                json.dumps(record) + "\n", encoding="utf-8")
+            evaluator = mock.Mock(side_effect=AssertionError("must not run"))
+            report = corpus_runner.run_corpus(
+                corpus, repo_root=td, evaluator=evaluator,
+                generated_at="2026-07-19T00:00:00+00:00", commit="test")
+        evaluator.assert_not_called()
+        self.assertIn("checksum mismatch",
+                      report["sample_outcomes"][0]["reason"])
+        self.assertFalse(report["acceptance_pass"])
+
+    def test_undecodable_asset_is_unavailable(self):
+        from acceptance import corpus_runner
+        with tempfile.TemporaryDirectory() as td:
+            corpus, asset = self._corpus(td)
+            asset.write_bytes(b"not an image")
+            record = self._record(self._sha(asset))
+            (corpus / "manifest.jsonl").write_text(
+                json.dumps(record) + "\n", encoding="utf-8")
+            report = corpus_runner.run_corpus(
+                corpus, repo_root=td, evaluator=self._fixed_evaluator,
+                generated_at="2026-07-19T00:00:00+00:00", commit="test")
+        self.assertEqual(report["sample_outcomes"][0]["status"], "unavailable")
+        self.assertIn("undecodable", report["sample_outcomes"][0]["reason"])
+
+    def test_network_attempt_is_blocked_recorded_and_invalidates_run(self):
+        from acceptance import corpus_runner
+        import requests
+        with tempfile.TemporaryDirectory() as td:
+            corpus, asset = self._corpus(td)
+            record = self._record(self._sha(asset))
+            (corpus / "manifest.jsonl").write_text(
+                json.dumps(record) + "\n", encoding="utf-8")
+
+            def network_evaluator(*args):
+                requests.get("https://example.invalid/corpus")
+
+            report = corpus_runner.run_corpus(
+                corpus, repo_root=td, evaluator=network_evaluator,
+                generated_at="2026-07-19T00:00:00+00:00", commit="test")
+        self.assertEqual(report["network"]["attempt_count"], 1)
+        self.assertEqual(report["sample_outcomes"][0]["status"], "error")
+        self.assertFalse(report["measurement_valid"])
+        self.assertFalse(report["acceptance_pass"])
+
+    def test_zero_executed_cases_cannot_report_success(self):
+        from acceptance import corpus_runner
+        with tempfile.TemporaryDirectory() as td:
+            corpus, _ = self._corpus(td, with_asset=False)
+            report = corpus_runner.run_corpus(
+                corpus, repo_root=td, evaluator=self._fixed_evaluator,
+                generated_at="2026-07-19T00:00:00+00:00", commit="test")
+        self.assertTrue(report["execution_accounting"]["zero_executed_cases"])
+        self.assertFalse(report["measurement_valid"])
+        self.assertFalse(report["acceptance_pass"])
+
+    def test_replay_is_deterministic_and_uses_raw_latencies(self):
+        from acceptance import corpus_runner
+        with tempfile.TemporaryDirectory() as td:
+            corpus, asset = self._corpus(td)
+            record = self._record(self._sha(asset))
+            (corpus / "manifest.jsonl").write_text(
+                json.dumps(record) + "\n", encoding="utf-8")
+            kwargs = {
+                "repo_root": td,
+                "evaluator": self._fixed_evaluator,
+                "generated_at": "2026-07-19T00:00:00+00:00",
+                "commit": "test",
+            }
+            first = corpus_runner.run_corpus(corpus, **kwargs)
+            second = corpus_runner.run_corpus(corpus, **kwargs)
+        self.assertEqual(first["deterministic_evaluation_sha256"],
+                         second["deterministic_evaluation_sha256"])
+        self.assertTrue(first["acceptance_pass"])
+        performance = first["metrics"]["performance"]
+        self.assertEqual(performance["sample_count"], 1)
+        self.assertEqual(performance["raw_per_sample_latencies"][0]
+                         ["total_latency_ms"], 1.5)
+        self.assertIsNone(performance["p50_ms"])
+        self.assertIn("not meaningful", performance["percentile_note"])
+        self.assertFalse(first["production_state"]["modified"])
+
+
 class TestCardWarp(unittest.TestCase):
     """HASH-FIRST-NEXT unit (2026-07-19, built on Mom's PC): perspective-warp
     detected card quads to flat canonical rectangles before hashing. The

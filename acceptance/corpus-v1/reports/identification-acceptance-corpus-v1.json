@@ -1,0 +1,195 @@
+{
+  "acceptance_pass": false,
+  "asset_availability": {
+    "errors": 0,
+    "manifest_records": 1,
+    "skipped": 0,
+    "unavailable": 0,
+    "verified_and_executed": 1
+  },
+  "cache": {
+    "ocr_cache": "per-run temporary directory",
+    "production_cache_used": false
+  },
+  "corpus_version": "corpus-v1",
+  "deterministic_evaluation_sha256": "58603a8c61e168b6aa914761e3368836e8b135169a08e2f8a93293f86e83cf13",
+  "evaluated_commit": "d35f82224893c50ee71299286b998abbbdae5380",
+  "execution_accounting": {
+    "errors": 0,
+    "executed": 1,
+    "failed": 1,
+    "passed": 0,
+    "skipped": 0,
+    "unavailable": 0,
+    "zero_executed_cases": false
+  },
+  "generated_at": "2026-07-19T05:30:00+00:00",
+  "manifest_sha256": "72292b8047dd3132478c50eb65b8d4107b832c1817fce18ffde272aa379dc724",
+  "measurement_valid": true,
+  "metrics": {
+    "evidence": {
+      "catalog_inference_used": {
+        "denominator": 1,
+        "display": "0/1",
+        "numerator": 0,
+        "representative_rate": null
+      },
+      "f06_level_a_policy": "unresolved; measured, not changed",
+      "zero_inference_exact_number": {
+        "denominator": 1,
+        "display": "0/1",
+        "numerator": 0,
+        "representative_rate": null
+      }
+    },
+    "footer_ocr": {
+      "exact_collector_number": {
+        "denominator": 1,
+        "display": "0/1",
+        "numerator": 0,
+        "representative_rate": null
+      },
+      "executed": 1,
+      "frozen_parser_replay_exact": {
+        "denominator": 1,
+        "display": "1/1",
+        "numerator": 1,
+        "representative_rate": null
+      },
+      "full_card_identification_counted": 0
+    },
+    "full_card": {
+      "abstention": {
+        "denominator": 0,
+        "display": "0/0",
+        "numerator": 0,
+        "representative_rate": null
+      },
+      "coverage": {
+        "denominator": 0,
+        "display": "0/0",
+        "numerator": 0,
+        "representative_rate": null
+      },
+      "exact_printing_correct": {
+        "denominator": 0,
+        "display": "0/0",
+        "numerator": 0,
+        "representative_rate": null
+      },
+      "exact_printing_precision": {
+        "denominator": 0,
+        "display": "0/0",
+        "numerator": 0,
+        "representative_rate": null
+      },
+      "executed": 0,
+      "high_confidence_false_positive": {
+        "denominator": 0,
+        "display": "0/0",
+        "numerator": 0,
+        "representative_rate": null
+      }
+    },
+    "hash_first": {
+      "executed": false,
+      "reason": "no retained full-card asset and no fingerprints.sqlite/catalog images"
+    },
+    "performance": {
+      "p50_ms": null,
+      "p90_ms": null,
+      "p95_ms": null,
+      "percentile_note": "percentiles not meaningful at this sample size",
+      "raw_per_sample_latencies": [
+        {
+          "benchmark": "footer-ocr",
+          "image_ocr_latency_ms": 2115.841,
+          "parser_replay_latency_ms": 0.132,
+          "sample_id": "footer-rota-mime-jr-086-pcg-p-001",
+          "total_latency_ms": 2116.891
+        }
+      ],
+      "sample_count": 1
+    },
+    "synthetic_robustness": {
+      "executed": 0
+    }
+  },
+  "network": {
+    "allowed": false,
+    "attempt_count": 0,
+    "attempts": [],
+    "boundary": "in-process Requests and socket connect/connect_ex"
+  },
+  "production_state": {
+    "changes": [],
+    "modified": false,
+    "protected_file_count": 28
+  },
+  "report_schema": "identification-acceptance-report-v1",
+  "sample_outcomes": [
+    {
+      "asset_sha256_actual": "853bcfd11d0e56a5d4c45ed30dd5881e579f5a1f903ee0253d532fa4632d5524",
+      "asset_type": "footer-crop",
+      "benchmark": "footer-ocr",
+      "counted_as_pass": false,
+      "evidence": {
+        "catalog_inference_used": false,
+        "high_confidence": false,
+        "level": null,
+        "zero_inference_exact_number": false
+      },
+      "executed": true,
+      "final_identification": {
+        "executed": false,
+        "reason": "footer-crop samples cannot enter the full-card benchmark"
+      },
+      "image_dimensions": [
+        650,
+        190
+      ],
+      "image_ocr": {
+        "cache": "isolated temporary cache; no production cache read",
+        "exact_number": false,
+        "executed": true,
+        "latency_ms": 2115.841,
+        "observed_name": null,
+        "observed_number": null,
+        "raw_lines": [
+          "086/PCG"
+        ]
+      },
+      "latency_ms": 2116.891,
+      "parser_replay": {
+        "exact_number": true,
+        "executed": true,
+        "input_line_count": 9,
+        "latency_ms": 0.132,
+        "observed_number": "086/PCG-P"
+      },
+      "sample_id": "footer-rota-mime-jr-086-pcg-p-001",
+      "status": "failed"
+    }
+  ],
+  "source_inventory": {
+    "decision_counts": {
+      "admitted-footer-only": 1,
+      "excluded-synthetic-placeholder": 1,
+      "unavailable-asset-not-retained": 1,
+      "unavailable-retention-not-permitted": 1
+    },
+    "path": "source-inventory.json",
+    "sha256": "e795f00a5b2e3cad7d4d812742aba4952e101da43549ed428c9e1685b8e14b5d",
+    "summary": {
+      "durable_real_footer_crop_assets": 1,
+      "durable_real_full_card_assets": 0,
+      "historical_card_failure_records": 45,
+      "historical_card_failure_records_with_durable_asset": 1,
+      "historical_card_failure_records_without_durable_asset": 44,
+      "synthetic_identification_assets": 0
+    }
+  },
+  "unresolved_policy_contradictions": [
+    "F-06: Level A zero-inference wording conflicts with catalog-derived behavior; not resolved by this unit"
+  ]
+}

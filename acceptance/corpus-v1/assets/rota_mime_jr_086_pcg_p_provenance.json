@@ -1,0 +1,52 @@
+{
+  "fixture_version": 1,
+  "fixture_id": "rota-mime-jr-086-pcg-p-footer-20260719",
+  "source_failure_record": "Rota's Mime Jr.|086/PCG-P|Rota's Mime Jr. 086/PCG-P",
+  "source_listing_url": "https://www.carousell.ph/p/pokemon-card-rota-s-mime-jr-086-pcg-p-vintage-mcdonalds-japanese-promo-1413137412/",
+  "source_image_url": "https://media.karousell.com/media/photos/products/2026/1/2/pokemon_card_rotas_mime_jr_086_1767349995_9a4415a6.jpg",
+  "source_retrieved_date": "2026-07-19",
+  "source_image_sha256": "d0683c1d4aa68e6eb31dff71c4cbac92818805e0799ff52de655a94e8abaa9d7",
+  "retained_fixture": "rota_mime_jr_086_pcg_p_footer.jpg",
+  "retained_fixture_sha256": "853bcfd11d0e56a5d4c45ed30dd5881e579f5a1f903ee0253d532fa4632d5524",
+  "retained_crop_box_xyxy": [80, 760, 730, 950],
+  "source_classification": "cached marketplace image; real photo; privacy-minimized footer crop",
+  "retention_basis": "The source is the repository owner's Yujin's Pokestop seller listing. Only the lower card/footer crop is retained for a bounded identification regression; the room and most card artwork are excluded.",
+  "expected": {
+    "card_name": "Rota's Mime Jr.",
+    "collector_number": "086/PCG-P",
+    "language": "Japanese",
+    "exact_set_identification_possible": true,
+    "expected_decision": "identify exact printing from the directly read number plus one exact catalog product; the name remains catalog-derived"
+  },
+  "ocr": {
+    "initial_full_frame_lines": [
+      "HP50",
+      "\u5728\u56de\u6295\u624d\u76f8\u624b",
+      "5\u3001\u81ea\u5206\u76f8\u624b\u5de65h\u5bf8\u3002",
+      "086/PC"
+    ],
+    "deep_footer_lines": [
+      "HP50@",
+      "HP50",
+      "\u5de61\u56de\u6295F\u624d\u6bdb5\u3001\u76f8\u624b\u5fd85\u5bf8\u5426\u3002",
+      "5\u3001\u81ea\u5206\u4e03\u76f8\u624b\u5de6\u4e8ch5h\u5bf8\u3002",
+      "usKoukSaio",
+      "\u5de61\u56de\u6295\u624d5\u3001\u76f8\u624b5\u5bf8\u3002",
+      "O86/PCG-P",
+      "O86/PCG.",
+      "086/PCG-P"
+    ],
+    "expected_raw_collector_text": "086/PCG-P",
+    "expected_normalized_collector_number": "086/PCG-P"
+  },
+  "baseline_2026_07_19": {
+    "footer_visible_to_human": true,
+    "footer_crop_located_by_existing_deep_sweep": true,
+    "parser_output_before_fix": "86/PCG-P",
+    "candidate_count_before_fix": 0,
+    "final_identity_before_fix": null,
+    "failure_stage": "collector-number extraction selected an earlier letter-glued substring and discarded a later clean complete reading",
+    "external_ocr_calls": 0,
+    "local_ocr_engine": "rapidocr-onnxruntime 1.2.3"
+  }
+}

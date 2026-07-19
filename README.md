@@ -35,8 +35,9 @@ separately.
 | `HASH-FIRST-NEXT.md` | Perspective-warp unit: code/synthetic tests complete; real-photo/catalog acceptance still pending |
 | `docs/CLAUDE-CODE-AGENT-EVALUATION.md` | 2026-07-19 independent code, evidence, safety, and agent-work evaluation |
 | `docs/FOOTER-OCR-AUDIT-2026-07-19.md` | Source-backed audit of the claimed footer failures, real Mime Jr. regression, and unavailable-case handoff |
+| `acceptance/corpus-v1/README.md` | Frozen acceptance manifest, provenance/retention inventory, offline runner contract, and numeric baseline reports |
 | `AGENT-RELAY.md` | Chronological work log between CC (Claude Code) and CX (Codex). Read bottom-up |
-| `LESSONS.md` | 49 permanent lessons — every closed mistake, L1–L49 |
+| `LESSONS.md` | 50 permanent lessons — every closed mistake, L1–L50 |
 | `FAILURES.md` | Per-card failure database (auto-maintained; every non-Level-A ID gets a record) |
 | `VISION.md` | Product vision / where this is going |
 | `docs/archive/` | Completed unit specs, kept for their acceptance criteria |
@@ -48,7 +49,7 @@ separately.
 - **Never push without Yujin's explicit instruction.**
 - Every closed mistake becomes a permanent test in `tests.py` + a lesson in
   `LESSONS.md`. Nothing fails twice.
-- Full suite must stay green: `python tests.py` (145 total: 142 passed,
+- Full suite must stay green: `python tests.py` (156 total: 153 passed,
   3 explicit skips, 0 failed on this checkout as of 2026-07-19; see
   `PROGRESS.md` for environment limits).
 
@@ -88,6 +89,15 @@ edits and private upload contents stay outside this guard.
 Deterministic tests also block Requests and in-process socket connections and
 fail at module teardown even when application fallback catches the error. Live
 integration tests must opt in explicitly with `POKESTOP_TEST_ALLOW_NETWORK=1`.
+
+The frozen identification acceptance corpus lives under `acceptance/corpus-v1/`.
+It currently contains 0 retained full-card samples and 1 real footer-only crop;
+these benchmarks are never blended. The offline runner checksum-verifies assets,
+uses a temporary OCR cache, blocks live network, snapshots production data, and
+reports raw per-sample latency. Its current baseline is footer exact OCR 0/1 and
+frozen parser replay 1/1; this is a valid measurement but not an acceptance pass.
+Historical records without retained source images and third-party photos without
+commit permission remain unavailable rather than becoming fabricated successes.
 
 ## Per-machine setup notes
 

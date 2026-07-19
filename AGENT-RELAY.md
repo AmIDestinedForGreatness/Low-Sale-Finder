@@ -1422,3 +1422,72 @@ current pipeline failure before modifying OCR. The next agent should first
 challenge whether clean-boundary preference ever suppresses a legitimate
 letter-adjacent promo footer; the glued-only fallback and multi-number tests
 are the current safety boundary.
+
+### CG | 2026-07-19 afternoon — frozen acceptance corpus primary unit
+
+**Verified start:** `main` was clean at `d35f822`, 25 commits ahead of
+`origin/main`. The bare Windows Store `python` launcher could not start; the
+installed interpreter ran 145 tests: 142 passed, 3 skipped, 0 failed, matching
+the prior `145/142/3/0` snapshot. `uploads/` still held only three identical
+8227-byte 600x800 pure-white JPEGs and twelve identical generated crops. The
+Mime Jr. footer crop was the only durable real identification asset; no
+Coalossal original, `fingerprints.sqlite`, or catalog-image directory existed.
+
+**Provenance gate:** before corpus use, the newly downloaded M Blastoise-EX
+`22/108` source was traced to eBay product page `3043379793`, listing
+`136898980697`, with 1200x1600 seller front/back photographs. Their SHA-256
+values and image URLs are recorded in `source-inventory.json`. No explicit
+reusable license or seller permission was found. Cropping could remove the
+scene and visible PSA serial but would not create retention rights, so neither
+photo nor a derivative was committed, executed, or counted.
+
+**Corpus/framework:** `acceptance/corpus-v1/` now has a versioned JSONL
+manifest, byte-stable checksummed assets, complete expected fields and unknown
+markers, independent ground-truth/retention statements, a source decision
+inventory, and separated reports. Executable contents are 0 real full-card, 1
+real footer crop, and 0 synthetic samples. The inventory records 44/45
+historical per-card failure records without a durable asset. Footer samples
+cannot enter full-card metrics. Missing, changed, malformed, undecodable,
+path-escaping, unlicensed, or unsupported inputs fail closed as unavailable or
+errors and never pass.
+
+**Runner/isolation:** `acceptance/corpus_runner.py` verifies schema, IDs,
+checksums, sidecar traces, and image decode; blocks in-process Requests and
+socket connections; uses a temporary OCR cache; snapshots `FAILURES.md`,
+`dataset/`, `uploads/`, `data/`, and root databases; and emits versioned JSON
+plus Markdown. A deterministic semantic hash excludes runtime/timestamp noise.
+F-06 remains an explicit unresolved policy contradiction. Full-card execution
+without a frozen offline dependency bundle is refused rather than reported as
+partial success.
+
+**Measured baseline:** 1/1 manifest asset executed, 0 passed, 1 failed, 0
+unavailable, 0 errors, 0 skips; measurement valid, acceptance pass false. The
+retained Mime Jr. crop's fresh local OCR returned partial `086/PCG`, so exact
+image OCR is 0/1. The checksummed frozen deep-OCR trace parses exact
+`086/PCG-P`, so parser replay is 1/1. Full-card printing/precision/coverage/
+abstention/high-confidence-false-positive counts are each 0/0; footer samples
+counted as full-card success: 0. Network attempts: 0. Production changes: 0.
+Catalog inference used: 0/1. HASH-FIRST: 0 executions. The final raw sample
+timing was 2116.891 ms total, 2115.841 ms image OCR, 0.132 ms parser replay;
+p50/p90/p95 are omitted because n=1. Two real runs produced deterministic hash
+`58603a8c61e168b6aa914761e3368836e8b135169a08e2f8a93293f86e83cf13`.
+
+**Permanent guards/verification:** `TestIdentificationAcceptanceCorpus` adds
+11 tests for valid/malformed/duplicate manifests, benchmark separation,
+retention permission, missing/checksum/decode failures, network blocking,
+zero-execution accounting, deterministic replay, raw latency, and production
+isolation. Focused: 11/11. Full: 156 total, 153 passed, 3 explicit
+asset-dependent skips, 0 failed in 1.061s. All 35 Python files AST-parsed; all
+9 JSON files parsed; the one manifest record validated; `git diff --check`
+passed with line-ending notices. The pre-existing `build_fingerprints.py`
+invalid-escape `SyntaxWarning` remains.
+
+**Docs/Git/next:** README, PROGRESS, evaluation F-07, and L50 now state the
+numeric baseline and residual. This primary unit is one focused local commit
+named `test: add frozen identification acceptance corpus`; the resulting hash
+is reported in the final handoff because a commit cannot contain its own hash.
+Nothing pushed. The next unit may fix exactly one reproduced defect: the
+retained footer crop's image OCR stops at `086/PCG` even though the frozen
+deep-OCR parser path is exact. Challenge the name/set ground-truth authority
+first, because the footer crop directly proves the number/language but not the
+card name, and preserve false-positive abstention before accepting recall.

@@ -1,0 +1,70 @@
+{
+  "schema": "identification-acceptance-source-inventory-v1",
+  "corpus_version": "corpus-v1",
+  "inventory_date": "2026-07-19",
+  "summary": {
+    "durable_real_full_card_assets": 0,
+    "durable_real_footer_crop_assets": 1,
+    "synthetic_identification_assets": 0,
+    "historical_card_failure_records": 45,
+    "historical_card_failure_records_with_durable_asset": 1,
+    "historical_card_failure_records_without_durable_asset": 44
+  },
+  "records": [
+    {
+      "source_id": "rota-mime-jr-owner-listing-footer",
+      "decision": "admitted-footer-only",
+      "reason": "Existing owner-source retention record permits the privacy-minimized footer crop. It cannot enter the full-card benchmark.",
+      "corpus_sample_id": "footer-rota-mime-jr-086-pcg-p-001"
+    },
+    {
+      "source_id": "ebay-m-blastoise-ex-22-108-psa6-20260719",
+      "decision": "unavailable-retention-not-permitted",
+      "origin": {
+        "discovery_page": "https://www.ebay.com/p/3043379793",
+        "listing_page": "https://www.ebay.com/itm/136898980697",
+        "front_image_uri": "https://i.ebayimg.com/images/g/6GAAAeSwNOppUwSG/s-l1600.webp",
+        "back_image_uri": "https://i.ebayimg.com/images/g/vxkAAeSwRXhpUwSU/s-l1600.webp",
+        "retrieval_date": "2026-07-19",
+        "source_classification": "third-party seller listing; real graded-card front/back photographs"
+      },
+      "observed_files": [
+        {
+          "side": "front",
+          "sha256": "ce74b124ab937d8d424cc455548e6805caf9c8db252bc6af9dd585872588ae6a",
+          "bytes": 525816,
+          "dimensions": [1200, 1600]
+        },
+        {
+          "side": "back",
+          "sha256": "953807c9fa768f6b8ce4d8d8a68a96b3f04a01c03b5d5a4a100979b3c4b1bc2d",
+          "bytes": 432386,
+          "dimensions": [1200, 1600]
+        }
+      ],
+      "ground_truth_gate": {
+        "listing_title_used": false,
+        "direct_visual_fields": ["M Blastoise EX", "22/108", "English"],
+        "note": "The printed card and grader label are visible, but source truth does not create retention permission."
+      },
+      "retention_gate": {
+        "explicit_permission": false,
+        "license_found": false,
+        "commit_permitted": false,
+        "privacy_minimized_derivation_permitted": false,
+        "reason": "The photographs are third-party seller content with no explicit reusable license. Cropping could remove the seller background and visible PSA serial 128763578, but privacy minimization would not grant copyright/retention permission."
+      },
+      "corpus_effect": "No image or derivative is committed, executed, or counted. This metadata record is unavailable evidence only."
+    },
+    {
+      "source_id": "coalossal-owner-listing-temporary-audit",
+      "decision": "unavailable-asset-not-retained",
+      "reason": "Six real photos were used in the 2026-07-19 temporary audit, but neither originals nor crops survived. Historical results are not replayed as current acceptance."
+    },
+    {
+      "source_id": "uploads-placeholders-20260719",
+      "decision": "excluded-synthetic-placeholder",
+      "reason": "Three byte-identical 8227-byte 600x800 pure-white JPEGs and twelve identical generated crops are not identification samples."
+    }
+  ]
+}

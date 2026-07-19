@@ -663,3 +663,18 @@ catalog lookup.
 manifest captured from the real source photo. The bounded adversarial test
 keeps a sole glued read unchanged, preserves first-clean behavior for multiple
 cards, and rejects HP/year/partial/missing-slash noise.
+
+### L50 - an anecdote or crop is not a full-card acceptance sample (2026-07-19)
+**Mistake:** historical identification reports, temporary marketplace photos,
+synthetic placeholders, and one retained footer crop could be read together as
+if they measured current full-card accuracy. The newly downloaded Blastoise
+photos also existed locally before their retention permission was checked.
+**Rule:** freeze only independently grounded, retention-permitted assets with
+checksums and provenance. Separate full-card, footer-OCR, and synthetic
+benchmarks; missing/corrupt/unlicensed inputs are unavailable and never pass.
+Block network, isolate caches/state, report exact execution counts, and use raw
+latencies instead of percentiles while n<5. A parser replay can prove parser
+behavior, but it cannot be called image OCR or final identification success.
+**Guard:** `TestIdentificationAcceptanceCorpus` covers schema, duplicate IDs,
+retention, checksum/decode/missing failures, benchmark separation, network
+blocking, zero-execution accounting, deterministic replay, and raw latency.

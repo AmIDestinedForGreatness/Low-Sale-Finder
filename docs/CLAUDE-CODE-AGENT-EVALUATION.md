@@ -368,30 +368,42 @@ thresholds silently in code.
 to a level; directive, UI, API, tests, and saved datasets agree; migration is explicit;
 ambiguous and collision cases still abstain.
 
-### F-07 — High — Identification quality: current acceptance is not reproducible
+### F-07 — High — Reproducible framework added; real full-card corpus still absent
 
-**Evidence.** The repository has useful real-case narratives and four JSON datasets, but
-this checkout has no referenced images and no `fingerprints.sqlite`. The root README
-reports 123 tests while the reviewed baseline had 116. The active
-`HASH-FIRST-NEXT.md` describes perspective-warp acceptance even though code has been
-implemented and only synthetic wiring can be rerun here. No corpus-level precision,
-abstention, collision, latency, or regression report can be regenerated from the repo.
+**Evidence.** `acceptance/corpus-v1/` now contains a versioned JSONL manifest,
+checksummed assets, a separate source/retention inventory, an offline state-isolated
+runner, and machine/human reports. Eleven permanent tests reject malformed and duplicate
+records, missing/changed/undecodable assets, footer/full-card mixing, unknown retention,
+network attempts, and zero-execution success; they also verify deterministic replay. The
+current full suite is 156 total, 153 passed, 3 asset-dependent skips, 0 failed.
 
-**Impact/failure mode.** A future agent can optimize anecdotes, accidentally regress a
-known photo, or report a non-reproducible improvement. "4/12 Level A" says little without
-the false-positive and abstention behavior on a labeled corpus.
+The retained real corpus is deliberately small: 0 full-card samples and 1 footer-only
+crop. Forty-four of 45 historical per-card failure records have no durable source asset.
+A newly acquired eBay M Blastoise-EX front/back pair was not admitted because the
+third-party seller photographs had no explicit reusable license or commit permission;
+privacy cropping would not create that permission. Coalossal's temporary originals did
+not survive. Neither source is silently reused.
 
-**Reproduction.** Clone the repository and follow README setup without external machine
-state; the claimed binder/photo results cannot be replayed.
+**Measured baseline.** The frozen run executed 1/1 manifest asset with 0 unavailable and
+0 errors. Local OCR of the retained Mime Jr. crop returned partial `086/PCG`, so exact
+footer OCR is 0/1. The checksummed frozen deep-OCR trace parses exact `086/PCG-P`, so
+parser replay is 1/1. Footer samples counted as full-card successes: 0. Full-card
+precision, coverage, abstention, and high-confidence false positives are all 0/0 because
+no full-card sample executed. Network attempts: 0. Production-state changes: 0.
+HASH-FIRST executions: 0. The runner records raw per-sample timings and explicitly omits
+p50/p90/p95 because percentiles are not meaningful at n=1. A repeated real run produced
+the same deterministic evaluation hash.
 
-**Correction.** Create a privacy-safe, licensed acceptance corpus or deterministic
-fixtures with manifests, expected fields, provenance, and image hashes. Keep large/private
-assets out of Git if necessary, but provide a fetch/build contract and checksum. Produce
-machine-readable before/after reports.
+**Residual impact/failure mode.** The framework closes the reproducibility and accounting
+gap, but it does not establish product-level accuracy. A single footer crop cannot measure
+exact-printing precision, collision recall, evidence-level confusion, or hash hit rate.
+The current acceptance result is false, not a skipped or implied pass.
 
-**Acceptance/regression.** On a named frozen corpus, report exact-printing precision,
-field accuracy, false-positive rate, abstention rate, evidence-level confusion, collision
-recall, p50/p95 latency, and hash hit rate. No acceptance case may be a skip.
+**Next acceptance.** Add independently grounded, retention-permitted full-card sources
+with frozen offline catalog dependencies. Then report exact-printing counts, false
+positives, abstentions, evidence behavior, and raw latencies until each benchmark has at
+least five real samples. Keep F-06's Level-A policy contradiction visible rather than
+changing it inside corpus work.
 
 ### F-08 — Medium — Scraping reliability: sensible pacing, weak replay contract
 
