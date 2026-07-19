@@ -347,10 +347,10 @@ def identify(image_paths, ocr_raw, wm):
         for p in image_paths:
             disc = discover_from_confirmed(p)
             if disc:
+                # Artwork can be shared by printings with different collector
+                # numbers. A visual/reference hit discovers the name only.
                 name = str(disc["name"] or "").split(" - ")[0].strip()
                 via = "confirmed reference match"
-                if not number:
-                    number = disc.get("number")
                 break
     if not name:
         # LAYER G: candidate-free discovery against the full local visual
@@ -366,10 +366,10 @@ def identify(image_paths, ocr_raw, wm):
         for p in image_paths:
             disc = visual_catalog.match_image(p)
             if disc:
+                # Same-art reprints make the catalog row's number unsafe here;
+                # only independent text/index evidence may establish it.
                 name = str(disc["name"] or "").split(" - ")[0].strip()
                 via = "visual catalog match"
-                if not number:
-                    number = disc.get("number")
                 break
     if not name and number:
         # TIE-BREAK: tied fingerprint × the number's own catalog matches

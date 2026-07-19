@@ -267,7 +267,10 @@ def probe_contours(path, tmpdir, ocr_reader=None, pad=0.06):
     warped -> warped rotated 180° (binder cards can be upside down; the
     warp itself can't know which way is up for sideways cards) -> the raw
     padded crop (preserves any hit the pre-warp code could produce). Only
-    cells that miss all three pay the OCR cost. Match gates are unchanged
+    cells that miss all three pay the OCR cost. A hash hit forwards the exact
+    matched image variant with EMPTY OCR lines, so identify() can
+    independently rediscover it through its honestly-tagged visual layer.
+    Match gates are unchanged
     (max_distance/nearest_slack) — a false identification is worse than a
     slow one."""
     boxes, quads = detect_card_regions(path, with_quads=True)
@@ -328,14 +331,17 @@ def probe_contours(path, tmpdir, ocr_reader=None, pad=0.06):
     # parallelism on this OCR-bound path instead of running 4 full OCR
     # passes back to back.
     hash_matches = []
+    hash_paths = []
     for i, cell in enumerate(cells):
         match = None
-        for variant, vpath in warp_variants[i] + [("raw", cell)]:
+        matched_path = None
+        for _, vpath in warp_variants[i] + [("raw", cell)]:
             match = visual_catalog.match_image(vpath)
             if match is not None:
-                match["matched_via"] = variant
+                matched_path = vpath
                 break
         hash_matches.append(match)
+        hash_paths.append(matched_path)
     ocr_indices = [i for i, match in enumerate(hash_matches) if match is None]
     ocr_groups = [None] * len(cells)
     from concurrent.futures import ThreadPoolExecutor
@@ -348,7 +354,13 @@ def probe_contours(path, tmpdir, ocr_reader=None, pad=0.06):
     for i, (match, lines) in enumerate(zip(hash_matches, ocr_groups)):
         if match is not None:
             signals += 1
-            ocr_groups[i] = [match["name"], match["number"]]
+            # This is NOT OCR evidence. Passing the match name/number here
+            # launders catalog metadata into guess_query() as directly-read
+            # card text, giving it a false highest-trust status. Keep the OCR
+            # speed win, but let identify() re-match the same exact variant
+            # through Layer G with the honest "visual catalog match" tag.
+            cells[i] = hash_paths[i]
+            ocr_groups[i] = []
             continue
         name, number = valuator.guess_query(lines)
         # detected-contour crops are tighter than blind grid quadrants, so a

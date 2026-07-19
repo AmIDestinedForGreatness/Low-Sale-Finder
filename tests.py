@@ -896,7 +896,7 @@ class TestProfileDatasetSerialization(unittest.TestCase):
         self.assertEqual(result["number"], "222/193")
         self.assertEqual(len(result["candidates"]), 2)
 
-    def test_unread_cell_resolves_via_confirmed_reference_when_ocr_finds_nothing(self):
+    def test_confirmed_reference_match_never_adopts_attached_number(self):
         # live catch (Yujin's 12-card JP binder, 2026-07-19): OCR gets NO
         # name and NO number for a cell whose card he already confirmed by
         # hand — a bare-number query can't even fire here, so without the
@@ -910,7 +910,7 @@ class TestProfileDatasetSerialization(unittest.TestCase):
              mock.patch("valuator.dex_names", return_value=[]), \
              mock.patch("valuator.attack_id", return_value=None), \
              mock.patch("providers.artwork.discover_from_confirmed",
-                        return_value={"name": "Misdreavus - 202/193", "number": "202/193",
+                        return_value={"name": "Misdreavus - 202/193", "number": "999/999",
                                       "score": 1.0, "matched_reference": "ref.png"}), \
              mock.patch("valuator.search_candidates", return_value=cands), \
              mock.patch("valuator.ocr_deep", return_value=[]), \
@@ -918,17 +918,18 @@ class TestProfileDatasetSerialization(unittest.TestCase):
              mock.patch("evidence.log_failure"):
             result = profile_dataset.identify(["cell.png"], [[]], set())
         self.assertEqual(result["name"], "Misdreavus")
-        self.assertEqual(result["number"], "202/193")
+        self.assertIsNone(result["number"],
+                          "a confirmed-image match must not supply a number")
         self.assertEqual(result["via"], "confirmed reference match")
 
-    def test_unread_cell_resolves_via_full_visual_catalog(self):
+    def test_visual_catalog_match_never_adopts_attached_number(self):
         # Regression for the discovery wiring: verify() cannot help when OCR
         # proposed no candidate, so identify() must call candidate-free
         # match_image() only after the confirmed-reference layer misses.
         import profile_dataset
         catalog = mock.Mock()
         catalog.match_image.side_effect = [None, {
-            "id": "base1-2", "name": "Blastoise", "number": "2/102",
+            "id": "base1-2", "name": "Blastoise", "number": "999/999",
             "set": "Base Set", "distance": 4.2,
         }]
         cands = [{"pid": 2, "name": "Blastoise", "set": "Base Set",
@@ -951,7 +952,8 @@ class TestProfileDatasetSerialization(unittest.TestCase):
         self.assertEqual(catalog.match_image.call_args_list,
                          [mock.call("missing.png"), mock.call("covered.png")])
         self.assertEqual(result["name"], "Blastoise")
-        self.assertEqual(result["number"], "2/102")
+        self.assertIsNone(result["number"],
+                          "a catalog hash match must not supply a number")
         self.assertEqual(result["via"], "visual catalog match")
 
 
@@ -2688,8 +2690,9 @@ class TestCardWarp(unittest.TestCase):
 
     def test_probe_contours_hash_hit_skips_ocr(self):
         """Wiring test with a mocked catalog: when the WARPED variant hits,
-        that cell must not pay any OCR cost and must carry the catalog
-        identity. Also proves warp variants are generated and tried first
+        that cell must not pay any OCR cost or receive fake OCR text. The
+        exact matched variant is passed onward so identify() can independently
+        re-run Layer G. Also proves warp variants are generated and tried first
         (the mock only accepts _warp paths, never the raw crop)."""
         import cv2
         import folder_dataset
@@ -2735,8 +2738,12 @@ class TestCardWarp(unittest.TestCase):
             self.assertEqual(ocr_calls, [],
                              "every cell hash-hit on the warp variant; no "
                              "cell may pay OCR")
-            for g in groups:
-                self.assertIn("Sprigatito", g)
+            self.assertEqual(groups, [[], []],
+                             "catalog metadata must never impersonate OCR")
+            self.assertTrue(all("_warp" in os.path.basename(p)
+                                and "_r180" not in os.path.basename(p)
+                                for p in cells),
+                            "identify() must receive the exact matched variant")
 
     def test_detect_card_regions_with_quads_on_single_card_image(self):
         # live catch (2026-07-19, Personal PC pull-and-verify of the
