@@ -1632,3 +1632,56 @@ that asset remains pending until the photo is restored. Implemented in the
 focused local commit named `fix: use contours in batch binder CLI`; the
 resulting hash is reported in the handoff because a commit cannot contain its
 own hash. Nothing pushed.
+
+
+### CX | 2026-07-20 ~01:50 CST | unlabeled batch 29 — Phase 1 checkpoint
+
+Confirmed the prerequisite contour-first batch CLI fix is already committed
+at `d24f9ef`; it was not redone. Controlled intake found exactly **29/29**
+supported source files in `C:\Users\MARVIN-LI\Downloads\To test\`: **26
+`.jpg` + 3 `.jfif`**, 4,118,617 bytes total. All 29 decode as JPEG images,
+all have non-zero dimensions, there are **0 duplicate-hash groups**, **0
+unsupported files**, and **0 decode errors**. Originals were only read.
+
+The files were copied with byte-for-byte SHA-256 verification into the
+existing explicitly ignored workspace
+`.tmp/unlabeled-batch-29/source/`; the local intake manifest is
+`.tmp/unlabeled-batch-29/intake-manifest.json` (timestamp
+`2026-07-19T17:49:22.776500+00:00`). `git check-ignore -v` proves the intake
+manifest, raw copies, and future `.tmp/unlabeled-batch-29/crops/` review
+images are all excluded by `.gitignore:14`; `git status --ignored` reports
+only `!! .tmp/`. No image bytes are staged or tracked. Production-path
+execution has not started yet: processed 0/29, errors 0, abstentions 0.
+
+**10-image checkpoint (~02:15 CST):** 10/29 source hashes have exactly one
+terminal record, all `processed`; 0 processing errors and 0 corrupt/unsupported.
+The production layout path emitted 27 detected regions/pockets: 4 single-image
+results, 3 contour regions from one page, and 20 regions from five bounded 2x2
+fallbacks. All 27 remain abstentions; 0 are queued as strong candidates for
+Yujin yet. Internal levels: D=22, E=5; coverage: 0%=3, 10%=23, 20%=1;
+confirmed collisions=2; catalog-coverage gaps=1; automated Level-B/other
+contract violations=0. The local visual catalog reports unavailable on this
+checkout (`fingerprints.sqlite` absent), so that dimension is honestly
+`not_checked` and no threshold was changed.
+
+The checkpoint also exposes a high-risk layout pattern for review: several
+photos reached a blind 2x2 fallback after the contour probe returned no usable
+cells. The resulting four regions are preserved as unverified pockets, not
+claimed card counts or correct identities. Some images visually appear to
+contain more or fewer than four cards, but because this batch has no trusted
+labels and Codex inspection is not Yujin adjudication, that observation is
+logged as a suspected segmentation failure rather than silently promoted to
+ground truth or patched with a batch-only heuristic. Durable results remain at
+`.tmp/unlabeled-batch-29/checkpoints/results.jsonl`.
+
+**20-image checkpoint (~02:30 CST):** 20/29 source hashes are reconciled,
+all `processed`; 0 processing errors, 0 corrupt/unsupported, and no duplicate
+terminal records. The pipeline emitted 51 regions/pockets across 10 single,
+2 contour, and 8 named-multi 2x2-fallback source layouts. All 51 remain
+actionable abstentions and 0 qualify for the strong-candidate review queue.
+Internal levels: D=42, E=9; coverage: 0%=6, 10%=41, 20%=4; confirmed
+collisions=3; catalog-coverage gaps=4; automated Level-B/other contract
+violations=0. Thresholds and candidate selection remain unchanged. The same
+blind-grid segmentation risk noted at 10 images remains pending human layout
+adjudication; it has not been converted into claimed identity ground truth or
+a hash-specific fix.
