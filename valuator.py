@@ -402,6 +402,27 @@ def local_printings(name):
         conn.close()
 
 
+def names_for_number(number):
+    """DISTINCT local-index card names printed with this collector number
+    (normalized). The reverse of local_printings() — number -> names."""
+    if not number or not os.path.exists(FP_DB):
+        return []
+    want = _norm_num(str(number))
+    tail = want.rsplit("/", 1)[-1]
+    conn = sqlite3.connect(FP_DB)
+    try:
+        rows = conn.execute(
+            "SELECT DISTINCT name, number FROM fp WHERE number LIKE ?",
+            (f"%{tail}",)).fetchall()
+    finally:
+        conn.close()
+    names = []
+    for n, num in rows:
+        if _norm_num(num) == want and n not in names:
+            names.append(n)
+    return names
+
+
 def crosscheck_name(lines, number):
     """TIE-BREAK: a corroborated-but-tied fingerprint ({60,150}+HP180 fits
     Black Kyurem-EX, White Kyurem-EX, Charizard-EX AND Dialga-EX) crossed

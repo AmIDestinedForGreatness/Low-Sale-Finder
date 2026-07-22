@@ -556,6 +556,15 @@ def valuator_ocr():
                 cands, name = c2, exact[0]["name"].split(" - ")[0]
                 via = via or "number-variant match"
                 break
+    if not name and number and not any(
+            valuator._norm_num(c["number"]) == valuator._norm_num(str(number))
+            for c in cands):
+        # NUMBER-ONLY RECOVERY (shared seam, same rule as identify()):
+        # candidates for the eye-gate only, never a name adoption
+        extra = profile_dataset.number_only_candidates(number, prefer_jp=prefer_jp)
+        if extra:
+            pids = {c["pid"] for c in extra}
+            cands = extra + [c for c in cands if c["pid"] not in pids]
     name = profile_dataset.presented_identity_name(name, via)
     result = {"query": query,
               "name": name, "name_read": name_read,
@@ -1307,10 +1316,16 @@ async function valApplyOcr(d){
       if(c.cell){ $('#valThumb').src = c.cell; $('#valThumb').dataset.full = c.cell; }
       window._jpHint = !!c.jp;
       $('#valQuery').value = c.query || '';
-      if(c.number && c.candidates && c.candidates.length){
+      if(c.name && c.number && c.candidates && c.candidates.length){
         // fully pinned — server already dropped candidates, so a plain
         // Find-card search is fine and cheap
         if(c.query) valFind();
+      } else if(!c.name && c.candidates && c.candidates.length){
+        // UNREAD NAME with server-recovered candidates (number-only
+        // recovery / ambiguous read): render the GUARANTEED list directly —
+        // a fresh search on a bare number returns nothing (his feedback
+        // doc finding 7: #211/208 offered zero taps)
+        renderCandidateGrid(c.candidates, true);
       } else if(!c.number && c.candidates && c.candidates.length){
         // AMBIGUOUS: render the server's GUARANTEED candidates directly —
         // a fresh name-only search can miss the real promo entirely

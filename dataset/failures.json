@@ -513,7 +513,7 @@
   "future_solution": "another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help",
   "status": "Open",
   "evidence_missing": "none recorded",
-  "strongest_alternative": "{'pid': 183796, 'name': 'Blastoise', 'set': 'SM - Team Up', 'number': '25/181', 'line': 'Pokemon', 'img': 'https://product-images.tcgplayer.com/183796.jpg', 'url': 'https://www.tcgplayer.com/product/183796', 'market': 10.61, 'source': 'existing_candidates', 'collision_basis': ['card_name'], 'collision_conflicts': ['card_number'], 'number_relation': 'missing', 'name_similarity': 1.0, 'excluded_by': 'available direct evidence'}",
+  "strongest_alternative": "{'pid': 83898, 'name': 'Blastoise', 'set': 'Plasma Blast', 'number': '16/101', 'line': 'Pokemon', 'img': 'https://product-images.tcgplayer.com/83898.jpg', 'url': 'https://www.tcgplayer.com/product/83898', 'market': 21.07, 'source': 'existing_candidates', 'collision_basis': ['card_name'], 'collision_conflicts': ['card_number'], 'number_relation': 'missing', 'name_similarity': 1.0, 'excluded_by': 'available direct evidence'}",
   "regression_test_requirement": "required for the failure class when closed"
  },
  "|217/208|217/208": {
@@ -624,6 +624,16 @@
   "status": "Open",
   "evidence_missing": "artwork; higher_resolution_card_number",
   "strongest_alternative": "{'id': 'sv2-197', 'name': 'Floragato', 'hp': 90, 'damages': '30,50', 'subtypes': 'Stage 1', 'set': 'sv2', 'number': '197/193', 'rarity': 'Illustration Rare', 'source': 'local_fingerprint_catalog', 'collision_basis': ['card_number'], 'collision_conflicts': ['card_name', 'set'], 'number_relation': 'exact', 'name_similarity': 0.32, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}",
+  "regression_test_requirement": "required for the failure class when closed"
+ },
+ "|224/193|224/193": {
+  "problem": "(unknown) 224/193 - distinguishing evidence between competing printings",
+  "cause": "3 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.",
+  "current_solution": "none - result remains ambiguous/unknown",
+  "future_solution": "another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help",
+  "status": "Open",
+  "evidence_missing": "none recorded",
+  "strongest_alternative": "{'pid': 665896, 'name': 'Mega Froslass ex - 224/193', 'set': 'M2a: High Class Pack: MEGA Dream ex', 'number': '224/193', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/665896.jpg', 'url': 'https://www.tcgplayer.com/product/665896', 'market': 5.64, 'source': 'existing_candidates', 'collision_basis': ['card_number'], 'collision_conflicts': [], 'number_relation': 'exact', 'name_similarity': 0.0, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}",
   "regression_test_requirement": "required for the failure class when closed"
  }
 }

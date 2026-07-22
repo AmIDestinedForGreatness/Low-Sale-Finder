@@ -254,6 +254,32 @@ def resolve_catalog_identity(name, number, via, candidates, graded=False):
     return name, via
 
 
+def number_only_candidates(number, prefer_jp=False):
+    """Bounded eye-gate candidates for a read number with no readable name.
+
+    TCGplayer's text search returns nothing for a bare collector number, so
+    a number-only cell used to dead-end with an EMPTY candidate list (live
+    catch, Yujin's feedback doc finding 7: a cell read #211/208 and offered
+    nothing to tap). The local index is complete on numbers — bridge
+    number -> local name(s) -> targeted TCGplayer search, which returns real
+    products with images through the normal pipeline.
+
+    CANDIDATES ONLY. The caller must never adopt a name from these: the same
+    collector fraction exists across regions ("224/193" is EN Orthworm AND
+    JP Mega Froslass ex) and the local index only covers what it covers — a
+    one-name result here proves nothing about the photographed card.
+    """
+    import valuator
+    out, seen = [], set()
+    for local_name in valuator.names_for_number(number)[:3]:
+        for c in valuator.search_candidates(f"{local_name} {number}",
+                                            prefer_jp=prefer_jp):
+            if c["pid"] not in seen:
+                seen.add(c["pid"])
+                out.append(c)
+    return out[:12]
+
+
 def presented_identity_name(name, via):
     """A set code may guide search but must never be presented as a name."""
     import valuator
@@ -510,6 +536,16 @@ def identify(image_paths, ocr_raw, wm):
                     cands, name = c2, exact[0]["name"].split(" - ")[0]
                     via = "number-variant match"
                     break
+        # NUMBER-ONLY RECOVERY: the name never resolved but the number is
+        # real evidence — give the eye-gate something to show instead of a
+        # dead end (never adopts a name; see number_only_candidates()).
+        if not name and number and not any(
+                valuator._norm_num(c["number"]) == valuator._norm_num(str(number))
+                for c in cands):
+            extra = number_only_candidates(number, prefer_jp=prefer_jp)
+            if extra:
+                pids = {c["pid"] for c in extra}
+                cands = extra + [c for c in cands if c["pid"] not in pids]
         # Layer-B snap when the name is CERTAIN (fingerprint/dex), specific
         # (full mechanic form) — or when EVERY candidate already shares the
         # read name (snapping among one card's own printings is safe:

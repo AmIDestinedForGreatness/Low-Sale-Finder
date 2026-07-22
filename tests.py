@@ -932,6 +932,49 @@ class TestProfileDatasetSerialization(unittest.TestCase):
         self.assertEqual(result["number"], "222/193")
         self.assertEqual(len(result["candidates"]), 2)
 
+    def test_number_only_cell_gets_candidates_but_never_a_name(self):
+        # feedback doc finding 7 (2026-07-22): a cell with a read number but
+        # unreadable name dead-ended with ZERO candidates (a bare-number
+        # TCGplayer search returns nothing). The local index bridges
+        # number -> local name(s) -> targeted search. Cross-region rule:
+        # CANDIDATES ONLY — "224/193" is EN Orthworm AND JP Mega Froslass
+        # ex, so the name must never be adopted from this recovery.
+        import profile_dataset
+        both = [{"pid": 1, "name": "Mega Froslass ex - 224/193",
+                 "set": "M2a: High Class Pack", "number": "224/193"},
+                {"pid": 2, "name": "Orthworm - 224/193",
+                 "set": "SV02: Paldea Evolved", "number": "224/193"}]
+        catalog = mock.Mock()
+        catalog.match_image.return_value = None
+        with mock.patch("valuator.guess_query", return_value=(None, "224/193")), \
+             mock.patch("valuator.fingerprint_names", return_value=[]), \
+             mock.patch("valuator.dex_names", return_value=[]), \
+             mock.patch("valuator.attack_id", return_value=None), \
+             mock.patch("valuator.crosscheck_name", return_value=None), \
+             mock.patch("providers.artwork.discover_from_confirmed",
+                        return_value=None), \
+             mock.patch("providers.visual_catalog.VisualCatalogProvider",
+                        return_value=catalog), \
+             mock.patch("valuator.search_candidates",
+                        side_effect=lambda q, **k: both if "Orthworm" in q else []), \
+             mock.patch("valuator.names_for_number", return_value=["Orthworm"]), \
+             mock.patch("valuator.local_printings", return_value={}), \
+             mock.patch("valuator.ocr_deep", return_value=[]), \
+             mock.patch("evidence.build_evidence", return_value={}), \
+             mock.patch("evidence.log_failure"):
+            result = profile_dataset.identify(["cell.png"], [["224/193"]], set())
+        self.assertIsNone(result["name"])
+        self.assertEqual(result["number"], "224/193")
+        self.assertIsNone(result["via"])
+        self.assertEqual([c["pid"] for c in result["candidates"]], [1, 2])
+
+    def test_names_for_number_reverse_lookup(self):
+        if not os.path.exists(os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), "fingerprints.sqlite")):
+            self.skipTest("fingerprints.sqlite not present on this checkout")
+        self.assertIn("Orthworm", valuator.names_for_number("224/193"))
+        self.assertEqual(valuator.names_for_number(""), [])
+
     def test_confirmed_reference_match_never_adopts_attached_number(self):
         # live catch (Yujin's 12-card JP binder, 2026-07-19): OCR gets NO
         # name and NO number for a cell whose card he already confirmed by

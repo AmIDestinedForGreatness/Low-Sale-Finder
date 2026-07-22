@@ -15,7 +15,7 @@ Every non-Level-A identification produces an improvement record.
 
 ---
 
-## Per-card records (62)
+## Per-card records (63)
 
 ### Altaria-EX|123/124|Altaria 123/124
 - **Problem:** Altaria-EX 123/124 - identity still uses inference
@@ -54,7 +54,7 @@ Every non-Level-A identification produces an improvement record.
 - **Future Solution:** another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help
 - **Status:** Open
 - **Evidence Missing:** none recorded
-- **Strongest Alternative:** {'pid': 183796, 'name': 'Blastoise', 'set': 'SM - Team Up', 'number': '25/181', 'line': 'Pokemon', 'img': 'https://product-images.tcgplayer.com/183796.jpg', 'url': 'https://www.tcgplayer.com/product/183796', 'market': 10.61, 'source': 'existing_candidates', 'collision_basis': ['card_name'], 'collision_conflicts': ['card_number'], 'number_relation': 'missing', 'name_similarity': 1.0, 'excluded_by': 'available direct evidence'}
+- **Strongest Alternative:** {'pid': 83898, 'name': 'Blastoise', 'set': 'Plasma Blast', 'number': '16/101', 'line': 'Pokemon', 'img': 'https://product-images.tcgplayer.com/83898.jpg', 'url': 'https://www.tcgplayer.com/product/83898', 'market': 21.07, 'source': 'existing_candidates', 'collision_basis': ['card_name'], 'collision_conflicts': ['card_number'], 'number_relation': 'missing', 'name_similarity': 1.0, 'excluded_by': 'available direct evidence'}
 - **Regression Test Requirement:** required for the failure class when closed
 
 ### Charizard|006/165|Charizard 006/165
@@ -635,4 +635,14 @@ Every non-Level-A identification produces an improvement record.
 - **Status:** Open
 - **Evidence Missing:** none recorded
 - **Strongest Alternative:** None
+- **Regression Test Requirement:** required for the failure class when closed
+
+### |224/193|224/193
+- **Problem:** (unknown) 224/193 - distinguishing evidence between competing printings
+- **Cause:** 3 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.
+- **Current Solution:** none - result remains ambiguous/unknown
+- **Future Solution:** another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help
+- **Status:** Open
+- **Evidence Missing:** none recorded
+- **Strongest Alternative:** {'pid': 665896, 'name': 'Mega Froslass ex - 224/193', 'set': 'M2a: High Class Pack: MEGA Dream ex', 'number': '224/193', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/665896.jpg', 'url': 'https://www.tcgplayer.com/product/665896', 'market': 5.64, 'source': 'existing_candidates', 'collision_basis': ['card_number'], 'collision_conflicts': [], 'number_relation': 'exact', 'name_similarity': 0.0, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}
 - **Regression Test Requirement:** required for the failure class when closed
