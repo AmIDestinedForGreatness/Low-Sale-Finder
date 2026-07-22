@@ -15,7 +15,7 @@ Every non-Level-A identification produces an improvement record.
 
 ---
 
-## Per-card records (57)
+## Per-card records (62)
 
 ### Altaria-EX|123/124|Altaria 123/124
 - **Problem:** Altaria-EX 123/124 - identity still uses inference
@@ -54,7 +54,7 @@ Every non-Level-A identification produces an improvement record.
 - **Future Solution:** another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help
 - **Status:** Open
 - **Evidence Missing:** none recorded
-- **Strongest Alternative:** {'pid': 274453, 'name': 'Blastoise', 'set': 'Pokemon GO', 'number': '017/078', 'line': 'Pokemon', 'img': 'https://product-images.tcgplayer.com/274453.jpg', 'url': 'https://www.tcgplayer.com/product/274453', 'market': 1.67, 'source': 'existing_candidates', 'collision_basis': ['card_name'], 'collision_conflicts': ['card_number'], 'number_relation': 'missing', 'name_similarity': 1.0, 'excluded_by': 'available direct evidence'}
+- **Strongest Alternative:** {'pid': 183796, 'name': 'Blastoise', 'set': 'SM - Team Up', 'number': '25/181', 'line': 'Pokemon', 'img': 'https://product-images.tcgplayer.com/183796.jpg', 'url': 'https://www.tcgplayer.com/product/183796', 'market': 10.61, 'source': 'existing_candidates', 'collision_basis': ['card_name'], 'collision_conflicts': ['card_number'], 'number_relation': 'missing', 'name_similarity': 1.0, 'excluded_by': 'available direct evidence'}
 - **Regression Test Requirement:** required for the failure class when closed
 
 ### Charizard|006/165|Charizard 006/165
@@ -117,6 +117,16 @@ Every non-Level-A identification produces an improvement record.
 - **Strongest Alternative:** None
 - **Regression Test Requirement:** required for the failure class when closed
 
+### Delphox EX|XY19|Delphox XY19
+- **Problem:** Delphox EX XY19 - identity still uses inference
+- **Cause:** OCR did not directly establish every field needed for an exact printing
+- **Current Solution:** the available fragments resolved via number-variant match; adversarial search: Adversarial search tested 2 catalog row(s); no plausible competing printing survived the direct evidence.
+- **Future Solution:** obtain direct evidence for the missing or collision-sensitive dimension
+- **Status:** Pending - mitigated, not fully solved
+- **Evidence Missing:** none recorded
+- **Strongest Alternative:** None
+- **Regression Test Requirement:** required for the failure class when closed
+
 ### Detective Pikachu|SM194|Detective Pikachu SM194
 - **Problem:** Detective Pikachu SM194 - identity still uses inference
 - **Cause:** OCR did not directly establish every field needed for an exact printing
@@ -125,6 +135,16 @@ Every non-Level-A identification produces an improvement record.
 - **Status:** Pending - mitigated, not fully solved
 - **Evidence Missing:** artwork; higher_resolution_card_number
 - **Strongest Alternative:** {'pid': 189805, 'name': 'Detective Pikachu - SM190', 'set': 'SM Promos', 'number': 'SM190', 'line': 'Pokemon', 'img': 'https://product-images.tcgplayer.com/189805.jpg', 'url': 'https://www.tcgplayer.com/product/189805', 'market': 7.0, 'source': 'existing_candidates', 'collision_basis': ['card_name', 'one_ocr_substitution_from_card_number', 'set'], 'collision_conflicts': [], 'number_relation': 'ocr_substitution', 'name_similarity': 1.0, 'unresolved_reason': 'one OCR substitution reaches another similar-name printing'}
+- **Regression Test Requirement:** required for the failure class when closed
+
+### Ethan's Magcargo|197/193|Ethan's Magcargo 197/193
+- **Problem:** Ethan's Magcargo 197/193 - distinguishing evidence between competing printings
+- **Cause:** 2 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.
+- **Current Solution:** none - result remains ambiguous/unknown
+- **Future Solution:** another image angle help; removing glare help; different language db help; scan instead of photo help
+- **Status:** Open
+- **Evidence Missing:** artwork; higher_resolution_card_number
+- **Strongest Alternative:** {'id': 'sv2-197', 'name': 'Floragato', 'hp': 90, 'damages': '30,50', 'subtypes': 'Stage 1', 'set': 'sv2', 'number': '197/193', 'rarity': 'Illustration Rare', 'source': 'local_fingerprint_catalog', 'collision_basis': ['card_number'], 'collision_conflicts': ['card_name', 'set'], 'number_relation': 'exact', 'name_similarity': 0.32, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}
 - **Regression Test Requirement:** required for the failure class when closed
 
 ### Excadrill|246/236|Excadrill 246/236
@@ -145,6 +165,16 @@ Every non-Level-A identification produces an improvement record.
 - **Status:** Pending - mitigated, not fully solved
 - **Evidence Missing:** none recorded
 - **Strongest Alternative:** None
+- **Regression Test Requirement:** required for the failure class when closed
+
+### Heliolisk|201/193|Heliolisk 201/193
+- **Problem:** Heliolisk 201/193 - distinguishing evidence between competing printings
+- **Cause:** 1 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.
+- **Current Solution:** none - result remains ambiguous/unknown
+- **Future Solution:** another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help
+- **Status:** Open
+- **Evidence Missing:** none recorded
+- **Strongest Alternative:** {'id': 'sv2-201', 'name': 'Fuecoco', 'hp': 90, 'damages': '30', 'subtypes': 'Basic', 'set': 'sv2', 'number': '201/193', 'rarity': 'Illustration Rare', 'source': 'local_fingerprint_catalog', 'collision_basis': ['card_number'], 'collision_conflicts': ['card_name'], 'number_relation': 'exact', 'name_similarity': 0.25, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}
 - **Regression Test Requirement:** required for the failure class when closed
 
 ### Hoopa-GX|96/181|Hoopa 96/181
@@ -327,6 +357,16 @@ Every non-Level-A identification produces an improvement record.
 - **Strongest Alternative:** {'id': 'sv2-202', 'name': 'Crocalor', 'hp': 110, 'damages': '30,70', 'subtypes': 'Stage 1', 'set': 'sv2', 'number': '202/193', 'rarity': 'Illustration Rare', 'source': 'local_fingerprint_catalog', 'collision_basis': ['card_number'], 'collision_conflicts': ['card_name'], 'number_relation': 'exact', 'name_similarity': 0.222, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}
 - **Regression Test Requirement:** required for the failure class when closed
 
+### N's PP Up|214/193|N's PP Up 214/193
+- **Problem:** N's PP Up 214/193 - distinguishing evidence between competing printings
+- **Cause:** 1 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.
+- **Current Solution:** none - result remains ambiguous/unknown
+- **Future Solution:** another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help
+- **Status:** Open
+- **Evidence Missing:** none recorded
+- **Strongest Alternative:** {'id': 'sv2-214', 'name': 'Sandygast', 'hp': 90, 'damages': '20,40', 'subtypes': 'Basic', 'set': 'sv2', 'number': '214/193', 'rarity': 'Illustration Rare', 'source': 'local_fingerprint_catalog', 'collision_basis': ['card_number'], 'collision_conflicts': ['card_name', 'set'], 'number_relation': 'exact', 'name_similarity': 0.222, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}
+- **Regression Test Requirement:** required for the failure class when closed
+
 ### None|222/193|m20 222/193
 - **Problem:** (unknown) 222/193 - distinguishing evidence between competing printings
 - **Cause:** 3 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.
@@ -415,6 +455,16 @@ Every non-Level-A identification produces an improvement record.
 - **Status:** Pending - mitigated, not fully solved
 - **Evidence Missing:** none recorded
 - **Strongest Alternative:** {'pid': 607162, 'name': 'Snorlax', 'set': 'Pt2: Bonds to the End of Time', 'number': '070/090', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/607162.jpg', 'url': 'https://www.tcgplayer.com/product/607162', 'market': 28.42, 'source': 'existing_candidates', 'collision_basis': ['card_name'], 'collision_conflicts': ['card_number', 'set'], 'number_relation': 'different', 'name_similarity': 1.0, 'excluded_by': 'available direct evidence'}
+- **Regression Test Requirement:** required for the failure class when closed
+
+### Snorunt|200/193|Snorunt 200/193
+- **Problem:** Snorunt 200/193 - distinguishing evidence between competing printings
+- **Cause:** 1 catalog printing(s) share overlapping name/number evidence and cannot be excluded by the checked dimensions.
+- **Current Solution:** none - result remains ambiguous/unknown
+- **Future Solution:** another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help
+- **Status:** Open
+- **Evidence Missing:** none recorded
+- **Strongest Alternative:** {'id': 'sv2-200', 'name': 'Pyroar', 'hp': 120, 'damages': '60', 'subtypes': 'Stage 1', 'set': 'sv2', 'number': '200/193', 'rarity': 'Illustration Rare', 'source': 'local_fingerprint_catalog', 'collision_basis': ['card_number'], 'collision_conflicts': ['card_name'], 'number_relation': 'exact', 'name_similarity': 0.308, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}
 - **Regression Test Requirement:** required for the failure class when closed
 
 ### Staraptor|None|Staraptor
@@ -514,7 +564,7 @@ Every non-Level-A identification produces an improvement record.
 - **Future Solution:** another image angle help; removing glare help; different language db help; scan instead of photo help
 - **Status:** Open
 - **Evidence Missing:** none recorded
-- **Strongest Alternative:** {'pid': 665868, 'name': "Ethan's Magcargo - 197/193", 'set': 'M2a: High Class Pack: MEGA Dream ex', 'number': '197/193', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/665868.jpg', 'url': 'https://www.tcgplayer.com/product/665868', 'market': 1.59, 'source': 'existing_candidates', 'collision_basis': ['card_number'], 'collision_conflicts': [], 'number_relation': 'exact', 'name_similarity': 0.0, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}
+- **Strongest Alternative:** {'pid': 665868, 'name': "Ethan's Magcargo - 197/193", 'set': 'M2a: High Class Pack: MEGA Dream ex', 'number': '197/193', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/665868.jpg', 'url': 'https://www.tcgplayer.com/product/665868', 'market': 1.56, 'source': 'existing_candidates', 'collision_basis': ['card_number'], 'collision_conflicts': [], 'number_relation': 'exact', 'name_similarity': 0.0, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}
 - **Regression Test Requirement:** required for the failure class when closed
 
 ### |200/193|200/193
@@ -524,7 +574,7 @@ Every non-Level-A identification produces an improvement record.
 - **Future Solution:** another image angle help; removing glare help; different language db help; scan instead of photo help
 - **Status:** Open
 - **Evidence Missing:** none recorded
-- **Strongest Alternative:** {'pid': 665871, 'name': 'Snorunt - 200/193', 'set': 'M2a: High Class Pack: MEGA Dream ex', 'number': '200/193', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/665871.jpg', 'url': 'https://www.tcgplayer.com/product/665871', 'market': 1.82, 'source': 'existing_candidates', 'collision_basis': ['card_number'], 'collision_conflicts': [], 'number_relation': 'exact', 'name_similarity': 0.0, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}
+- **Strongest Alternative:** {'pid': 665871, 'name': 'Snorunt - 200/193', 'set': 'M2a: High Class Pack: MEGA Dream ex', 'number': '200/193', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/665871.jpg', 'url': 'https://www.tcgplayer.com/product/665871', 'market': 1.77, 'source': 'existing_candidates', 'collision_basis': ['card_number'], 'collision_conflicts': [], 'number_relation': 'exact', 'name_similarity': 0.0, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}
 - **Regression Test Requirement:** required for the failure class when closed
 
 ### |201/133|201/133
@@ -544,7 +594,7 @@ Every non-Level-A identification produces an improvement record.
 - **Future Solution:** another image angle help; different ocr pass help; removing glare help; different language db help; scan instead of photo help
 - **Status:** Open
 - **Evidence Missing:** none recorded
-- **Strongest Alternative:** {'pid': 665872, 'name': 'Heliolisk - 201/193', 'set': 'M2a: High Class Pack: MEGA Dream ex', 'number': '201/193', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/665872.jpg', 'url': 'https://www.tcgplayer.com/product/665872', 'market': 0.98, 'source': 'existing_candidates', 'collision_basis': ['card_number'], 'collision_conflicts': [], 'number_relation': 'exact', 'name_similarity': 0.0, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}
+- **Strongest Alternative:** {'pid': 665872, 'name': 'Heliolisk - 201/193', 'set': 'M2a: High Class Pack: MEGA Dream ex', 'number': '201/193', 'line': 'Pokemon Japan', 'img': 'https://product-images.tcgplayer.com/665872.jpg', 'url': 'https://www.tcgplayer.com/product/665872', 'market': 0.96, 'source': 'existing_candidates', 'collision_basis': ['card_number'], 'collision_conflicts': [], 'number_relation': 'exact', 'name_similarity': 0.0, 'unresolved_reason': 'collector number overlaps and the chosen name was inferred'}
 - **Regression Test Requirement:** required for the failure class when closed
 
 ### |202/193|202/193

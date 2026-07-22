@@ -772,6 +772,10 @@ def search_candidates(query, size=12, prefer_jp=False):
         r"(?<!\d)(\d{1,3})\s*/\s*([A-Za-z]{1,4}-P)\b",
         lambda m: snap_promo_number(f"{m.group(1)}/{m.group(2)}"), query,
         flags=re.I)
+    # promo numbers get typed/OCR'd with a space or hyphen ("XY 19",
+    # "XY-19") — glue them so the promo-number machinery below sees them
+    query = re.sub(r"\b(XY|SM|SWSH|BW|HGSS|SVP?)[ -](?=\d{1,3}\b)",
+                   lambda m: m.group(1), query, flags=re.I)
     m = (re.search(r"\b\d{1,3}[a-z]?\s*/\s*\d{1,3}\b", query, re.I)
          or re.search(r"\b\d{1,3}\s*/\s*[A-Za-z]{1,4}-P\b", query, re.I)
          or _NUM_RE.search(query))
@@ -786,18 +790,41 @@ def search_candidates(query, size=12, prefer_jp=False):
     else:
         name_q = " ".join(_NUM_RE.sub(" ", query).split()) or query
 
-    def _hit(q):
+    def _hit(q, n=None):
         try:
             r = requests.post(
                 SEARCH + "?q=" + requests.utils.quote(q) + "&isList=false",
                 headers=_H, timeout=20, json={
-                    "algorithm": "sales_synonym_v2", "from": 0, "size": size,
+                    "algorithm": "sales_synonym_v2", "from": 0,
+                    "size": n or size,
                     "filters": {"term": {"productLineName": ["pokemon", "pokemon-japan"]},
                                 "range": {}},
                     "context": {"shippingCountry": "US"}, "query": q})
             return (r.json().get("results") or [{}])[0].get("results", [])
         except Exception:
             return []
+
+    def _build(results):
+        rows = []
+        for it in results:
+            pid = it.get("productId")
+            if not pid:
+                continue
+            pid = int(pid)
+            rows.append({
+                "pid": pid,
+                "name": it.get("productName", "?"),
+                "set": it.get("setName", "?"),
+                "number": str((it.get("customAttributes") or {}).get("number") or ""),
+                "line": it.get("productLineName", ""),
+                "market": it.get("marketPrice"),
+                "img": IMG.format(pid),
+                "url": f"https://www.tcgplayer.com/product/{pid}",
+            })
+        # boxes/collections/merch have no collector number — they are not
+        # cards and never belong in an identification grid (Yujin: "remove
+        # completely")
+        return [c for c in rows if c["number"]]
 
     # OCR chops leading letters ("eakness Policy") — when a query finds
     # nothing, retry with the first word dropped, then the last
@@ -806,27 +833,27 @@ def search_candidates(query, size=12, prefer_jp=False):
         results = _hit(" ".join(words[1:]))
     if not results and len(words) >= 2:
         results = _hit(" ".join(words[:-1]))
-    out = []
-    for it in results:
-        pid = it.get("productId")
-        if not pid:
-            continue
-        pid = int(pid)
-        out.append({
-            "pid": pid,
-            "name": it.get("productName", "?"),
-            "set": it.get("setName", "?"),
-            "number": str((it.get("customAttributes") or {}).get("number") or ""),
-            "line": it.get("productLineName", ""),
-            "market": it.get("marketPrice"),
-            "img": IMG.format(pid),
-            "url": f"https://www.tcgplayer.com/product/{pid}",
-        })
-    # boxes/collections/merch have no collector number — they are not cards
-    # and never belong in an identification grid (Yujin: "remove completely")
-    out = [c for c in out if c["number"]]
+    out = _build(results)
 
     want = _norm_num(number) if number else None
+    # PROMO-NUMBER RECOVERY at the source (live catches: Victini XY117,
+    # Delphox EX XY19 from Yujin's 2026-07-20 feedback doc). A slash-less
+    # promo token is stripped from the name query above (TCGplayer returns
+    # nothing when it stays in), so "Delphox XY19" becomes a bare "Delphox"
+    # search — and TCGplayer's own relevance ranking buries promos so deep
+    # (XY19 surfaced around position ~40 of its own results) that the real
+    # card never enters the default-size window. identify() carries a copy
+    # of this recovery for the Layer-E ambiguous path only; doing it HERE
+    # covers every caller, including the dashboard's direct search box.
+    # Targeted lookup for a known number, not a discovery search — depth is
+    # safe, and only an EXACT normalized match is adopted.
+    if (want and "/" not in want
+            and not any(_norm_num(c["number"]) == want for c in out)):
+        exact = [c for c in _build(_hit(name_q, 50))
+                 if _norm_num(c["number"]) == want]
+        if exact:
+            pids = {c["pid"] for c in exact}
+            out = exact + [c for c in out if c["pid"] not in pids]
     out = _close_only(out, want, query)
 
     def rank(c):

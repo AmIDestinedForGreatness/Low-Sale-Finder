@@ -405,6 +405,7 @@ def valuator_ocr():
     if not probe_cells and grid_worth_trying:
         probe_cells, probe_ocr = folder_dataset.probe_grid(path, UPLOAD_DIR)
     if n_names >= 3 or pair or probe_cells:
+        boxes = []
         if contour_probe:
             # Render results in the page's REAL layout: the widest detected
             # row is the column count (a 3x4 binder page shows as 4 wide,
@@ -435,6 +436,34 @@ def valuator_ocr():
                 ident.pop("candidates", None)
             ident["cell"] = "/uploads/" + os.path.basename(cell)
             cards.append(ident)
+        # SPATIAL TRACEABILITY (Yujin's feedback doc, 2026-07-20, finding 4):
+        # every card carries its source position (R#C#) derived from the
+        # detected box geometry, and cards are ordered row-major to mirror
+        # the physical page — so a dropped/missing pocket is visible as a
+        # labeled gap, never silently re-flowed into a smaller tidy grid.
+        if contour_probe and boxes and len(boxes) == len(cards):
+            med_h = sorted(b[3] for b in boxes)[len(boxes) // 2]
+            row_ys = []
+            for (bx, by, bw, bh) in sorted(boxes, key=lambda b: b[1]):
+                cy = by + bh / 2
+                if not row_ys or cy - row_ys[-1] > med_h * 0.5:
+                    row_ys.append(cy)
+            med_w = sorted(b[2] for b in boxes)[len(boxes) // 2]
+            col_xs = []
+            for (bx, by, bw, bh) in sorted(boxes, key=lambda b: b[0]):
+                cx = bx + bw / 2
+                if not col_xs or cx - col_xs[-1] > med_w * 0.5:
+                    col_xs.append(cx)
+            for card, (bx, by, bw, bh) in zip(cards, boxes):
+                r = min(range(len(row_ys)),
+                        key=lambda i: abs(by + bh / 2 - row_ys[i])) + 1
+                c = min(range(len(col_xs)),
+                        key=lambda i: abs(bx + bw / 2 - col_xs[i])) + 1
+                card["pos"] = f"R{r}C{c}"
+                card["bbox"] = [bx, by, bw, bh]
+            cards.sort(key=lambda k: k.get("pos", ""))
+            cols = max(cols, len(col_xs)) if col_xs else cols
+            rows = -(-len(cards) // cols)
         return jsonify({"multi": True, "cards": cards,
                         "rows": rows, "cols": cols,
                         "file": "/uploads/" + os.path.basename(path)})
@@ -533,7 +562,15 @@ def valuator_ocr():
               "number": number, "number_read": number_read,
               "snapped": snapped, "lines": lines[:12],
               "via": via, "jp": jp, "graded": bool(name or number) and graded,
-              "candidates": cands[:6],
+              # live catch (Yujin's Feedback doc, 2026-07-20): a bare-name
+              # query with no confirmed number ties every candidate at the
+              # same rank distance, so the correct printing can land outside
+              # a 6-wide window and never reach the eye-gate at all (Crystal
+              # Guardians Blastoise ranked #8 of 8 on a plain "Blastoise"
+              # search). Show everything search_candidates() already fetched
+              # (size=12 by default) instead of truncating further — more
+              # options in the eye-gate is strictly safer, never less.
+              "candidates": cands[:12],
               "file": "/uploads/" + os.path.basename(path)}
     # DIRECTIVE.md, Rule 1/2: every identification carries its Evidence
     # Level + chain. This route has its own inline identification logic
@@ -1219,6 +1256,7 @@ async function valApplyOcr(d){
     const cols = d.cols || 2;
     $('#valMsg').textContent = '📒 binder page — ' + cards.length
       + ' cards. Tap a pocket to identify & value that card; 🔍 zooms it for stamps/edges.';
+    window._binderExpected = cards.length;   // audited after render below
     // COMPACT (his fix list #1): capped width, ~55% smaller pockets — the
     // page must fit a normal monitor at 100% zoom. Renders into #valBinder
     // (fix #2): searches never touch it; only ✕ Clear removes it.
@@ -1238,11 +1276,23 @@ async function valApplyOcr(d){
                   ? `⚠ ${c.candidates.length} possible printings — tap to pick`
                   : (c.name ? 'printing unread — tap to search' : '#?')}</div>
             <div style="margin-top:3px">${evidenceBadge(c, true)}</div>
+            ${c.pos ? `<div class="muted" style="position:absolute;top:4px;left:6px;font-size:10px;background:rgba(0,0,0,.55);border-radius:5px;padding:0 4px">${escapeHtml(c.pos)}</div>` : ''}
             <button class="bzoom" data-img="${c.cell||''}" title="zoom this card"
               style="position:absolute;top:4px;right:4px;border:none;border-radius:6px;padding:1px 6px;cursor:zoom-in;background:rgba(0,0,0,.55);color:#fff;font-size:12px">🔍</button>
           </div>`).join('')}
         </div>
       </div>`;
+    // SELF-AUDIT (his feedback doc, 2026-07-20, finding 1: "12 cards" label
+    // with only 9 panels rendered, three times across two days — server-side
+    // replays always return the full set, so the loss is client-side and
+    // must be impossible to miss). Count what actually landed in the DOM
+    // against what the response carried; any mismatch = loud red banner.
+    const _rendered = document.querySelectorAll('#valBinder .bcell').length;
+    if(_rendered !== cards.length){
+      $('#valMsg').innerHTML = '<span style="color:#ff5c5c;font-weight:700">⚠ '
+        + cards.length + ' results received but only ' + _rendered
+        + ' displayed — screenshot this and report it.</span>';
+    }
     window._binderCards = cards;
     document.querySelectorAll('.bzoom').forEach(el=>el.onclick=(ev)=>{
       ev.stopPropagation();
@@ -1369,7 +1419,13 @@ function evidenceBadge(d, compact){
   const color = EV_COLOR[d.evidence_level] || '#888';
   const coverage = Number.isFinite(+d.evidence_coverage) ? +d.evidence_coverage : 0;
   const prediction = Number.isFinite(+d.provisional_prediction_confidence) ? +d.provisional_prediction_confidence : 0;
-  const badge = `<span title="${escapeHtml(d.evidence_level_meaning||'')}" style="display:inline-flex;align-items:center;gap:4px;background:${color}22;border:1px solid ${color};color:${color};border-radius:999px;padding:1px 8px;font-size:11px;font-weight:700;letter-spacing:.02em;white-space:nowrap">Level ${d.evidence_level} · coverage ${coverage}% · provisional prediction ${prediction}%</span>`;
+  // 0% coverage means NOTHING was independently verified — a nonzero score
+  // there is a catalog prior, not evidence, and must say so (his feedback
+  // doc, 2026-07-20, finding 6: "a prior-only score should never resemble
+  // evidence-backed confidence")
+  const predLabel = coverage === 0 && prediction > 0
+    ? `prior-only estimate ${prediction}%` : `provisional prediction ${prediction}%`;
+  const badge = `<span title="${escapeHtml(d.evidence_level_meaning||'')}" style="display:inline-flex;align-items:center;gap:4px;background:${color}22;border:1px solid ${color};color:${color};border-radius:999px;padding:1px 8px;font-size:11px;font-weight:700;letter-spacing:.02em;white-space:nowrap">Level ${d.evidence_level} · coverage ${coverage}% · ${predLabel}</span>`;
   if(compact) return badge;
   const chain = d.evidence_chain || {};
   const chainRows = Object.keys(chain).map(k=>{

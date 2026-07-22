@@ -774,6 +774,42 @@ class ValuatorLayerCD(unittest.TestCase):
             valuator.search_candidates("Croagunk 032/EP-P")
         self.assertEqual(post.call_args.kwargs["json"]["query"], "Croagunk")
 
+    def test_promo_number_recovery_pulls_exact_match_from_deep_search(self):
+        # live catch (Yujin's feedback doc, 2026-07-20): "Delphox XY19" -- the
+        # promo token is stripped from the name query, and TCGplayer's own
+        # relevance ranking buries the real XY19 promo far past the default
+        # window, so the ONE correct card never appeared while 12 unrelated
+        # Delphox printings did. When the read number is promo-shaped and no
+        # fetched candidate matches it, a deeper targeted search must recover
+        # the exact-number product and rank it first.
+        shallow = {"results": [{"results": [
+            {"productId": 1, "productName": "Delphox", "setName": "XY Base",
+             "customAttributes": {"number": "26/146"}},
+        ]}]}
+        deep = {"results": [{"results": [
+            {"productId": 1, "productName": "Delphox", "setName": "XY Base",
+             "customAttributes": {"number": "26/146"}},
+            {"productId": 2, "productName": "Delphox EX - XY19",
+             "setName": "XY Promos", "customAttributes": {"number": "XY19"}},
+        ]}]}
+        responses = [mock.Mock(**{"json.return_value": shallow}),
+                     mock.Mock(**{"json.return_value": deep})]
+        with mock.patch("valuator.requests.post", side_effect=responses) as post:
+            out = valuator.search_candidates("Delphox XY19")
+        self.assertEqual(post.call_count, 2)
+        self.assertEqual(post.call_args_list[1].kwargs["json"]["size"], 50)
+        self.assertEqual(out[0]["number"], "XY19")
+
+    def test_promo_number_space_and_hyphen_variants_normalize(self):
+        # doc-requested variants: "XY 19" and "XY-19" must parse as XY19
+        response = mock.Mock()
+        response.json.return_value = {"results": []}
+        for variant in ("Delphox XY 19", "Delphox XY-19"):
+            with mock.patch("valuator.requests.post", return_value=response) as post:
+                valuator.search_candidates(variant)
+            self.assertEqual(post.call_args_list[0].kwargs["json"]["query"],
+                             "Delphox", variant)
+
     def test_fingerprint_ambiguity_guard(self):
         # live catch: {10,20} named a Chespin promo "Arbok" — tiny generic
         # profiles with no corroboration must not claim an identity
