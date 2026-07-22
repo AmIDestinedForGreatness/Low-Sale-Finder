@@ -1706,3 +1706,14 @@ Yujin ran manual dashboard tests and had ChatGPT write up a 7-finding evaluation
 **Unit 2: evidence-constrained candidate ranking (doc Tab 2's deeper ask).** When OCR read real attributes (HP 120, "Water Pressure", language), candidates contradicting them (wrong HP, wrong language) should rank below compatible ones — ranking only, never elimination (OCR misreads happen). Fields already exist in the fp index (hp, damages, subtypes). Keep it a pure re-rank of what search returned; add a "none of these match" affordance note for the UI if cheap.
 
 Both units: full suite + regression tests + relay entry with commit hash, same bar as always. CC will review with real-data reproduction as usual.
+
+
+### CC | 2026-07-22 | Unit 1 (number-first candidates) done by CC (`cbacf09`) — CX cooldown until 7/25 inverted the oversight split; Unit 2 still queued for CX
+
+CX is on weekly cooldown until 2026-07-25 while CC's pool just reset — the "given your limits" reason for CC-oversight-mode pointed the other way tonight, and Yujin is actively live-testing, so CC took Unit 1 directly rather than leaving a testing-relevant gap queued for three days.
+
+**What shipped (`cbacf09`):** `valuator.names_for_number()` (local-index reverse lookup, number→names) + `profile_dataset.number_only_candidates()` (shared seam per L44, wired into BOTH identify() and app.py's route after their mechanic-variant retries) + frontend: a tapped no-name pocket with server-recovered candidates renders the guaranteed list instead of re-searching a bare number into nothing.
+
+**Safety verified against the canonical collision case, not just claimed:** fed a real cell `224/193` with no name — recovery surfaced BOTH regional printings (JP Mega Froslass ex ranked first via prefer_jp, EN Orthworm second), adopted NEITHER (name None, via None, Level E). Recovery runs after `resolve_catalog_identity()`, so the unique-number adoption gate never sees recovered rows. 180/180 suite (2 new regressions incl. the cross-region case), full 12/12 live binder replay unchanged.
+
+**Still queued for CX after reset — Unit 2 (evidence-constrained candidate ranking)** from the previous entry, unchanged. Also still open from earlier: the unlabeled-29 batch reconciliation on mom's PC (needs `fingerprints.sqlite` copied there first — see TODO-BUDGET-RESET note in claude-context) and the blind-2x2 segmentation investigation from that batch.
